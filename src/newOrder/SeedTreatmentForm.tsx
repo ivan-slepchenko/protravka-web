@@ -58,7 +58,7 @@ const ProductDetails: React.FC<{ index: number }> = ({ index }) => {
           <Input
             name={`density${index}`}
             value={productDetail.density}
-            isReadOnly
+            onChange={(e) => handleProductChange('density', e.target.value)}
             size="xs"
           />
         </Box>
@@ -205,7 +205,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: keyof NewOrderState, value: st
         <Input
           name="variety"
           value={formData.variety}
-          isReadOnly
+          onChange={(e) => handleChange("variety", e.target.value)}
           size="xs"
         />
       </Box>
@@ -214,7 +214,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: keyof NewOrderState, value: st
         <Input
           name="lotNumber"
           value={formData.lotNumber}
-          isReadOnly
+          onChange={(e) => handleChange("lotNumber", e.target.value)}
           size="xs"
         />
       </Box>
@@ -223,7 +223,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: keyof NewOrderState, value: st
         <Input
           name="tkw"
           value={formData.tkw}
-          isReadOnly
+          onChange={(e) => handleChange("tkw", e.target.value)}
           size="xs"
         />
       </Box>
@@ -232,7 +232,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: keyof NewOrderState, value: st
         <Input
           name="quantity"
           value={formData.quantity}
-          isReadOnly
+          onChange={(e) => handleChange("quantity", e.target.value)}
           size="xs"
         />
       </Box>
