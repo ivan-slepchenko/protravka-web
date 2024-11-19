@@ -6,17 +6,16 @@ import ordersReducer from './ordersSlice';
 // ...import your reducers here...
 
 const persistConfig = {
-  key: 'root',
+  key: 'newOrder',
   storage
 };
 
 const persistedNewOrderReducer = persistReducer(persistConfig, newOrderReducer);
-const persistedOrdersReducer = persistReducer(persistConfig, ordersReducer);
 
 const store = configureStore({
   reducer: {
     newOrder: persistedNewOrderReducer,
-    orders: persistedOrdersReducer,
+    orders: ordersReducer,
     // ...add your reducers here...
   },
 });
