@@ -25,9 +25,15 @@ import {
   ProductDetail,
 } from "../store/newOrderSlice";
 
-const ProductDetails: React.FC<{ index: number; handleProductChange: (index: number, name: keyof ProductDetail, value: string) => void }> = ({ index, handleProductChange }) => {
+const ProductDetails: React.FC<{ index: number }> = ({ index }) => {
+  const dispatch: AppDispatch = useDispatch();
   const productDetail = useSelector((state: RootState) => state.newOrder.productDetails[index]);
   const rateLabel = productDetail.rateType === "unit" ? `Rate per unit (${productDetail.rateUnit}):` : `Rate per 100kg (${productDetail.rateUnit}):`;
+
+  const handleProductChange = (name: keyof ProductDetail, value: string) => {
+    const updatedProduct = { ...productDetail, [name]: value };
+    dispatch(updateProductDetail(updatedProduct));
+  };
 
   return (
     <Box border="1px solid" borderColor="gray.200" p="2" borderRadius="md" mb="2">
@@ -37,7 +43,7 @@ const ProductDetails: React.FC<{ index: number; handleProductChange: (index: num
           <Select
             name={`productName${index}`}
             value={productDetail.name}
-            onChange={(e) => handleProductChange(index, 'name', e.target.value)}
+            onChange={(e) => handleProductChange('name', e.target.value)}
             placeholder="Select product"
             size="xs"
             focusBorderColor="transparent"
@@ -62,7 +68,7 @@ const ProductDetails: React.FC<{ index: number; handleProductChange: (index: num
             <Input
               name={`rate${productDetail.rateType}${productDetail.rateUnit}${index}`}
               value={productDetail.rate}
-              onChange={(e) => handleProductChange(index, 'rate', e.target.value)}
+              onChange={(e) => handleProductChange('rate', e.target.value)}
               placeholder="Enter rate"
             />
             <InputRightElement width="auto">
@@ -71,7 +77,7 @@ const ProductDetails: React.FC<{ index: number; handleProductChange: (index: num
                   width="110px"
                   name={`rateType${index}`}
                   value={productDetail.rateType}
-                  onChange={(e) => handleProductChange(index, 'rateType', e.target.value)}
+                  onChange={(e) => handleProductChange('rateType', e.target.value)}
                   size="xs"
                   fontWeight="bold"
                   bg="gray.50"
@@ -86,7 +92,7 @@ const ProductDetails: React.FC<{ index: number; handleProductChange: (index: num
                   width="110px"
                   name={`rateUnit${index}`}
                   value={productDetail.rateUnit}
-                  onChange={(e) => handleProductChange(index, 'rateUnit', e.target.value)}
+                  onChange={(e) => handleProductChange('rateUnit', e.target.value)}
                   size="xs"
                   fontWeight="bold"
                   bg="gray.50"
@@ -247,11 +253,6 @@ const SeedTreatmentForm: React.FC = () => {
     dispatch(updateField({ field: name, value }));
   };
 
-  const handleProductChange = (index: number, name: keyof ProductDetail, value: string) => {
-    const updatedProduct = { ...formData.productDetails[index], [name]: value };
-    dispatch(updateProductDetail(updatedProduct));
-  };
-
   const handleSave = () => {
     localStorage.setItem("newOrderState", JSON.stringify(formData));
   };
@@ -274,7 +275,6 @@ const SeedTreatmentForm: React.FC = () => {
         <ProductDetails
           key={index}
           index={index}
-          handleProductChange={handleProductChange}
         />
       ))}
       <HStack>
