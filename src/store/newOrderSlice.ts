@@ -32,7 +32,7 @@ export interface Order {
   status: OrderStatus;
 }
 
-const initialState: Order = {
+export const initialState: Order = {
   productDetails: [],
   recipeDate: new Date().toISOString().split("T")[0],
   applicationDate: new Date().toISOString().split("T")[0],

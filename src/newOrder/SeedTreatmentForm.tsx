@@ -33,7 +33,9 @@ import {
   ProductDetail,
   OrderStatus,
   Order,
+  initialState,
 } from "../store/newOrderSlice";
+import { addOrder } from "../store/ordersSlice";
 
 const ProductDetails: React.FC<{ index: number }> = ({ index }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -259,48 +261,17 @@ const SeedTreatmentForm: React.FC = () => {
     dispatch(updateRecipeDate(value));
   };
 
-  const handleApplicationDateChange = (value: string) => {
-    dispatch(updateApplicationDate(value));
-  };
-
-  const handleOperatorChange = (value: string) => {
-    dispatch(updateOperator(value));
-  };
-
-  const handleCropChange = (value: string) => {
-    dispatch(updateCrop(value));
-  };
-
-  const handleVarietyChange = (value: string) => {
-    dispatch(updateVariety(value));
-  };
-
-  const handleLotNumberChange = (value: string) => {
-    dispatch(updateLotNumber(value));
-  };
-
-  const handleTkwChange = (value: number) => {
-    dispatch(updateTkw(value));
-  };
-
-  const handleQuantityChange = (value: number) => {
-    dispatch(updateQuantity(value));
-  };
-
   const handlePackagingChange = (value: string) => {
     dispatch(updatePackaging(value));
   };
 
-  const handleBagSizeChange = (value: number) => {
-    dispatch(updateBagSize(value));
-  };
-
-  const handleStatusChange = (value: OrderStatus) => {
-    dispatch(updateStatus(value));
-  };
-
   const handleSave = () => {
-    console.log('Saving order:', formData);
+    dispatch(addOrder(formData));
+    dispatch(setOrderState(initialState));
+  };
+
+  const handleClearAll = () => {
+    dispatch(setOrderState(initialState));
   };
 
   const addProduct = () => {
@@ -328,24 +299,10 @@ const SeedTreatmentForm: React.FC = () => {
       </HStack>
     
       {/* Action Buttons */}
-      <Grid templateColumns="repeat(3, 1fr)" gap="1" mb="2">
+      <HStack justifyContent="flex-end" spacing="2" mb="2">
+        <Button colorScheme="yellow" size="xs" onClick={handleClearAll}>Clear All</Button>
         <Button colorScheme="green" size="xs" onClick={handleSave}>Done</Button>
-        <Button colorScheme="yellow" size="xs" onClick={() => dispatch(setOrderState({
-          productDetails: [],
-          recipeDate: new Date().toISOString().split("T")[0],
-          applicationDate: new Date().toISOString().split("T")[0],
-          operator: "",
-          crop: "",
-          variety: "thermo",
-          lotNumber: "ther123",
-          tkw: 200,
-          quantity: 2000,
-          packaging: "inSeeds",
-          bagSize: 0,
-          status: OrderStatus.NotStarted,
-        }))}>Clear All</Button>
-        <Button colorScheme="red" size="xs">Exit</Button>
-      </Grid>
+      </HStack>
     </Box>
   );
 };
