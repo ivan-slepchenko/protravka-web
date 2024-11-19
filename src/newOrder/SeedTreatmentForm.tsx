@@ -17,12 +17,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import {
   addProductDetail,
+  updateProductDetail,
   updateField,
   setOrderState,
   loadOrderState,
+  NewOrderState,
+  ProductDetail,
 } from "../store/newOrderSlice";
 
-const ProductDetails: React.FC<{ index: number; handleChange: (name: string, value: string) => void }> = ({ index, handleChange }) => {
+const ProductDetails: React.FC<{ index: number; handleProductChange: (index: number, name: keyof ProductDetail, value: string) => void }> = ({ index, handleProductChange }) => {
   const productDetail = useSelector((state: RootState) => state.newOrder.productDetails[index]);
   const rateLabel = productDetail.rateType === "unit" ? `Rate per unit (${productDetail.rateUnit}):` : `Rate per 100kg (${productDetail.rateUnit}):`;
 
@@ -34,7 +37,7 @@ const ProductDetails: React.FC<{ index: number; handleChange: (name: string, val
           <Select
             name={`productName${index}`}
             value={productDetail.name}
-            onChange={(e) => handleChange(`productDetails[${index}].name`, e.target.value)}
+            onChange={(e) => handleProductChange(index, 'name', e.target.value)}
             placeholder="Select product"
             size="xs"
             focusBorderColor="transparent"
@@ -59,7 +62,7 @@ const ProductDetails: React.FC<{ index: number; handleChange: (name: string, val
             <Input
               name={`rate${productDetail.rateType}${productDetail.rateUnit}${index}`}
               value={productDetail.rate}
-              onChange={(e) => handleChange(`productDetails[${index}].rate`, e.target.value)}
+              onChange={(e) => handleProductChange(index, 'rate', e.target.value)}
               placeholder="Enter rate"
             />
             <InputRightElement width="auto">
@@ -68,7 +71,7 @@ const ProductDetails: React.FC<{ index: number; handleChange: (name: string, val
                   width="110px"
                   name={`rateType${index}`}
                   value={productDetail.rateType}
-                  onChange={(e) => handleChange(`productDetails[${index}].rateType`, e.target.value)}
+                  onChange={(e) => handleProductChange(index, 'rateType', e.target.value)}
                   size="xs"
                   fontWeight="bold"
                   bg="gray.50"
@@ -83,7 +86,7 @@ const ProductDetails: React.FC<{ index: number; handleChange: (name: string, val
                   width="110px"
                   name={`rateUnit${index}`}
                   value={productDetail.rateUnit}
-                  onChange={(e) => handleChange(`productDetails[${index}].rateUnit`, e.target.value)}
+                  onChange={(e) => handleProductChange(index, 'rateUnit', e.target.value)}
                   size="xs"
                   fontWeight="bold"
                   bg="gray.50"
@@ -103,7 +106,7 @@ const ProductDetails: React.FC<{ index: number; handleChange: (name: string, val
   );
 };
 
-const PackagingOptions: React.FC<{ handleChange: (name: string, value: string) => void }> = ({ handleChange }) => {
+const PackagingOptions: React.FC<{ handleChange: (name: keyof NewOrderState, value: string) => void }> = ({ handleChange }) => {
   const formData = useSelector((state: RootState) => state.newOrder);
 
   return (
@@ -125,7 +128,7 @@ const PackagingOptions: React.FC<{ handleChange: (name: string, value: string) =
         <Input
           name="bagSize"
           value={formData.bagSize}
-          onChange={(e) => handleChange(e.target.name, e.target.value)}
+          onChange={(e) => handleChange("bagSize", e.target.value)}
           placeholder="80"
           size="xs"
         />
@@ -134,7 +137,7 @@ const PackagingOptions: React.FC<{ handleChange: (name: string, value: string) =
   );
 };
 
-const RecipeInfo: React.FC<{ handleChange: (name: string, value: string) => void }> = ({ handleChange }) => {
+const RecipeInfo: React.FC<{ handleChange: (name: keyof NewOrderState, value: string) => void }> = ({ handleChange }) => {
   const formData = useSelector((state: RootState) => state.newOrder);
 
   return (
@@ -145,7 +148,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: string, value: string) => void
           type="date"
           name="recipeDate"
           value={formData.recipeDate}
-          onChange={(e) => handleChange(e.target.name, e.target.value)}
+          onChange={(e) => handleChange("recipeDate", e.target.value)}
           size="xs"
         />
       </Box>
@@ -155,7 +158,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: string, value: string) => void
           type="date"
           name="applicationDate"
           value={formData.applicationDate}
-          onChange={(e) => handleChange(e.target.name, e.target.value)}
+          onChange={(e) => handleChange("applicationDate", e.target.value)}
           size="xs"
         />
       </Box>
@@ -164,7 +167,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: string, value: string) => void
         <Select
           name="operator"
           value={formData.operator}
-          onChange={(e) => handleChange(e.target.name, e.target.value)}
+          onChange={(e) => handleChange("operator", e.target.value)}
           placeholder="Select operator"
           size="xs"
         >
@@ -180,7 +183,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: string, value: string) => void
         <Select
           name="crop"
           value={formData.crop}
-          onChange={(e) => handleChange(e.target.name, e.target.value)}
+          onChange={(e) => handleChange("crop", e.target.value)}
           placeholder="Select crop"
           size="xs"
         >
@@ -240,8 +243,13 @@ const SeedTreatmentForm: React.FC = () => {
     dispatch(loadOrderState());
   }, [dispatch]);
 
-  const handleChange = (name: string, value: string) => {
-    dispatch(updateField({ field: name as keyof typeof formData, value }));
+  const handleChange = (name: keyof NewOrderState, value: string) => {
+    dispatch(updateField({ field: name, value }));
+  };
+
+  const handleProductChange = (index: number, name: keyof ProductDetail, value: string) => {
+    const updatedProduct = { ...formData.productDetails[index], [name]: value };
+    dispatch(updateProductDetail(updatedProduct));
   };
 
   const handleSave = () => {
@@ -266,7 +274,7 @@ const SeedTreatmentForm: React.FC = () => {
         <ProductDetails
           key={index}
           index={index}
-          handleChange={handleChange}
+          handleProductChange={handleProductChange}
         />
       ))}
       <HStack>

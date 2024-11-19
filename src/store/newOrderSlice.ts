@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
-interface ProductDetail {
+export interface ProductDetail {
   id: number;
   name: string;
   quantity: number;
@@ -10,7 +10,7 @@ interface ProductDetail {
   rate: number;
 }
 
-interface NewOrderState {
+export interface NewOrderState {
   productDetails: ProductDetail[];
   recipeDate: string;
   applicationDate: string;
