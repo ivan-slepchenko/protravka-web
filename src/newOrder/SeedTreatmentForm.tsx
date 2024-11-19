@@ -20,7 +20,6 @@ import {
   updateProductDetail,
   updateField,
   setOrderState,
-  loadOrderState,
   NewOrderState,
   ProductDetail,
 } from "../store/newOrderSlice";
@@ -245,16 +244,12 @@ const SeedTreatmentForm: React.FC = () => {
   const formData = useSelector((state: RootState) => state.newOrder);
   const productCount = formData.productDetails.length;
 
-  useEffect(() => {
-    dispatch(loadOrderState());
-  }, [dispatch]);
-
   const handleChange = (name: keyof NewOrderState, value: string) => {
     dispatch(updateField({ field: name, value }));
   };
 
   const handleSave = () => {
-    localStorage.setItem("newOrderState", JSON.stringify(formData));
+    console.log('Saving order:', formData);
   };
 
   const addProduct = () => {

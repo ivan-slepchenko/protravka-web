@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ProductDetail {
   id: number;
@@ -38,14 +38,6 @@ const initialState: NewOrderState = {
   bagSize: "",
 };
 
-export const loadOrderState = createAsyncThunk('newOrder/loadOrderState', async () => {
-  const savedData = localStorage.getItem("newOrderState");
-  if (savedData) {
-    return JSON.parse(savedData) as NewOrderState;
-  }
-  return initialState;
-});
-
 const newOrderSlice = createSlice({
   name: 'newOrder',
   initialState,
@@ -72,11 +64,6 @@ const newOrderSlice = createSlice({
     setOrderState: (state, action: PayloadAction<NewOrderState>) => {
       return action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(loadOrderState.fulfilled, (state, action) => {
-      return action.payload;
-    });
   },
 });
 
