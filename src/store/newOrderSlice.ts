@@ -25,10 +25,10 @@ export interface Order {
   crop: string;
   variety: string;
   lotNumber: string;
-  tkw: string;
-  quantity: string;
+  tkw: number;
+  quantity: number;
   packaging: string;
-  bagSize: string;
+  bagSize: number;
   status: OrderStatus;
 }
 
@@ -40,10 +40,10 @@ const initialState: Order = {
   crop: "",
   variety: "",
   lotNumber: "",
-  tkw: "",
-  quantity: "",
+  tkw: 0,
+  quantity: 0,
   packaging: "",
-  bagSize: "",
+  bagSize: 0,
   status: OrderStatus.NotStarted,
 };
 
@@ -63,12 +63,38 @@ const newOrderSlice = createSlice({
     removeProductDetail: (state, action: PayloadAction<number>) => {
       state.productDetails = state.productDetails.filter(pd => pd.id !== action.payload);
     },
-    updateField: (state, action: PayloadAction<{ field: keyof Order, value: string | OrderStatus }>) => {
-      if (action.payload.field === 'productDetails' && typeof action.payload.value === 'string') {
-        state.productDetails = JSON.parse(action.payload.value);
-      } else {
-        state[action.payload.field] = action.payload.value as any;
-      }
+    updateRecipeDate: (state, action: PayloadAction<string>) => {
+      state.recipeDate = action.payload;
+    },
+    updateApplicationDate: (state, action: PayloadAction<string>) => {
+      state.applicationDate = action.payload;
+    },
+    updateOperator: (state, action: PayloadAction<string>) => {
+      state.operator = action.payload;
+    },
+    updateCrop: (state, action: PayloadAction<string>) => {
+      state.crop = action.payload;
+    },
+    updateVariety: (state, action: PayloadAction<string>) => {
+      state.variety = action.payload;
+    },
+    updateLotNumber: (state, action: PayloadAction<string>) => {
+      state.lotNumber = action.payload;
+    },
+    updateTkw: (state, action: PayloadAction<number>) => {
+      state.tkw = action.payload;
+    },
+    updateQuantity: (state, action: PayloadAction<number>) => {
+      state.quantity = action.payload;
+    },
+    updatePackaging: (state, action: PayloadAction<string>) => {
+      state.packaging = action.payload;
+    },
+    updateBagSize: (state, action: PayloadAction<number>) => {
+      state.bagSize = action.payload;
+    },
+    updateStatus: (state, action: PayloadAction<OrderStatus>) => {
+      state.status = action.payload;
     },
     setOrderState: (state, action: PayloadAction<Order>) => {
       return action.payload;
@@ -76,5 +102,21 @@ const newOrderSlice = createSlice({
   },
 });
 
-export const { addProductDetail, updateProductDetail, removeProductDetail, updateField, setOrderState } = newOrderSlice.actions;
+export const {
+  addProductDetail,
+  updateProductDetail,
+  removeProductDetail,
+  updateRecipeDate,
+  updateApplicationDate,
+  updateOperator,
+  updateCrop,
+  updateVariety,
+  updateLotNumber,
+  updateTkw,
+  updateQuantity,
+  updatePackaging,
+  updateBagSize,
+  updateStatus,
+  setOrderState,
+} = newOrderSlice.actions;
 export default newOrderSlice.reducer;

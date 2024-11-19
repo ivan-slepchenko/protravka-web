@@ -18,8 +18,18 @@ import { RootState, AppDispatch } from "../store/store";
 import {
   addProductDetail,
   updateProductDetail,
-  updateField,
   setOrderState,
+  updateRecipeDate,
+  updateApplicationDate,
+  updateOperator,
+  updateCrop,
+  updateVariety,
+  updateLotNumber,
+  updateTkw,
+  updateQuantity,
+  updatePackaging,
+  updateBagSize,
+  updateStatus,
   ProductDetail,
   OrderStatus,
   Order,
@@ -112,7 +122,7 @@ const ProductDetails: React.FC<{ index: number }> = ({ index }) => {
   );
 };
 
-const PackagingOptions: React.FC<{ handleChange: (name: keyof Order, value: string) => void }> = ({ handleChange }) => {
+const PackagingOptions: React.FC<{ handleChange: (name: keyof Order, value: string | number) => void }> = ({ handleChange }) => {
   const formData = useSelector((state: RootState) => state.newOrder);
 
   return (
@@ -134,7 +144,7 @@ const PackagingOptions: React.FC<{ handleChange: (name: keyof Order, value: stri
         <Input
           name="bagSize"
           value={formData.bagSize}
-          onChange={(e) => handleChange("bagSize", e.target.value)}
+          onChange={(e) => handleChange("bagSize", parseFloat(e.target.value))}
           placeholder="80"
           size="xs"
         />
@@ -143,7 +153,7 @@ const PackagingOptions: React.FC<{ handleChange: (name: keyof Order, value: stri
   );
 };
 
-const RecipeInfo: React.FC<{ handleChange: (name: keyof Order, value: string) => void }> = ({ handleChange }) => {
+const RecipeInfo: React.FC<{ handleChange: (name: keyof Order, value: string | number) => void }> = ({ handleChange }) => {
   const formData = useSelector((state: RootState) => state.newOrder);
 
   return (
@@ -223,7 +233,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: keyof Order, value: string) =>
         <Input
           name="tkw"
           value={formData.tkw}
-          onChange={(e) => handleChange("tkw", e.target.value)}
+          onChange={(e) => handleChange("tkw", parseFloat(e.target.value))}
           size="xs"
         />
       </Box>
@@ -232,7 +242,7 @@ const RecipeInfo: React.FC<{ handleChange: (name: keyof Order, value: string) =>
         <Input
           name="quantity"
           value={formData.quantity}
-          onChange={(e) => handleChange("quantity", e.target.value)}
+          onChange={(e) => handleChange("quantity", parseFloat(e.target.value))}
           size="xs"
         />
       </Box>
@@ -245,8 +255,48 @@ const SeedTreatmentForm: React.FC = () => {
   const formData = useSelector((state: RootState) => state.newOrder);
   const productCount = formData.productDetails.length;
 
-  const handleChange = (name: keyof Order, value: string | OrderStatus) => {
-    dispatch(updateField({ field: name, value }));
+  const handleRecipeDateChange = (value: string) => {
+    dispatch(updateRecipeDate(value));
+  };
+
+  const handleApplicationDateChange = (value: string) => {
+    dispatch(updateApplicationDate(value));
+  };
+
+  const handleOperatorChange = (value: string) => {
+    dispatch(updateOperator(value));
+  };
+
+  const handleCropChange = (value: string) => {
+    dispatch(updateCrop(value));
+  };
+
+  const handleVarietyChange = (value: string) => {
+    dispatch(updateVariety(value));
+  };
+
+  const handleLotNumberChange = (value: string) => {
+    dispatch(updateLotNumber(value));
+  };
+
+  const handleTkwChange = (value: number) => {
+    dispatch(updateTkw(value));
+  };
+
+  const handleQuantityChange = (value: number) => {
+    dispatch(updateQuantity(value));
+  };
+
+  const handlePackagingChange = (value: string) => {
+    dispatch(updatePackaging(value));
+  };
+
+  const handleBagSizeChange = (value: number) => {
+    dispatch(updateBagSize(value));
+  };
+
+  const handleStatusChange = (value: OrderStatus) => {
+    dispatch(updateStatus(value));
   };
 
   const handleSave = () => {
@@ -263,8 +313,8 @@ const SeedTreatmentForm: React.FC = () => {
         Remington Seeds
       </Text>
 
-      <RecipeInfo handleChange={handleChange} />
-      <PackagingOptions handleChange={handleChange} />
+      <RecipeInfo handleChange={handleRecipeDateChange} />
+      <PackagingOptions handleChange={handlePackagingChange} />
 
       {/* Product Details */}
       {formData.productDetails.map((_, index) => (
@@ -288,10 +338,10 @@ const SeedTreatmentForm: React.FC = () => {
           crop: "",
           variety: "thermo",
           lotNumber: "ther123",
-          tkw: "200",
-          quantity: "2000",
+          tkw: 200,
+          quantity: 2000,
           packaging: "inSeeds",
-          bagSize: "",
+          bagSize: 0,
           status: OrderStatus.NotStarted,
         }))}>Clear All</Button>
         <Button colorScheme="red" size="xs">Exit</Button>
