@@ -20,6 +20,11 @@ code {
   transition: all 0.3s ease;
 }
 
+#root {
+  width: 100vw;
+  height: 100vh;
+}
+
 .custom-marker-container:hover .custom-label {
   background-color: black;
   color: white;

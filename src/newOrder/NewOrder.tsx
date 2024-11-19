@@ -1,11 +1,10 @@
-import { VStack } from "@chakra-ui/react";
-import React from "react";
+import { Center } from "@chakra-ui/react";
 import SeedTreatmentForm from "./SeedTreatmentForm";
 
 export const NewOrder = () => {
   return (
-    <VStack w='full' h='full'>
-      <SeedTreatmentForm/>
-    </VStack>
-  )
-}
+        <Center w='full' h='full' fontSize={'xs'}>
+          <SeedTreatmentForm />
+        </Center>
+  );
+};

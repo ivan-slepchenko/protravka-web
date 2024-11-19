@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -9,6 +9,7 @@ import {
   Radio,
   RadioGroup,
   Stack,
+  HStack,
 } from "@chakra-ui/react";
 
 interface ProductDetailsProps {
@@ -69,8 +70,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ index, formData, handle
             onChange={(value) => handleChange(`rateType${index}`, value)}
           >
             <Stack direction="row" spacing="1" justify="space-around">
-              <Radio value="unit" size="xs">Per unit</Radio>
-              <Radio value="100kg" size="xs">Per 100kg</Radio>
+              <Radio value="unit" size="xs">per unit</Radio>
+              <Radio value="100kg" size="xs">per 100kg</Radio>
             </Stack>
           </RadioGroup>
         </Box>
@@ -97,18 +98,20 @@ interface PackagingOptionsProps {
 const PackagingOptions: React.FC<PackagingOptionsProps> = ({ formData, handleChange }) => (
   <Box mb="2">
     <Text fontSize="xs" mb="1">How do you want to pack it?</Text>
-    <RadioGroup
-      name="packaging"
-      value={formData.packaging}
-      onChange={(value) => handleChange("packaging", value)}
-    >
-      <Stack direction="row" spacing="1">
-        <Radio value="inSeeds" size="xs">In s/units</Radio>
-        <Radio value="inKg" size="xs">In kg</Radio>
-      </Stack>
-    </RadioGroup>
-    <Box mt="1">
-      <Text fontSize="xs">Bag size (K/Seeds):</Text>
+    <HStack>
+      <RadioGroup
+        width="300px"
+        name="packaging"
+        value={formData.packaging}
+        onChange={(value) => handleChange("packaging", value)}
+      >
+        <Stack direction="row" spacing="1">
+          <Radio value="inSeeds" size="xs">in s/units</Radio>
+          <Radio value="inKg" size="xs">in kg</Radio>
+        </Stack>
+      </RadioGroup>
+   
+      <Text flexShrink={0} fontSize="xs">Bag size (K/Seeds):</Text>
       <Input
         name="bagSize"
         value={formData.bagSize}
@@ -116,7 +119,7 @@ const PackagingOptions: React.FC<PackagingOptionsProps> = ({ formData, handleCha
         placeholder="80"
         size="xs"
       />
-    </Box>
+    </HStack>
   </Box>
 );
 
@@ -218,7 +221,7 @@ const RecipeInfo: React.FC<RecipeInfoProps> = ({ formData, handleChange }) => (
   </Grid>
 );
 
-const SeedTreatmentForm = () => {
+const SeedTreatmentForm: React.FC = () => {
   const [formData, setFormData] = useState({
     recipeDate: new Date().toISOString().split("T")[0],
     applicationDate: new Date().toISOString().split("T")[0],
