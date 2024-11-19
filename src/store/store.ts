@@ -7,8 +7,7 @@ import ordersReducer from './ordersSlice';
 
 const persistConfig = {
   key: 'root',
-  storage,
-  whitelist: ['newOrder', 'orders'],
+  storage
 };
 
 const persistedNewOrderReducer = persistReducer(persistConfig, newOrderReducer);
