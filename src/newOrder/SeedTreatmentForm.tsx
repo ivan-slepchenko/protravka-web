@@ -20,8 +20,9 @@ import {
   updateProductDetail,
   updateField,
   setOrderState,
-  NewOrderState,
   ProductDetail,
+  OrderStatus,
+  Order,
 } from "../store/newOrderSlice";
 
 const ProductDetails: React.FC<{ index: number }> = ({ index }) => {
@@ -111,7 +112,7 @@ const ProductDetails: React.FC<{ index: number }> = ({ index }) => {
   );
 };
 
-const PackagingOptions: React.FC<{ handleChange: (name: keyof NewOrderState, value: string) => void }> = ({ handleChange }) => {
+const PackagingOptions: React.FC<{ handleChange: (name: keyof Order, value: string) => void }> = ({ handleChange }) => {
   const formData = useSelector((state: RootState) => state.newOrder);
 
   return (
@@ -142,7 +143,7 @@ const PackagingOptions: React.FC<{ handleChange: (name: keyof NewOrderState, val
   );
 };
 
-const RecipeInfo: React.FC<{ handleChange: (name: keyof NewOrderState, value: string) => void }> = ({ handleChange }) => {
+const RecipeInfo: React.FC<{ handleChange: (name: keyof Order, value: string) => void }> = ({ handleChange }) => {
   const formData = useSelector((state: RootState) => state.newOrder);
 
   return (
@@ -244,7 +245,7 @@ const SeedTreatmentForm: React.FC = () => {
   const formData = useSelector((state: RootState) => state.newOrder);
   const productCount = formData.productDetails.length;
 
-  const handleChange = (name: keyof NewOrderState, value: string) => {
+  const handleChange = (name: keyof Order, value: string | OrderStatus) => {
     dispatch(updateField({ field: name, value }));
   };
 
@@ -291,6 +292,7 @@ const SeedTreatmentForm: React.FC = () => {
           quantity: "2000",
           packaging: "inSeeds",
           bagSize: "",
+          status: OrderStatus.NotStarted,
         }))}>Clear All</Button>
         <Button colorScheme="red" size="xs">Exit</Button>
       </Grid>

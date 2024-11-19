@@ -2,18 +2,22 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import newOrderReducer from './newOrderSlice';
+import ordersReducer from './ordersSlice';
 // ...import your reducers here...
 
 const persistConfig = {
   key: 'root',
-  storage
+  storage,
+  whitelist: ['newOrder', 'orders'],
 };
 
-const persistedReducer = persistReducer(persistConfig, newOrderReducer);
+const persistedNewOrderReducer = persistReducer(persistConfig, newOrderReducer);
+const persistedOrdersReducer = persistReducer(persistConfig, ordersReducer);
 
 const store = configureStore({
   reducer: {
-    newOrder: persistedReducer,
+    newOrder: persistedNewOrderReducer,
+    orders: persistedOrdersReducer,
     // ...add your reducers here...
   },
 });

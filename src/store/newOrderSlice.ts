@@ -10,7 +10,14 @@ export interface ProductDetail {
   rate: number;
 }
 
-export interface NewOrderState {
+export enum OrderStatus {
+  NotStarted = 'Not Started',
+  InProgress = 'In Progress',
+  Acknowledge = 'Acknowledge',
+  Archive = 'Archive',
+}
+
+export interface Order {
   productDetails: ProductDetail[];
   recipeDate: string;
   applicationDate: string;
@@ -22,9 +29,10 @@ export interface NewOrderState {
   quantity: string;
   packaging: string;
   bagSize: string;
+  status: OrderStatus;
 }
 
-const initialState: NewOrderState = {
+const initialState: Order = {
   productDetails: [],
   recipeDate: new Date().toISOString().split("T")[0],
   applicationDate: new Date().toISOString().split("T")[0],
@@ -36,6 +44,7 @@ const initialState: NewOrderState = {
   quantity: "",
   packaging: "",
   bagSize: "",
+  status: OrderStatus.NotStarted,
 };
 
 const newOrderSlice = createSlice({
@@ -54,14 +63,14 @@ const newOrderSlice = createSlice({
     removeProductDetail: (state, action: PayloadAction<number>) => {
       state.productDetails = state.productDetails.filter(pd => pd.id !== action.payload);
     },
-    updateField: (state, action: PayloadAction<{ field: keyof NewOrderState, value: string }>) => {
-      if (action.payload.field === 'productDetails') {
+    updateField: (state, action: PayloadAction<{ field: keyof Order, value: string | OrderStatus }>) => {
+      if (action.payload.field === 'productDetails' && typeof action.payload.value === 'string') {
         state.productDetails = JSON.parse(action.payload.value);
       } else {
         state[action.payload.field] = action.payload.value as any;
       }
     },
-    setOrderState: (state, action: PayloadAction<NewOrderState>) => {
+    setOrderState: (state, action: PayloadAction<Order>) => {
       return action.payload;
     },
   },
