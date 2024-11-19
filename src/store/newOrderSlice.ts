@@ -4,6 +4,10 @@ interface ProductDetail {
   id: number;
   name: string;
   quantity: number;
+  rateUnit: string;
+  rateType: string;
+  density: number;
+  rate: number;
 }
 
 interface NewOrderState {
@@ -26,11 +30,11 @@ const initialState: NewOrderState = {
   applicationDate: new Date().toISOString().split("T")[0],
   operator: "",
   crop: "",
-  variety: "thermo",
-  lotNumber: "ther123",
-  tkw: "200",
-  quantity: "2000",
-  packaging: "inSeeds",
+  variety: "",
+  lotNumber: "",
+  tkw: "",
+  quantity: "",
+  packaging: "",
   bagSize: "",
 };
 
