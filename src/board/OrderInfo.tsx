@@ -23,15 +23,11 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent minWidth="600px">
+      <ModalContent minWidth="800px">
         <ModalHeader>Order Information</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Box w="full">
-            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb="1">
-              Remington Seeds
-            </Text>
-
             <Grid templateColumns="repeat(2, 1fr)" gap="1" mb="2">
               <Box>
                 <Text fontSize="xs">Recipe creation date:</Text>
@@ -75,28 +71,30 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
               </Box>
             </Grid>
             <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
-            <Table variant="simple" w="full">
-              <Thead>
-                <Tr>
-                  <Th>Product Name</Th>
-                  <Th>Density (g/ml)</Th>
-                  <Th>Rate</Th>
-                  <Th>Rate Type</Th>
-                  <Th>Rate Unit</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {order.productDetails.map((product, index) => (
-                  <Tr key={index}>
-                    <Td>{product.name}</Td>
-                    <Td>{product.density}</Td>
-                    <Td>{product.rate}</Td>
-                    <Td>{product.rateType}</Td>
-                    <Td>{product.rateUnit}</Td>
+            <Box maxHeight="200px" overflowY="auto" bg="gray.50" p="2" borderRadius="md">
+              <Table variant="simple" size="sm" w="full">
+                <Thead>
+                  <Tr>
+                    <Th width="35%" whiteSpace="nowrap">Product Name</Th>
+                    <Th whiteSpace="nowrap">Density (g/ml)</Th>
+                    <Th whiteSpace="nowrap">Rate</Th>
+                    <Th whiteSpace="nowrap">Rate Type</Th>
+                    <Th whiteSpace="nowrap">Rate Unit</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
+                </Thead>
+                <Tbody>
+                  {order.productDetails.map((product, index) => (
+                    <Tr key={index}>
+                      <Td width="35%">{product.name}</Td>
+                      <Td>{product.density}</Td>
+                      <Td>{product.rate}</Td>
+                      <Td>{product.rateType}</Td>
+                      <Td>{product.rateUnit}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
           </Box>
         </ModalBody>
         <ModalFooter>
