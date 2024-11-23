@@ -4,7 +4,7 @@
 az login
 
 # ACR login
-az acr login --name avimate
+az acr login --name protravka
 
 # Get the version from package.json with npm
 version=$(npm run --silent get-version)
@@ -13,10 +13,10 @@ version=$(npm run --silent get-version)
 echo "Deploying version $version"
 
 # Tag the Docker image
-docker tag avimate-web avimate.azurecr.io/avimate-web:$version
+docker tag protravka-web protravka.azurecr.io/protravka-web:$version
 
 # Push the Docker image to the registry
-docker push avimate.azurecr.io/avimate-web:$version
+docker push protravka.azurecr.io/protravka-web:$version
 
 # Redeploy the application
-az containerapp update --name avimate-web --resource-group avimate --image avimate.azurecr.io/avimate-web:$version
+az containerapp update --name protravka-web --resource-group protravka --image protravka.azurecr.io/protravka-web:$version

@@ -40,10 +40,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "get-version": "node -p \"require('./package.json').version\"",
-    "docker-build": "yarn increase-package-version && docker build -t protravka-web .",
+    "docker-build": "npm run increase-package-version && docker build -t protravka-web .",
     "docker-run": "docker run -p 80:80 protravka-web",
-    "increase-package-version": "yarn version --patch",
-    "deploy": "yarn docker-build && wsl --setdefault Ubuntu && bash deploy.sh",
+    "increase-package-version": "npm version patch",
+    "deploy": "npm run docker-build && wsl --setdefault Ubuntu && bash deploy.sh",
     "ssh-azure-container": "az containerapp exec --name protravka-web --resource-group protravka --container protravka-web --command \"/bin/sh\""
   },
   "eslintConfig": {
