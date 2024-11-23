@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store/store';
-import { OrderStatus } from '../store/newOrderSlice';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
 import OrderInfo from './OrderInfo';
+import { OrderStatus } from '../store/newOrderSlice';
+import { fetchOrders } from '../store/ordersSlice';
 
 const Board: React.FC = () => {
+    const dispatch: AppDispatch = useDispatch();
     const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.Acknowledge, OrderStatus.Archived];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
     const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
+
+    useEffect(() => {
+        dispatch(fetchOrders());
+    }, [dispatch]);
 
     const handleOrderClick = (orderId: string) => {
         setSelectedOrder(orderId);

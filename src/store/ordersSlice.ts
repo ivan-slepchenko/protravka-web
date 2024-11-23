@@ -20,13 +20,14 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
 
 export const createOrder = createAsyncThunk('orders/createOrder', async (order: Order) => {
   console.log('Creating order', order);
-  const { id, ...orderWithoutId } = order; // Remove id from order
+  const { id, productDetails, ...orderWithoutId } = order; // Remove id from order
+  const productDetailsWithoutIds = productDetails.map(({ id, ...rest }) => rest); // Remove ids from productDetails
   const response = await fetch(`${BACKEND_URL}/api/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(orderWithoutId),
+    body: JSON.stringify({ ...orderWithoutId, productDetails: productDetailsWithoutIds }),
   });
   const jsonResponse = await response.json();
   console.log('Order created', jsonResponse);
@@ -34,12 +35,14 @@ export const createOrder = createAsyncThunk('orders/createOrder', async (order: 
 });
 
 export const modifyOrder = createAsyncThunk('orders/modifyOrder', async (order: Order) => {
+  const { productDetails, ...orderWithoutId } = order; // Remove id from order
+  const productDetailsWithoutIds = productDetails.map(({ id, ...rest }) => rest); // Remove ids from productDetails
   const response = await fetch(`${BACKEND_URL}/api/orders/${order.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(order),
+    body: JSON.stringify({ ...orderWithoutId, productDetails: productDetailsWithoutIds }),
   });
   return response.json();
 });
@@ -74,9 +77,8 @@ const ordersSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchOrders.fulfilled, (state, action: PayloadAction<OrdersState>) => {
-      state.activeOrders = action.payload.activeOrders;
-      state.archivedOrders = action.payload.archivedOrders;
+    builder.addCase(fetchOrders.fulfilled, (state, action: PayloadAction<Order[]>) => {
+      state.activeOrders = action.payload;
     });
     builder.addCase(createOrder.fulfilled, (state, action: PayloadAction<Order>) => {
       state.activeOrders.push(action.payload);

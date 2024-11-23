@@ -83,15 +83,17 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {order.productDetails.map((product, index) => (
-                    <Tr key={index}>
-                      <Td width="35%">{product.name}</Td>
-                      <Td>{product.density}</Td>
-                      <Td>{product.rate}</Td>
-                      <Td>{product.rateType}</Td>
-                      <Td>{product.rateUnit}</Td>
-                    </Tr>
-                  ))}
+                  {order.productDetails
+                    .sort((a, b) => a.index - b.index) // Sort by index
+                    .map((product, index) => (
+                      <Tr key={index}>
+                        <Td width="35%">{product.name}</Td>
+                        <Td>{product.density}</Td>
+                        <Td>{product.rate}</Td>
+                        <Td>{product.rateType}</Td>
+                        <Td>{product.rateUnit}</Td>
+                      </Tr>
+                    ))}
                 </Tbody>
               </Table>
             </Box>
