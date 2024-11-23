@@ -1,6 +1,6 @@
 {
   "name": "avimate-web",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -40,11 +40,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "get-version": "node -p \"require('./package.json').version\"",
-    "docker-build": "yarn increase-package-version && docker build -t avimate-web .",
-    "docker-run": "docker run -p 80:80 avimate-web",
+    "docker-build": "yarn increase-package-version && docker build -t protravka-web .",
+    "docker-run": "docker run -p 80:80 protravka-web",
     "increase-package-version": "yarn version --patch",
     "deploy": "yarn docker-build && wsl --setdefault Ubuntu && bash deploy.sh",
-    "ssh-azure-container": "az containerapp exec --name avimate-web --resource-group avimate --container avimate-web --command \"/bin/sh\""
+    "ssh-azure-container": "az containerapp exec --name protravka-web --resource-group protravka --container protravka-web --command \"/bin/sh\""
   },
   "eslintConfig": {
     "extends": [
