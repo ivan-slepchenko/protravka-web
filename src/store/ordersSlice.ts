@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Order, OrderStatus } from './newOrderSlice';
 
 interface OrdersState {
@@ -11,13 +11,54 @@ const initialState: OrdersState = {
   archivedOrders: [],
 };
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
+  const response = await fetch(`${BACKEND_URL}/api/orders`);
+  return response.json();
+});
+
+export const createOrder = createAsyncThunk('orders/createOrder', async (order: Order) => {
+  console.log('Creating order', order);
+  const { id, ...orderWithoutId } = order; // Remove id from order
+  const response = await fetch(`${BACKEND_URL}/api/orders`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(orderWithoutId),
+  });
+  const jsonResponse = await response.json();
+  console.log('Order created', jsonResponse);
+  return jsonResponse;
+});
+
+export const modifyOrder = createAsyncThunk('orders/modifyOrder', async (order: Order) => {
+  const response = await fetch(`${BACKEND_URL}/api/orders/${order.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(order),
+  });
+  return response.json();
+});
+
+export const changeOrderStatus = createAsyncThunk('orders/changeOrderStatus', async ({ id, status }: { id: string, status: string }) => {
+  const response = await fetch(`${BACKEND_URL}/api/orders/${id}/status`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status }),
+  });
+  return response.json();
+});
+
 const ordersSlice = createSlice({
   name: 'orders',
   initialState,
   reducers: {
-    addOrder: (state, action: PayloadAction<Order>) => {
-      state.activeOrders.push(action.payload);
-    },
     updateOrder: (state, action: PayloadAction<Order>) => {
       const index = state.activeOrders.findIndex(order => order.lotNumber === action.payload.lotNumber);
       if (index !== -1) {
@@ -32,7 +73,32 @@ const ordersSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchOrders.fulfilled, (state, action: PayloadAction<OrdersState>) => {
+      state.activeOrders = action.payload.activeOrders;
+      state.archivedOrders = action.payload.archivedOrders;
+    });
+    builder.addCase(createOrder.fulfilled, (state, action: PayloadAction<Order>) => {
+      state.activeOrders.push(action.payload);
+    });
+    builder.addCase(modifyOrder.fulfilled, (state, action: PayloadAction<Order>) => {
+      const index = state.activeOrders.findIndex(order => order.id === action.payload.id);
+      if (index !== -1) {
+        state.activeOrders[index] = action.payload;
+      }
+    });
+    builder.addCase(changeOrderStatus.fulfilled, (state, action: PayloadAction<Order>) => {
+      const index = state.activeOrders.findIndex(order => order.id === action.payload.id);
+      if (index !== -1) {
+        state.activeOrders[index].status = action.payload.status;
+        if (action.payload.status === OrderStatus.Archived) {
+          const [order] = state.activeOrders.splice(index, 1);
+          state.archivedOrders.push(order);
+        }
+      }
+    });
+  },
 });
 
-export const { addOrder, updateOrder, archiveOrder } = ordersSlice.actions;
+export const { updateOrder, archiveOrder } = ordersSlice.actions;
 export default ordersSlice.reducer;

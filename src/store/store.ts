@@ -17,7 +17,7 @@ const store = configureStore({
     newOrder: persistedNewOrderReducer,
     orders: ordersReducer,
     // ...add your reducers here...
-  },
+  }
 });
 
 export const persistor = persistStore(store);

@@ -102,7 +102,7 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
             <option value={OrderStatus.NotStarted}>Not Started</option>
             <option value={OrderStatus.InProgress}>In Progress</option>
             <option value={OrderStatus.Acknowledge}>Acknowledge</option>
-            <option value={OrderStatus.Archive}>Archive</option>
+            <option value={OrderStatus.Archived}>Archive</option>
           </Select>
           <Button colorScheme="blue" ml={3} onClick={onClose}>
             Close

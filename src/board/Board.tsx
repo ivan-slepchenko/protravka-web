@@ -5,7 +5,7 @@ import { OrderStatus } from '../store/newOrderSlice';
 import OrderInfo from './OrderInfo';
 
 const Board: React.FC = () => {
-    const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.Acknowledge, OrderStatus.Archive];
+    const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.Acknowledge, OrderStatus.Archived];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
     const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 

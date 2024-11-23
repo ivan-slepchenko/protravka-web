@@ -5,9 +5,10 @@ import { RootState, AppDispatch } from "../store/store";
 import {
   addProductDetail,
   setOrderState,
-  initialState,
+  createNewEmptyOrder,
+  createNewEmptyProduct,
 } from "../store/newOrderSlice";
-import { addOrder } from "../store/ordersSlice";
+import { createOrder, fetchOrders } from "../store/ordersSlice";
 import ProductDetails from "./ProductDetails";
 import PackagingOptions from "./PackagingOptions";
 import RecipeInfo from "./RecipeInfo";
@@ -15,19 +16,19 @@ import RecipeInfo from "./RecipeInfo";
 const SeedTreatmentForm: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const formData = useSelector((state: RootState) => state.newOrder);
-  const productCount = formData.productDetails.length;
 
   const handleSave = () => {
-    dispatch(addOrder(formData));
-    dispatch(setOrderState(initialState));
+    dispatch(createOrder(formData));
+    dispatch(fetchOrders());
+    dispatch(setOrderState(createNewEmptyOrder()));
   };
 
   const handleClearAll = () => {
-    dispatch(setOrderState(initialState));
+    dispatch(setOrderState(createNewEmptyOrder()));
   };
 
   const addProduct = () => {
-    dispatch(addProductDetail({ id: productCount, name: "", quantity: 0, rateType: "unit", rateUnit: "ml", rate: 0, density: 0 }));
+    dispatch(addProductDetail(createNewEmptyProduct()));
   };
 
   return (
