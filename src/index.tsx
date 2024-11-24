@@ -7,6 +7,7 @@ import { ChakraProvider, Box } from "@chakra-ui/react";
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './store/store';
+import Crops from './crops/Crops';
 
 import {
   BrowserRouter,
@@ -35,6 +36,7 @@ root.render(
                   <Route path="/new" element={<NewOrder />} />
                   <Route path="/board" element={<Board />} />
                   <Route path="/operators" element={<Operators />} />
+                  <Route path="/crops" element={<Crops />} />
                 </Routes>
               </Box>
             </Box>

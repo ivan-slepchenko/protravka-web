@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import newOrderReducer from './newOrderSlice';
 import ordersReducer from './ordersSlice';
 import operatorsReducer from './operatorsSlice';
+import cropsReducer from './cropsSlice';
 // ...import your reducers here...
 
 const persistConfig = {
@@ -19,6 +20,7 @@ const store = configureStore({
     newOrder: persistedNewOrderReducer,
     orders: ordersReducer,
     operators: operatorsReducer,
+    crops: cropsReducer,
     // ...add your reducers here...
   }
 });
