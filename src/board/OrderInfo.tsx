@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Text, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Select, Grid, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
-import { Order, OrderStatus, updateStatus } from "../store/newOrderSlice";
+import { OrderStatus, updateStatus } from "../store/newOrderSlice";
 
 interface OrderInfoProps {
   isOpen: boolean;
