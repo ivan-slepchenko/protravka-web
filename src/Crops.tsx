@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Input, VStack, HStack, Text } from '@chakra-ui/react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../store/store';
-import { fetchCrops, createCrop, createVariety, deleteCrop, deleteVariety } from '../store/cropsSlice';
+import { RootState, AppDispatch } from './store/store';
+import { fetchCrops, createCrop, createVariety, deleteCrop, deleteVariety } from './store/cropsSlice';
 import CropComponent from './CropComponent';
 
 const Crops: React.FC = () => {
@@ -30,6 +30,16 @@ const Crops: React.FC = () => {
     }
   };
 
+  const handleDeleteVariety = async (cropId: string, varietyId: string) => {
+    await dispatch(deleteVariety({ cropId, varietyId }));
+    dispatch(fetchCrops());
+  };
+
+  const handleDeleteCrop = async (cropId: string) => {
+    await dispatch(deleteCrop(cropId));
+    dispatch(fetchCrops());
+  };
+
   return (
     <Box p={4}>
       <VStack spacing={4} align="stretch">
@@ -45,9 +55,9 @@ const Crops: React.FC = () => {
           <CropComponent
             key={crop.id}
             crop={crop}
-            onDeleteCrop={() => dispatch(deleteCrop(crop.id))}
+            onDeleteCrop={() => handleDeleteCrop(crop.id)}
             onAddVariety={handleAddVariety}
-            onDeleteVariety={(varietyId) => dispatch(deleteVariety({ cropId: crop.id, varietyId }))}
+            onDeleteVariety={(varietyId) => handleDeleteVariety(crop.id, varietyId)}
             setSelectedCropId={setSelectedCropId}
             newVarietyName={newVarietyName}
             setNewVarietyName={setNewVarietyName}

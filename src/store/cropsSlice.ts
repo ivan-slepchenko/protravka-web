@@ -1,4 +1,3 @@
-
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 export interface Variety {
@@ -52,6 +51,20 @@ export const createVariety = createAsyncThunk('crops/createVariety', async ({ cr
   return response.json();
 });
 
+export const deleteVariety = createAsyncThunk('crops/deleteVariety', async ({ cropId, varietyId }: { cropId: string, varietyId: string }) => {
+  await fetch(`${BACKEND_URL}/api/crops/${cropId}/varieties/${varietyId}`, {
+    method: 'DELETE',
+  });
+  return { cropId, varietyId };
+});
+
+export const deleteCrop = createAsyncThunk('crops/deleteCrop', async (cropId: string) => {
+  await fetch(`${BACKEND_URL}/api/crops/${cropId}`, {
+    method: 'DELETE',
+  });
+  return cropId;
+});
+
 const cropsSlice = createSlice({
   name: 'crops',
   initialState,
@@ -64,9 +77,6 @@ const cropsSlice = createSlice({
       if (index !== -1) {
         state.crops[index] = action.payload;
       }
-    },
-    deleteCrop: (state, action: PayloadAction<string>) => {
-      state.crops = state.crops.filter(crop => crop.id !== action.payload);
     },
     addVariety: (state, action: PayloadAction<{ cropId: string, variety: Variety }>) => {
       const crop = state.crops.find(crop => crop.id === action.payload.cropId);
@@ -88,8 +98,17 @@ const cropsSlice = createSlice({
         crop.varieties.push(action.payload);
       }
     });
+    builder.addCase(deleteVariety.fulfilled, (state, action: PayloadAction<{ cropId: string, varietyId: string }>) => {
+      const crop = state.crops.find(crop => crop.id === action.payload.cropId);
+      if (crop) {
+        crop.varieties = crop.varieties.filter(variety => variety.id !== action.payload.varietyId);
+      }
+    });
+    builder.addCase(deleteCrop.fulfilled, (state, action: PayloadAction<string>) => {
+      state.crops = state.crops.filter(crop => crop.id !== action.payload);
+    });
   },
 });
 
-export const { addCrop, updateCrop, deleteCrop, addVariety } = cropsSlice.actions;
+export const { addCrop, updateCrop, addVariety } = cropsSlice.actions;
 export default cropsSlice.reducer;
