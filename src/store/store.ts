@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import newOrderReducer from './newOrderSlice';
 import ordersReducer from './ordersSlice';
+import operatorsReducer from './operatorsSlice';
 // ...import your reducers here...
 
 const persistConfig = {
@@ -12,10 +13,12 @@ const persistConfig = {
 
 const persistedNewOrderReducer = persistReducer(persistConfig, newOrderReducer);
 
+
 const store = configureStore({
   reducer: {
     newOrder: persistedNewOrderReducer,
     orders: ordersReducer,
+    operators: operatorsReducer,
     // ...add your reducers here...
   }
 });

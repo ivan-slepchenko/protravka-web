@@ -39,7 +39,7 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
               </Box>
               <Box>
                 <Text fontSize="xs">Operator:</Text>
-                <Text>{order.operator}</Text>
+                <Text>{order.operator ? `${order.operator.name} ${order.operator.surname}` : "undefined"}</Text>
               </Box>
               <Box>
                 <Text fontSize="xs">Crop:</Text>

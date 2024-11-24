@@ -1,4 +1,3 @@
-
 import { Box, VStack, Link } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -8,6 +7,7 @@ const LeftMenu = () => {
       <VStack spacing={4} align="stretch">
         <Link as={RouterLink} to="/board">Board</Link>
         <Link as={RouterLink} to="/new">New Order</Link>
+        <Link as={RouterLink} to="/operators">Operators</Link>
       </VStack>
     </Box>
   );

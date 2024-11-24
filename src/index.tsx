@@ -16,6 +16,7 @@ import {
 import { NewOrder } from "./newOrder/NewOrder";
 import LeftMenu from './LeftMenu';
 import Board from './board/Board';
+import Operators from './operators/Operators';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -33,6 +34,7 @@ root.render(
                 <Routes>
                   <Route path="/new" element={<NewOrder />} />
                   <Route path="/board" element={<Board />} />
+                  <Route path="/operators" element={<Operators />} />
                 </Routes>
               </Box>
             </Box>

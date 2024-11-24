@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Operator } from './operatorsSlice';
 
 export interface ProductDetail {
   id: string;
@@ -23,7 +24,7 @@ export interface Order {
   productDetails: ProductDetail[];
   recipeDate: string;
   applicationDate: string;
-  operator: string;
+  operator: Operator;
   crop: string;
   variety: string;
   lotNumber: string;
@@ -39,7 +40,7 @@ export const createNewEmptyOrder: () => Order = () => ({
   productDetails: [],
   recipeDate: new Date().toISOString().split("T")[0],
   applicationDate: new Date().toISOString().split("T")[0],
-  operator: "",
+  operator: { id: '', name: '', surname: '' },
   crop: "",
   variety: "",
   lotNumber: "",
@@ -85,7 +86,7 @@ const newOrderSlice = createSlice({
     updateApplicationDate: (state, action: PayloadAction<string>) => {
       state.applicationDate = action.payload;
     },
-    updateOperator: (state, action: PayloadAction<string>) => {
+    updateOperator: (state, action: PayloadAction<Operator>) => {
       state.operator = action.payload;
     },
     updateCrop: (state, action: PayloadAction<string>) => {

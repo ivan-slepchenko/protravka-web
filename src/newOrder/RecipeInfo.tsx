@@ -1,8 +1,8 @@
-
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Grid, Input, Select, Text } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
+import { fetchOperators } from "../store/operatorsSlice";
 import {
   updateRecipeDate,
   updateApplicationDate,
@@ -17,6 +17,12 @@ import {
 const RecipeInfo: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const formData = useSelector((state: RootState) => state.newOrder);
+  const operators = useSelector((state: RootState) => state.operators.operators);
+  const selectedOperator = useSelector((state: RootState) => state.newOrder.operator);
+
+  useEffect(() => {
+    dispatch(fetchOperators());
+  }, [dispatch]);
 
   const handleRecipeDateChange = (value: string) => {
     dispatch(updateRecipeDate(value));
@@ -26,8 +32,11 @@ const RecipeInfo: React.FC = () => {
     dispatch(updateApplicationDate(value));
   };
 
-  const handleOperatorChange = (value: string) => {
-    dispatch(updateOperator(value));
+  const handleOperatorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const operator = operators.find(op => op.id === event.target.value);
+    if (operator) {
+      dispatch(updateOperator(operator));
+    }
   };
 
   const handleCropChange = (value: string) => {
@@ -76,14 +85,14 @@ const RecipeInfo: React.FC = () => {
         <Text fontSize="xs">Operator:</Text>
         <Select
           name="operator"
-          value={formData.operator}
-          onChange={(e) => handleOperatorChange(e.target.value)}
+          value={selectedOperator.id}
+          onChange={handleOperatorChange}
           placeholder="Select operator"
           size="xs"
         >
-          {["askold", "john_doe", "jane_smith"].map((operator) => (
-            <option key={operator} value={operator}>
-              {operator}
+          {operators.map((operator) => (
+            <option key={operator.id} value={operator.id}>
+              {operator.name} {operator.surname}
             </option>
           ))}
         </Select>
