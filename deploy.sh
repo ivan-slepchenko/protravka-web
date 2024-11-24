@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Set the environment to production
+export NODE_ENV=production
+
 # Azure login
 az login
 
