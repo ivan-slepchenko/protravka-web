@@ -12,7 +12,7 @@ interface OrderInfoProps {
 
 const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
   const dispatch: AppDispatch = useDispatch();
-  const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.lotNumber === orderId));
+  const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === orderId));
 
   if (!order) return null;
 
@@ -83,7 +83,7 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {order.productDetails
+                  {order.productDetails && order.productDetails
                     .sort((a, b) => a.index - b.index) // Sort by index
                     .map((product, index) => (
                       <Tr key={index}>

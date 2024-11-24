@@ -16,6 +16,7 @@ const Board: React.FC = () => {
     }, [dispatch]);
 
     const handleOrderClick = (orderId: string) => {
+        console.log('Order clicked:', orderId);
         setSelectedOrder(orderId);
     };
 
@@ -28,8 +29,8 @@ const Board: React.FC = () => {
             {columns.map((column) => (
                 <div key={column} style={{ width: '200px', border: '1px solid #ccc', borderRadius: '4px', padding: '10px' }}>
                     <h3>{column}</h3>
-                    {orders.filter(order => order.status === column).map(order => (
-                        <div key={order.lotNumber} style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '5px', marginBottom: '5px', cursor: 'pointer' }} onClick={() => handleOrderClick(order.lotNumber)}>
+                    {orders.filter(order => order.status === column).map((order, index) => (
+                        <div key={index} style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '5px', marginBottom: '5px', cursor: 'pointer' }} onClick={() => handleOrderClick(order.id)}>
                             <p><strong>Lot Number:</strong> {order.lotNumber}</p>
                             <p><strong>Crop:</strong> {order.crop}</p>
                             <p><strong>Variety:</strong> {order.variety}</p>
