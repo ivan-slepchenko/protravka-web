@@ -42,7 +42,7 @@ const validationSchema = Yup.object().shape({
   packaging: Yup.string().required("Packaging is required"),
   productDetails: Yup.array().of(
     Yup.object().shape({
-      name: Yup.string().required("Product Name is required"),
+      productId: Yup.string().required("Product is required"),
       density: Yup.number().positive("Density must be positive").required("Density is required"),
       rate: Yup.number().positive("Rate must be positive").required("Rate is required"),
       rateType: Yup.mixed<RateType>().oneOf(Object.values(RateType)).required("Rate Type is required"),
@@ -257,7 +257,7 @@ const SeedTreatmentForm: React.FC = () => {
 
             {/* Packaging Options */}
             <Box mb="2">
-              <Text fontSize="xs" mb="1">How do you want to pack it?</Text>
+              <Text fontSize="xs" mb="1">Bag size:</Text>
               <HStack>
                 <InputGroup size="xs">
                   <Field
@@ -304,14 +304,13 @@ const SeedTreatmentForm: React.FC = () => {
                           <Text fontSize="xs">Product name:</Text>
                           <Field
                             as={Select}
-                            name={`productDetails.${index}.name`}
+                            name={`productDetails.${index}.productId`}
                             placeholder="Select product"
                             size="xs"
                             focusBorderColor="transparent"
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                               const selectedProduct = products.find(product => product.id === e.target.value);
                               if (selectedProduct) {
-                                props.setFieldValue(`productDetails.${index}.name`, selectedProduct.name);
                                 props.setFieldValue(`productDetails.${index}.productId`, selectedProduct.id);
                                 dispatch(updateProductDetail({ ...props.values.productDetails[index], productId: selectedProduct.id }));
                               }
