@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Operator } from './operatorsSlice';
+import { Crop, Variety } from './cropsSlice';
 
 export interface ProductDetail {
   id: string;
@@ -25,8 +26,8 @@ export interface Order {
   recipeDate: string;
   applicationDate: string;
   operator: Operator;
-  crop: string;
-  variety: string;
+  crop: Crop;
+  variety: Variety;
   lotNumber: string;
   tkw: number;
   quantity: number;
@@ -41,8 +42,8 @@ export const createNewEmptyOrder: () => Order = () => ({
   recipeDate: new Date().toISOString().split("T")[0],
   applicationDate: new Date().toISOString().split("T")[0],
   operator: { id: '', name: '', surname: '' },
-  crop: "",
-  variety: "",
+  crop: { id: '', name: '', varieties: [] },
+  variety: { id: '', name: '' },
   lotNumber: "",
   tkw: 0,
   quantity: 0,
@@ -89,10 +90,10 @@ const newOrderSlice = createSlice({
     updateOperator: (state, action: PayloadAction<Operator>) => {
       state.operator = action.payload;
     },
-    updateCrop: (state, action: PayloadAction<string>) => {
+    updateCrop: (state, action: PayloadAction<Crop>) => {
       state.crop = action.payload;
     },
-    updateVariety: (state, action: PayloadAction<string>) => {
+    updateVariety: (state, action: PayloadAction<Variety>) => {
       state.variety = action.payload;
     },
     updateLotNumber: (state, action: PayloadAction<string>) => {

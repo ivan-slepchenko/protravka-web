@@ -43,11 +43,11 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
               </Box>
               <Box>
                 <Text fontSize="xs">Crop:</Text>
-                <Text>{order.crop}</Text>
+                <Text>{order.crop.name}</Text>
               </Box>
               <Box>
                 <Text fontSize="xs">Variety:</Text>
-                <Text>{order.variety}</Text>
+                <Text>{order.variety.name}</Text>
               </Box>
               <Box>
                 <Text fontSize="xs">Lot Number:</Text>

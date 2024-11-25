@@ -22,15 +22,20 @@ import {
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchOperators } from "../store/operatorsSlice";
+import { fetchCrops } from "../store/cropsSlice";
 
 const SeedTreatmentForm: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const formData = useSelector((state: RootState) => state.newOrder);
   const operators = useSelector((state: RootState) => state.operators.operators);
   const selectedOperator = useSelector((state: RootState) => state.newOrder.operator);
+  const crops = useSelector((state: RootState) => state.crops.crops);
+  const selectedCrop = useSelector((state: RootState) => state.newOrder.crop);
+  const selectedVariety = useSelector((state: RootState) => state.newOrder.variety);
 
   useEffect(() => {
     dispatch(fetchOperators());
+    dispatch(fetchCrops());
   }, [dispatch]);
 
   const handleSave = () => {
@@ -62,12 +67,18 @@ const SeedTreatmentForm: React.FC = () => {
     }
   };
 
-  const handleCropChange = (value: string) => {
-    dispatch(updateCrop(value));
+  const handleCropChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const crop = crops.find(c => c.id === event.target.value);
+    if (crop) {
+      dispatch(updateCrop(crop));
+    }
   };
 
-  const handleVarietyChange = (value: string) => {
-    dispatch(updateVariety(value));
+  const handleVarietyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const variety = selectedCrop.varieties.find(v => v.id === event.target.value);
+    if (variety) {
+      dispatch(updateVariety(variety));
+    }
   };
 
   const handleLotNumberChange = (value: string) => {
@@ -143,26 +154,33 @@ const SeedTreatmentForm: React.FC = () => {
           <Text fontSize="xs">Crop:</Text>
           <Select
             name="crop"
-            value={formData.crop}
-            onChange={(e) => handleCropChange(e.target.value)}
+            value={selectedCrop?.id || ""}
+            onChange={handleCropChange}
             placeholder="Select crop"
             size="xs"
           >
-            {["corn", "wheat", "soybean"].map((crop) => (
-              <option key={crop} value={crop}>
-                {crop}
+            {crops.map((crop) => (
+              <option key={crop.id} value={crop.id}>
+                {crop.name}
               </option>
             ))}
           </Select>
         </Box>
         <Box>
           <Text fontSize="xs">Variety:</Text>
-          <Input
+          <Select
             name="variety"
-            value={formData.variety}
-            onChange={(e) => handleVarietyChange(e.target.value)}
+            value={selectedVariety?.id || ""}
+            onChange={handleVarietyChange}
+            placeholder="Select variety"
             size="xs"
-          />
+          >
+            {selectedCrop?.varieties.map((variety) => (
+              <option key={variety.id} value={variety.id}>
+                {variety.name}
+              </option>
+            ))}
+          </Select>
         </Box>
         <Box>
           <Text fontSize="xs">Lot Number:</Text>
