@@ -1,6 +1,6 @@
 {
   "name": "avimate-web",
-  "version": "0.2.20",
+  "version": "0.2.21",
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
