@@ -27,23 +27,23 @@ import { fetchOperators } from "../store/operatorsSlice";
 import { fetchCrops } from "../store/cropsSlice";
 
 const validationSchema = Yup.object().shape({
-  recipeDate: Yup.date().required("Required"),
-  applicationDate: Yup.date().required("Required"),
-  operatorId: Yup.string().required("Required"),
-  cropId: Yup.string().required("Required"),
-  varietyId: Yup.string().required("Required"),
-  lotNumber: Yup.string().required("Required"),
-  tkw: Yup.number().positive("Must be positive").required("Required"),
-  quantity: Yup.number().positive("Must be positive").required("Required"),
-  bagSize: Yup.number().positive("Must be positive").required("Required"),
-  packaging: Yup.string().required("Required"),
+  recipeDate: Yup.date().required("Recipe Date is required"),
+  applicationDate: Yup.date().required("Application Date is required"),
+  operatorId: Yup.string().required("Operator is required"),
+  cropId: Yup.string().required("Crop is required"),
+  varietyId: Yup.string().required("Variety is required"),
+  lotNumber: Yup.string().required("Lot Number is required"),
+  tkw: Yup.number().positive("TKW must be positive").required("TKW is required"),
+  quantity: Yup.number().positive("Quantity must be positive").required("Quantity is required"),
+  bagSize: Yup.number().positive("Bag Size must be positive").required("Bag Size is required"),
+  packaging: Yup.string().required("Packaging is required"),
   productDetails: Yup.array().of(
     Yup.object().shape({
-      name: Yup.string().required("Required"),
-      density: Yup.number().positive("Must be positive").required("Required"),
-      rate: Yup.number().positive("Must be positive").required("Required"),
-      rateType: Yup.string().required("Required"),
-      rateUnit: Yup.string().required("Required"),
+      name: Yup.string().required("Product Name is required"),
+      density: Yup.number().positive("Density must be positive").required("Density is required"),
+      rate: Yup.number().positive("Rate must be positive").required("Rate is required"),
+      rateType: Yup.string().required("Rate Type is required"),
+      rateUnit: Yup.string().required("Rate Unit is required"),
     })
   ).min(1, "At least one product is required")
 });
@@ -73,17 +73,19 @@ const SeedTreatmentForm: React.FC = () => {
     dispatch(fetchCrops());
   }, [dispatch]);
 
-  const handleSave = (values: NewOrder) => {
+  const handleSave = (values: NewOrder, resetForm: () => void) => {
     dispatch(createOrder(values));
     dispatch(fetchOrders());
     dispatch(setOrderState(createNewEmptyOrder()));
+    resetForm();
   };
 
-  const handleClearAll = () => {
+  const handleClearAll = (resetForm: () => void) => {
     dispatch(setOrderState(createNewEmptyOrder()));
+    resetForm();
   };
 
-  const handleSubmit = (values: NewOrder, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void}) => {
+  const handleSubmit = (values: NewOrder, { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }) => {
     try {
       validationSchema.validateSync(values, { abortEarly: false });
     } catch (error:Yup.ValidationError | any) {
@@ -96,7 +98,7 @@ const SeedTreatmentForm: React.FC = () => {
       setSubmitting(false);
       return;
     }
-    handleSave(values);
+    handleSave(values, resetForm);
     setSubmitting(false);
   };
 
@@ -104,7 +106,7 @@ const SeedTreatmentForm: React.FC = () => {
     <Formik
       initialValues={formData}
       onSubmit={handleSubmit}
-      // enableReinitialize
+      enableReinitialize
     >
        {(props: FormikProps<NewOrder>) => (
         <form onSubmit={props.handleSubmit}>
@@ -399,7 +401,7 @@ const SeedTreatmentForm: React.FC = () => {
 
             {/* Action Buttons */}
             <HStack justifyContent="flex-end" spacing="2" mb="2">
-              <Button colorScheme="yellow" size="xs" onClick={handleClearAll}>Clear All</Button>
+              <Button colorScheme="yellow" size="xs" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
               <Button colorScheme="green" size="xs" type="submit">Done</Button>
             </HStack>
           </Box>
@@ -411,11 +413,11 @@ const SeedTreatmentForm: React.FC = () => {
               <ModalHeader>Form Errors</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-                <ul>
-                  {formErrors.map((error, index) => (
-                    <li key={index}>{error.message}</li>
-                  ))}
-                </ul>
+                {formErrors.map((error, index) => (
+                  <div key={index}>
+                    {error.message}
+                  </div>
+                ))}
               </ModalBody>
             </ModalContent>
           </Modal>
