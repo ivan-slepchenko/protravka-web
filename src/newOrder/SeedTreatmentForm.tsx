@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { Box, Button, HStack, Text, Grid, Input, Select, InputGroup, InputRightElement, Stack, RadioGroup, Radio } from "@chakra-ui/react";
+import * as Yup from "yup";
+import { Box, Button, HStack, Text, Grid, Input, Select, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
+import { Formik, Form, Field, FieldArray } from "formik";
 import {
-  addProductDetail,
   setOrderState,
   createNewEmptyOrder,
   createNewEmptyProduct,
@@ -18,12 +19,33 @@ import {
   updateProductDetail,
   updatePackaging,
   updateBagSize,
-  ProductDetail,
   NewOrder
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchOperators } from "../store/operatorsSlice";
 import { fetchCrops } from "../store/cropsSlice";
+
+const validationSchema = Yup.object().shape({
+  recipeDate: Yup.date().required("Required"),
+  applicationDate: Yup.date().required("Required"),
+  operator: Yup.string().required("Required"),
+  crop: Yup.string().required("Required"),
+  variety: Yup.string().required("Required"),
+  lotNumber: Yup.string().required("Required"),
+  tkw: Yup.number().positive("Must be positive").required("Required"),
+  quantity: Yup.number().positive("Must be positive").required("Required"),
+  bagSize: Yup.number().positive("Must be positive").required("Required"),
+  packaging: Yup.string().required("Required"),
+  productDetails: Yup.array().of(
+    Yup.object().shape({
+      name: Yup.string().required("Required"),
+      density: Yup.number().positive("Must be positive").required("Required"),
+      rate: Yup.number().positive("Must be positive").required("Required"),
+      rateType: Yup.string().required("Required"),
+      rateUnit: Yup.string().required("Required"),
+    })
+  ).min(1, "At least one product is required")
+});
 
 const SeedTreatmentForm: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -39,8 +61,8 @@ const SeedTreatmentForm: React.FC = () => {
     dispatch(fetchCrops());
   }, [dispatch]);
 
-  const handleSave = () => {
-    dispatch(createOrder(formData));
+  const handleSave = (values: NewOrder) => {
+    dispatch(createOrder(values));
     dispatch(fetchOrders());
     dispatch(setOrderState(createNewEmptyOrder()));
   };
@@ -49,292 +71,315 @@ const SeedTreatmentForm: React.FC = () => {
     dispatch(setOrderState(createNewEmptyOrder()));
   };
 
-  const addProduct = () => {
-    dispatch(addProductDetail(createNewEmptyProduct()));
-  };
-
-  const handleRecipeDateChange = (value: string) => {
-    dispatch(updateRecipeDate(value));
-  };
-
-  const handleApplicationDateChange = (value: string) => {
-    dispatch(updateApplicationDate(value));
-  };
-
-  const handleOperatorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const operator = operators.find(op => op.id === event.target.value);
-    if (operator) {
-      dispatch(updateOperator(operator));
-    }
-  };
-
-  const handleCropChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const crop = crops.find(c => c.id === event.target.value);
-    if (crop) {
-      dispatch(updateCrop(crop));
-    }
-  };
-
-  const handleVarietyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if(selectedCrop === undefined) {
-      throw new Error("Crop is not selected");
-    }
-    const variety = selectedCrop.varieties.find(v => v.id === event.target.value);
-    if (variety) {
-      dispatch(updateVariety(variety));
-    }
-  };
-
-  const handleLotNumberChange = (value: string) => {
-    dispatch(updateLotNumber(value));
-  };
-
-  const handleTkwChange = (value: number) => {
-    dispatch(updateTkw(value));
-  };
-
-  const handleQuantityChange = (value: number) => {
-    dispatch(updateQuantity(value));
-  };
-
-  const handleProductChange = (index: number, name: keyof ProductDetail, value: string) => {
-    const updatedProduct = { ...formData.productDetails[index], [name]: value };
-    dispatch(updateProductDetail(updatedProduct));
-  };
-
-  const handlePackagingChange = (value: string) => {
-    dispatch(updatePackaging(value));
-  };
-
-  const handleBagSizeChange = (value: number) => {
-    dispatch(updateBagSize(value));
-  };
-
   return (
-    <Box width="800px" mx="auto" p="2" bg="white" boxShadow="md" borderRadius="md">
-      <Text fontSize="lg" fontWeight="bold" textAlign="center" mb="1">
-        Remington Seeds
-      </Text>
+    <Formik
+      initialValues={formData}
+      validationSchema={validationSchema}
+      onSubmit={handleSave}
+      enableReinitialize
+    >
+      {({ values, errors, touched, handleChange, handleBlur, setFieldValue }) => (
+        <Form>
+          <Box width="800px" mx="auto" p="2" bg="white" boxShadow="md" borderRadius="md">
+            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb="1">
+              Remington Seeds
+            </Text>
 
-      {/* Recipe Info */}
-      <Grid templateColumns="repeat(2, 1fr)" gap="1" mb="2">
-        <Box>
-          <Text fontSize="xs">Recipe creation date:</Text>
-          <Input
-            type="date"
-            name="recipeDate"
-            value={formData.recipeDate}
-            onChange={(e) => handleRecipeDateChange(e.target.value)}
-            size="xs"
-          />
-        </Box>
-        <Box>
-          <Text fontSize="xs">Application date:</Text>
-          <Input
-            type="date"
-            name="applicationDate"
-            value={formData.applicationDate}
-            onChange={(e) => handleApplicationDateChange(e.target.value)}
-            size="xs"
-          />
-        </Box>
-        <Box>
-          <Text fontSize="xs">Operator:</Text>
-          <Select
-            name="operator"
-            value={selectedOperator?.id ?? undefined}
-            onChange={handleOperatorChange}
-            placeholder="Select operator"
-            size="xs"
-          >
-            {operators.map((operator) => (
-              <option key={operator.id} value={operator.id}>
-                {operator.name} {operator.surname}
-              </option>
-            ))}
-          </Select>
-        </Box>
-        <Box>
-          <Text fontSize="xs">Crop:</Text>
-          <Select
-            name="crop"
-            value={selectedCrop?.id || ""}
-            onChange={handleCropChange}
-            placeholder="Select crop"
-            size="xs"
-          >
-            {crops.map((crop) => (
-              <option key={crop.id} value={crop.id}>
-                {crop.name}
-              </option>
-            ))}
-          </Select>
-        </Box>
-        <Box>
-          <Text fontSize="xs">Variety:</Text>
-          <Select
-            name="variety"
-            value={selectedVariety?.id || ""}
-            onChange={handleVarietyChange}
-            disabled={selectedCrop === undefined}
-            placeholder={selectedCrop === undefined ? "Select crop first" : "Select variety"}
-            size="xs"
-          >
-            {selectedCrop?.varieties.map((variety) => (
-              <option key={variety.id} value={variety.id}>
-                {variety.name}
-              </option>
-            ))}
-          </Select>
-        </Box>
-        <Box>
-          <Text fontSize="xs">Lot Number:</Text>
-          <Input
-            name="lotNumber"
-            value={formData.lotNumber}
-            onChange={(e) => handleLotNumberChange(e.target.value)}
-            size="xs"
-          />
-        </Box>
-        <Box>
-          <Text fontSize="xs">TKW (g):</Text>
-          <Input
-            name="tkw"
-            value={formData.tkw}
-            onChange={(e) => handleTkwChange(parseFloat(e.target.value))}
-            size="xs"
-          />
-        </Box>
-        <Box>
-          <Text fontSize="xs">Quantity to treat (kg):</Text>
-          <Input
-            name="quantity"
-            value={formData.quantity}
-            onChange={(e) => handleQuantityChange(parseFloat(e.target.value))}
-            size="xs"
-          />
-        </Box>
-      </Grid>
-
-      {/* Packaging Options */}
-      <Box mb="2">
-        <Text fontSize="xs" mb="1">How do you want to pack it?</Text>
-        <HStack>
-          <InputGroup size="xs">
-            <Input
-              name="bagSize"
-              value={formData.bagSize}
-              onChange={(e) => handleBagSizeChange(parseFloat(e.target.value))}
-              placeholder="80"
-            />
-            <InputRightElement width="auto">
-              <Select
-                name="packaging"
-                value={formData.packaging}
-                onChange={(e) => handlePackagingChange(e.target.value)}
-                size="xs"
-                fontWeight="bold"
-                bg="gray.50"
-                border="1px solid"
-                borderColor="gray.300"
-                focusBorderColor="transparent"
-              >
-                <option value="inSeeds">in s/units</option>
-                <option value="inKg">in kg</option>
-              </Select>
-            </InputRightElement>
-          </InputGroup>
-        </HStack>
-      </Box>
-
-      {/* Product Details */}
-      {formData.productDetails.map((productDetail, index) => (
-        <Box key={index} border="1px solid" borderColor="gray.200" p="2" borderRadius="md" mb="2">
-          <Grid w="full" templateColumns="2fr 1fr 2fr" gap="1" alignItems="center" mb="2">
-            <Box>
-              <Text fontSize="xs">Product name:</Text>
-              <Select
-                name={`productName${index}`}
-                value={productDetail.name}
-                onChange={(e) => handleProductChange(index, 'name', e.target.value)}
-                placeholder="Select product"
-                size="xs"
-                focusBorderColor="transparent"
-              >
-                <option value="force-zea-260-fs">Force Zea 260 FS</option>
-                <option value="product-2">Product 2</option>
-                <option value="product-3">Product 3</option>
-              </Select>
-            </Box>
-            <Box>
-              <Text fontSize="xs">Density (g/ml):</Text>
-              <Input
-                name={`density${index}`}
-                value={productDetail.density}
-                onChange={(e) => handleProductChange(index, 'density', e.target.value)}
-                size="xs"
-              />
-            </Box>
-            <Box>
-              <Text fontSize="xs">
-                {productDetail.rateType === "unit" ? `Rate per unit (${productDetail.rateUnit}):` : `Rate per 100kg (${productDetail.rateUnit}):`}
-              </Text>
-              <InputGroup size="xs">
-                <Input
-                  name={`rate${productDetail.rateType}${productDetail.rateUnit}${index}`}
-                  value={productDetail.rate}
-                  onChange={(e) => handleProductChange(index, 'rate', e.target.value)}
-                  placeholder="Enter rate"
+            {/* Recipe Info */}
+            <Grid templateColumns="repeat(2, 1fr)" gap="1" mb="2">
+              <Box>
+                <Text fontSize="xs">Recipe creation date:</Text>
+                <Field
+                  as={Input}
+                  type="date"
+                  name="recipeDate"
+                  size="xs"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    handleChange(e);
+                    dispatch(updateRecipeDate(e.target.value));
+                  }}
                 />
-                <InputRightElement width="auto">
-                  <HStack spacing="0">
-                    <Select
-                      width="110px"
-                      name={`rateType${index}`}
-                      value={productDetail.rateType}
-                      onChange={(e) => handleProductChange(index, 'rateType', e.target.value)}
-                      size="xs"
-                      fontWeight="bold"
-                      bg="gray.50"
-                      border="1px solid"
-                      borderColor="gray.300"
-                      focusBorderColor="transparent"
-                    >
-                      <option value="unit">per unit</option>
-                      <option value="100kg">per 100kg</option>
-                    </Select>
-                    <Select
-                      width="110px"
-                      name={`rateUnit${index}`}
-                      value={productDetail.rateUnit}
-                      onChange={(e) => handleProductChange(index, 'rateUnit', e.target.value)}
-                      size="xs"
-                      fontWeight="bold"
-                      bg="gray.50"
-                      border="1px solid"
-                      borderColor="gray.300"
-                      focusBorderColor="transparent"
-                    >
-                      <option value="ml">ml</option>
-                      <option value="g">g</option>
-                    </Select>
-                  </HStack>
-                </InputRightElement>
-              </InputGroup>
-            </Box>
-          </Grid>
-        </Box>
-      ))}
-      <HStack>
-        <Button colorScheme="blue" size="xs" onClick={addProduct} ml="auto" mb={2}>+ Add Product</Button>
-      </HStack>
+              </Box>
+              <Box>
+                <Text fontSize="xs">Application date:</Text>
+                <Field
+                  as={Input}
+                  type="date"
+                  name="applicationDate"
+                  size="xs"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    handleChange(e);
+                    dispatch(updateApplicationDate(e.target.value));
+                  }}
+                />
+              </Box>
+              <Box>
+                <Text fontSize="xs">Operator:</Text>
+                <Field
+                  as={Select}
+                  name="operator"
+                  placeholder="Select operator"
+                  size="xs"
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                    handleChange(e);
+                    const operator = operators.find(op => op.id === e.target.value);
+                    if (operator) {
+                      dispatch(updateOperator(operator));
+                    }
+                  }}
+                >
+                  {operators.map((operator) => (
+                    <option key={operator.id} value={operator.id}>
+                      {operator.name} {operator.surname}
+                    </option>
+                  ))}
+                </Field>
+              </Box>
+              <Box>
+                <Text fontSize="xs">Crop:</Text>
+                <Field
+                  as={Select}
+                  name="crop"
+                  placeholder="Select crop"
+                  size="xs"
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                    handleChange(e);
+                    const crop = crops.find(c => c.id === e.target.value);
+                    if (crop) {
+                      dispatch(updateCrop(crop));
+                    }
+                  }}
+                >
+                  {crops.map((crop) => (
+                    <option key={crop.id} value={crop.id}>
+                      {crop.name}
+                    </option>
+                  ))}
+                </Field>
+              </Box>
+              <Box>
+                <Text fontSize="xs">Variety:</Text>
+                <Field
+                  as={Select}
+                  name="variety"
+                  placeholder={selectedCrop === undefined ? "Select crop first" : "Select variety"}
+                  size="xs"
+                  disabled={selectedCrop === undefined}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                    handleChange(e);
+                    if (selectedCrop === undefined) {
+                      throw new Error("Crop is not selected");
+                    }
+                    const variety = selectedCrop.varieties.find(v => v.id === e.target.value);
+                    if (variety) {
+                      dispatch(updateVariety(variety));
+                    }
+                  }}
+                >
+                  {selectedCrop?.varieties.map((variety) => (
+                    <option key={variety.id} value={variety.id}>
+                      {variety.name}
+                    </option>
+                  ))}
+                </Field>
+              </Box>
+              <Box>
+                <Text fontSize="xs">Lot Number:</Text>
+                <Field
+                  as={Input}
+                  name="lotNumber"
+                  size="xs"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    handleChange(e);
+                    dispatch(updateLotNumber(e.target.value));
+                  }}
+                />
+              </Box>
+              <Box>
+                <Text fontSize="xs">TKW (g):</Text>
+                <Field
+                  as={Input}
+                  name="tkw"
+                  size="xs"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    handleChange(e);
+                    dispatch(updateTkw(parseFloat(e.target.value)));
+                  }}
+                />
+              </Box>
+              <Box>
+                <Text fontSize="xs">Quantity to treat (kg):</Text>
+                <Field
+                  as={Input}
+                  name="quantity"
+                  size="xs"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    handleChange(e);
+                    dispatch(updateQuantity(parseFloat(e.target.value)));
+                  }}
+                />
+              </Box>
+            </Grid>
 
-      {/* Action Buttons */}
-      <HStack justifyContent="flex-end" spacing="2" mb="2">
-        <Button colorScheme="yellow" size="xs" onClick={handleClearAll}>Clear All</Button>
-        <Button colorScheme="green" size="xs" onClick={handleSave}>Done</Button>
-      </HStack>
-    </Box>
+            {/* Packaging Options */}
+            <Box mb="2">
+              <Text fontSize="xs" mb="1">How do you want to pack it?</Text>
+              <HStack>
+                <InputGroup size="xs">
+                  <Field
+                    as={Input}
+                    name="bagSize"
+                    placeholder="80"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      handleChange(e);
+                      dispatch(updateBagSize(parseFloat(e.target.value)));
+                    }}
+                  />
+                  <InputRightElement width="auto">
+                    <Field
+                      as={Select}
+                      name="packaging"
+                      size="xs"
+                      fontWeight="bold"
+                      bg="gray.50"
+                      border="1px solid"
+                      borderColor="gray.300"
+                      focusBorderColor="transparent"
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        handleChange(e);
+                        dispatch(updatePackaging(e.target.value));
+                      }}
+                    >
+                      <option value="inSeeds">in s/units</option>
+                      <option value="inKg">in kg</option>
+                    </Field>
+                  </InputRightElement>
+                </InputGroup>
+              </HStack>
+            </Box>
+
+            {/* Product Details */}
+            <FieldArray name="productDetails">
+              {({ push, remove }) => (
+                <>
+                  {values.productDetails.map((productDetail, index) => (
+                    <Box key={index} border="1px solid" borderColor="gray.200" p="2" borderRadius="md" mb="2">
+                      <Grid w="full" templateColumns="2fr 1fr 2fr" gap="1" alignItems="center" mb="2">
+                        <Box>
+                          <Text fontSize="xs">Product name:</Text>
+                          <Field
+                            as={Select}
+                            name={`productDetails.${index}.name`}
+                            placeholder="Select product"
+                            size="xs"
+                            focusBorderColor="transparent"
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                              handleChange(e);
+                              const updatedProduct = { ...values.productDetails[index], name: e.target.value };
+                              setFieldValue(`productDetails.${index}`, updatedProduct);
+                              dispatch(updateProductDetail(updatedProduct));
+                            }}
+                          >
+                            <option value="force-zea-260-fs">Force Zea 260 FS</option>
+                            <option value="product-2">Product 2</option>
+                            <option value="product-3">Product 3</option>
+                          </Field>
+                        </Box>
+                        <Box>
+                          <Text fontSize="xs">Density (g/ml):</Text>
+                          <Field
+                            as={Input}
+                            name={`productDetails.${index}.density`}
+                            size="xs"
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                              handleChange(e);
+                              const updatedProduct = { ...values.productDetails[index], density: parseInt(e.target.value) };
+                              setFieldValue(`productDetails.${index}`, updatedProduct);
+                              dispatch(updateProductDetail(updatedProduct));
+                            }}
+                          />
+                        </Box>
+                        <Box>
+                          <Text fontSize="xs">
+                            {productDetail.rateType === "unit" ? `Rate per unit (${productDetail.rateUnit}):` : `Rate per 100kg (${productDetail.rateUnit}):`}
+                          </Text>
+                          <InputGroup size="xs">
+                            <Field
+                              as={Input}
+                              name={`productDetails.${index}.rate`}
+                              placeholder="Enter rate"
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                handleChange(e);
+                                const updatedProduct = { ...values.productDetails[index], rate: parseInt(e.target.value) };
+                                setFieldValue(`productDetails.${index}`, updatedProduct);
+                                dispatch(updateProductDetail(updatedProduct));
+                              }}
+                            />
+                            <InputRightElement width="auto">
+                              <HStack spacing="0">
+                                <Field
+                                  as={Select}
+                                  width="110px"
+                                  name={`productDetails.${index}.rateType`}
+                                  size="xs"
+                                  fontWeight="bold"
+                                  bg="gray.50"
+                                  border="1px solid"
+                                  borderColor="gray.300"
+                                  focusBorderColor="transparent"
+                                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                    handleChange(e);
+                                    const updatedProduct = { ...values.productDetails[index], rateType: e.target.value };
+                                    setFieldValue(`productDetails.${index}`, updatedProduct);
+                                    dispatch(updateProductDetail(updatedProduct));
+                                  }}
+                                >
+                                  <option value="unit">per unit</option>
+                                  <option value="100kg">per 100kg</option>
+                                </Field>
+                                <Field
+                                  as={Select}
+                                  width="110px"
+                                  name={`productDetails.${index}.rateUnit`}
+                                  size="xs"
+                                  fontWeight="bold"
+                                  bg="gray.50"
+                                  border="1px solid"
+                                  borderColor="gray.300"
+                                  focusBorderColor="transparent"
+                                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                    handleChange(e);
+                                    const updatedProduct = { ...values.productDetails[index], rateUnit: e.target.value };
+                                    setFieldValue(`productDetails.${index}`, updatedProduct);
+                                    dispatch(updateProductDetail(updatedProduct));
+                                  }}
+                                >
+                                  <option value="ml">ml</option>
+                                  <option value="g">g</option>
+                                </Field>
+                              </HStack>
+                            </InputRightElement>
+                          </InputGroup>
+                        </Box>
+                      </Grid>
+                    </Box>
+                  ))}
+                  <HStack>
+                    <Button colorScheme="blue" size="xs" onClick={() => push(createNewEmptyProduct())} ml="auto" mb={2}>+ Add Product</Button>
+                  </HStack>
+                </>
+              )}
+            </FieldArray>
+
+            {/* Action Buttons */}
+            <HStack justifyContent="flex-end" spacing="2" mb="2">
+              <Button colorScheme="yellow" size="xs" onClick={handleClearAll}>Clear All</Button>
+              <Button colorScheme="green" size="xs" type="submit">Done</Button>
+            </HStack>
+          </Box>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
