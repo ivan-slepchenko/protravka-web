@@ -41,9 +41,9 @@ export interface NewOrder {
   productDetails: ProductDetail[];
   recipeDate: string;
   applicationDate: string;
-  operator?: Operator;
-  crop?: Crop;
-  variety?: Variety;
+  operatorId?: string;
+  cropId?: string;
+  varietyId?: string;
   lotNumber: string;
   tkw: number;
   quantity: number;
@@ -57,9 +57,9 @@ export const createNewEmptyOrder: () => NewOrder = () => ({
   productDetails: [],
   recipeDate: new Date().toISOString().split("T")[0],
   applicationDate: new Date().toISOString().split("T")[0],
-  operator: undefined,
-  crop: undefined,
-  variety: undefined,
+  operatorId: undefined,
+  cropId: undefined,
+  varietyId: undefined,
   lotNumber: "",
   tkw: 0,
   quantity: 0,
@@ -103,14 +103,14 @@ const newOrderSlice = createSlice({
     updateApplicationDate: (state, action: PayloadAction<string>) => {
       state.applicationDate = action.payload;
     },
-    updateOperator: (state, action: PayloadAction<Operator>) => {
-      state.operator = action.payload;
+    updateOperator: (state, action: PayloadAction<string>) => {
+      state.operatorId = action.payload;
     },
-    updateCrop: (state, action: PayloadAction<Crop>) => {
-      state.crop = action.payload;
+    updateCrop: (state, action: PayloadAction<string>) => {
+      state.cropId = action.payload;
     },
-    updateVariety: (state, action: PayloadAction<Variety>) => {
-      state.variety = action.payload;
+    updateVariety: (state, action: PayloadAction<string>) => {
+      state.varietyId = action.payload;
     },
     updateLotNumber: (state, action: PayloadAction<string>) => {
       state.lotNumber = action.payload;

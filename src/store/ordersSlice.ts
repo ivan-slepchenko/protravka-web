@@ -19,7 +19,7 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
 });
 
 export const createOrder = createAsyncThunk('orders/createOrder', async (order: NewOrder) => {
-  if (!order.operator || !order.crop || !order.variety) {
+  if (!order.operatorId || !order.cropId || !order.varietyId) {
     throw new Error('Operator, crop, and variety must be defined');
   }
   console.log('Creating order', order);

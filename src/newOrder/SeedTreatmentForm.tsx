@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import { Box, Button, HStack, Text, Grid, Input, Select, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Box, Button, HStack, Text, Grid, Input, Select, InputGroup, InputRightElement, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, Field, FieldArray, FormikErrors, FormikTouched, FormikProps } from "formik";
 import {
   setOrderState,
   createNewEmptyOrder,
@@ -19,7 +19,8 @@ import {
   updateProductDetail,
   updatePackaging,
   updateBagSize,
-  NewOrder
+  NewOrder,
+  ProductDetail
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchOperators } from "../store/operatorsSlice";
@@ -28,9 +29,9 @@ import { fetchCrops } from "../store/cropsSlice";
 const validationSchema = Yup.object().shape({
   recipeDate: Yup.date().required("Required"),
   applicationDate: Yup.date().required("Required"),
-  operator: Yup.string().required("Required"),
-  crop: Yup.string().required("Required"),
-  variety: Yup.string().required("Required"),
+  operatorId: Yup.string().required("Required"),
+  cropId: Yup.string().required("Required"),
+  varietyId: Yup.string().required("Required"),
   lotNumber: Yup.string().required("Required"),
   tkw: Yup.number().positive("Must be positive").required("Required"),
   quantity: Yup.number().positive("Must be positive").required("Required"),
@@ -47,14 +48,25 @@ const validationSchema = Yup.object().shape({
   ).min(1, "At least one product is required")
 });
 
+const hasProductDetailError = (errors: FormikErrors<NewOrder>, touched: FormikTouched<NewOrder>, index: number, field: keyof ProductDetail): boolean => {
+  if(!touched.productDetails?.[index]?.rateType) return false; 
+  if (Array.isArray(errors.productDetails)) {
+    const productDetailErrors = errors.productDetails[index];
+    if (productDetailErrors && typeof productDetailErrors === 'object') {
+      return !!productDetailErrors[field];
+    }
+  }
+  return false;
+};
+
 const SeedTreatmentForm: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const formData = useSelector((state: RootState) => state.newOrder as NewOrder);
   const operators = useSelector((state: RootState) => state.operators.operators);
-  const selectedOperator = useSelector((state: RootState) => state.newOrder.operator);
   const crops = useSelector((state: RootState) => state.crops.crops);
-  const selectedCrop = useSelector((state: RootState) => state.newOrder.crop);
-  const selectedVariety = useSelector((state: RootState) => state.newOrder.variety);
+  const selectedCropId = useSelector((state: RootState) => state.newOrder.cropId);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
 
   useEffect(() => {
     dispatch(fetchOperators());
@@ -71,15 +83,31 @@ const SeedTreatmentForm: React.FC = () => {
     dispatch(setOrderState(createNewEmptyOrder()));
   };
 
+  const handleSubmit = (values: NewOrder, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void}) => {
+    try {
+      validationSchema.validateSync(values, { abortEarly: false });
+    } catch (error:Yup.ValidationError | any) {
+      if (error.name !== "ValidationError") {
+        throw error;
+      }
+
+      setFormErrors((error as Yup.ValidationError).inner);
+      onOpen();
+      setSubmitting(false);
+      return;
+    }
+    handleSave(values);
+    setSubmitting(false);
+  };
+
   return (
     <Formik
       initialValues={formData}
-      validationSchema={validationSchema}
-      onSubmit={handleSave}
-      enableReinitialize
+      onSubmit={handleSubmit}
+      // enableReinitialize
     >
-      {({ values, errors, touched, handleChange, handleBlur, setFieldValue }) => (
-        <Form>
+       {(props: FormikProps<NewOrder>) => (
+        <form onSubmit={props.handleSubmit}>
           <Box width="800px" mx="auto" p="2" bg="white" boxShadow="md" borderRadius="md">
             <Text fontSize="lg" fontWeight="bold" textAlign="center" mb="1">
               Remington Seeds
@@ -95,9 +123,10 @@ const SeedTreatmentForm: React.FC = () => {
                   name="recipeDate"
                   size="xs"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    handleChange(e);
+                    props.handleChange(e);
                     dispatch(updateRecipeDate(e.target.value));
                   }}
+                  borderColor={props.errors.recipeDate && props.touched.recipeDate ? "red.500" : "gray.300"}
                 />
               </Box>
               <Box>
@@ -108,25 +137,24 @@ const SeedTreatmentForm: React.FC = () => {
                   name="applicationDate"
                   size="xs"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    handleChange(e);
+                    props.handleChange(e);
                     dispatch(updateApplicationDate(e.target.value));
                   }}
+                  borderColor={props.errors.applicationDate && props.touched.applicationDate ? "red.500" : "gray.300"}
                 />
               </Box>
               <Box>
                 <Text fontSize="xs">Operator:</Text>
                 <Field
                   as={Select}
-                  name="operator"
+                  name="operatorId"
                   placeholder="Select operator"
                   size="xs"
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                    handleChange(e);
-                    const operator = operators.find(op => op.id === e.target.value);
-                    if (operator) {
-                      dispatch(updateOperator(operator));
-                    }
+                    props.handleChange(e);
+                    dispatch(updateOperator(e.target.value));
                   }}
+                  borderColor={props.errors.operatorId && props.touched.operatorId ? "red.500" : "gray.300"}
                 >
                   {operators.map((operator) => (
                     <option key={operator.id} value={operator.id}>
@@ -139,16 +167,14 @@ const SeedTreatmentForm: React.FC = () => {
                 <Text fontSize="xs">Crop:</Text>
                 <Field
                   as={Select}
-                  name="crop"
+                  name="cropId"
                   placeholder="Select crop"
                   size="xs"
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                    handleChange(e);
-                    const crop = crops.find(c => c.id === e.target.value);
-                    if (crop) {
-                      dispatch(updateCrop(crop));
-                    }
+                    props.handleChange(e);
+                    dispatch(updateCrop(e.target.value));
                   }}
+                  borderColor={props.errors.cropId && props.touched.cropId ? "red.500" : "gray.300"}
                 >
                   {crops.map((crop) => (
                     <option key={crop.id} value={crop.id}>
@@ -161,22 +187,20 @@ const SeedTreatmentForm: React.FC = () => {
                 <Text fontSize="xs">Variety:</Text>
                 <Field
                   as={Select}
-                  name="variety"
-                  placeholder={selectedCrop === undefined ? "Select crop first" : "Select variety"}
+                  name="varietyId"
+                  placeholder={selectedCropId === undefined ? "Select crop first" : "Select variety"}
                   size="xs"
-                  disabled={selectedCrop === undefined}
+                  disabled={selectedCropId === undefined}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                    handleChange(e);
-                    if (selectedCrop === undefined) {
+                    props.handleChange(e);
+                    if (selectedCropId === undefined) {
                       throw new Error("Crop is not selected");
                     }
-                    const variety = selectedCrop.varieties.find(v => v.id === e.target.value);
-                    if (variety) {
-                      dispatch(updateVariety(variety));
-                    }
+                    dispatch(updateVariety(e.target.value));
                   }}
+                  borderColor={props.errors.varietyId && props.touched.varietyId ? "red.500" : "gray.300"}
                 >
-                  {selectedCrop?.varieties.map((variety) => (
+                  {crops.find(crop => crop.id === selectedCropId)?.varieties.map((variety) => (
                     <option key={variety.id} value={variety.id}>
                       {variety.name}
                     </option>
@@ -190,9 +214,10 @@ const SeedTreatmentForm: React.FC = () => {
                   name="lotNumber"
                   size="xs"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    handleChange(e);
+                    props.handleChange(e);
                     dispatch(updateLotNumber(e.target.value));
                   }}
+                  borderColor={props.errors.lotNumber && props.touched.lotNumber ? "red.500" : "gray.300"}
                 />
               </Box>
               <Box>
@@ -202,9 +227,10 @@ const SeedTreatmentForm: React.FC = () => {
                   name="tkw"
                   size="xs"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    handleChange(e);
+                    props.handleChange(e);
                     dispatch(updateTkw(parseFloat(e.target.value)));
                   }}
+                  borderColor={props.errors.tkw && props.touched.tkw ? "red.500" : "gray.300"}
                 />
               </Box>
               <Box>
@@ -214,9 +240,10 @@ const SeedTreatmentForm: React.FC = () => {
                   name="quantity"
                   size="xs"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    handleChange(e);
+                    props.handleChange(e);
                     dispatch(updateQuantity(parseFloat(e.target.value)));
                   }}
+                  borderColor={props.errors.quantity && props.touched.quantity ? "red.500" : "gray.300"}
                 />
               </Box>
             </Grid>
@@ -231,9 +258,10 @@ const SeedTreatmentForm: React.FC = () => {
                     name="bagSize"
                     placeholder="80"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      handleChange(e);
+                      props.handleChange(e);
                       dispatch(updateBagSize(parseFloat(e.target.value)));
                     }}
+                    borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
                   />
                   <InputRightElement width="auto">
                     <Field
@@ -243,12 +271,12 @@ const SeedTreatmentForm: React.FC = () => {
                       fontWeight="bold"
                       bg="gray.50"
                       border="1px solid"
-                      borderColor="gray.300"
                       focusBorderColor="transparent"
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                        handleChange(e);
+                        props.handleChange(e);
                         dispatch(updatePackaging(e.target.value));
                       }}
+                      borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
                     >
                       <option value="inSeeds">in s/units</option>
                       <option value="inKg">in kg</option>
@@ -262,7 +290,7 @@ const SeedTreatmentForm: React.FC = () => {
             <FieldArray name="productDetails">
               {({ push, remove }) => (
                 <>
-                  {values.productDetails.map((productDetail, index) => (
+                  {props.values.productDetails.map((productDetail, index) => (
                     <Box key={index} border="1px solid" borderColor="gray.200" p="2" borderRadius="md" mb="2">
                       <Grid w="full" templateColumns="2fr 1fr 2fr" gap="1" alignItems="center" mb="2">
                         <Box>
@@ -274,11 +302,11 @@ const SeedTreatmentForm: React.FC = () => {
                             size="xs"
                             focusBorderColor="transparent"
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                              handleChange(e);
-                              const updatedProduct = { ...values.productDetails[index], name: e.target.value };
-                              setFieldValue(`productDetails.${index}`, updatedProduct);
-                              dispatch(updateProductDetail(updatedProduct));
+                              const selectedProduct = e.target.value;
+                              props.setFieldValue(`productDetails.${index}.name`, selectedProduct);
+                              dispatch(updateProductDetail({ ...props.values.productDetails[index], name: selectedProduct }));
                             }}
+                            borderColor={hasProductDetailError(props.errors, props.touched, index, 'name') ? "red.500" : "gray.300"}
                           >
                             <option value="force-zea-260-fs">Force Zea 260 FS</option>
                             <option value="product-2">Product 2</option>
@@ -292,11 +320,11 @@ const SeedTreatmentForm: React.FC = () => {
                             name={`productDetails.${index}.density`}
                             size="xs"
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              handleChange(e);
-                              const updatedProduct = { ...values.productDetails[index], density: parseInt(e.target.value) };
-                              setFieldValue(`productDetails.${index}`, updatedProduct);
-                              dispatch(updateProductDetail(updatedProduct));
+                              const density = parseInt(e.target.value);
+                              props.setFieldValue(`productDetails.${index}.density`, density);
+                              dispatch(updateProductDetail({ ...props.values.productDetails[index], density }));
                             }}
+                            borderColor={hasProductDetailError(props.errors, props.touched, index, 'density') ? "red.500" : "gray.300"}
                           />
                         </Box>
                         <Box>
@@ -309,11 +337,11 @@ const SeedTreatmentForm: React.FC = () => {
                               name={`productDetails.${index}.rate`}
                               placeholder="Enter rate"
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                handleChange(e);
-                                const updatedProduct = { ...values.productDetails[index], rate: parseInt(e.target.value) };
-                                setFieldValue(`productDetails.${index}`, updatedProduct);
-                                dispatch(updateProductDetail(updatedProduct));
+                                const rate = parseInt(e.target.value);
+                                props.setFieldValue(`productDetails.${index}.rate`, rate);
+                                dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
                               }}
+                              borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
                             />
                             <InputRightElement width="auto">
                               <HStack spacing="0">
@@ -325,14 +353,13 @@ const SeedTreatmentForm: React.FC = () => {
                                   fontWeight="bold"
                                   bg="gray.50"
                                   border="1px solid"
-                                  borderColor="gray.300"
                                   focusBorderColor="transparent"
                                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                    handleChange(e);
-                                    const updatedProduct = { ...values.productDetails[index], rateType: e.target.value };
-                                    setFieldValue(`productDetails.${index}`, updatedProduct);
-                                    dispatch(updateProductDetail(updatedProduct));
+                                    const rateType = e.target.value;
+                                    props.setFieldValue(`productDetails.${index}.rateType`, rateType);
+                                    dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
                                   }}
+                                  borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
                                 >
                                   <option value="unit">per unit</option>
                                   <option value="100kg">per 100kg</option>
@@ -345,14 +372,13 @@ const SeedTreatmentForm: React.FC = () => {
                                   fontWeight="bold"
                                   bg="gray.50"
                                   border="1px solid"
-                                  borderColor="gray.300"
                                   focusBorderColor="transparent"
                                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                    handleChange(e);
-                                    const updatedProduct = { ...values.productDetails[index], rateUnit: e.target.value };
-                                    setFieldValue(`productDetails.${index}`, updatedProduct);
-                                    dispatch(updateProductDetail(updatedProduct));
+                                    const rateUnit = e.target.value;
+                                    props.setFieldValue(`productDetails.${index}.rateUnit`, rateUnit);
+                                    dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
                                   }}
+                                  borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
                                 >
                                   <option value="ml">ml</option>
                                   <option value="g">g</option>
@@ -377,7 +403,23 @@ const SeedTreatmentForm: React.FC = () => {
               <Button colorScheme="green" size="xs" type="submit">Done</Button>
             </HStack>
           </Box>
-        </Form>
+
+          {/* Error Modal */}
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Form Errors</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <ul>
+                  {formErrors.map((error, index) => (
+                    <li key={index}>{error.message}</li>
+                  ))}
+                </ul>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </form>
       )}
     </Formik>
   );
