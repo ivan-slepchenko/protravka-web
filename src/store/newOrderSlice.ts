@@ -2,12 +2,22 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Operator } from './operatorsSlice';
 import { Crop, Variety } from './cropsSlice';
 
+export enum RateUnit {
+  ML = 'ml',
+  G = 'g',
+}
+
+export enum RateType {
+  Unit = 'unit',
+  Per100Kg = '100kg',
+}
+
 export interface ProductDetail {
   id: string;
   name: string;
   quantity: number;
-  rateUnit: string;
-  rateType: string;
+  rateUnit: RateUnit;
+  rateType: RateType;
   density: number;
   rate: number;
   index: number; // Add index property
@@ -63,7 +73,7 @@ export const createNewEmptyOrder: () => NewOrder = () => ({
   lotNumber: "",
   tkw: 0,
   quantity: 0,
-  packaging: "",
+  packaging: "inSeeds",
   bagSize: 0,
   status: OrderStatus.NotStarted,
 });
@@ -72,8 +82,8 @@ export const createNewEmptyProduct: () => ProductDetail = () => ({
   id: new Date().toISOString(),
   name: "",
   quantity: 0,
-  rateUnit: "ml",
-  rateType: "unit",
+  rateUnit: RateUnit.ML,
+  rateType: RateType.Unit,
   density: 0,
   rate: 0,
   index: 0, // Initialize index

@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { Box, Button, HStack, Text, Grid, Input, Select, InputGroup, InputRightElement, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
-import { Formik, Form, Field, FieldArray, FormikErrors, FormikTouched, FormikProps } from "formik";
+import { Formik, Field, FieldArray, FormikErrors, FormikTouched, FormikProps } from "formik";
 import {
   setOrderState,
   createNewEmptyOrder,
@@ -20,7 +20,9 @@ import {
   updatePackaging,
   updateBagSize,
   NewOrder,
-  ProductDetail
+  ProductDetail,
+  RateUnit,
+  RateType
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchOperators } from "../store/operatorsSlice";
@@ -42,8 +44,8 @@ const validationSchema = Yup.object().shape({
       name: Yup.string().required("Product Name is required"),
       density: Yup.number().positive("Density must be positive").required("Density is required"),
       rate: Yup.number().positive("Rate must be positive").required("Rate is required"),
-      rateType: Yup.string().required("Rate Type is required"),
-      rateUnit: Yup.string().required("Rate Unit is required"),
+      rateType: Yup.mixed<RateType>().oneOf(Object.values(RateType)).required("Rate Type is required"),
+      rateUnit: Yup.mixed<RateUnit>().oneOf(Object.values(RateUnit)).required("Rate Unit is required"),
     })
   ).min(1, "At least one product is required")
 });
@@ -280,8 +282,8 @@ const SeedTreatmentForm: React.FC = () => {
                       }}
                       borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
                     >
-                      <option value="inSeeds">in s/units</option>
-                      <option value="inKg">in kg</option>
+                      <option value="inSeeds">s/units</option>
+                      <option value="inKg">kg</option>
                     </Field>
                   </InputRightElement>
                 </InputGroup>
@@ -331,7 +333,7 @@ const SeedTreatmentForm: React.FC = () => {
                         </Box>
                         <Box>
                           <Text fontSize="xs">
-                            {productDetail.rateType === "unit" ? `Rate per unit (${productDetail.rateUnit}):` : `Rate per 100kg (${productDetail.rateUnit}):`}
+                            {productDetail.rateType === RateType.Unit ? `Rate per unit (${productDetail.rateUnit}):` : `Rate per 100kg (${productDetail.rateUnit}):`}
                           </Text>
                           <InputGroup size="xs">
                             <Field
@@ -357,14 +359,14 @@ const SeedTreatmentForm: React.FC = () => {
                                   border="1px solid"
                                   focusBorderColor="transparent"
                                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                    const rateType = e.target.value;
+                                    const rateType = e.target.value as RateType;
                                     props.setFieldValue(`productDetails.${index}.rateType`, rateType);
                                     dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
                                   }}
                                   borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
                                 >
-                                  <option value="unit">per unit</option>
-                                  <option value="100kg">per 100kg</option>
+                                  <option value={RateType.Unit}>per unit</option>
+                                  <option value={RateType.Per100Kg}>per 100kg</option>
                                 </Field>
                                 <Field
                                   as={Select}
@@ -376,14 +378,14 @@ const SeedTreatmentForm: React.FC = () => {
                                   border="1px solid"
                                   focusBorderColor="transparent"
                                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                    const rateUnit = e.target.value;
+                                    const rateUnit = e.target.value as RateUnit;
                                     props.setFieldValue(`productDetails.${index}.rateUnit`, rateUnit);
                                     dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
                                   }}
                                   borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
                                 >
-                                  <option value="ml">ml</option>
-                                  <option value="g">g</option>
+                                  <option value={RateUnit.ML}>ml</option>
+                                  <option value={RateUnit.G}>g</option>
                                 </Field>
                               </HStack>
                             </InputRightElement>
