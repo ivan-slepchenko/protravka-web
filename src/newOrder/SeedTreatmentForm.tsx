@@ -18,7 +18,8 @@ import {
   updateProductDetail,
   updatePackaging,
   updateBagSize,
-  ProductDetail
+  ProductDetail,
+  NewOrder
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchOperators } from "../store/operatorsSlice";
@@ -26,7 +27,7 @@ import { fetchCrops } from "../store/cropsSlice";
 
 const SeedTreatmentForm: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const formData = useSelector((state: RootState) => state.newOrder);
+  const formData = useSelector((state: RootState) => state.newOrder as NewOrder);
   const operators = useSelector((state: RootState) => state.operators.operators);
   const selectedOperator = useSelector((state: RootState) => state.newOrder.operator);
   const crops = useSelector((state: RootState) => state.crops.crops);
@@ -75,6 +76,9 @@ const SeedTreatmentForm: React.FC = () => {
   };
 
   const handleVarietyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if(selectedCrop === undefined) {
+      throw new Error("Crop is not selected");
+    }
     const variety = selectedCrop.varieties.find(v => v.id === event.target.value);
     if (variety) {
       dispatch(updateVariety(variety));
@@ -138,7 +142,7 @@ const SeedTreatmentForm: React.FC = () => {
           <Text fontSize="xs">Operator:</Text>
           <Select
             name="operator"
-            value={selectedOperator.id}
+            value={selectedOperator?.id ?? undefined}
             onChange={handleOperatorChange}
             placeholder="Select operator"
             size="xs"

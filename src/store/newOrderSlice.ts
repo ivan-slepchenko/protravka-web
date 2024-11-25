@@ -36,14 +36,30 @@ export interface Order {
   status: OrderStatus;
 }
 
-export const createNewEmptyOrder: () => Order = () => ({
+export interface NewOrder {
+  id: string;
+  productDetails: ProductDetail[];
+  recipeDate: string;
+  applicationDate: string;
+  operator?: Operator;
+  crop?: Crop;
+  variety?: Variety;
+  lotNumber: string;
+  tkw: number;
+  quantity: number;
+  packaging: string;
+  bagSize: number;
+  status: OrderStatus;
+}
+
+export const createNewEmptyOrder: () => NewOrder = () => ({
   id: new Date().toISOString(),
   productDetails: [],
   recipeDate: new Date().toISOString().split("T")[0],
   applicationDate: new Date().toISOString().split("T")[0],
-  operator: { id: '', name: '', surname: '' },
-  crop: { id: '', name: '', varieties: [] },
-  variety: { id: '', name: '' },
+  operator: undefined,
+  crop: undefined,
+  variety: undefined,
   lotNumber: "",
   tkw: 0,
   quantity: 0,
@@ -114,7 +130,7 @@ const newOrderSlice = createSlice({
     updateStatus: (state, action: PayloadAction<OrderStatus>) => {
       state.status = action.payload;
     },
-    setOrderState: (state, action: PayloadAction<Order>) => {
+    setOrderState: (state, action: PayloadAction<NewOrder>) => {
       return action.payload;
     },
   },
