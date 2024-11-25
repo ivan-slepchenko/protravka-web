@@ -176,7 +176,8 @@ const SeedTreatmentForm: React.FC = () => {
             name="variety"
             value={selectedVariety?.id || ""}
             onChange={handleVarietyChange}
-            placeholder="Select variety"
+            disabled={selectedCrop === undefined}
+            placeholder={selectedCrop === undefined ? "Select crop first" : "Select variety"}
             size="xs"
           >
             {selectedCrop?.varieties.map((variety) => (
