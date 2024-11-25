@@ -9,6 +9,7 @@ const LeftMenu = () => {
         <Link as={RouterLink} to="/new">New Order</Link>
         <Link as={RouterLink} to="/operators">Operators</Link>
         <Link as={RouterLink} to="/crops">Crops</Link>
+        <Link as={RouterLink} to="/products">Products</Link>
       </VStack>
     </Box>
   );

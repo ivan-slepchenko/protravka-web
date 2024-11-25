@@ -5,6 +5,7 @@ import newOrderReducer from './newOrderSlice';
 import ordersReducer from './ordersSlice';
 import operatorsReducer from './operatorsSlice';
 import cropsReducer from './cropsSlice';
+import productsReducer from './productsSlice';
 // ...import your reducers here...
 
 const persistConfig = {
@@ -21,6 +22,7 @@ const store = configureStore({
     orders: ordersReducer,
     operators: operatorsReducer,
     crops: cropsReducer,
+    products: productsReducer,
     // ...add your reducers here...
   }
 });

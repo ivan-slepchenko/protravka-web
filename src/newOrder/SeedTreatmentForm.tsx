@@ -27,6 +27,7 @@ import {
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchOperators } from "../store/operatorsSlice";
 import { fetchCrops } from "../store/cropsSlice";
+import { fetchProducts } from "../store/productsSlice";
 
 const validationSchema = Yup.object().shape({
   recipeDate: Yup.date().required("Recipe Date is required"),
@@ -67,12 +68,14 @@ const SeedTreatmentForm: React.FC = () => {
   const operators = useSelector((state: RootState) => state.operators.operators);
   const crops = useSelector((state: RootState) => state.crops.crops);
   const selectedCropId = useSelector((state: RootState) => state.newOrder.cropId);
+  const products = useSelector((state: RootState) => state.products.products);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
 
   useEffect(() => {
     dispatch(fetchOperators());
     dispatch(fetchCrops());
+    dispatch(fetchProducts());
   }, [dispatch]);
 
   const handleSave = (values: NewOrder, resetForm: () => void) => {
@@ -306,15 +309,20 @@ const SeedTreatmentForm: React.FC = () => {
                             size="xs"
                             focusBorderColor="transparent"
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                              const selectedProduct = e.target.value;
-                              props.setFieldValue(`productDetails.${index}.name`, selectedProduct);
-                              dispatch(updateProductDetail({ ...props.values.productDetails[index], name: selectedProduct }));
+                              const selectedProduct = products.find(product => product.id === e.target.value);
+                              if (selectedProduct) {
+                                props.setFieldValue(`productDetails.${index}.name`, selectedProduct.name);
+                                props.setFieldValue(`productDetails.${index}.productId`, selectedProduct.id);
+                                dispatch(updateProductDetail({ ...props.values.productDetails[index], productId: selectedProduct.id }));
+                              }
                             }}
-                            borderColor={hasProductDetailError(props.errors, props.touched, index, 'name') ? "red.500" : "gray.300"}
+                            borderColor={hasProductDetailError(props.errors, props.touched, index, 'productId') ? "red.500" : "gray.300"}
                           >
-                            <option value="force-zea-260-fs">Force Zea 260 FS</option>
-                            <option value="product-2">Product 2</option>
-                            <option value="product-3">Product 3</option>
+                            {products.map((product) => (
+                              <option key={product.id} value={product.id}>
+                                {product.name}
+                              </option>
+                            ))}
                           </Field>
                         </Box>
                         <Box>

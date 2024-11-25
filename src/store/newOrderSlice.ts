@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Operator } from './operatorsSlice';
 import { Crop, Variety } from './cropsSlice';
+import { Product } from './productsSlice';
 
 export enum RateUnit {
   ML = 'ml',
@@ -14,13 +15,14 @@ export enum RateType {
 
 export interface ProductDetail {
   id: string;
-  name: string;
   quantity: number;
   rateUnit: RateUnit;
   rateType: RateType;
   density: number;
   rate: number;
   index: number; // Add index property
+  productId: string; // Add productId property
+  product?: Product; // Add product property
 }
 
 export enum OrderStatus {
@@ -87,6 +89,7 @@ export const createNewEmptyProduct: () => ProductDetail = () => ({
   density: 0,
   rate: 0,
   index: 0, // Initialize index
+  productId: "", // Initialize productId
 });
 
 const newOrderSlice = createSlice({

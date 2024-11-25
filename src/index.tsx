@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './store/store';
 import Crops from './crops/Crops';
+import Products from './products/Products';
 
 import {
   BrowserRouter,
@@ -37,6 +38,7 @@ root.render(
                   <Route path="/board" element={<Board />} />
                   <Route path="/operators" element={<Operators />} />
                   <Route path="/crops" element={<Crops />} />
+                  <Route path="/products" element={<Products />} />
                 </Routes>
               </Box>
             </Box>

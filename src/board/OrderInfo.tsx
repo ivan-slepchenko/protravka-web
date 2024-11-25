@@ -3,6 +3,7 @@ import { Box, Button, Text, Modal, ModalOverlay, ModalContent, ModalHeader, Moda
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { OrderStatus, updateStatus } from "../store/newOrderSlice";
+import { fetchProducts } from "../store/productsSlice";
 
 interface OrderInfoProps {
   isOpen: boolean;
@@ -13,6 +14,13 @@ interface OrderInfoProps {
 const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
   const dispatch: AppDispatch = useDispatch();
   const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === orderId));
+  const products = useSelector((state: RootState) => state.products.products);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      dispatch(fetchProducts());
+    }
+  }, [isOpen, dispatch]);
 
   if (!order) return null;
 
@@ -85,15 +93,17 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                 <Tbody>
                   {order.productDetails && order.productDetails
                     .sort((a, b) => a.index - b.index) // Sort by index
-                    .map((product, index) => (
-                      <Tr key={index}>
-                        <Td width="35%">{product.name}</Td>
-                        <Td>{product.density}</Td>
-                        <Td>{product.rate}</Td>
-                        <Td>{product.rateType}</Td>
-                        <Td>{product.rateUnit}</Td>
-                      </Tr>
-                    ))}
+                    .map((productDetail, index) => {
+                      return (
+                        <Tr key={index}>
+                          <Td width="35%">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
+                          <Td>{productDetail.density}</Td>
+                          <Td>{productDetail.rate}</Td>
+                          <Td>{productDetail.rateType}</Td>
+                          <Td>{productDetail.rateUnit}</Td>
+                        </Tr>
+                      );
+                    })}
                 </Tbody>
               </Table>
             </Box>
