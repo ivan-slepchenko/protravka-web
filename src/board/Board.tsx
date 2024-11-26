@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from '../store/store';
 import OrderInfo from './OrderInfo';
 import { OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders } from '../store/ordersSlice';
+import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 
 const Board: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -24,22 +25,34 @@ const Board: React.FC = () => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px' }}>
-            {columns.map((column) => (
-                <div key={column} style={{ width: '200px', border: '1px solid #ccc', borderRadius: '4px', padding: '10px' }}>
-                    <h3>{column}</h3>
-                    {orders.filter(order => order.status === column).map((order, index) => (
-                        <div key={index} style={{ border: '1px solid #ddd', borderRadius: '4px', padding: '5px', marginBottom: '5px', cursor: 'pointer' }} onClick={() => handleOrderClick(order.id)}>
-                            <p><strong>Lot Number:</strong> {order.lotNumber}</p>
-                            <p><strong>Crop:</strong> {order.crop?.name && ''}</p>
-                            <p><strong>Variety:</strong> {order.variety?.name && ''}</p>
-                            <p><strong>Quantity:</strong> {order.quantity} kg</p>
-                        </div>
-                    ))}
-                </div>
-            ))}
-            {selectedOrder && <OrderInfo isOpen={!!selectedOrder} onClose={handleClose} orderId={selectedOrder} />}
-        </div>
+        <Flex w="full" justifyContent={'center'} h="100vh">
+            <Flex p={5} gap={3} w="full" >
+                {columns.map((column) => (
+                    <Box key={column} w="full" border="1px solid #ccc" borderRadius="md" p={3}>
+                        <Heading as="h3" size="md" mb={3}>{column}</Heading>
+                        <VStack spacing={3}>
+                            {orders.filter(order => order.status === column).map((order, index) => (
+                                <Box
+                                    key={index}
+                                    border="1px solid #ddd"
+                                    borderRadius="md"
+                                    p={3}
+                                    cursor="pointer"
+                                    onClick={() => handleOrderClick(order.id)}
+
+                                >
+                                    <Text><strong>Lot Number:</strong> {order.lotNumber}</Text>
+                                    <Text><strong>Crop:</strong> {order.crop?.name}</Text>
+                                    <Text><strong>Variety:</strong> {order.variety?.name}</Text>
+                                    <Text><strong>Quantity:</strong> {order.quantity} kg</Text>
+                                </Box>
+                            ))}
+                        </VStack>
+                    </Box>
+                ))}
+                {selectedOrder && <OrderInfo isOpen={!!selectedOrder} onClose={handleClose} orderId={selectedOrder} />}
+            </Flex>
+        </Flex>
     );
 };
 

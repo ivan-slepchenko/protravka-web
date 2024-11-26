@@ -138,20 +138,20 @@ const SeedTreatmentForm: React.FC = () => {
     >
        {(props: FormikProps<NewOrder>) => (
         <form onSubmit={props.handleSubmit}>
-          <Box width="800px" mx="auto" p="2" bg="white" boxShadow="md" borderRadius="md">
-            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb="1">
+          <Box width="full" mx="auto" p="4">
+            <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb="4">
               Remington Seeds
             </Text>
 
             {/* Recipe Info */}
-            <Grid templateColumns="repeat(2, 1fr)" gap="1" mb="2">
+            <Grid templateColumns="repeat(2, 1fr)" gap="4" mb="4">
               <Box>
-                <Text fontSize="xs">Recipe creation date:</Text>
+                <Text fontSize="md">Recipe creation date:</Text>
                 <Field
                   as={Input}
                   type="date"
                   name="recipeDate"
-                  size="xs"
+                  size="md"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     props.handleChange(e);
                     dispatch(updateRecipeDate(e.target.value));
@@ -160,12 +160,12 @@ const SeedTreatmentForm: React.FC = () => {
                 />
               </Box>
               <Box>
-                <Text fontSize="xs">Application date:</Text>
+                <Text fontSize="md">Application date:</Text>
                 <Field
                   as={Input}
                   type="date"
                   name="applicationDate"
-                  size="xs"
+                  size="md"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     props.handleChange(e);
                     dispatch(updateApplicationDate(e.target.value));
@@ -174,12 +174,12 @@ const SeedTreatmentForm: React.FC = () => {
                 />
               </Box>
               <Box>
-                <Text fontSize="xs">Operator:</Text>
+                <Text fontSize="md">Operator:</Text>
                 <Field
                   as={Select}
                   name="operatorId"
                   placeholder="Select operator"
-                  size="xs"
+                  size="md"
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                     props.handleChange(e);
                     dispatch(updateOperator(e.target.value));
@@ -194,12 +194,12 @@ const SeedTreatmentForm: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Text fontSize="xs">Crop:</Text>
+                <Text fontSize="md">Crop:</Text>
                 <Field
                   as={Select}
                   name="cropId"
                   placeholder="Select crop"
-                  size="xs"
+                  size="md"
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                     props.handleChange(e);
                     dispatch(updateCrop(e.target.value));
@@ -214,12 +214,12 @@ const SeedTreatmentForm: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Text fontSize="xs">Variety:</Text>
+                <Text fontSize="md">Variety:</Text>
                 <Field
                   as={Select}
                   name="varietyId"
                   placeholder={selectedCropId === undefined ? "Select crop first" : "Select variety"}
-                  size="xs"
+                  size="md"
                   disabled={selectedCropId === undefined}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                     props.handleChange(e);
@@ -238,11 +238,11 @@ const SeedTreatmentForm: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Text fontSize="xs">Lot Number:</Text>
+                <Text fontSize="md">Lot Number:</Text>
                 <Field
                   as={Input}
                   name="lotNumber"
-                  size="xs"
+                  size="md"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     props.handleChange(e);
                     dispatch(updateLotNumber(e.target.value));
@@ -251,37 +251,39 @@ const SeedTreatmentForm: React.FC = () => {
                 />
               </Box>
               <Box>
-                <Text fontSize="xs">TKW (g):</Text>
+                <Text fontSize="md">TKW (g):</Text>
                 <Field
                   as={Input}
                   name="tkw"
-                  size="xs"
+                  size="md"
+                  placeholder="0"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     props.handleChange(e);
-                    dispatch(updateTkw(parseFloat(e.target.value)));
+                    dispatch(updateTkw(parseFloat(e.target.value) || 0));
                   }}
                   borderColor={props.errors.tkw && props.touched.tkw ? "red.500" : "gray.300"}
                 />
               </Box>
               <Box>
-                <Text fontSize="xs">Quantity to treat (kg):</Text>
+                <Text fontSize="md">Quantity to treat (kg):</Text>
                 <Field
                   as={Input}
                   name="quantity"
-                  size="xs"
+                  size="md"
+                  placeholder="0"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     props.handleChange(e);
-                    dispatch(updateQuantity(parseFloat(e.target.value)));
+                    dispatch(updateQuantity(parseFloat(e.target.value) || 0));
                   }}
                   borderColor={props.errors.quantity && props.touched.quantity ? "red.500" : "gray.300"}
                 />
               </Box>
               <Box>
-                <Text fontSize="xs" mb="1">How do you want to pack?</Text>
+                <Text fontSize="md" mb="2">How do you want to pack?</Text>
                 <Field
                   as={Select}
                   name="packaging"
-                  size="xs"
+                  size="md"
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                     props.handleChange(e);
                     dispatch(updatePackaging(e.target.value));
@@ -293,15 +295,15 @@ const SeedTreatmentForm: React.FC = () => {
                 </Field>
               </Box>
               <Box>
-                <Text fontSize="xs" mb="1">Bag size:</Text>
-                <InputGroup size="xs">
+                <Text fontSize="md" mb="2">Bag size:</Text>
+                <InputGroup size="md">
                   <Field
                     as={Input}
                     name="bagSize"
-                    placeholder="80"
+                    placeholder="0"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       props.handleChange(e);
-                      dispatch(updateBagSize(parseFloat(e.target.value)));
+                      dispatch(updateBagSize(parseFloat(e.target.value) || 0));
                     }}
                     borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
                   />
@@ -314,15 +316,15 @@ const SeedTreatmentForm: React.FC = () => {
               {({ push, remove }) => (
                 <>
                   {props.values.productDetails.map((productDetail, index) => (
-                    <Box key={index} border="1px solid" borderColor="gray.200" p="2" borderRadius="md" mb="2">
-                      <Grid w="full" templateColumns="2fr 1fr 2fr" gap="1" alignItems="center" mb="2">
+                    <Box key={index} border="1px solid" borderColor="gray.200" p="4" borderRadius="md" mb="4">
+                      <Grid w="full" templateColumns="2fr 1fr 2fr" gap="4" alignItems="center" mb="4">
                         <Box>
-                          <Text fontSize="xs">Product name:</Text>
+                          <Text fontSize="md">Product name:</Text>
                           <Field
                             as={Select}
                             name={`productDetails.${index}.productId`}
                             placeholder="Select product"
-                            size="xs"
+                            size="md"
                             focusBorderColor="transparent"
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                               const selectedProduct = products.find(product => product.id === e.target.value);
@@ -341,13 +343,14 @@ const SeedTreatmentForm: React.FC = () => {
                           </Field>
                         </Box>
                         <Box>
-                          <Text fontSize="xs">Density (g/ml):</Text>
+                          <Text fontSize="md">Density (g/ml):</Text>
                           <Field
                             as={Input}
                             name={`productDetails.${index}.density`}
-                            size="xs"
+                            size="md"
+                            placeholder="0"
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              const density = parseInt(e.target.value);
+                              const density = parseInt(e.target.value) || 0;
                               props.setFieldValue(`productDetails.${index}.density`, density);
                               dispatch(updateProductDetail({ ...props.values.productDetails[index], density }));
                             }}
@@ -355,16 +358,16 @@ const SeedTreatmentForm: React.FC = () => {
                           />
                         </Box>
                         <Box>
-                          <Text fontSize="xs">
+                          <Text fontSize="md">
                             {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
                           </Text>
-                          <InputGroup size="xs">
+                          <InputGroup size="md">
                             <Field
                               as={Input}
                               name={`productDetails.${index}.rate`}
-                              placeholder="Enter rate"
+                              placeholder="0"
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                const rate = parseInt(e.target.value);
+                                const rate = parseInt(e.target.value) || 0;
                                 props.setFieldValue(`productDetails.${index}.rate`, rate);
                                 dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
                               }}
@@ -376,7 +379,7 @@ const SeedTreatmentForm: React.FC = () => {
                                   as={Select}
                                   width="110px"
                                   name={`productDetails.${index}.rateType`}
-                                  size="xs"
+                                  size="md"
                                   fontWeight="bold"
                                   bg="gray.50"
                                   border="1px solid"
@@ -395,7 +398,7 @@ const SeedTreatmentForm: React.FC = () => {
                                   as={Select}
                                   width="110px"
                                   name={`productDetails.${index}.rateUnit`}
-                                  size="xs"
+                                  size="md"
                                   fontWeight="bold"
                                   bg="gray.50"
                                   border="1px solid"
@@ -418,20 +421,20 @@ const SeedTreatmentForm: React.FC = () => {
                     </Box>
                   ))}
                   <HStack>
-                    <Button colorScheme="blue" size="xs" onClick={() => {
+                    <Button colorScheme="blue" size="md" onClick={() => {
                       const newEmptyProduct = createNewEmptyProduct();
                       push(newEmptyProduct);
                       dispatch(addProductDetail(createNewEmptyProduct()));
-                    }} ml="auto" mb={2}>+ Add Product</Button>
+                    }} ml="auto" mb={4}>+ Add Product</Button>
                   </HStack>
                 </>
               )}
             </FieldArray>
 
             {/* Action Buttons */}
-            <HStack justifyContent="flex-end" spacing="2" mb="2">
-              <Button colorScheme="yellow" size="xs" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
-              <Button colorScheme="green" size="xs" type="submit">Done</Button>
+            <HStack justifyContent="flex-end" spacing="4" mb="4">
+              <Button colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
+              <Button colorScheme="green" size="md" type="submit">Done</Button>
             </HStack>
           </Box>
 
