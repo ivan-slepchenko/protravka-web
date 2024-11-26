@@ -253,12 +253,24 @@ const SeedTreatmentForm: React.FC = () => {
                   borderColor={props.errors.quantity && props.touched.quantity ? "red.500" : "gray.300"}
                 />
               </Box>
-            </Grid>
-
-            {/* Packaging Options */}
-            <Box mb="2">
-              <Text fontSize="xs" mb="1">Bag size:</Text>
-              <HStack>
+              <Box>
+                <Text fontSize="xs" mb="1">How do you want to pack?</Text>
+                <Field
+                  as={Select}
+                  name="packaging"
+                  size="xs"
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                    props.handleChange(e);
+                    dispatch(updatePackaging(e.target.value));
+                  }}
+                  borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
+                >
+                  <option value="inSeeds">s/units</option>
+                  <option value="inKg">kg</option>
+                </Field>
+              </Box>
+              <Box>
+                <Text fontSize="xs" mb="1">Bag size:</Text>
                 <InputGroup size="xs">
                   <Field
                     as={Input}
@@ -270,28 +282,9 @@ const SeedTreatmentForm: React.FC = () => {
                     }}
                     borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
                   />
-                  <InputRightElement width="auto">
-                    <Field
-                      as={Select}
-                      name="packaging"
-                      size="xs"
-                      fontWeight="bold"
-                      bg="gray.50"
-                      border="1px solid"
-                      focusBorderColor="transparent"
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                        props.handleChange(e);
-                        dispatch(updatePackaging(e.target.value));
-                      }}
-                      borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
-                    >
-                      <option value="inSeeds">s/units</option>
-                      <option value="inKg">kg</option>
-                    </Field>
-                  </InputRightElement>
                 </InputGroup>
-              </HStack>
-            </Box>
+              </Box>
+            </Grid>
 
             {/* Product Details */}
             <FieldArray name="productDetails">
