@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { OrderStatus, updateStatus } from "../store/newOrderSlice";
 import { fetchProducts } from "../store/productsSlice";
+import { getRateUnitLabel, getRateTypeLabel } from "../newOrder/SeedTreatmentForm";
 
 interface OrderInfoProps {
   isOpen: boolean;
@@ -99,8 +100,8 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                           <Td width="35%">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
                           <Td>{productDetail.density}</Td>
                           <Td>{productDetail.rate}</Td>
-                          <Td>{productDetail.rateType}</Td>
-                          <Td>{productDetail.rateUnit}</Td>
+                          <Td>{getRateTypeLabel(productDetail.rateType)}</Td>
+                          <Td>{getRateUnitLabel(productDetail.rateUnit)}</Td>
                         </Tr>
                       );
                     })}

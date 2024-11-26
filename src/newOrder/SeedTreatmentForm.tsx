@@ -63,6 +63,28 @@ const hasProductDetailError = (errors: FormikErrors<NewOrder>, touched: FormikTo
   return false;
 };
 
+export const getRateUnitLabel = (unit: RateUnit): string => {
+  switch (unit) {
+    case RateUnit.ML:
+      return "ml";
+    case RateUnit.G:
+      return "g";
+    default:
+      return unit;
+  }
+};
+
+export const getRateTypeLabel = (type: RateType): string => {
+  switch (type) {
+    case RateType.Unit:
+      return "per unit";
+    case RateType.Per100Kg:
+      return "per 100kg";
+    default:
+      return type;
+  }
+};
+
 const SeedTreatmentForm: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const formData = useSelector((state: RootState) => state.newOrder as NewOrder);
@@ -334,7 +356,7 @@ const SeedTreatmentForm: React.FC = () => {
                         </Box>
                         <Box>
                           <Text fontSize="xs">
-                            {productDetail.rateType === RateType.Unit ? `Rate per unit (${productDetail.rateUnit}):` : `Rate per 100kg (${productDetail.rateUnit}):`}
+                            {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
                           </Text>
                           <InputGroup size="xs">
                             <Field
@@ -366,8 +388,8 @@ const SeedTreatmentForm: React.FC = () => {
                                   }}
                                   borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
                                 >
-                                  <option value={RateType.Unit}>per unit</option>
-                                  <option value={RateType.Per100Kg}>per 100kg</option>
+                                  <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
+                                  <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
                                 </Field>
                                 <Field
                                   as={Select}
@@ -385,8 +407,8 @@ const SeedTreatmentForm: React.FC = () => {
                                   }}
                                   borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
                                 >
-                                  <option value={RateUnit.ML}>ml</option>
-                                  <option value={RateUnit.G}>g</option>
+                                  <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
+                                  <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
                                 </Field>
                               </HStack>
                             </InputRightElement>
