@@ -16,7 +16,6 @@ const Board: React.FC = () => {
     }, [dispatch]);
 
     const handleOrderClick = (orderId: string) => {
-        console.log('Order clicked:', orderId);
         setSelectedOrder(orderId);
     };
 
