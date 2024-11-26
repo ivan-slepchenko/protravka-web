@@ -22,7 +22,8 @@ import {
   NewOrder,
   ProductDetail,
   RateUnit,
-  RateType
+  RateType,
+  addProductDetail
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchOperators } from "../store/operatorsSlice";
@@ -395,7 +396,11 @@ const SeedTreatmentForm: React.FC = () => {
                     </Box>
                   ))}
                   <HStack>
-                    <Button colorScheme="blue" size="xs" onClick={() => push(createNewEmptyProduct())} ml="auto" mb={2}>+ Add Product</Button>
+                    <Button colorScheme="blue" size="xs" onClick={() => {
+                      const newEmptyProduct = createNewEmptyProduct();
+                      push(newEmptyProduct);
+                      dispatch(addProductDetail(createNewEmptyProduct()));
+                    }} ml="auto" mb={2}>+ Add Product</Button>
                   </HStack>
                 </>
               )}
