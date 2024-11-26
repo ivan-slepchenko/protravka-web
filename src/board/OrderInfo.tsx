@@ -91,7 +91,7 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {order.productDetails && order.productDetails
+                  {order.productDetails && [...order.productDetails]
                     .sort((a, b) => a.index - b.index) // Sort by index
                     .map((productDetail, index) => {
                       return (
