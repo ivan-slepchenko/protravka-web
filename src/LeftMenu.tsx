@@ -16,7 +16,7 @@ const LeftMenu = () => {
     return (
         <Box width="20%" height="100vh" bg="gray.100" p={4} position="fixed" bgColor={"lightgrey"}>
             <VStack spacing={4} h="full">
-                {links.map(link => (
+                {links.slice(0, 2).map(link => (
                     <Button
                         w="full"
                         as={RouterLink}
@@ -31,6 +31,20 @@ const LeftMenu = () => {
                     </Button>
                 ))}
                 <Divider mt="auto"/>
+                {links.slice(2).map(link => (
+                    <Button
+                        w="full"
+                        as={RouterLink}
+                        to={link.to}
+                        key={link.to}
+                        variant="ghost"
+                        justifyContent="flex-start"
+                        isActive={location.pathname === link.to}
+                        color={location.pathname === link.to ? "blue.500" : "black"}
+                    >
+                        {link.label}
+                    </Button>
+                ))}
             </VStack>
         </Box>
     );
