@@ -17,7 +17,9 @@ const initialState: OperatorsState = {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 export const fetchOperators = createAsyncThunk('operators/fetchOperators', async () => {
-  const response = await fetch(`${BACKEND_URL}/api/operators`);
+  const response = await fetch(`${BACKEND_URL}/api/operators`, {
+    credentials: 'include', // Include credentials in the request
+  });
   return response.json();
 });
 
@@ -30,6 +32,7 @@ export const createOperator = createAsyncThunk('operators/createOperator', async
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(operatorWithoutId),
+    credentials: 'include', // Include credentials in the request
   });
   return response.json();
 });

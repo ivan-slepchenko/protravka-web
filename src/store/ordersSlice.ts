@@ -14,7 +14,9 @@ const initialState: OrdersState = {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
-  const response = await fetch(`${BACKEND_URL}/api/orders`);
+  const response = await fetch(`${BACKEND_URL}/api/orders`,{
+    credentials: 'include', // Include credentials in the request
+  });
   return response.json();
 });
 
@@ -35,6 +37,7 @@ export const createOrder = createAsyncThunk('orders/createOrder', async (order: 
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ ...orderWithoutId, productDetails: productDetailsWithoutIds }),
+    credentials: 'include', // Include credentials in the request
   });
   const jsonResponse = await response.json();
   console.log('Order created', jsonResponse);
@@ -53,6 +56,7 @@ export const modifyOrder = createAsyncThunk('orders/modifyOrder', async (order: 
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ ...orderWithoutId, productDetails: productDetailsWithoutIds }),
+    credentials: 'include', // Include credentials in the request
   });
   return response.json();
 });
@@ -64,6 +68,7 @@ export const changeOrderStatus = createAsyncThunk('orders/changeOrderStatus', as
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ status }),
+    credentials: 'include', // Include credentials in the request
   });
   return response.json();
 });

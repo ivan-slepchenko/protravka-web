@@ -23,7 +23,9 @@ const initialState: CropsState = {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 export const fetchCrops = createAsyncThunk('crops/fetchCrops', async () => {
-  const response = await fetch(`${BACKEND_URL}/api/crops`);
+  const response = await fetch(`${BACKEND_URL}/api/crops`, {
+    credentials: 'include', // Include credentials in the request
+  });
   return response.json();
 });
 
@@ -36,6 +38,7 @@ export const createCrop = createAsyncThunk('crops/createCrop', async (crop: Crop
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(cropWithoutId),
+    credentials: 'include', // Include credentials in the request
   });
   return response.json();
 });
@@ -49,6 +52,7 @@ export const createVariety = createAsyncThunk('crops/createVariety', async ({ cr
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(varietyWithoutId),
+    credentials: 'include', // Include credentials in the request
   });
   return response.json();
 });
@@ -56,6 +60,7 @@ export const createVariety = createAsyncThunk('crops/createVariety', async ({ cr
 export const deleteVariety = createAsyncThunk('crops/deleteVariety', async ({ cropId, varietyId }: { cropId: string, varietyId: string }) => {
   await fetch(`${BACKEND_URL}/api/crops/${cropId}/varieties/${varietyId}`, {
     method: 'DELETE',
+    credentials: 'include', // Include credentials in the request
   });
   return { cropId, varietyId };
 });
@@ -63,6 +68,7 @@ export const deleteVariety = createAsyncThunk('crops/deleteVariety', async ({ cr
 export const deleteCrop = createAsyncThunk('crops/deleteCrop', async (cropId: string) => {
   await fetch(`${BACKEND_URL}/api/crops/${cropId}`, {
     method: 'DELETE',
+    credentials: 'include', // Include credentials in the request
   });
   return cropId;
 });

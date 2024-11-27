@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Box, Input, Button, VStack, Heading, Alert, AlertIcon } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
 import { loginUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { AppDispatch, RootState } from '../store/store';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const dispatch = useDispatch();
+  const dispatch:AppDispatch = useDispatch();
   const navigate = useNavigate();
   const { error } = useSelector((state: RootState) => state.user);
 

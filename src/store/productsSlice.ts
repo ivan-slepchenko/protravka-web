@@ -8,7 +8,9 @@ export interface Product {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-  const response = await fetch(`${BACKEND_URL}/api/products`);
+  const response = await fetch(`${BACKEND_URL}/api/products`, {
+    credentials: 'include', // Include credentials in the request
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch products');
   }
@@ -24,6 +26,7 @@ export const createProduct = createAsyncThunk('products/createProduct', async (p
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(productWithoutId),
+    credentials: 'include', // Include credentials in the request
   });
   if (!response.ok) {
     throw new Error('Failed to create product');
@@ -34,6 +37,7 @@ export const createProduct = createAsyncThunk('products/createProduct', async (p
 export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id: string) => {
   const response = await fetch(`${BACKEND_URL}/api/products/${id}`, {
     method: 'DELETE',
+    credentials: 'include', // Include credentials in the request
   });
   if (!response.ok) {
     throw new Error('Failed to delete product');
