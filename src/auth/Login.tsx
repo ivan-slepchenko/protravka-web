@@ -3,6 +3,7 @@ import { Box, Input, Button, VStack, Heading, Alert, AlertIcon } from '@chakra-u
 import { useDispatch } from 'react-redux';
 import { setUser } from '../store/userSlice';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +11,7 @@ const Login = () => {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const auth = getAuth();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
@@ -49,6 +51,7 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button onClick={handleLogin}>Login</Button>
+        <Button variant="link" onClick={() => navigate('/signup')}>{"Don't have an account? Signup"}</Button>
       </VStack>
     </Box>
   );
