@@ -24,7 +24,11 @@ export const createOrder = createAsyncThunk('orders/createOrder', async (order: 
   }
   console.log('Creating order', order);
   const { id, productDetails, ...orderWithoutId } = order; // Remove id from order
-  const productDetailsWithoutIds = productDetails.map(({ id, ...rest }) => rest); // Remove ids from productDetails
+  id.toString();
+  const productDetailsWithoutIds = productDetails.map(({ id, ...rest }) => {
+    id.toString();
+    return rest;
+  }); // Remove ids from productDetails
   const response = await fetch(`${BACKEND_URL}/api/orders`, {
     method: 'POST',
     headers: {
@@ -39,7 +43,10 @@ export const createOrder = createAsyncThunk('orders/createOrder', async (order: 
 
 export const modifyOrder = createAsyncThunk('orders/modifyOrder', async (order: Order) => {
   const { productDetails, ...orderWithoutId } = order; // Remove id from order
-  const productDetailsWithoutIds = productDetails.map(({ id, ...rest }) => rest); // Remove ids from productDetails
+  const productDetailsWithoutIds = productDetails.map(({ id, ...rest }) => {
+    id.toString();
+    return rest;
+  }); // Remove ids from productDetails
   const response = await fetch(`${BACKEND_URL}/api/orders/${order.id}`, {
     method: 'PUT',
     headers: {

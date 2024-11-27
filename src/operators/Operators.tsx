@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { Box, Button, Input, HStack, VStack } from '@chakra-ui/react';
 
 const Operators = () => {
-    const dispatch: AppDispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const operators = useSelector((state: RootState) => state.operators.operators);
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');

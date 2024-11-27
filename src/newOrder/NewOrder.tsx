@@ -4,8 +4,8 @@ import SeedTreatmentForm from "./SeedTreatmentForm";
 
 export const NewOrder = () => {
   return (
-        <Center w='full' h='full' fontSize={'xs'}>
-          <SeedTreatmentForm />
-        </Center>
+    <Center w='full' h='full' fontSize={'xs'}>
+      <SeedTreatmentForm />
+    </Center>
   );
 };

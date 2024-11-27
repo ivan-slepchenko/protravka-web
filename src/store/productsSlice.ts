@@ -16,8 +16,9 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async ()
 });
 
 export const createProduct = createAsyncThunk('products/createProduct', async (product: Product) => {
-    const { id, ...productWithoutId } = product;
-    const response = await fetch(`${BACKEND_URL}/api/products`, {
+  const { id, ...productWithoutId } = product;
+  id.toString();
+  const response = await fetch(`${BACKEND_URL}/api/products`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

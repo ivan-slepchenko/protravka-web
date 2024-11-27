@@ -15,7 +15,6 @@ interface OrderInfoProps {
 const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
   const dispatch: AppDispatch = useDispatch();
   const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === orderId));
-  const products = useSelector((state: RootState) => state.products.products);
 
   React.useEffect(() => {
     if (isOpen) {

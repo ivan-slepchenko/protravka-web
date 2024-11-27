@@ -65,23 +65,23 @@ const hasProductDetailError = (errors: FormikErrors<NewOrder>, touched: FormikTo
 
 export const getRateUnitLabel = (unit: RateUnit): string => {
   switch (unit) {
-    case RateUnit.ML:
-      return "ml";
-    case RateUnit.G:
-      return "g";
-    default:
-      return unit;
+  case RateUnit.ML:
+    return "ml";
+  case RateUnit.G:
+    return "g";
+  default:
+    return unit;
   }
 };
 
 export const getRateTypeLabel = (type: RateType): string => {
   switch (type) {
-    case RateType.Unit:
-      return "per unit";
-    case RateType.Per100Kg:
-      return "per 100kg";
-    default:
-      return type;
+  case RateType.Unit:
+    return "per unit";
+  case RateType.Per100Kg:
+    return "per 100kg";
+  default:
+    return type;
   }
 };
 
@@ -116,6 +116,7 @@ const SeedTreatmentForm: React.FC = () => {
   const handleSubmit = (values: NewOrder, { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }) => {
     try {
       validationSchema.validateSync(values, { abortEarly: false });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error:Yup.ValidationError | any) {
       if (error.name !== "ValidationError") {
         throw error;
@@ -136,7 +137,7 @@ const SeedTreatmentForm: React.FC = () => {
       onSubmit={handleSubmit}
       enableReinitialize
     >
-       {(props: FormikProps<NewOrder>) => (
+      {(props: FormikProps<NewOrder>) => (
         <form onSubmit={props.handleSubmit}>
           <Box width="full" mx="auto" p="4">
             <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb="4">
@@ -313,7 +314,7 @@ const SeedTreatmentForm: React.FC = () => {
 
             {/* Product Details */}
             <FieldArray name="productDetails">
-              {({ push, remove }) => (
+              {({ push }) => (
                 <>
                   {props.values.productDetails.map((productDetail, index) => (
                     <Box key={index} border="1px solid" borderColor="gray.200" p="4" borderRadius="md" mb="4">

@@ -29,6 +29,7 @@ export const fetchCrops = createAsyncThunk('crops/fetchCrops', async () => {
 
 export const createCrop = createAsyncThunk('crops/createCrop', async (crop: Crop) => {
   const { id, ...cropWithoutId } = crop; // Remove id from crop
+  id.toString();
   const response = await fetch(`${BACKEND_URL}/api/crops`, {
     method: 'POST',
     headers: {
@@ -41,6 +42,7 @@ export const createCrop = createAsyncThunk('crops/createCrop', async (crop: Crop
 
 export const createVariety = createAsyncThunk('crops/createVariety', async ({ cropId, variety }: { cropId: string, variety: Variety }) => {
   const { id, ...varietyWithoutId } = variety; // Remove id from variety
+  id.toString();
   const response = await fetch(`${BACKEND_URL}/api/crops/${cropId}/varieties`, {
     method: 'POST',
     headers: {

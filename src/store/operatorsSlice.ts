@@ -23,6 +23,7 @@ export const fetchOperators = createAsyncThunk('operators/fetchOperators', async
 
 export const createOperator = createAsyncThunk('operators/createOperator', async (operator: Operator) => {
   const { id, ...operatorWithoutId } = operator; // Remove id from operator
+  id.toString();
   const response = await fetch(`${BACKEND_URL}/api/operators`, {
     method: 'POST',
     headers: {

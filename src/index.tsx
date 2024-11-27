@@ -9,6 +9,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './store/store';
 import Crops from './crops/Crops';
 import Products from './products/Products';
+import Login from './auth/Login';
+import Signup from './auth/Signup';
 
 import {
   BrowserRouter,
@@ -39,6 +41,8 @@ root.render(
                   <Route path="/operators" element={<Operators />} />
                   <Route path="/crops" element={<Crops />} />
                   <Route path="/products" element={<Products />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
                 </Routes>
               </Box>
             </Box>

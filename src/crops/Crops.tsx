@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Input, VStack, HStack, Text } from '@chakra-ui/react';
+import { Box, Button, Input, VStack, HStack } from '@chakra-ui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { fetchCrops, createCrop, createVariety, deleteCrop, deleteVariety } from '../store/cropsSlice';
