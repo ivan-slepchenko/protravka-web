@@ -1,35 +1,19 @@
 import React, { useState } from 'react';
 import { Box, Input, Button, VStack, Heading, Alert, AlertIcon } from '@chakra-ui/react';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../store/userSlice';
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { registerUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const auth = getAuth();
   const navigate = useNavigate();
+  const { error, message } = useSelector((state: RootState) => state.user);
 
-  const handleSignup = async () => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const token = await user.getIdToken();
-      if (user.email === null) {
-        throw new Error('Email is null, user not created');
-      }
-      await sendEmailVerification(user);
-      dispatch(setUser({ email: user.email, token }));
-      setMessage('Signup successful! Please check your email to verify your account.');
-      setError(null); // Clear error if signup is successful
-    } catch (error) {
-      setError((error as Error).message);
-      console.error('Error signing up:', error);
-    }
+  const handleSignup = () => {
+    dispatch(registerUser({ email, password }));
   };
 
   return (

@@ -1,32 +1,19 @@
 import React, { useState } from 'react';
 import { Box, Input, Button, VStack, Heading, Alert, AlertIcon } from '@chakra-ui/react';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../store/userSlice';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { loginUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const auth = getAuth();
   const navigate = useNavigate();
+  const { error } = useSelector((state: RootState) => state.user);
 
-  const handleLogin = async () => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const token = await user.getIdToken();
-      if (user.email === null) {
-        throw new Error('Email is null, user not logged in');
-      }
-      dispatch(setUser({ email: user.email, token }));
-      setError(null); // Clear error if login is successful
-    } catch (error) {
-      setError((error as Error).message);
-      console.error('Error logging in:', error);
-    }
+  const handleLogin = () => {
+    dispatch(loginUser({ email, password }));
   };
 
   return (
