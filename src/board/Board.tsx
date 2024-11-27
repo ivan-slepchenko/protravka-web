@@ -30,13 +30,14 @@ const Board: React.FC = () => {
                 {columns.map((column) => (
                     <Box key={column} w="full" border="1px solid #ccc" borderRadius="md" p={3}>
                         <Heading as="h3" size="md" mb={3}>{column}</Heading>
-                        <VStack spacing={3}>
+                        <VStack spacing={3} w="full">
                             {orders.filter(order => order.status === column).map((order, index) => (
                                 <Box
                                     key={index}
                                     border="1px solid #ddd"
                                     borderRadius="md"
                                     p={3}
+                                    w="full"
                                     cursor="pointer"
                                     onClick={() => handleOrderClick(order.id)}
 

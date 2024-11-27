@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, VStack, Link, Divider, Button, Icon } from '@chakra-ui/react';
+import { Box, VStack, Divider, Button } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 
 const LeftMenu = () => {
