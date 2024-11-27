@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Box, Input, Button, VStack, Heading, Alert, AlertIcon } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../store/userSlice';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const dispatch = useDispatch();
   const auth = getAuth();
   const navigate = useNavigate();
@@ -21,7 +22,9 @@ const Signup = () => {
       if (user.email === null) {
         throw new Error('Email is null, user not created');
       }
+      await sendEmailVerification(user);
       dispatch(setUser({ email: user.email, token }));
+      setMessage('Signup successful! Please check your email to verify your account.');
       setError(null); // Clear error if signup is successful
     } catch (error) {
       setError((error as Error).message);
@@ -37,6 +40,12 @@ const Signup = () => {
           <Alert status="error">
             <AlertIcon />
             {error}
+          </Alert>
+        )}
+        {message && (
+          <Alert status="success">
+            <AlertIcon />
+            {message}
           </Alert>
         )}
         <Input
