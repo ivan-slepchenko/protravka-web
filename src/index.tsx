@@ -10,6 +10,7 @@ import Crops from './crops/Crops';
 import Products from './products/Products';
 import { fetchUserByToken } from './store/userSlice';
 import { Role } from './operators/Operators';
+import Execution from './execution/Execution';
 
 import {
   BrowserRouter,
@@ -26,12 +27,16 @@ import Operators from './operators/Operators';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
 
-const RequireAuth = ({ children }: { children: JSX.Element }) => {
+const RequireAuth = ({ children, roles }: { children: JSX.Element, roles?: Role[] }) => {
   const location = useLocation();
-  const email = useSelector((state: RootState) => state.user.email);
+  const user = useSelector((state: RootState) => state.user);
 
-  if (!email) {
+  if (!user.email) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (roles && !roles.some(role => user.roles.includes(role))) {
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -51,12 +56,13 @@ const App = () => {
       {isAuthenticated && <LeftMenu />}
       <Box ml={isAuthenticated ? "20%" : "0"} w="full" h="full" position={'relative'}>
         <Routes>
-          <Route path="/" element={<RequireAuth><Board /></RequireAuth>} />
-          <Route path="/new" element={<RequireAuth><NewOrder /></RequireAuth>} />
-          <Route path="/board" element={<RequireAuth><Board /></RequireAuth>} />
-          <Route path="/operators" element={<RequireAuth><Operators /></RequireAuth>} />
-          <Route path="/crops" element={<RequireAuth><Crops /></RequireAuth>} />
-          <Route path="/products" element={<RequireAuth><Products /></RequireAuth>} />
+          <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
+          <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
+          <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
+          <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
+          <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
+          <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
+          <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
           <Route path="/login" element={<LoginRedirect />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
