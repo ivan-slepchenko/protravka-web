@@ -1,9 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { Role } from '../operators/Operators';
 
 export interface Operator {
   id: string;
   name: string;
   surname: string;
+  roles: Role[];
 }
 
 interface OperatorsState {
@@ -37,6 +39,18 @@ export const createOperator = createAsyncThunk('operators/createOperator', async
   return response.json();
 });
 
+export const updateOperator = createAsyncThunk('operators/updateOperator', async (operator: Operator) => {
+  const response = await fetch(`${BACKEND_URL}/api/operators/${operator.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(operator),
+    credentials: 'include', // Include credentials in the request
+  });
+  return response.json();
+});
+
 const operatorsSlice = createSlice({
   name: 'operators',
   initialState,
@@ -61,8 +75,14 @@ const operatorsSlice = createSlice({
     builder.addCase(createOperator.fulfilled, (state, action: PayloadAction<Operator>) => {
       state.operators.push(action.payload);
     });
+    builder.addCase(updateOperator.fulfilled, (state, action: PayloadAction<Operator>) => {
+      const index = state.operators.findIndex(op => op.id === action.payload.id);
+      if (index !== -1) {
+        state.operators[index] = action.payload;
+      }
+    });
   },
 });
 
-export const { addOperator, updateOperator, deleteOperator } = operatorsSlice.actions;
+export const { addOperator, deleteOperator } = operatorsSlice.actions;
 export default operatorsSlice.reducer;
