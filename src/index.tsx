@@ -1,4 +1,3 @@
-// src/index.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
@@ -10,6 +9,7 @@ import store, { AppDispatch, persistor, RootState } from './store/store';
 import Crops from './crops/Crops';
 import Products from './products/Products';
 import { fetchUserByToken } from './store/userSlice';
+
 
 import {
   BrowserRouter,
