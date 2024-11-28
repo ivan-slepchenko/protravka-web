@@ -5,6 +5,8 @@ export interface Operator {
   id: string;
   name: string;
   surname: string;
+  email: string;
+  phone: string;
   roles: Role[];
 }
 
@@ -39,7 +41,7 @@ export const createOperator = createAsyncThunk('operators/createOperator', async
   return response.json();
 });
 
-export const updateOperator = createAsyncThunk('operators/updateOperator', async (operator: Operator) => {
+export const pushOperatorChanges = createAsyncThunk('operators/updateOperator', async (operator: Operator) => {
   const response = await fetch(`${BACKEND_URL}/api/operators/${operator.id}`, {
     method: 'PUT',
     headers: {
@@ -75,7 +77,7 @@ const operatorsSlice = createSlice({
     builder.addCase(createOperator.fulfilled, (state, action: PayloadAction<Operator>) => {
       state.operators.push(action.payload);
     });
-    builder.addCase(updateOperator.fulfilled, (state, action: PayloadAction<Operator>) => {
+    builder.addCase(pushOperatorChanges.fulfilled, (state, action: PayloadAction<Operator>) => {
       const index = state.operators.findIndex(op => op.id === action.payload.id);
       if (index !== -1) {
         state.operators[index] = action.payload;
@@ -84,5 +86,5 @@ const operatorsSlice = createSlice({
   },
 });
 
-export const { addOperator, deleteOperator } = operatorsSlice.actions;
+export const { addOperator, deleteOperator, updateOperator } = operatorsSlice.actions;
 export default operatorsSlice.reducer;

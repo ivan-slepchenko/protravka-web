@@ -1,9 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { deleteOperator, fetchOperators, updateOperator } from '../store/operatorsSlice';
+import { deleteOperator, fetchOperators, pushOperatorChanges, updateOperator } from '../store/operatorsSlice';
 import { useEffect } from 'react';
-import { Box, Button, Checkbox, CheckboxGroup, HStack, Stack, VStack } from '@chakra-ui/react';
+import { Box, Button, Checkbox, CheckboxGroup, HStack, Stack, VStack, Text, Grid, GridItem } from '@chakra-ui/react';
 
 export enum Role {
   OPERATOR = 'operator',
@@ -24,18 +24,30 @@ const Operators = () => {
     const operator = operators.find(op => op.id === operatorId);
     if (operator) {
       dispatch(updateOperator({ ...operator, roles }));
+      dispatch(pushOperatorChanges({ ...operator, roles }));
     }
   };
 
   return (
     <Box p={4}>
-      <VStack spacing={4}>
+      <Grid templateColumns="repeat(5, 1fr)" borderWidth="1px" borderRadius="lg" overflow="hidden">
+        <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Name</GridItem>
+        <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Email</GridItem>
+        <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Phone</GridItem>
+        <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Roles</GridItem>
+        <GridItem bg="gray.100" p={2} fontWeight="bold">Actions</GridItem>
         {operators && operators.map((operator) => (
-          <Box key={operator.id} p={4} borderWidth="1px" borderRadius="lg" w="full">
-            <HStack justifyContent="space-between">
-              <Box>
-                {operator.name} {operator.surname}
-              </Box>
+          <React.Fragment key={operator.id}>
+            <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200">
+              <Text>{operator.name} {operator.surname}</Text>
+            </GridItem>
+            <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200">
+              <Text>{operator.email}</Text>
+            </GridItem>
+            <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200">
+              <Text>{operator.phone}</Text>
+            </GridItem>
+            <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200">
               <CheckboxGroup
                 value={operator.roles}
                 onChange={(values) => handleRoleChange(operator.id, values as Role[])}
@@ -48,11 +60,13 @@ const Operators = () => {
                   ))}
                 </Stack>
               </CheckboxGroup>
-              <Button onClick={() => dispatch(deleteOperator(operator.id))}>Delete</Button>
-            </HStack>
-          </Box>
+            </GridItem>
+            <GridItem p={2} borderBottom="1px solid" borderColor="gray.200">
+              <Button onClick={() => dispatch(deleteOperator(operator.id))} size={"xs"}>Delete</Button>
+            </GridItem>
+          </React.Fragment>
         ))}
-      </VStack>
+      </Grid>
     </Box>
   );
 };
