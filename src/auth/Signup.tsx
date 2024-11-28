@@ -7,7 +7,7 @@ import { AppDispatch, RootState } from '../store/store';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import manPersonIcon from 'man-person-icon.svg';
+import manPersonIcon from './man-person-icon.svg';
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
