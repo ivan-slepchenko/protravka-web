@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 interface UserState {
   email: string | null;
@@ -16,13 +17,13 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 export const registerUser = createAsyncThunk(
   'user/registerUser',
-  async ({ email, password }: { email: string; password: string }) => {
+  async ({ email, password, name, surname, photo, birthday, phone }: { email: string; password: string; name: string; surname: string; photo: string; birthday: string; phone: string }) => {
     const response = await fetch(`${BACKEND_URL}/api/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, name, surname, photo, birthday, phone }),
       credentials: 'include', // Include credentials in the request
     });
     if (!response.ok) {
