@@ -9,7 +9,7 @@ import store, { AppDispatch, persistor, RootState } from './store/store';
 import Crops from './crops/Crops';
 import Products from './products/Products';
 import { fetchUserByToken } from './store/userSlice';
-
+import { Role } from './operators/Operators';
 
 import {
   BrowserRouter,
@@ -67,13 +67,19 @@ const App = () => {
 
 const LoginRedirect = () => {
   const navigate = useNavigate();
-  const email = useSelector((state: RootState) => state.user.email);
+  const user = useSelector((state: RootState) => state.user);
 
   React.useEffect(() => {
-    if (email) {
-      navigate('/board');
+    if (user.email) {
+      if (user.roles.includes(Role.OPERATOR)) {
+        navigate('/execution');
+      } else if (user.roles.includes(Role.MANAGER)) {
+        navigate('/board');
+      } else {
+        navigate('/operators');
+      }
     }
-  }, [navigate, email]);
+  }, [navigate, user]);
 
   return <Login />;
 };
