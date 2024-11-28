@@ -51,6 +51,7 @@ const App = () => {
       {isAuthenticated && <LeftMenu />}
       <Box ml={isAuthenticated ? "20%" : "0"} w="full" h="full" position={'relative'}>
         <Routes>
+          <Route path="/" element={<RequireAuth><Board /></RequireAuth>} />
           <Route path="/new" element={<RequireAuth><NewOrder /></RequireAuth>} />
           <Route path="/board" element={<RequireAuth><Board /></RequireAuth>} />
           <Route path="/operators" element={<RequireAuth><Operators /></RequireAuth>} />

@@ -1,6 +1,6 @@
 {
   "name": "avimate-web",
-  "version": "0.2.21",
+  "version": "0.2.23",
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^2.2.4",
@@ -38,7 +38,7 @@
     "yup": "^1.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "get-version": "node -p \"require('./package.json').version\"",

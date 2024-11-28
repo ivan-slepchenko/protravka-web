@@ -56,9 +56,6 @@ export const fetchUserByToken = createAsyncThunk(
     const response = await fetch(`${BACKEND_URL}/api/user`, {
       credentials: 'include',
     });
-    if (!response.ok) {
-      throw new Error('Failed to fetch user');
-    }
     return response.json();
   }
 );
