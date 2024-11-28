@@ -80,44 +80,42 @@ const App = () => {
   return (
     <>
       <Box display={{ base: 'block', md: 'none' }} w="full" h="full" position="relative">
-        {isAuthenticated && (
-          <VStack w="full" h="full" position="relative">
+        <VStack w="full" h="full" position="relative">
+          {isAuthenticated && (
             <MobileMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
-            <Box w="full" h="full" position={'relative'}>
-              <Routes>
-                <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
-                <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
-                <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
-                <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
-                <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
-                <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
-                <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
-                <Route path="/login" element={<LoginRedirect />} />
-                <Route path="/signup" element={<Signup />} />
-              </Routes>
-            </Box>
-          </VStack>
-        )}
+          )}
+          <Box w="full" h="full" position={'relative'}>
+            <Routes>
+              <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
+              <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
+              <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
+              <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
+              <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
+              <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
+              <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
+              <Route path="/login" element={<LoginRedirect />} />
+              <Route path="/signup" element={<Signup />} />
+            </Routes>
+          </Box>
+        </VStack>
       </Box>
-      <Box display={{ base: 'none', md: 'flex' }} w="full" h="full" position="relative">
+      <Box display={{ base: 'none', md: 'flex' }} w="full" h="full" position="relative"> 
         {isAuthenticated && (
-          <>
-            <DesktopMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
-            <Box ml="20%" w="full" h="full" position={'relative'}>
-              <Routes>
-                <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
-                <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
-                <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
-                <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
-                <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
-                <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
-                <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
-                <Route path="/login" element={<LoginRedirect />} />
-                <Route path="/signup" element={<Signup />} />
-              </Routes>
-            </Box>
-          </>
+          <DesktopMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
         )}
+        <Box ml={isAuthenticated ? "20%" : 'unset'} w="full" h="full" position={'relative'}>
+          <Routes>
+            <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
+            <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
+            <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
+            <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
+            <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
+            <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
+            <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
+            <Route path="/login" element={<LoginRedirect />} />
+            <Route path="/signup" element={<Signup />} />
+          </Routes>
+        </Box>
       </Box>
     </>
   );
