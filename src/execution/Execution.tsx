@@ -20,7 +20,6 @@ const Execution = () => {
 
   return (
     <Box p={4}>
-      <Text fontSize="2xl" fontWeight="bold">Hello, {user.name} {user.surname}!</Text>
       <Text fontSize="lg">You have the following lots to treat today, {currentDate}</Text>
       <TableContainer mt={4}>
         <Table variant="simple">

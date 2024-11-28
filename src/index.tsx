@@ -2,15 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { ChakraProvider, Box } from "@chakra-ui/react";
+import { ChakraProvider, Box, VStack } from "@chakra-ui/react";
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { AppDispatch, persistor, RootState } from './store/store';
 import Crops from './crops/Crops';
 import Products from './products/Products';
-import { fetchUserByToken } from './store/userSlice';
+import { fetchUserByToken, logoutUser } from './store/userSlice';
 import { Role } from './operators/Operators';
 import Execution from './execution/Execution';
+import MobileMenu from './MobileMenu';
+import DesktopMenu from './DesktopMenu';
 
 import {
   BrowserRouter,
@@ -21,7 +23,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { NewOrder } from "./newOrder/NewOrder";
-import LeftMenu from './LeftMenu';
 import Board from './board/Board';
 import Operators from './operators/Operators';
 import Login from './auth/Login';
@@ -44,30 +45,81 @@ const RequireAuth = ({ children, roles }: { children: JSX.Element, roles?: Role[
 
 const App = () => {
   const dispatch: AppDispatch = useDispatch();
-  const email = useSelector((state: RootState) => state.user.email);
+  const user = useSelector((state: RootState) => state.user);
+  const email = user.email;
   const isAuthenticated = !!email;
 
+  const roleToLinks = {
+    [Role.MANAGER]: [
+      { to: "/board", label: "Board" },
+      { to: "/new", label: "New Order" },
+    ],
+    [Role.ADMIN]: [
+      { to: "/operators", label: "Operators" },
+      { to: "/crops", label: "Crops" },
+      { to: "/products", label: "Products" },
+    ],
+    [Role.OPERATOR]: [
+      { to: "/execution", label: "Execution" },
+    ],
+  };
+
+  const userRoles = user.roles || [];
+  const managerLinks = userRoles.includes(Role.MANAGER) ? roleToLinks[Role.MANAGER] : [];
+  const adminLinks = userRoles.includes(Role.ADMIN) ? roleToLinks[Role.ADMIN] : [];
+  const operatorLinks = userRoles.includes(Role.OPERATOR) ? roleToLinks[Role.OPERATOR] : [];
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
+
   React.useEffect(() => {
-    if(!isAuthenticated) dispatch(fetchUserByToken());
+    if (!isAuthenticated) dispatch(fetchUserByToken());
   }, [dispatch, isAuthenticated]);
 
   return (
-    <Box display="flex" w="full" h="full" position="relative">
-      {isAuthenticated && <LeftMenu />}
-      <Box ml={isAuthenticated ? "20%" : "0"} w="full" h="full" position={'relative'}>
-        <Routes>
-          <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
-          <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
-          <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
-          <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
-          <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
-          <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
-          <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
-          <Route path="/login" element={<LoginRedirect />} />
-          <Route path="/signup" element={<Signup />} />
-        </Routes>
+    <>
+      <Box display={{ base: 'block', md: 'none' }} w="full" h="full" position="relative">
+        {isAuthenticated && (
+          <VStack w="full" h="full" position="relative">
+            <MobileMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
+            <Box w="full" h="full" position={'relative'}>
+              <Routes>
+                <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
+                <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
+                <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
+                <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
+                <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
+                <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
+                <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
+                <Route path="/login" element={<LoginRedirect />} />
+                <Route path="/signup" element={<Signup />} />
+              </Routes>
+            </Box>
+          </VStack>
+        )}
       </Box>
-    </Box>
+      <Box display={{ base: 'none', md: 'flex' }} w="full" h="full" position="relative">
+        {isAuthenticated && (
+          <>
+            <DesktopMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
+            <Box ml="20%" w="full" h="full" position={'relative'}>
+              <Routes>
+                <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
+                <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
+                <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
+                <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
+                <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
+                <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
+                <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
+                <Route path="/login" element={<LoginRedirect />} />
+                <Route path="/signup" element={<Signup />} />
+              </Routes>
+            </Box>
+          </>
+        )}
+      </Box>
+    </>
   );
 };
 
