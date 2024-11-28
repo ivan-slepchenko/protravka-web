@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { deleteOperator, fetchOperators, pushOperatorChanges, updateOperator } from '../store/operatorsSlice';
 import { useEffect } from 'react';
-import { Box, Button, Checkbox, CheckboxGroup, HStack, Stack, VStack, Text, Grid, GridItem } from '@chakra-ui/react';
+import { Box, Button, Checkbox, CheckboxGroup, Stack, Text, Grid, GridItem } from '@chakra-ui/react';
 
 export enum Role {
   OPERATOR = 'operator',
