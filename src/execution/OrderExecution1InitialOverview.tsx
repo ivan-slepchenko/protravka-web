@@ -32,7 +32,7 @@ const OrderExecution1InitialOverview = () => {
     };
 
     return (
-        <Box p={4}>
+        <Box p={4} w="full" h="full">
             <Text fontSize="2xl" fontWeight="bold">Order Execution</Text>
             <Box mt={4}>
                 <Text>Lot number: {order.lotNumber}</Text>

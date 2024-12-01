@@ -1,10 +1,8 @@
 import React from 'react';
 import { Box, Text, Button, useMediaQuery } from '@chakra-ui/react';
-import { useDispatch } from 'react-redux';
 
 const OrderExecutionCompletion = () => {
     const [isMobile] = useMediaQuery("(max-width: 600px)");
-    const dispatch = useDispatch();
 
     const handleCompleteClick = () => {
 

@@ -1,13 +1,13 @@
 
 export enum OrderExecutionPage {
-  InitialOverview,
-  AllAddedProductsOverview,
-  ApplicationMethod,
-  ApplyingProduct,
-  ProovingProduct,
-  ConsumptionDetails,
-  PackingDetails,
-  PhotoConfirmation,
-  TreatingConfirmation,
-  Completion,
+    InitialOverview,
+    ApplicationMethod,
+    ApplyingProduct,
+    ProovingProduct,
+    AllAddedProductsOverview,
+    ConsumptionDetails,
+    PackingDetails,
+    PhotoConfirmation,
+    TreatingConfirmation,
+    Completion,
 }
