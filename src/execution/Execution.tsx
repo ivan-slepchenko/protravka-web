@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '../store/store';
 import { fetchOrders } from '../store/ordersSlice';
 import OrdersOverview from './OrdersOverview';
 import OrderExecution1InitialOverview from './OrderExecution1InitialOverview';
-import OrderExecutionAllAddedProductsOverview from './OrderExecutionAllAddedProductsOverview';
+import OrderExecution5AllAddedProductsOverview from './OrderExecution5AllAddedProductsOverview';
 import OrderExecution2ApplicationMethod from './OrderExecution2ApplicationMethod';
 import OrderExecution3ApplyingProduct from './OrderExecution3ApplyingProduct';
 import OrderExecutionCompletion from './OrderExecutionCompletion';
@@ -34,7 +34,7 @@ const Execution = () => {
         case OrderExecutionPage.InitialOverview:
             return <OrderExecution1InitialOverview />;
         case OrderExecutionPage.AllAddedProductsOverview:
-            return <OrderExecutionAllAddedProductsOverview />;
+            return <OrderExecution5AllAddedProductsOverview />;
         case OrderExecutionPage.ApplicationMethod:
             return <OrderExecution2ApplicationMethod />;
         case OrderExecutionPage.ApplyingProduct:

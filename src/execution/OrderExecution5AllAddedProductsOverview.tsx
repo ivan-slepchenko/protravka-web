@@ -1,16 +1,16 @@
-
 import React from 'react';
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Button, VStack } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
-const OrderExecutionAllAddedProductsOverview = () => {
-    const placeholderData = [
-        { name: 'Product 1', targetQty: 'xxx', actualQty: 'xxx' },
-        { name: 'Product 2', targetQty: 'xxx', actualQty: 'xxx' },
-    // Add more placeholder data as needed
-    ];
+const OrderExecution5AllAddedProductsOverview = () => {
+    const { currentOrderId, orderExecutions } = useSelector((state: RootState) => state.execution);
+    const currentOrder = orderExecutions.find(execution => execution.orderId === currentOrderId);
+    const orders = useSelector((state: RootState) => state.orders.activeOrders);
+    const orderDetails = orders.find(order => order.id === currentOrderId);
 
-    const totalTargetQty = placeholderData.reduce((total, item) => total + parseFloat(item.targetQty), 0);
-    const totalActualQty = placeholderData.reduce((total, item) => total + parseFloat(item.actualQty), 0);
+    const totalTargetQty = orderDetails?.productDetails.reduce((total, product) => total + product.quantity, 0) || 0;
+    const totalActualQty = currentOrder?.products.reduce((total, product) => total + product.appliedQuantity, 0) || 0;
 
     return (
         <Box p={4}>
@@ -25,11 +25,11 @@ const OrderExecutionAllAddedProductsOverview = () => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {placeholderData.map((item, index) => (
+                        {currentOrder?.products.map((product, index) => (
                             <Tr key={index} bg={index % 2 === 0 ? 'gray.50' : 'white'}>
-                                <Td>{item.name}</Td>
-                                <Td>{item.targetQty}</Td>
-                                <Td>{item.actualQty}</Td>
+                                <Td>{product.productId}</Td>
+                                <Td>{orderDetails?.productDetails[index].quantity || '-'}</Td>
+                                <Td>{product.appliedQuantity}</Td>
                             </Tr>
                         ))}
                     </Tbody>
@@ -43,11 +43,11 @@ const OrderExecutionAllAddedProductsOverview = () => {
                 </Table>
                 <Text fontSize="lg" textAlign="center">Swipe to start treatment now.</Text>
                 <Button colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }}>
-          Next
+                    Next
                 </Button>
             </VStack>
         </Box>
     );
 };
 
-export default OrderExecutionAllAddedProductsOverview;
+export default OrderExecution5AllAddedProductsOverview;

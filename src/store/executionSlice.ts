@@ -16,6 +16,7 @@ interface ExecutionState {
   currentPage: OrderExecutionPage;
   applicationMethod: string | null;
   orderExecutions: OrderExecution[];
+  currentProductIndex: number;
 }
 
 const initialState: ExecutionState = {
@@ -23,6 +24,7 @@ const initialState: ExecutionState = {
     currentPage: OrderExecutionPage.InitialOverview,
     applicationMethod: null,
     orderExecutions: [],
+    currentProductIndex: 0,
 };
 
 const executionSlice = createSlice({
@@ -32,8 +34,15 @@ const executionSlice = createSlice({
         startExecution: (state, action: PayloadAction<string>) => {
             state.currentOrderId = action.payload;
             state.currentPage = OrderExecutionPage.InitialOverview;
+            state.currentProductIndex = 0;
             if (!state.orderExecutions.find(execution => execution.orderId === action.payload)) {
                 state.orderExecutions.push({ orderId: action.payload, products: [] });
+            }
+        },
+        nextProduct: (state) => {
+            const currentOrder = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
+            if (currentOrder && state.currentProductIndex < currentOrder.products.length - 1) {
+                state.currentProductIndex += 1;
             }
         },
         nextPage: (state) => {
@@ -43,11 +52,13 @@ const executionSlice = createSlice({
             state.currentOrderId = null;
             state.currentPage = OrderExecutionPage.InitialOverview;
             state.applicationMethod = null;
+            state.currentProductIndex = 0;
         },
         completeExecution: (state) => {
             state.currentOrderId = null;
             state.currentPage = OrderExecutionPage.InitialOverview;
             state.applicationMethod = null;
+            state.currentProductIndex = 0;
         },
         setApplicationMethod: (state, action: PayloadAction<string>) => {
             state.applicationMethod = action.payload;
@@ -67,5 +78,5 @@ const executionSlice = createSlice({
     },
 });
 
-export const { startExecution, nextPage, resetExecution, completeExecution, setApplicationMethod, setAppliedQuantity } = executionSlice.actions;
+export const { startExecution, nextProduct, nextPage, resetExecution, completeExecution, setApplicationMethod, setAppliedQuantity } = executionSlice.actions;
 export default executionSlice.reducer;

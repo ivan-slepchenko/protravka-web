@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Text, Button, useMediaQuery } from '@chakra-ui/react';
-import { OrderExecutionPage } from './OrderExecutionPage';
 
 const OrderExecutionPackingDetails = () => {
     const [isMobile] = useMediaQuery("(max-width: 600px)");

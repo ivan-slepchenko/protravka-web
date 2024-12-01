@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
+import { nextProduct, nextPage, setAppliedQuantity } from '../store/executionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
 
 const OrderExecution4ProovingProduct = () => {
+    const dispatch: AppDispatch = useDispatch();
+    const { currentOrderId, currentProductIndex, orderExecutions } = useSelector((state: RootState) => state.execution);
     const [photo, setPhoto] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -39,10 +44,25 @@ const OrderExecution4ProovingProduct = () => {
         startCamera();
     };
 
+    const handleNextButtonClick = () => {
+        if (currentOrderId) {
+            const currentOrder = orderExecutions.find(execution => execution.orderId === currentOrderId);
+            if (currentOrder) {
+                const currentProduct = currentOrder.products[currentProductIndex];
+                dispatch(setAppliedQuantity({ orderId: currentOrderId, productId: currentProduct.productId, quantity: 1 })); // Example quantity
+                if (currentProductIndex < currentOrder.products.length - 1) {
+                    dispatch(nextProduct());
+                } else {
+                    dispatch(nextPage());
+                }
+            }
+        }
+    };
+
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh" p={4}>
             <VStack spacing={8} width="100%" maxWidth="400px">
-                <Text fontSize="xl" fontWeight="bold" textAlign="center">Product name #... out of ...</Text>
+                <Text fontSize="xl" fontWeight="bold" textAlign="center">Product name #{currentProductIndex + 1} out of {orderExecutions.find(execution => execution.orderId === currentOrderId)?.products.length}</Text>
                 <Box
                     width="100%"
                     height="300px"
@@ -77,9 +97,9 @@ const OrderExecution4ProovingProduct = () => {
                         width="100%"
                         borderRadius="full"
                         colorScheme="orange"
-                        onClick={takeSnapshot}
+                        onClick={handleNextButtonClick}
                     >
-                        Swipe &gt;&gt;&gt;
+                        Next
                     </Button>
                 </VStack>
             </VStack>
