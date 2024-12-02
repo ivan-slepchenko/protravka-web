@@ -29,6 +29,7 @@ import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchOperators } from "../store/operatorsSlice";
 import { fetchCrops } from "../store/cropsSlice";
 import { fetchProducts } from "../store/productsSlice";
+import { Operator } from '../store/operatorsSlice';
 
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),
@@ -85,10 +86,13 @@ export const getRateTypeLabel = (type: RateType): string => {
     }
 };
 
-const SeedTreatmentForm: React.FC = () => {
+interface SeedTreatmentFormProps {
+    operators: Operator[];
+}
+
+const SeedTreatmentForm: React.FC<SeedTreatmentFormProps> = ({ operators }) => {
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder as NewOrder);
-    const operators = useSelector((state: RootState) => state.operators.operators);
     const crops = useSelector((state: RootState) => state.crops.crops);
     const selectedCropId = useSelector((state: RootState) => state.newOrder.cropId);
     const products = useSelector((state: RootState) => state.products.products);
@@ -96,7 +100,6 @@ const SeedTreatmentForm: React.FC = () => {
     const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
 
     useEffect(() => {
-        dispatch(fetchOperators());
         dispatch(fetchCrops());
         dispatch(fetchProducts());
     }, [dispatch]);
