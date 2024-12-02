@@ -48,8 +48,6 @@ const OrderExecution4ProovingProduct = () => {
         if (currentOrderId) {
             const currentOrder = orderExecutions.find(execution => execution.orderId === currentOrderId);
             if (currentOrder) {
-                const currentProduct = currentOrder.products[currentProductIndex];
-                dispatch(setAppliedQuantity({ orderId: currentOrderId, productId: currentProduct.productId, quantity: 1 })); // Example quantity
                 if (currentProductIndex < currentOrder.products.length - 1) {
                     dispatch(nextProduct());
                 } else {

@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import { Box, Text, Checkbox, Button, VStack } from '@chakra-ui/react';
-import { OrderExecutionPage } from './OrderExecutionPage';
+import { nextPage } from '../store/executionSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store/store';
 
-const OrderExecutionTreatingConfirmation = () => {
+const OrderExecution6TreatingConfirmation = () => {
     const [isChecked, setIsChecked] = useState(false);
+    const dispatch: AppDispatch = useDispatch();
+
+    const handleNextButtonClick = () => {
+        dispatch(nextPage());
+    };
+
     const lotNumber = 'XXX'; // Replace with actual lot number
 
     return (
@@ -21,7 +29,7 @@ const OrderExecutionTreatingConfirmation = () => {
                     borderColor="green.300"
                     alignSelf="flex-start"
                 >
-          I hereby confirm that I finished to treat lot {lotNumber} and ready to give the number of units packed.
+                    I hereby confirm that I finished to treat lot {lotNumber} and ready to give the number of units packed.
                 </Checkbox>
                 <Button
                     width="100%"
@@ -29,12 +37,13 @@ const OrderExecutionTreatingConfirmation = () => {
                     colorScheme="orange"
                     isDisabled={!isChecked}
                     _hover={{ backgroundColor: 'orange.200' }}
+                    onClick={handleNextButtonClick}
                 >
-          Swipe &gt;&gt;&gt;
+                    Next
                 </Button>
             </VStack>
         </Box>
     );
 };
 
-export default OrderExecutionTreatingConfirmation;
+export default OrderExecution6TreatingConfirmation;

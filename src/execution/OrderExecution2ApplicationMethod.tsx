@@ -17,14 +17,14 @@ const OrderExecution2ApplicationMethod = () => {
             <VStack spacing={4}>
                 <Text fontSize="2xl" fontWeight="bold" textAlign="center">Choose the application method</Text>
                 <Button
-                    onClick={() => handleApplicationMethodSelect('Slurry')}
+                    onClick={() => handleApplicationMethodSelect('Surry')}
                     borderRadius="md"
                     width="200px"
                     border="1px solid"
                     borderColor="gray.300"
                     _hover={{ backgroundColor: 'gray.100' }}
                 >
-                    Slurry
+                    Surry
                 </Button>
                 <Button
                     onClick={() => handleApplicationMethodSelect('CDS')}

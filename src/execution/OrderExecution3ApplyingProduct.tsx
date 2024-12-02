@@ -20,7 +20,7 @@ const OrderExecution3ApplyingProduct = () => {
     };
 
     const renderTableHeaders = () => {
-        if (applicationMethod === 'Slurry') {
+        if (applicationMethod === 'Surry') {
             return (
                 <Thead bg="orange.100">
                     <Tr>
@@ -56,7 +56,7 @@ const OrderExecution3ApplyingProduct = () => {
     );
 
     const renderContent = () => {
-        if (applicationMethod === 'Slurry' || applicationMethod === 'CDS') {
+        if (applicationMethod === 'Surry' || applicationMethod === 'CDS') {
             return (
                 <Box border="1px solid" borderColor="green.300" borderRadius="md" p={4} flex="1" m={2}>
                     <Text fontSize="xl" fontWeight="bold" mb={4}>{applicationMethod}</Text>

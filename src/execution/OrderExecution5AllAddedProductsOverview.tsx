@@ -1,9 +1,11 @@
 import React from 'react';
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Button, VStack } from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
+import { nextPage } from '../store/executionSlice';
 
 const OrderExecution5AllAddedProductsOverview = () => {
+    const dispatch: AppDispatch = useDispatch();
     const { currentOrderId, orderExecutions } = useSelector((state: RootState) => state.execution);
     const currentOrder = orderExecutions.find(execution => execution.orderId === currentOrderId);
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
@@ -11,6 +13,10 @@ const OrderExecution5AllAddedProductsOverview = () => {
 
     const totalTargetQty = orderDetails?.productDetails.reduce((total, product) => total + product.quantity, 0) || 0;
     const totalActualQty = currentOrder?.products.reduce((total, product) => total + product.appliedQuantity, 0) || 0;
+
+    const handleNextButtonClicked = (): void => {
+        dispatch(nextPage());
+    }
 
     return (
         <Box p={4}>
@@ -42,7 +48,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
                     </Tfoot>
                 </Table>
                 <Text fontSize="lg" textAlign="center">Swipe to start treatment now.</Text>
-                <Button colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }}>
+                <Button colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }} onClick={handleNextButtonClicked}>
                     Next
                 </Button>
             </VStack>

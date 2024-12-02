@@ -8,12 +8,12 @@ import OrderExecution1InitialOverview from './OrderExecution1InitialOverview';
 import OrderExecution5AllAddedProductsOverview from './OrderExecution5AllAddedProductsOverview';
 import OrderExecution2ApplicationMethod from './OrderExecution2ApplicationMethod';
 import OrderExecution3ApplyingProduct from './OrderExecution3ApplyingProduct';
-import OrderExecutionCompletion from './OrderExecutionCompletion';
-import OrderExecutionConsumptionDetails from './OrderExecutionConsumptionDetails';
-import OrderExecutionPackingDetails from './OrderExecutionPackingDetails';
-import OrderExecutionPhotoConfirmation from './OrderExecutionPhotoConfirmation';
+import OrderExecutionCompletion from './OrderExecution10Completion';
+import OrderExecutionConsumptionDetails from './OrderExecution9ConsumptionDetails';
+import OrderExecutionPackingDetails from './OrderExecution7PackingDetails';
+import OrderExecutionPhotoConfirmation from './OrderExecution8PhotoConfirmation';
 import OrderExecution4ProovingProduct from './OrderExecution4ProovingProduct';
-import OrderExecutionTreatingConfirmation from './OrderExecutionTreatingConfirmation';
+import OrderExecution6TreatingConfirmation from './OrderExecution6TreatingConfirmation';
 import { OrderExecutionPage } from './OrderExecutionPage';
 
 const Execution = () => {
@@ -50,7 +50,7 @@ const Execution = () => {
         case OrderExecutionPage.ProovingProduct:
             return <OrderExecution4ProovingProduct />;
         case OrderExecutionPage.TreatingConfirmation:
-            return <OrderExecutionTreatingConfirmation />;
+            return <OrderExecution6TreatingConfirmation />;
         default:
             return null;
         }

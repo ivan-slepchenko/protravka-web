@@ -5,9 +5,9 @@ export enum OrderExecutionPage {
     ApplyingProduct,
     ProovingProduct,
     AllAddedProductsOverview,
-    ConsumptionDetails,
+    TreatingConfirmation,
     PackingDetails,
     PhotoConfirmation,
-    TreatingConfirmation,
+    ConsumptionDetails,
     Completion,
 }

@@ -21,7 +21,7 @@ const OrderExecutionCompletion = () => {
                 fontWeight="bold"
                 borderRadius="md"
             >
-        Thank you
+                {'Thank you'}
             </Box>
             <Button
                 mt={8}
@@ -31,7 +31,7 @@ const OrderExecutionCompletion = () => {
                 size={isMobile ? "md" : "lg"}
                 onClick={handleCompleteClick}
             >
-        swipe
+                {'Next'}
             </Button>
         </Box>
     );
