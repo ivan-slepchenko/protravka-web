@@ -8,7 +8,7 @@ interface ProductExecution {
 
 interface OrderExecution {
   orderId: string;
-  products: ProductExecution[];
+  productExecutions: ProductExecution[];
 }
 
 interface ExecutionState {
@@ -36,17 +36,18 @@ const executionSlice = createSlice({
             state.currentPage = OrderExecutionPage.InitialOverview;
             state.currentProductIndex = 0;
             if (!state.orderExecutions.find(execution => execution.orderId === action.payload)) {
-                state.orderExecutions.push({ orderId: action.payload, products: [] });
+                state.orderExecutions.push({ orderId: action.payload, productExecutions: [] });
             }
         },
         nextProduct: (state) => {
-            const currentOrder = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
-            if (currentOrder && state.currentProductIndex < currentOrder.products.length - 1) {
-                state.currentProductIndex += 1;
-            }
+            state.currentProductIndex += 1;
         },
-        nextPage: (state) => {
-            state.currentPage = state.currentPage + 1;
+        nextPage: (state, action: PayloadAction<OrderExecutionPage | undefined>) => {
+            if (action.payload !== undefined) {
+                state.currentPage = action.payload;
+            } else {
+                state.currentPage = state.currentPage + 1;
+            }
         },
         resetExecution: (state) => {
             state.currentOrderId = null;
@@ -67,11 +68,11 @@ const executionSlice = createSlice({
             const { orderId, productId, quantity } = action.payload;
             const orderExecution = state.orderExecutions.find(execution => execution.orderId === orderId);
             if (orderExecution) {
-                const productExecution = orderExecution.products.find(product => product.productId === productId);
+                const productExecution = orderExecution.productExecutions.find(product => product.productId === productId);
                 if (productExecution) {
                     productExecution.appliedQuantity = quantity;
                 } else {
-                    orderExecution.products.push({ productId, appliedQuantity: quantity });
+                    orderExecution.productExecutions.push({ productId, appliedQuantity: quantity });
                 }
             }
         }

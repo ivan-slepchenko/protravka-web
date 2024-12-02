@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
-import { nextProduct, nextPage, setAppliedQuantity } from '../store/executionSlice';
+import { nextProduct, nextPage } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
+import { OrderExecutionPage } from './OrderExecutionPage';
 
 const OrderExecution4ProovingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -11,6 +12,8 @@ const OrderExecution4ProovingProduct = () => {
     const [photo, setPhoto] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
 
     useEffect(() => {
         startCamera();
@@ -46,10 +49,10 @@ const OrderExecution4ProovingProduct = () => {
 
     const handleNextButtonClick = () => {
         if (currentOrderId) {
-            const currentOrder = orderExecutions.find(execution => execution.orderId === currentOrderId);
-            if (currentOrder) {
-                if (currentProductIndex < currentOrder.products.length - 1) {
+            if (order) {
+                if (currentProductIndex < order.productDetails.length - 1) {
                     dispatch(nextProduct());
+                    dispatch(nextPage(OrderExecutionPage.ApplyingProduct));
                 } else {
                     dispatch(nextPage());
                 }
@@ -60,7 +63,7 @@ const OrderExecution4ProovingProduct = () => {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh" p={4}>
             <VStack spacing={8} width="100%" maxWidth="400px">
-                <Text fontSize="xl" fontWeight="bold" textAlign="center">Product name #{currentProductIndex + 1} out of {orderExecutions.find(execution => execution.orderId === currentOrderId)?.products.length}</Text>
+                <Text fontSize="xl" fontWeight="bold" textAlign="center">Product name #{currentProductIndex + 1} out of {orderExecutions.find(execution => execution.orderId === currentOrderId)?.productExecutions.length}</Text>
                 <Box
                     width="100%"
                     height="300px"

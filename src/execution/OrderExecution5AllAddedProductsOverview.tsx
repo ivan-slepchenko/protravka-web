@@ -12,7 +12,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
     const orderDetails = orders.find(order => order.id === currentOrderId);
 
     const totalTargetQty = orderDetails?.productDetails.reduce((total, product) => total + product.quantity, 0) || 0;
-    const totalActualQty = currentOrder?.products.reduce((total, product) => total + product.appliedQuantity, 0) || 0;
+    const totalActualQty = currentOrder?.productExecutions.reduce((total, product) => total + product.appliedQuantity, 0) || 0;
 
     const handleNextButtonClicked = (): void => {
         dispatch(nextPage());
@@ -31,7 +31,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {currentOrder?.products.map((product, index) => (
+                        {currentOrder?.productExecutions.map((product, index) => (
                             <Tr key={index} bg={index % 2 === 0 ? 'gray.50' : 'white'}>
                                 <Td>{product.productId}</Td>
                                 <Td>{orderDetails?.productDetails[index].quantity || '-'}</Td>

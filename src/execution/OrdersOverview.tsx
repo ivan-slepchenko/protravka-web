@@ -41,8 +41,8 @@ const OrdersOverview: React.FC = () => {
                                 <Td>{order.crop.name}</Td>
                                 <Td>{order.lotNumber}</Td>
                                 <Td>
-                                    {order.productDetails.map(pd => (
-                                        <Text key={pd.product?.id} fontSize="sm">{pd.product?.name}</Text>
+                                    {order.productDetails.map(productDetail => (
+                                        <Text key={productDetail.product?.id} fontSize="sm">{productDetail.product?.name}</Text>
                                     ))}
                                 </Td>
                                 <Td>
