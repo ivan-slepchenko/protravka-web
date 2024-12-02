@@ -3,6 +3,8 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 export interface Product {
   id: string;
   name: string;
+  activeIngredient?: string;
+  density: number;
 }
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
