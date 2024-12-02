@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, useMediaQuery } from '@chakra-ui/react';
+import { Box, Text, Button, useMediaQuery, VStack, HStack } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { nextPage } from '../store/executionSlice';
 import { OrderExecutionPage } from './OrderExecutionPage';
@@ -14,8 +14,8 @@ const OrderExecutionPhotoConfirmation = () => {
     };
 
     return (
-        <Box p={4} textAlign="center">
-            <Text fontSize="2xl" fontWeight="bold">How many seeds did you pack?</Text>
+        <VStack p={4} w="full" h="full">
+            <Text fontSize="2xl" fontWeight="bold">How many seeds did you pack out of?</Text>
             <Box
                 mt={4}
                 p={8}
@@ -24,16 +24,16 @@ const OrderExecutionPhotoConfirmation = () => {
                 borderRadius="md"
                 textAlign="center"
             >
-        Photo of the machine display
+                Photo of the machine display
             </Box>
-            <Box mt={4}>
+            <HStack justifyContent={"center"} mt='auto'>
                 <Button
                     colorScheme="orange"
                     borderRadius="full"
                     size={isMobile ? "sm" : "md"}
                     mr={4}
                 >
-          Retake the picture
+                    Retake the picture
                 </Button>
                 <Button
                     colorScheme="orange"
@@ -42,10 +42,10 @@ const OrderExecutionPhotoConfirmation = () => {
                     size={isMobile ? "md" : "lg"}
                     onClick={handleNextClick}
                 >
-          Next
+                    Next
                 </Button>
-            </Box>
-        </Box>
+            </HStack>
+        </VStack>
     );
 };
 

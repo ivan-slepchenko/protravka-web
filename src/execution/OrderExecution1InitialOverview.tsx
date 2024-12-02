@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Checkbox, Button } from '@chakra-ui/react';
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Checkbox, Button, HStack, VStack } from '@chakra-ui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { RateUnit } from '../store/newOrderSlice';
@@ -32,14 +32,17 @@ const OrderExecution1InitialOverview = () => {
     };
 
     return (
-        <Box p={4} w="full" h="full">
+        <VStack p={4} w="full" h="full">
             <Text fontSize="2xl" fontWeight="bold">Order Execution</Text>
             <Box mt={4}>
                 <Text>Lot number: {order.lotNumber}</Text>
                 <Text>Quantity to treat: {order.quantity}</Text>
+                <Text>Bag size: {order.bagSize}</Text>
+                <Text>Expected amount of bags: <b>XXX</b></Text>
+                <Text>Batch size: <b>XXX</b></Text>
             </Box>
             <Table variant="simple" mt={4} border="1px solid" borderColor="gray.200">
-                <Thead>
+                <Thead bg="orange.100">
                     <Tr>
                         <Th>Product name</Th>
                         <Th>Litres per lot</Th>
@@ -64,12 +67,14 @@ const OrderExecution1InitialOverview = () => {
                 </Tfoot>
             </Table>
             <Checkbox mt={4} isChecked={isChecked} onChange={(e) => setIsChecked(e.target.checked)}>
-        I understand the amount I need to use
+                {'I understand the amount I need to use'}
             </Checkbox>
-            <Button mt={4} colorScheme="orange" borderRadius="full" isDisabled={!isChecked} onClick={handleNextClick}>
-        Next
-            </Button>
-        </Box>
+            <HStack justifyContent={"center"} mt='auto'>
+                <Button mt={4} w="100px" colorScheme="orange" borderRadius="full" isDisabled={!isChecked} onClick={handleNextClick}>
+                    {'Next'}
+                </Button>
+            </HStack>
+        </VStack>
     );
 };
 

@@ -68,7 +68,7 @@ const executionSlice = createSlice({
             const { orderId, productId, quantity } = action.payload;
             const orderExecution = state.orderExecutions.find(execution => execution.orderId === orderId);
             if (orderExecution) {
-                const productExecution = orderExecution.productExecutions.find(product => product.productId === productId);
+                const productExecution = orderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
                 if (productExecution) {
                     productExecution.appliedQuantity = quantity;
                 } else {

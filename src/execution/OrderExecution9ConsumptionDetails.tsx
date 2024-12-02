@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Flex, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue, Input } from "@chakra-ui/react";
+import { Box, Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { setAppliedQuantity, nextPage } from '../store/executionSlice';
@@ -8,7 +8,14 @@ export default function OrderExecutionConsumptionDetails() {
     const dispatch: AppDispatch = useDispatch();
     const applicationMethod = useSelector((state: RootState) => state.execution.applicationMethod);
     const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
+    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
+    const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);
+    const currentProductId = order?.productDetails[currentProductIndex].product?.id;
 
+    if (currentProductId === undefined) {
+        return null;
+    }
+    
     const handleQuantityChange = (productId: string, quantity: number) => {
         if (currentOrderId) {
             dispatch(setAppliedQuantity({ orderId: currentOrderId, productId, quantity }));
@@ -22,7 +29,7 @@ export default function OrderExecutionConsumptionDetails() {
     const renderTableHeaders = () => {
         if (applicationMethod === 'Slurry') {
             return (
-                <Thead bg="orange.300">
+                <Thead bg="orange.100">
                     <Tr>
                         <Th>Target consumption, kg</Th>
                         <Th>Actual consumption, kg</Th>
@@ -31,7 +38,7 @@ export default function OrderExecutionConsumptionDetails() {
             );
         } else if (applicationMethod === 'CDS') {
             return (
-                <Thead bg="orange.300">
+                <Thead bg="orange.100">
                     <Tr>
                         <Th>Target consumption, kg</Th>
                         <Th>Machine Setting, kg</Th>
@@ -48,7 +55,7 @@ export default function OrderExecutionConsumptionDetails() {
                 <Td>
                     <Input
                         placeholder="Enter value"
-                        onChange={(e) => handleQuantityChange('product-id', parseFloat(e.target.value))}
+                        onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
                     />
                 </Td>
             </Tr>
@@ -65,7 +72,18 @@ export default function OrderExecutionConsumptionDetails() {
             w="full"
         >
             <Heading size="md" mb={4}>
-                {applicationMethod === 'Slurry' ? 'Total slurry consumption per XXX kg' : 'Product name #... out of ... Per XXX kg seeds'}
+                {applicationMethod === 'Slurry'
+                    ? 'Total slurry consumption per XXX kg'
+                    : <span>
+                        {'Product: '}
+                        {order?.productDetails[currentProductIndex].product?.name}
+                        {' #'}
+                        {currentProductIndex + 1}
+                        {'  out of '}
+                        {order?.productDetails.length}
+                        {' Per XXX kg seeds'}
+                    </span>
+                }
             </Heading>
             <Table variant="simple" mb={4}>
                 {renderTableHeaders()}
@@ -87,14 +105,19 @@ export default function OrderExecutionConsumptionDetails() {
     );
 
     return (
-        <Flex
-            direction="column"
-            gap={6}
-            padding={2}
-            justifyContent="center"
-            alignItems="center"
-        >
+        <VStack p={4} w="full" h="full">
             {renderContent()}
-        </Flex>
+            <HStack justifyContent={"center"} mt='auto'>
+                <Button
+                    colorScheme="orange"
+                    variant="outline"
+                    w="full"
+                    borderRadius="md"
+                    onClick={handleMakePhotoClick}
+                >
+                    Make Photo
+                </Button>
+            </HStack>
+        </VStack>
     );
 }

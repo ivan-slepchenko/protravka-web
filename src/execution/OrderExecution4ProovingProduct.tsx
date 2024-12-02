@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
+import { Box, Text, Button, VStack, Image, HStack } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
 import { nextProduct, nextPage } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +8,7 @@ import { OrderExecutionPage } from './OrderExecutionPage';
 
 const OrderExecution4ProovingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
-    const { currentOrderId, currentProductIndex, orderExecutions } = useSelector((state: RootState) => state.execution);
+    const { currentOrderId, currentProductIndex } = useSelector((state: RootState) => state.execution);
     const [photo, setPhoto] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -63,7 +63,14 @@ const OrderExecution4ProovingProduct = () => {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh" p={4}>
             <VStack spacing={8} width="100%" maxWidth="400px">
-                <Text fontSize="xl" fontWeight="bold" textAlign="center">Product name #{currentProductIndex + 1} out of {orderExecutions.find(execution => execution.orderId === currentOrderId)?.productExecutions.length}</Text>
+                <Text mb={2}>
+                    {'Product: '}
+                    {order?.productDetails[currentProductIndex].product?.name}
+                    {' #'}
+                    {currentProductIndex + 1}
+                    {'  out of '}
+                    {order?.productDetails.length}
+                </Text>
                 <Box
                     width="100%"
                     height="300px"

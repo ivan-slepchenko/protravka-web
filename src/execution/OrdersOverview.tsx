@@ -27,7 +27,7 @@ const OrdersOverview: React.FC = () => {
       
             <TableContainer mt={4} w="full">
                 <Table variant="simple" size="sm" w="full">
-                    <Thead>
+                    <Thead bg="orange.100">
                         <Tr>
                             <Th>Crop</Th>
                             <Th>Lot</Th>

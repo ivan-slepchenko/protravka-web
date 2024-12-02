@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, useMediaQuery } from '@chakra-ui/react';
+import { Box, Text, Button, useMediaQuery, VStack, HStack } from '@chakra-ui/react';
 
 const OrderExecutionCompletion = () => {
     const [isMobile] = useMediaQuery("(max-width: 600px)");
@@ -10,7 +10,7 @@ const OrderExecutionCompletion = () => {
     };
 
     return (
-        <Box p={4} textAlign="center" display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh">
+        <VStack p={4} w="full" h="full">
             <Text fontSize="2xl" fontWeight="bold">You finished treating lot xxx</Text>
             <Box
                 mt={4}
@@ -23,17 +23,19 @@ const OrderExecutionCompletion = () => {
             >
                 {'Thank you'}
             </Box>
-            <Button
-                mt={8}
-                colorScheme="orange"
-                borderRadius="full"
-                _hover={{ bg: "orange.600" }}
-                size={isMobile ? "md" : "lg"}
-                onClick={handleCompleteClick}
-            >
-                {'Next'}
-            </Button>
-        </Box>
+            <HStack justifyContent={"center"} mt='auto'>
+                <Button
+                    mt={8}
+                    colorScheme="orange"
+                    borderRadius="full"
+                    _hover={{ bg: "orange.600" }}
+                    size={isMobile ? "md" : "lg"}
+                    onClick={handleCompleteClick}
+                >
+                    {'Next'}
+                </Button>
+            </HStack>
+        </VStack>
     );
 };
 

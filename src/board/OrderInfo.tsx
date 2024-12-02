@@ -81,7 +81,7 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                         <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
                         <Box maxHeight="200px" overflowY="auto" bg="gray.50" p="2" borderRadius="md">
                             <Table variant="simple" size="sm" w="full">
-                                <Thead>
+                                <Thead bg="orange.100">
                                     <Tr>
                                         <Th width="35%" whiteSpace="nowrap">Product Name</Th>
                                         <Th whiteSpace="nowrap">Density (g/ml)</Th>
