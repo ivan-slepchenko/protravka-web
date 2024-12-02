@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Input, Button, VStack, Heading, Alert, AlertIcon, Grid, GridItem, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, useDisclosure } from '@chakra-ui/react';
+import { Box, Input, Button, VStack, Heading, Alert, AlertIcon, Grid, GridItem, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, useDisclosure, Center } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
@@ -49,7 +49,7 @@ const Signup = () => {
     };
 
     return (
-        <Box p={4}>
+        <Center w="full" h="full" p={8}>
             <VStack spacing={4}>
                 <Heading>Signup</Heading>
                 {error && (
@@ -118,7 +118,7 @@ const Signup = () => {
                     </ModalBody>
                 </ModalContent>
             </Modal>
-        </Box>
+        </Center>
     );
 };
 
