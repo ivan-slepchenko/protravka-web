@@ -15,6 +15,7 @@ export enum Role {
 const Operators = () => {
     const dispatch: AppDispatch = useDispatch();
     const operators = useSelector((state: RootState) => state.operators.operators);
+    const currentUserEmail = useSelector((state: RootState) => state.user.email);
 
     useEffect(() => {
         dispatch(fetchOperators());
@@ -36,7 +37,7 @@ const Operators = () => {
                 <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Phone</GridItem>
                 <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Roles</GridItem>
                 <GridItem bg="gray.100" p={2} fontWeight="bold">Actions</GridItem>
-                {operators && operators.map((operator) => (
+                {operators && operators.filter(operator => operator.email !== currentUserEmail).map((operator) => (
                     <React.Fragment key={operator.id}>
                         <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200">
                             <Text>{operator.name} {operator.surname}</Text>
