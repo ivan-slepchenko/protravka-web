@@ -1,8 +1,17 @@
 import React from 'react';
 import { Box, Text, Button, useMediaQuery, VStack, HStack } from '@chakra-ui/react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store/store';
+import { nextPage } from '../store/executionSlice';
 
 const OrderExecutionPackingDetails = () => {
     const [isMobile] = useMediaQuery("(max-width: 600px)");
+
+    const dispatch: AppDispatch = useDispatch();
+
+    const handleNextButtonClick = () => {
+        dispatch(nextPage());
+    };
 
     return (
         <VStack p={4} w="full" h="full">
@@ -26,12 +35,14 @@ const OrderExecutionPackingDetails = () => {
             <HStack justifyContent={"center"} mt='auto'>
                 <Button
                     mt={8}
+                    w="100px" 
                     colorScheme="orange"
                     borderRadius="full"
                     _hover={{ bg: "orange.600" }}
                     size={isMobile ? "md" : "lg"}
+                    onClick={handleNextButtonClick}
                 >
-                    swipe
+                    Next
                 </Button>
             </HStack>
         </VStack>

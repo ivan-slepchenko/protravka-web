@@ -37,7 +37,7 @@ const OrderExecution6TreatingConfirmation = () => {
             </Checkbox>
             <HStack justifyContent={"center"}>
                 <Button
-                    width="100%"
+                    w="100px" 
                     borderRadius="full"
                     colorScheme="orange"
                     isDisabled={!isChecked}

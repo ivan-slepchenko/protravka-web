@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image, HStack } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
-import { nextProduct, nextPage } from '../store/executionSlice';
+import { nextProduct, nextPage, setPhoto, resetPhoto } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { OrderExecutionPage } from './OrderExecutionPage';
@@ -9,7 +9,7 @@ import { OrderExecutionPage } from './OrderExecutionPage';
 const OrderExecution4ProovingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
     const { currentOrderId, currentProductIndex } = useSelector((state: RootState) => state.execution);
-    const [photo, setPhoto] = useState<string | null>(null);
+    const [photo, setPhotoState] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -37,14 +37,17 @@ const OrderExecution4ProovingProduct = () => {
             const context = canvasRef.current.getContext('2d');
             if (context) {
                 context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-                setPhoto(canvasRef.current.toDataURL('image/png'));
+                const photoData = canvasRef.current.toDataURL('image/png');
+                setPhotoState(photoData);
+                dispatch(setPhoto(photoData));
             }
         }
     };
 
     const handleRetakePhoto = () => {
-        setPhoto(null);
+        setPhotoState(null);
         startCamera();
+        dispatch(resetPhoto());
     };
 
     const handleNextButtonClick = () => {
@@ -92,7 +95,7 @@ const OrderExecution4ProovingProduct = () => {
                 <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
                 <VStack spacing={4} width="100%">
                     <Button
-                        width="100%"
+                        w="100px" 
                         borderRadius="full"
                         border="1px solid"
                         borderColor="orange.300"
@@ -102,7 +105,7 @@ const OrderExecution4ProovingProduct = () => {
                         {photo ? 'Retake the picture' : ''}
                     </Button>
                     <Button
-                        width="100%"
+                        w="100px" 
                         borderRadius="full"
                         colorScheme="orange"
                         onClick={handleNextButtonClick}

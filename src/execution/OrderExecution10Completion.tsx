@@ -26,6 +26,7 @@ const OrderExecutionCompletion = () => {
             <HStack justifyContent={"center"} mt='auto'>
                 <Button
                     mt={8}
+                    w="100px" 
                     colorScheme="orange"
                     borderRadius="full"
                     _hover={{ bg: "orange.600" }}

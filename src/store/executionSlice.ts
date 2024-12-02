@@ -17,6 +17,7 @@ interface ExecutionState {
   applicationMethod: string | null;
   orderExecutions: OrderExecution[];
   currentProductIndex: number;
+  photo: string | null;
 }
 
 const initialState: ExecutionState = {
@@ -25,6 +26,7 @@ const initialState: ExecutionState = {
     applicationMethod: null,
     orderExecutions: [],
     currentProductIndex: 0,
+    photo: null,
 };
 
 const executionSlice = createSlice({
@@ -75,9 +77,15 @@ const executionSlice = createSlice({
                     orderExecution.productExecutions.push({ productId, appliedQuantity: quantity });
                 }
             }
-        }
+        },
+        setPhoto: (state, action: PayloadAction<string>) => {
+            state.photo = action.payload;
+        },
+        resetPhoto: (state) => {
+            state.photo = null;
+        },
     },
 });
 
-export const { startExecution, nextProduct, nextPage, resetExecution, completeExecution, setApplicationMethod, setAppliedQuantity } = executionSlice.actions;
+export const { startExecution, nextProduct, nextPage, resetExecution, completeExecution, setApplicationMethod, setAppliedQuantity, setPhoto, resetPhoto } = executionSlice.actions;
 export default executionSlice.reducer;
