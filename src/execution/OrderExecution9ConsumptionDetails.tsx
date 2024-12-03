@@ -12,9 +12,6 @@ export default function OrderExecution9ConsumptionDetails() {
     const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);
     const currentProductId = order?.productDetails[currentProductIndex].product?.id;
 
-    useEffect(() => {
-        dispatch(resetCurrentProductIndex())
-    }, [dispatch]);
 
     if (currentProductId === undefined) {
         return null;

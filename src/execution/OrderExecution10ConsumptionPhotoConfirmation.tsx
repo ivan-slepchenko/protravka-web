@@ -12,6 +12,9 @@ const OrderExecution10ConsumptionPhotoConfirmation = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const applicationMethod = useSelector((state: RootState) => state.execution.applicationMethod);
+    const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);
+    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === state.execution.currentOrderId));
+    const totalProducts = order?.productDetails.length || 0;
 
     useEffect(() => {
         startCamera();
@@ -52,8 +55,12 @@ const OrderExecution10ConsumptionPhotoConfirmation = () => {
         if (applicationMethod === 'Surry') {
             dispatch(nextPage());
         } else {
-            dispatch(incrementProductIndex());
-            dispatch(nextPage(OrderExecutionPage.ConsumptionDetails));
+            if (currentProductIndex < totalProducts - 1) {
+                dispatch(incrementProductIndex());
+                dispatch(nextPage(OrderExecutionPage.ConsumptionDetails));
+            } else {
+                dispatch(nextPage());
+            }
         }
     };
 
