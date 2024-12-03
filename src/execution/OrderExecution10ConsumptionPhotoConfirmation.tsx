@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
-import { useDispatch } from 'react-redux';
-import { nextPage, resetPhoto, setPhoto } from '../store/executionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { nextPage, resetPhoto, setPhoto, incrementProductIndex } from '../store/executionSlice';
+import { RootState } from '../store/store';
 import { FaCamera } from 'react-icons/fa';
+import { OrderExecutionPage } from './OrderExecutionPage';
 
-const OrderExecution8PhotoConfirmation = () => {
+const OrderExecution10ConsumptionPhotoConfirmation = () => {
     const dispatch = useDispatch();
     const [photo, setPhotoState] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const applicationMethod = useSelector((state: RootState) => state.execution.applicationMethod);
 
     useEffect(() => {
         startCamera();
@@ -46,13 +49,18 @@ const OrderExecution8PhotoConfirmation = () => {
     };
 
     const handleNextButtonClick = () => {
-        dispatch(nextPage());
+        if (applicationMethod === 'Surry') {
+            dispatch(nextPage());
+        } else {
+            dispatch(incrementProductIndex());
+            dispatch(nextPage(OrderExecutionPage.ConsumptionDetails));
+        }
     };
 
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh" p={4}>
             <VStack spacing={8} width="100%" maxWidth="400px">
-                <Text mb={2} fontSize="xl" fontWeight="bold">How many seeds did you pack out of?</Text>
+                <Text mb={2} fontSize="xl" fontWeight="bold">Make a consumption photo proof.</Text>
                 <Box
                     width="100%"
                     height="300px"
@@ -97,4 +105,4 @@ const OrderExecution8PhotoConfirmation = () => {
     );
 };
 
-export default OrderExecution8PhotoConfirmation;
+export default OrderExecution10ConsumptionPhotoConfirmation;

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { nextPage, setPackedQuantity } from '../store/executionSlice';
 
-const OrderExecutionPackingDetails = () => {
+const OrderExecution7PackingDetails = () => {
     const [isMobile] = useMediaQuery("(max-width: 600px)");
     const [packedQuantity, setPackedQuantityState] = useState<number>(0);
 
@@ -71,4 +71,4 @@ const OrderExecutionPackingDetails = () => {
     );
 };
 
-export default OrderExecutionPackingDetails;
+export default OrderExecution7PackingDetails;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Button, VStack, Input, HStack } from '@chakra-ui/react';
+import { Text, Table, Thead, Tbody, Tr, Th, Td, Button, VStack, Input, HStack } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { setAppliedQuantity, nextPage } from '../store/executionSlice';
@@ -18,7 +18,7 @@ const OrderExecution3ApplyingProduct = () => {
     const currentProduct = order?.productDetails[currentProductIndex];
     const currentProductId = order?.productDetails[currentProductIndex].product?.id;
     const [inputError, setInputError] = useState(false);
-    const [inputValue, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedQuantity : '');
+    const [, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedQuantity : '');
 
     useEffect(() => {
         setInputValue(currentProductExecution ? currentProductExecution.appliedQuantity : '');
@@ -99,6 +99,7 @@ const OrderExecution3ApplyingProduct = () => {
                     <HStack justifyContent={"center"} mt='auto'>
                         <Button
                             colorScheme="orange"
+                            w="200px"
                             borderRadius="full"
                             _hover={{ backgroundColor: 'orange.200' }}
                             onClick={handleMakePhotoClick}

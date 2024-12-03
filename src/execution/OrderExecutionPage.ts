@@ -9,5 +9,6 @@ export enum OrderExecutionPage {
     PackingDetails,
     PhotoConfirmation,
     ConsumptionDetails,
+    ProovingConsumption,
     Completion,
 }

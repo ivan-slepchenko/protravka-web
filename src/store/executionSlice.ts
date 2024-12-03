@@ -48,6 +48,9 @@ const executionSlice = createSlice({
         nextProduct: (state) => {
             state.currentProductIndex += 1;
         },
+        resetCurrentProductIndex: (state) => {
+            state.currentProductIndex = 0;
+        },
         nextPage: (state, action: PayloadAction<OrderExecutionPage | undefined>) => {
             if (action.payload !== undefined) {
                 state.currentPage = action.payload;
@@ -91,8 +94,11 @@ const executionSlice = createSlice({
         setPackedQuantity: (state, action: PayloadAction<number>) => {
             state.packedQuantity = action.payload;
         },
+        incrementProductIndex: (state) => {
+            state.currentProductIndex += 1;
+        },
     },
 });
 
-export const { startExecution, nextProduct, nextPage, resetExecution, completeExecution, setApplicationMethod, setAppliedQuantity, setPhoto, resetPhoto, setPackedQuantity } = executionSlice.actions;
+export const { startExecution, nextProduct, resetCurrentProductIndex, nextPage, resetExecution, completeExecution, setApplicationMethod, setAppliedQuantity, setPhoto, resetPhoto, setPackedQuantity, incrementProductIndex } = executionSlice.actions;
 export default executionSlice.reducer;

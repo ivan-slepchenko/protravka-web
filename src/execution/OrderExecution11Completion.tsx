@@ -1,17 +1,26 @@
 import React from 'react';
 import { Box, Text, Button, useMediaQuery, VStack, HStack } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
+import { completeExecution, nextPage } from '../store/executionSlice';
+import { OrderExecutionPage } from './OrderExecutionPage';
 
-const OrderExecutionCompletion = () => {
+const OrderExecution11Completion = () => {
+    const dispatch: AppDispatch = useDispatch();
     const [isMobile] = useMediaQuery("(max-width: 600px)");
+    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
+    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
 
     const handleCompleteClick = () => {
-
-    // Navigate to the next page if needed
+        dispatch(nextPage(OrderExecutionPage.InitialOverview));
+        dispatch(completeExecution());
     };
 
     return (
         <VStack p={4} w="full" h="full">
-            <Text fontSize="2xl" fontWeight="bold">You finished treating lot xxx</Text>
+            <Text fontSize="2xl" fontWeight="bold">
+                {`You finished treating lot ${order?.lotNumber}`}
+            </Text>
             <Box
                 mt={4}
                 p={8}
@@ -40,4 +49,4 @@ const OrderExecutionCompletion = () => {
     );
 };
 
-export default OrderExecutionCompletion;
+export default OrderExecution11Completion;
