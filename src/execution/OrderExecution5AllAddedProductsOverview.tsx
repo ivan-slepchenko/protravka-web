@@ -48,7 +48,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
             </Table>
             <Text fontSize="lg" textAlign="center">Swipe to start treatment now.</Text>
             <HStack justifyContent={"center"} mt='auto'>
-                <Button colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }} onClick={handleNextButtonClicked}>
+                <Button width="100px" colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }} onClick={handleNextButtonClicked}>
                     Next
                 </Button>
             </HStack>

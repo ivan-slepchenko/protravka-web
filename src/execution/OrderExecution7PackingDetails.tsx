@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Button, useMediaQuery, VStack, HStack } from '@chakra-ui/react';
+import { Box, Text, Button, useMediaQuery, VStack, HStack, NumberInput, NumberInputField } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { nextPage, setPackedQuantity } from '../store/executionSlice';
@@ -30,12 +30,21 @@ const OrderExecutionPackingDetails = () => {
                 fontWeight="bold"
                 borderRadius="md"
             >
-                <input
-                    type="number"
+                <NumberInput
                     value={packedQuantity}
-                    onChange={(e) => setPackedQuantityState(e.target.value === "" ? 0 : Number(e.target.value))}
-                    style={{ width: '100%', textAlign: 'center', fontSize: 'inherit', fontWeight: 'inherit', background: 'inherit', color: 'inherit', border: 'none' }}
-                />
+                    onChange={(valueString) => setPackedQuantityState(valueString === "" ? 0 : Number(valueString))}
+                    min={0}
+                    width="100%"
+                >
+                    <NumberInputField
+                        textAlign="center"
+                        fontSize="inherit"
+                        fontWeight="inherit"
+                        background="inherit"
+                        color="inherit"
+                        border="none"
+                    />
+                </NumberInput>
             </Box>
             <Text mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
             <Box mt={4} textAlign="left">
