@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OrderExecutionPage } from '../execution/OrderExecutionPage';
+import { OrderStatus } from './newOrderSlice';
 
 interface ProductExecution {
     productId: string;
@@ -53,6 +54,24 @@ const saveOrderExecutionToBackend = (orderExecution: OrderExecution) => {
         });
 };
 
+const updateOrderStatusInBackend = (orderId: string, status: OrderStatus) => {
+    fetch(`${BACKEND_URL}/api/orders`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: orderId, status }),
+        credentials: 'include', // Include credentials in the request
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Order status updated:', data);
+        })
+        .catch(error => {
+            console.error('Failed to update order status:', error);
+        });
+};
+
 const executionSlice = createSlice({
     name: 'execution',
     initialState,
@@ -61,7 +80,8 @@ const executionSlice = createSlice({
             state.currentOrderId = action.payload;
             state.currentPage = OrderExecutionPage.InitialOverview;
             state.currentProductIndex = 0;
-            if (!state.orderExecutions.find(execution => execution.orderId === action.payload)) {
+            const existingExecution = state.orderExecutions.find(execution => execution.orderId === action.payload);
+            if (!existingExecution) {
                 const newOrderExecution = {
                     orderId: action.payload,
                     productExecutions: [],
@@ -73,6 +93,7 @@ const executionSlice = createSlice({
                 state.orderExecutions.push(newOrderExecution);
                 saveOrderExecutionToBackend(newOrderExecution);
             }
+            updateOrderStatusInBackend(action.payload, OrderStatus.InProgress);
         },
         nextProduct: (state) => {
             state.currentProductIndex += 1;
@@ -105,9 +126,13 @@ const executionSlice = createSlice({
             state.currentProductIndex = 0;
         },
         completeExecution: (state) => {
+            const orderId = state.currentOrderId;
             state.currentOrderId = null;
             state.currentPage = OrderExecutionPage.InitialOverview;
             state.currentProductIndex = 0;
+            if (orderId) {
+                updateOrderStatusInBackend(orderId, OrderStatus.Executed);
+            }
         },
         setApplicationMethod: (state, action: PayloadAction<string>) => {
             const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);

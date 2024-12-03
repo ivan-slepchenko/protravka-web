@@ -30,6 +30,7 @@ export enum OrderStatus {
   InProgress = 'In Progress',
   Acknowledge = 'Acknowledge',
   Archived = 'Archived',
+  Executed = "Executed",
 }
 
 export interface Order {
