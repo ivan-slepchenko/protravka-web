@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setAppliedQuantity, nextPage, resetCurrentProductIndex } from '../store/executionSlice';
+import { setAppliedQuantity, nextPage } from '../store/executionSlice';
 
 export default function OrderExecution9ConsumptionDetails() {
     const dispatch: AppDispatch = useDispatch();

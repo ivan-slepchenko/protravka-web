@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
-import { nextProduct, nextPage, setPhoto, resetPhoto } from '../store/executionSlice';
+import { nextProduct, nextPage, resetPhoto, setPhotoForProvingProduct } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { OrderExecutionPage } from './OrderExecutionPage';
@@ -39,7 +39,20 @@ const OrderExecution4ProovingProduct = () => {
                 context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
                 const photoData = canvasRef.current.toDataURL('image/png');
                 setPhotoState(photoData);
-                dispatch(setPhoto(photoData));
+                if (order === undefined) {
+                    throw new Error(`Order not found for the current order id ${currentOrderId}`);
+                }
+                if (order.productDetails[currentProductIndex] === undefined) {
+                    throw new Error(`Product details not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+                }
+
+                const productDetails = order.productDetails[currentProductIndex];
+                if (productDetails.product !== undefined) {
+                    const productId = productDetails.product.id;
+                    dispatch(setPhotoForProvingProduct({ photo: photoData, productId }));
+                } else {
+                    throw new Error(`Product not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+                }
             }
         }
     };

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { nextPage, resetPhoto, setPhoto, incrementProductIndex } from '../store/executionSlice';
+import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto } from '../store/executionSlice';
 import { RootState } from '../store/store';
 import { FaCamera } from 'react-icons/fa';
 import { OrderExecutionPage } from './OrderExecutionPage';
+import { ProductDetail } from '../store/newOrderSlice';
+import { Product } from '../store/productsSlice';
 
 const OrderExecution10ConsumptionPhotoConfirmation = () => {
     const dispatch = useDispatch();
@@ -13,6 +15,7 @@ const OrderExecution10ConsumptionPhotoConfirmation = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const applicationMethod = useSelector((state: RootState) => state.execution.applicationMethod);
     const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);
+    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === state.execution.currentOrderId));
     const totalProducts = order?.productDetails.length || 0;
 
@@ -40,7 +43,25 @@ const OrderExecution10ConsumptionPhotoConfirmation = () => {
                 context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
                 const photoData = canvasRef.current.toDataURL('image/png');
                 setPhotoState(photoData);
-                dispatch(setPhoto(photoData));
+                if (applicationMethod === 'CDS') {
+                    if (order === undefined) {
+                        throw new Error(`Order not found for the current order id ${currentOrderId}`);
+                    }
+                    if (order.productDetails[currentProductIndex] == undefined) {
+                        throw new Error(`Product details not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+                    }
+
+                    const productDetails: ProductDetail = order.productDetails[currentProductIndex];
+                    if (productDetails.product !== undefined) {
+                        const product: Product = productDetails.product;
+                        const productId = product.id;
+                        dispatch(setProductConsumptionPhoto({ photo: photoData, productId }));
+                    } else {
+                        throw new Error(`Product not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+                    }
+                } else {
+                    dispatch(setConsumptionPhoto(photoData));
+                }
             }
         }
     };
@@ -48,7 +69,6 @@ const OrderExecution10ConsumptionPhotoConfirmation = () => {
     const handleRetakeClick = () => {
         setPhotoState(null);
         startCamera();
-        dispatch(resetPhoto());
     };
 
     const handleNextButtonClick = () => {

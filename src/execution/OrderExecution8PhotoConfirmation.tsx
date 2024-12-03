@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
-import { nextPage, resetCurrentProductIndex, resetPhoto, setPhoto } from '../store/executionSlice';
+import { nextPage, resetCurrentProductIndex, resetPhoto, setPhotoForPacking } from '../store/executionSlice';
 import { FaCamera } from 'react-icons/fa';
 
 const OrderExecution8PhotoConfirmation = () => {
@@ -34,7 +34,7 @@ const OrderExecution8PhotoConfirmation = () => {
                 context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
                 const photoData = canvasRef.current.toDataURL('image/png');
                 setPhotoState(photoData);
-                dispatch(setPhoto(photoData));
+                dispatch(setPhotoForPacking(photoData));
             }
         }
     };

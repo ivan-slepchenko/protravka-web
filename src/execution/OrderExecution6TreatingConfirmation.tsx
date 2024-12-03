@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Checkbox, Button, VStack, HStack } from '@chakra-ui/react';
+import { Text, Checkbox, Button, VStack, HStack } from '@chakra-ui/react';
 import { nextPage } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';

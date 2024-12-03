@@ -4,6 +4,8 @@ import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 interface ProductExecution {
     productId: string;
     appliedQuantity: number;
+    photo?: string;
+    consumptionPhoto?: string;
 }
 
 interface OrderExecution {
@@ -17,7 +19,8 @@ interface ExecutionState {
     applicationMethod: string | null;
     orderExecutions: OrderExecution[];
     currentProductIndex: number;
-    photo: string | null;
+    packingPhoto: string | null;
+    consumptionPhoto: string | null;
     packedQuantity: number | null;
     expectedSeeds: number;
 }
@@ -28,7 +31,8 @@ const initialState: ExecutionState = {
     applicationMethod: null,
     orderExecutions: [],
     currentProductIndex: 0,
-    photo: null,
+    packingPhoto: null,
+    consumptionPhoto: null,
     packedQuantity: null,
     expectedSeeds: Math.floor(Math.random() * 100) + 1,
 };
@@ -85,11 +89,34 @@ const executionSlice = createSlice({
                 }
             }
         },
-        setPhoto: (state, action: PayloadAction<string>) => {
-            state.photo = action.payload;
+        setPhotoForProvingProduct: (state, action: PayloadAction<{ photo: string, productId: string }>) => {
+            const { photo, productId } = action.payload;
+            const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
+            if (orderExecution) {
+                const productExecution = orderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
+                if (productExecution) {
+                    productExecution.photo = photo;
+                }
+            }
+        },
+        setProductConsumptionPhoto: (state, action: PayloadAction<{ photo: string, productId: string }>) => {
+            const { photo, productId } = action.payload;
+            const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
+            if (orderExecution) {
+                const productExecution = orderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
+                if (productExecution) {
+                    productExecution.consumptionPhoto = photo;
+                }
+            }
+        },
+        setConsumptionPhoto: (state, action: PayloadAction<string>) => {
+            state.consumptionPhoto = action.payload;
+        },
+        setPhotoForPacking: (state, action: PayloadAction<string>) => {
+            state.packingPhoto = action.payload;
         },
         resetPhoto: (state) => {
-            state.photo = null;
+            state.packingPhoto = null;
         },
         setPackedQuantity: (state, action: PayloadAction<number>) => {
             state.packedQuantity = action.payload;
@@ -100,5 +127,21 @@ const executionSlice = createSlice({
     },
 });
 
-export const { startExecution, nextProduct, resetCurrentProductIndex, nextPage, resetExecution, completeExecution, setApplicationMethod, setAppliedQuantity, setPhoto, resetPhoto, setPackedQuantity, incrementProductIndex } = executionSlice.actions;
+export const {
+    startExecution,
+    nextProduct,
+    resetCurrentProductIndex,
+    nextPage,
+    resetExecution,
+    completeExecution,
+    setApplicationMethod,
+    setAppliedQuantity,
+    setPhotoForProvingProduct,
+    setProductConsumptionPhoto,
+    setPhotoForPacking,
+    resetPhoto,
+    setPackedQuantity,
+    incrementProductIndex,
+    setConsumptionPhoto
+} = executionSlice.actions;
 export default executionSlice.reducer;
