@@ -7,7 +7,8 @@ import { RateUnit } from '../store/newOrderSlice';
 
 const OrderExecution3ApplyingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
-    const applicationMethod = useSelector((state: RootState) => state.execution.applicationMethod);
+    const orderExecution = useSelector((state: RootState) => state.execution.orderExecutions.find(orderExecution => orderExecution.orderId === state.execution.currentOrderId));
+    const applicationMethod = orderExecution?.applicationMethod;
     const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
     const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);

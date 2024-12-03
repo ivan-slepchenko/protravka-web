@@ -13,7 +13,8 @@ const OrderExecution10ConsumptionPhotoConfirmation = () => {
     const [photo, setPhotoState] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const applicationMethod = useSelector((state: RootState) => state.execution.applicationMethod);
+    const orderExecution = useSelector((state: RootState) => state.execution.orderExecutions.find(orderExecution => orderExecution.orderId === state.execution.currentOrderId));
+    const applicationMethod = orderExecution?.applicationMethod;
     const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);
     const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === state.execution.currentOrderId));

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
-import { nextProduct, nextPage, resetPhoto, setPhotoForProvingProduct } from '../store/executionSlice';
+import { nextProduct, nextPage, resetPhoto, setPhotoForProvingProductApplication } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { OrderExecutionPage } from './OrderExecutionPage';
@@ -49,7 +49,7 @@ const OrderExecution4ProovingProduct = () => {
                 const productDetails = order.productDetails[currentProductIndex];
                 if (productDetails.product !== undefined) {
                     const productId = productDetails.product.id;
-                    dispatch(setPhotoForProvingProduct({ photo: photoData, productId }));
+                    dispatch(setPhotoForProvingProductApplication({ photo: photoData, productId }));
                 } else {
                     throw new Error(`Product not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
                 }

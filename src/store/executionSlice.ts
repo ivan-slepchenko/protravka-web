@@ -4,36 +4,32 @@ import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 interface ProductExecution {
     productId: string;
     appliedQuantity: number;
-    photo?: string;
+    applicationPhoto?: string;
     consumptionPhoto?: string;
 }
 
 interface OrderExecution {
     orderId: string;
     productExecutions: ProductExecution[];
+    applicationMethod: string | null;
+    packingPhoto: string | null;
+    consumptionPhoto: string | null;
+    packedQuantity: number | null;
 }
 
 interface ExecutionState {
     currentOrderId: string | null;
     currentPage: OrderExecutionPage;
-    applicationMethod: string | null;
     orderExecutions: OrderExecution[];
     currentProductIndex: number;
-    packingPhoto: string | null;
-    consumptionPhoto: string | null;
-    packedQuantity: number | null;
     expectedSeeds: number;
 }
 
 const initialState: ExecutionState = {
     currentOrderId: null,
     currentPage: OrderExecutionPage.InitialOverview,
-    applicationMethod: null,
     orderExecutions: [],
     currentProductIndex: 0,
-    packingPhoto: null,
-    consumptionPhoto: null,
-    packedQuantity: null,
     expectedSeeds: Math.floor(Math.random() * 100) + 1,
 };
 
@@ -46,7 +42,14 @@ const executionSlice = createSlice({
             state.currentPage = OrderExecutionPage.InitialOverview;
             state.currentProductIndex = 0;
             if (!state.orderExecutions.find(execution => execution.orderId === action.payload)) {
-                state.orderExecutions.push({ orderId: action.payload, productExecutions: [] });
+                state.orderExecutions.push({
+                    orderId: action.payload,
+                    productExecutions: [],
+                    applicationMethod: null,
+                    packingPhoto: null,
+                    consumptionPhoto: null,
+                    packedQuantity: null,
+                });
             }
         },
         nextProduct: (state) => {
@@ -65,17 +68,18 @@ const executionSlice = createSlice({
         resetExecution: (state) => {
             state.currentOrderId = null;
             state.currentPage = OrderExecutionPage.InitialOverview;
-            state.applicationMethod = null;
             state.currentProductIndex = 0;
         },
         completeExecution: (state) => {
             state.currentOrderId = null;
             state.currentPage = OrderExecutionPage.InitialOverview;
-            state.applicationMethod = null;
             state.currentProductIndex = 0;
         },
         setApplicationMethod: (state, action: PayloadAction<string>) => {
-            state.applicationMethod = action.payload;
+            const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
+            if (orderExecution) {
+                orderExecution.applicationMethod = action.payload;
+            }
         },
         setAppliedQuantity: (state, action: PayloadAction<{ orderId: string, productId: string, quantity: number }>) => {
             const { orderId, productId, quantity } = action.payload;
@@ -89,13 +93,13 @@ const executionSlice = createSlice({
                 }
             }
         },
-        setPhotoForProvingProduct: (state, action: PayloadAction<{ photo: string, productId: string }>) => {
+        setPhotoForProvingProductApplication: (state, action: PayloadAction<{ photo: string, productId: string }>) => {
             const { photo, productId } = action.payload;
             const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
             if (orderExecution) {
                 const productExecution = orderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
                 if (productExecution) {
-                    productExecution.photo = photo;
+                    productExecution.applicationPhoto = photo;
                 }
             }
         },
@@ -110,16 +114,28 @@ const executionSlice = createSlice({
             }
         },
         setConsumptionPhoto: (state, action: PayloadAction<string>) => {
-            state.consumptionPhoto = action.payload;
+            const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
+            if (orderExecution) {
+                orderExecution.consumptionPhoto = action.payload;
+            }
         },
         setPhotoForPacking: (state, action: PayloadAction<string>) => {
-            state.packingPhoto = action.payload;
+            const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
+            if (orderExecution) {
+                orderExecution.packingPhoto = action.payload;
+            }
         },
         resetPhoto: (state) => {
-            state.packingPhoto = null;
+            const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
+            if (orderExecution) {
+                orderExecution.packingPhoto = null;
+            }
         },
         setPackedQuantity: (state, action: PayloadAction<number>) => {
-            state.packedQuantity = action.payload;
+            const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
+            if (orderExecution) {
+                orderExecution.packedQuantity = action.payload;
+            }
         },
         incrementProductIndex: (state) => {
             state.currentProductIndex += 1;
@@ -136,7 +152,7 @@ export const {
     completeExecution,
     setApplicationMethod,
     setAppliedQuantity,
-    setPhotoForProvingProduct,
+    setPhotoForProvingProductApplication,
     setProductConsumptionPhoto,
     setPhotoForPacking,
     resetPhoto,
