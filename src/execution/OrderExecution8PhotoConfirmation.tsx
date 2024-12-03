@@ -74,6 +74,7 @@ const OrderExecutionPhotoConfirmation = () => {
                 <Button
                     colorScheme="orange"
                     borderRadius="full"
+                    w="200px" 
                     size={isMobile ? "sm" : "md"}
                     mr={4}
                     onClick={photoState ? handleRetakeClick : takeSnapshot}
@@ -81,7 +82,7 @@ const OrderExecutionPhotoConfirmation = () => {
                     {photoState ? 'Retake the picture' : 'Take Picture'}
                 </Button>
                 <Button
-                    w="100px" 
+                    w="200px" 
                     colorScheme="orange"
                     borderRadius="full"
                     _hover={{ bg: "orange.600" }}

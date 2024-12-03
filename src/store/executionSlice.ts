@@ -2,22 +2,24 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 
 interface ProductExecution {
-  productId: string;
-  appliedQuantity: number;
+    productId: string;
+    appliedQuantity: number;
 }
 
 interface OrderExecution {
-  orderId: string;
-  productExecutions: ProductExecution[];
+    orderId: string;
+    productExecutions: ProductExecution[];
 }
 
 interface ExecutionState {
-  currentOrderId: string | null;
-  currentPage: OrderExecutionPage;
-  applicationMethod: string | null;
-  orderExecutions: OrderExecution[];
-  currentProductIndex: number;
-  photo: string | null;
+    currentOrderId: string | null;
+    currentPage: OrderExecutionPage;
+    applicationMethod: string | null;
+    orderExecutions: OrderExecution[];
+    currentProductIndex: number;
+    photo: string | null;
+    packedQuantity: number | null;
+    expectedSeeds: number;
 }
 
 const initialState: ExecutionState = {
@@ -27,6 +29,8 @@ const initialState: ExecutionState = {
     orderExecutions: [],
     currentProductIndex: 0,
     photo: null,
+    packedQuantity: null,
+    expectedSeeds: Math.floor(Math.random() * 100) + 1,
 };
 
 const executionSlice = createSlice({
@@ -84,8 +88,11 @@ const executionSlice = createSlice({
         resetPhoto: (state) => {
             state.photo = null;
         },
+        setPackedQuantity: (state, action: PayloadAction<number>) => {
+            state.packedQuantity = action.payload;
+        },
     },
 });
 
-export const { startExecution, nextProduct, nextPage, resetExecution, completeExecution, setApplicationMethod, setAppliedQuantity, setPhoto, resetPhoto } = executionSlice.actions;
+export const { startExecution, nextProduct, nextPage, resetExecution, completeExecution, setApplicationMethod, setAppliedQuantity, setPhoto, resetPhoto, setPackedQuantity } = executionSlice.actions;
 export default executionSlice.reducer;

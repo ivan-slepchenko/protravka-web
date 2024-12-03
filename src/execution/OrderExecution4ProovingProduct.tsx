@@ -95,7 +95,7 @@ const OrderExecution4ProovingProduct = () => {
                 <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
                 <VStack spacing={4} width="100%">
                     <Button
-                        w="100px" 
+                        w="200px" 
                         borderRadius="full"
                         border="1px solid"
                         borderColor="orange.300"
@@ -105,7 +105,7 @@ const OrderExecution4ProovingProduct = () => {
                         {photo ? 'Retake the picture' : ''}
                     </Button>
                     <Button
-                        w="100px" 
+                        w="200px" 
                         borderRadius="full"
                         colorScheme="orange"
                         onClick={handleNextButtonClick}
