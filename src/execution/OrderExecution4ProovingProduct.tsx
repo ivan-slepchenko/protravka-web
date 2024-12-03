@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Text, Button, VStack, Image, HStack } from '@chakra-ui/react';
+import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
 import { nextProduct, nextPage, setPhoto, resetPhoto } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';

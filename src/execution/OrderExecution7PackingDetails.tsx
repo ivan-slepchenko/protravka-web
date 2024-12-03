@@ -20,7 +20,7 @@ const OrderExecutionPackingDetails = () => {
 
     return (
         <VStack p={4} w="full" h="full">
-            <Text fontSize="2xl" fontWeight="bold">How many seeds did you pack out of?</Text>
+            <Text fontSize="xl" fontWeight="bold">How many seeds did you pack out of?</Text>
             <Box
                 mt={4}
                 p={8}
