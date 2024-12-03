@@ -26,7 +26,6 @@ import {
     addProductDetail
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
-import { fetchOperators } from "../store/operatorsSlice";
 import { fetchCrops } from "../store/cropsSlice";
 import { fetchProducts } from "../store/productsSlice";
 import { Operator } from '../store/operatorsSlice';

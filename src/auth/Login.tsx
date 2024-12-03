@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Input, Button, VStack, Heading, Alert, AlertIcon, Center } from '@chakra-ui/react';
+import { Input, Button, VStack, Heading, Alert, AlertIcon, Center } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';

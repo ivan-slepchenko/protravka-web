@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, VStack } from '@chakra-ui/react';
+import { Text, Button, VStack } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { nextPage, setApplicationMethod } from '../store/executionSlice';

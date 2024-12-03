@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { createProduct, deleteProduct, fetchProducts } from '../store/productsSlice';
 import { useState, useEffect } from 'react';
-import { Box, Button, Input, HStack, VStack, Grid, GridItem, Text } from '@chakra-ui/react';
+import { Button, Input, HStack, VStack, Grid, GridItem, Text } from '@chakra-ui/react';
 
 const Products = () => {
     const dispatch: AppDispatch = useDispatch();
