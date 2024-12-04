@@ -23,7 +23,8 @@ import {
     ProductDetail,
     RateUnit,
     RateType,
-    addProductDetail
+    addProductDetail,
+    updateExtraSlurry
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchCrops } from "../store/cropsSlice";
@@ -309,6 +310,24 @@ const SeedTreatmentForm: React.FC<SeedTreatmentFormProps> = ({ operators }) => {
                                             dispatch(updateBagSize(parseFloat(e.target.value) || 0));
                                         }}
                                         borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
+                                    />
+                                </InputGroup>
+                            </Box>
+                            <Box>
+                                <Text fontSize="md" mb="2">Extra Slurry (%):</Text>
+                                <InputGroup size="md">
+                                    <Field
+                                        as={Input}
+                                        name="extraSlurry"
+                                        placeholder="0"
+                                        type="number"
+                                        min="0"
+                                        max="100"
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                            props.handleChange(e);
+                                            dispatch(updateExtraSlurry(parseFloat(e.target.value)));
+                                        }}
+                                        borderColor={props.errors.extraSlurry && props.touched.extraSlurry ? "red.500" : "gray.300"}
                                     />
                                 </InputGroup>
                             </Box>

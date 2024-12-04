@@ -63,6 +63,7 @@ export interface NewOrder {
   packaging: string;
   bagSize: number;
   status: OrderStatus;
+  extraSlurry: number; // Add extraSlurry field
 }
 
 export const createNewEmptyOrder: () => NewOrder = () => ({
@@ -79,6 +80,7 @@ export const createNewEmptyOrder: () => NewOrder = () => ({
     packaging: "inSeeds",
     bagSize: 0,
     status: OrderStatus.NotStarted,
+    extraSlurry: 0, // Initialize extraSlurry
 });
 
 export const createNewEmptyProduct: () => ProductDetail = () => ({
@@ -144,6 +146,9 @@ const newOrderSlice = createSlice({
         updateStatus: (state, action: PayloadAction<OrderStatus>) => {
             state.status = action.payload;
         },
+        updateExtraSlurry: (state, action: PayloadAction<number>) => {
+            state.extraSlurry = action.payload;
+        },
         setOrderState: (state, action: PayloadAction<NewOrder>) => {
             return action.payload;
         },
@@ -165,6 +170,7 @@ export const {
     updatePackaging,
     updateBagSize,
     updateStatus,
+    updateExtraSlurry,
     setOrderState,
 } = newOrderSlice.actions;
 export default newOrderSlice.reducer;
