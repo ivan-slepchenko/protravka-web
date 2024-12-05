@@ -29,7 +29,7 @@ import {
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchCrops } from "../store/cropsSlice";
 import { fetchProducts } from "../store/productsSlice";
-import { Operator } from '../store/operatorsSlice';
+import { fetchOperators, Operator } from '../store/operatorsSlice';
 
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),
@@ -102,6 +102,7 @@ const SeedTreatmentForm: React.FC<SeedTreatmentFormProps> = ({ operators }) => {
     useEffect(() => {
         dispatch(fetchCrops());
         dispatch(fetchProducts());
+        dispatch(fetchOperators());
     }, [dispatch]);
 
     const handleSave = (values: NewOrder, resetForm: () => void) => {
@@ -336,111 +337,109 @@ const SeedTreatmentForm: React.FC<SeedTreatmentFormProps> = ({ operators }) => {
                         {/* Product Details */}
                         <FieldArray name="productDetails">
                             {({ push }) => (
-                                <>
+                                <Box border="1px solid" borderColor="gray.200" p="4" borderRadius="md" mb="4">
                                     {props.values.productDetails.map((productDetail, index) => (
-                                        <Box key={index} border="1px solid" borderColor="gray.200" p="4" borderRadius="md" mb="4">
-                                            <Grid w="full" templateColumns="2fr 1fr 2fr" gap="4" alignItems="center" mb="4">
-                                                <Box>
-                                                    <Text fontSize="md">Product name:</Text>
-                                                    <Field
-                                                        as={Select}
-                                                        name={`productDetails.${index}.productId`}
-                                                        placeholder="Select product"
-                                                        size="md"
-                                                        focusBorderColor="transparent"
-                                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                                            const selectedProduct = products.find(product => product.id === e.target.value);
-                                                            if (selectedProduct) {
-                                                                props.setFieldValue(`productDetails.${index}.productId`, selectedProduct.id);
-                                                                dispatch(updateProductDetail({ ...props.values.productDetails[index], productId: selectedProduct.id }));
-                                                            }
-                                                        }}
-                                                        borderColor={hasProductDetailError(props.errors, props.touched, index, 'productId') ? "red.500" : "gray.300"}
-                                                    >
-                                                        {products.map((product) => (
-                                                            <option key={product.id} value={product.id}>
-                                                                {product.name}
-                                                            </option>
-                                                        ))}
-                                                    </Field>
-                                                </Box>
-                                                <Box>
-                                                    <Text fontSize="md">Density (g/ml):</Text>
+                                        <Grid key={index} w="full" templateColumns="2fr 1fr 2fr" gap="4" alignItems="center" mb="4">
+                                            <Box>
+                                                <Text fontSize="md">Product name:</Text>
+                                                <Field
+                                                    as={Select}
+                                                    name={`productDetails.${index}.productId`}
+                                                    placeholder="Select product"
+                                                    size="md"
+                                                    focusBorderColor="transparent"
+                                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                        const selectedProduct = products.find(product => product.id === e.target.value);
+                                                        if (selectedProduct) {
+                                                            props.setFieldValue(`productDetails.${index}.productId`, selectedProduct.id);
+                                                            dispatch(updateProductDetail({ ...props.values.productDetails[index], productId: selectedProduct.id }));
+                                                        }
+                                                    }}
+                                                    borderColor={hasProductDetailError(props.errors, props.touched, index, 'productId') ? "red.500" : "gray.300"}
+                                                >
+                                                    {products.map((product) => (
+                                                        <option key={product.id} value={product.id}>
+                                                            {product.name}
+                                                        </option>
+                                                    ))}
+                                                </Field>
+                                            </Box>
+                                            <Box>
+                                                <Text fontSize="md">Density (g/ml):</Text>
+                                                <Field
+                                                    as={Input}
+                                                    name={`productDetails.${index}.density`}
+                                                    size="md"
+                                                    placeholder="0"
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                        const density = parseInt(e.target.value) || 0;
+                                                        props.setFieldValue(`productDetails.${index}.density`, density);
+                                                        dispatch(updateProductDetail({ ...props.values.productDetails[index], density }));
+                                                    }}
+                                                    borderColor={hasProductDetailError(props.errors, props.touched, index, 'density') ? "red.500" : "gray.300"}
+                                                />
+                                            </Box>
+                                            <Box>
+                                                <Text fontSize="md">
+                                                    {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
+                                                </Text>
+                                                <InputGroup size="md">
                                                     <Field
                                                         as={Input}
-                                                        name={`productDetails.${index}.density`}
-                                                        size="md"
+                                                        name={`productDetails.${index}.rate`}
                                                         placeholder="0"
                                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                            const density = parseInt(e.target.value) || 0;
-                                                            props.setFieldValue(`productDetails.${index}.density`, density);
-                                                            dispatch(updateProductDetail({ ...props.values.productDetails[index], density }));
+                                                            const rate = parseInt(e.target.value) || 0;
+                                                            props.setFieldValue(`productDetails.${index}.rate`, rate);
+                                                            dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
                                                         }}
-                                                        borderColor={hasProductDetailError(props.errors, props.touched, index, 'density') ? "red.500" : "gray.300"}
+                                                        borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
                                                     />
-                                                </Box>
-                                                <Box>
-                                                    <Text fontSize="md">
-                                                        {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
-                                                    </Text>
-                                                    <InputGroup size="md">
-                                                        <Field
-                                                            as={Input}
-                                                            name={`productDetails.${index}.rate`}
-                                                            placeholder="0"
-                                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                                const rate = parseInt(e.target.value) || 0;
-                                                                props.setFieldValue(`productDetails.${index}.rate`, rate);
-                                                                dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
-                                                            }}
-                                                            borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
-                                                        />
-                                                        <InputRightElement width="auto">
-                                                            <HStack spacing="0">
-                                                                <Field
-                                                                    as={Select}
-                                                                    width="110px"
-                                                                    name={`productDetails.${index}.rateType`}
-                                                                    size="md"
-                                                                    fontWeight="bold"
-                                                                    bg="gray.50"
-                                                                    border="1px solid"
-                                                                    focusBorderColor="transparent"
-                                                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                                                        const rateType = e.target.value as RateType;
-                                                                        props.setFieldValue(`productDetails.${index}.rateType`, rateType);
-                                                                        dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
-                                                                    }}
-                                                                    borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
-                                                                >
-                                                                    <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
-                                                                    <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
-                                                                </Field>
-                                                                <Field
-                                                                    as={Select}
-                                                                    width="110px"
-                                                                    name={`productDetails.${index}.rateUnit`}
-                                                                    size="md"
-                                                                    fontWeight="bold"
-                                                                    bg="gray.50"
-                                                                    border="1px solid"
-                                                                    focusBorderColor="transparent"
-                                                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                                                        const rateUnit = e.target.value as RateUnit;
-                                                                        props.setFieldValue(`productDetails.${index}.rateUnit`, rateUnit);
-                                                                        dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
-                                                                    }}
-                                                                    borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
-                                                                >
-                                                                    <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
-                                                                    <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
-                                                                </Field>
-                                                            </HStack>
-                                                        </InputRightElement>
-                                                    </InputGroup>
-                                                </Box>
-                                            </Grid>
-                                        </Box>
+                                                    <InputRightElement width="auto">
+                                                        <HStack spacing="0">
+                                                            <Field
+                                                                as={Select}
+                                                                width="110px"
+                                                                name={`productDetails.${index}.rateType`}
+                                                                size="md"
+                                                                fontWeight="bold"
+                                                                bg="gray.50"
+                                                                border="1px solid"
+                                                                focusBorderColor="transparent"
+                                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                                    const rateType = e.target.value as RateType;
+                                                                    props.setFieldValue(`productDetails.${index}.rateType`, rateType);
+                                                                    dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
+                                                                }}
+                                                                borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
+                                                            >
+                                                                <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
+                                                                <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
+                                                            </Field>
+                                                            <Field
+                                                                as={Select}
+                                                                width="110px"
+                                                                name={`productDetails.${index}.rateUnit`}
+                                                                size="md"
+                                                                fontWeight="bold"
+                                                                bg="gray.50"
+                                                                border="1px solid"
+                                                                focusBorderColor="transparent"
+                                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                                    const rateUnit = e.target.value as RateUnit;
+                                                                    props.setFieldValue(`productDetails.${index}.rateUnit`, rateUnit);
+                                                                    dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
+                                                                }}
+                                                                borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
+                                                            >
+                                                                <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
+                                                                <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
+                                                            </Field>
+                                                        </HStack>
+                                                    </InputRightElement>
+                                                </InputGroup>
+                                            </Box>
+                                        </Grid>
                                     ))}
                                     <HStack>
                                         <Button colorScheme="blue" size="md" onClick={() => {
@@ -449,7 +448,7 @@ const SeedTreatmentForm: React.FC<SeedTreatmentFormProps> = ({ operators }) => {
                                             dispatch(addProductDetail(createNewEmptyProduct()));
                                         }} ml="auto" mb={4}>+ Add Product</Button>
                                     </HStack>
-                                </>
+                                </Box>
                             )}
                         </FieldArray>
 
