@@ -24,7 +24,8 @@ import {
     RateUnit,
     RateType,
     addProductDetail,
-    updateExtraSlurry
+    updateExtraSlurry,
+    Packaging
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchCrops } from "../store/cropsSlice";
@@ -291,12 +292,12 @@ const SeedTreatmentForm: React.FC<SeedTreatmentFormProps> = ({ operators }) => {
                                     size="md"
                                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                         props.handleChange(e);
-                                        dispatch(updatePackaging(e.target.value));
+                                        dispatch(updatePackaging(e.target.value as Packaging));
                                     }}
                                     borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
                                 >
-                                    <option value="inSeeds">s/units</option>
-                                    <option value="inKg">kg</option>
+                                    <option value={Packaging.InSeeds}>s/units</option>
+                                    <option value={Packaging.InKg}>kg</option>
                                 </Field>
                             </Box>
                             <Box>

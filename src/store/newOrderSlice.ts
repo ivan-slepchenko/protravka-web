@@ -33,6 +33,11 @@ export enum OrderStatus {
   Executed = "Executed",
 }
 
+export enum Packaging {
+  InSeeds = 'inSeeds',
+  InKg = 'inKg',
+}
+
 export interface Order {
   id: string;
   productDetails: ProductDetail[];
@@ -60,7 +65,7 @@ export interface NewOrder {
   lotNumber: string;
   tkw: number;
   quantity: number;
-  packaging: string;
+  packaging: Packaging;
   bagSize: number;
   status: OrderStatus;
   extraSlurry: number; // Add extraSlurry field
@@ -77,7 +82,7 @@ export const createNewEmptyOrder: () => NewOrder = () => ({
     lotNumber: "",
     tkw: 0,
     quantity: 0,
-    packaging: "inSeeds",
+    packaging: Packaging.InSeeds,
     bagSize: 0,
     status: OrderStatus.NotStarted,
     extraSlurry: 0, // Initialize extraSlurry
@@ -137,7 +142,7 @@ const newOrderSlice = createSlice({
         updateQuantity: (state, action: PayloadAction<number>) => {
             state.quantity = action.payload;
         },
-        updatePackaging: (state, action: PayloadAction<string>) => {
+        updatePackaging: (state, action: PayloadAction<Packaging>) => {
             state.packaging = action.payload;
         },
         updateBagSize: (state, action: PayloadAction<number>) => {
