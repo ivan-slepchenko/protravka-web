@@ -97,7 +97,7 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                                             return (
                                                 <Tr key={index}>
                                                     <Td width="35%">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
-                                                    <Td>{productDetail.density}</Td>
+                                                    <Td>{productDetail.product?.density}</Td>
                                                     <Td>{productDetail.rate}</Td>
                                                     <Td>{getRateTypeLabel(productDetail.rateType)}</Td>
                                                     <Td>{getRateUnitLabel(productDetail.rateUnit)}</Td>

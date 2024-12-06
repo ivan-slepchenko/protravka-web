@@ -22,11 +22,11 @@ import {
     useLocation,
     useNavigate,
 } from "react-router-dom";
-import { NewOrder } from "./newOrder/NewOrder";
 import Board from './board/Board';
 import Operators from './operators/Operators';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
+import { NewOrderForm } from './newOrder/NewOrder';
 
 const RequireAuth = ({ children, roles }: { children: JSX.Element, roles?: Role[] }) => {
     const location = useLocation();
@@ -87,7 +87,7 @@ const App = () => {
                     <Box w="full" h="full" position={'relative'}>
                         <Routes>
                             <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
-                            <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
+                            <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrderForm /></RequireAuth>} />
                             <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                             <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
                             <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
@@ -106,7 +106,7 @@ const App = () => {
                 <Box ml={isAuthenticated ? "20%" : 'unset'} w="full" h="full" position={'relative'}>
                     <Routes>
                         <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
-                        <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrder /></RequireAuth>} />
+                        <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrderForm /></RequireAuth>} />
                         <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                         <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
                         <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />

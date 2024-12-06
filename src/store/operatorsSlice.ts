@@ -10,6 +10,31 @@ export interface Operator {
   roles: Role[];
 }
 
+export interface ProductRecipe {
+  id: string;
+  rateMltoU_KS: number;
+  rateGToU_KS: number;
+  rateMlTo100Kg: number;
+  rateGTo100Kg: number;
+  literSlurryRecipeToMix: number;
+  kgSlurryRecipeToWeight: number;
+}
+
+export interface OrderRecipe {
+    id: string;
+    totalCompoundsDensity: number;
+    slurryTotalMltoU_KS: number;
+    slurryTotalGToU_KS: number;
+    slurryTotalMlTo100Kg: number;
+    slurryTotalGTo100Kgs: number;
+    slurryTotalMlRecipeToMix: number;
+    slurryTotalKgRecipeToWeight: number;
+    extraSlurryPipesAndPompFeedingMl: number;
+    nbSeedsUnits: number;
+    productRecipes: ProductRecipe[];
+    numberOfBags: number;
+}
+
 interface OperatorsState {
   operators: Operator[];
 }

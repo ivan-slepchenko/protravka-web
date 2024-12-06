@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Operator } from './operatorsSlice';
+import { Operator, OrderRecipe } from './operatorsSlice';
 import { Crop, Variety } from './cropsSlice';
 import { Product } from './productsSlice';
 
@@ -18,7 +18,6 @@ export interface ProductDetail {
   quantity: number;
   rateUnit: RateUnit;
   rateType: RateType;
-  density: number;
   rate: number;
   index: number; // Add index property
   productId: string; // Add productId property
@@ -39,19 +38,20 @@ export enum Packaging {
 }
 
 export interface Order {
-  id: string;
-  productDetails: ProductDetail[];
-  recipeDate: string;
-  applicationDate: string;
-  operator: Operator;
-  crop: Crop;
-  variety: Variety;
-  lotNumber: string;
-  tkw: number;
-  quantity: number;
-  packaging: string;
-  bagSize: number;
-  status: OrderStatus;
+    id: string;
+    productDetails: ProductDetail[];
+    recipeDate: string;
+    applicationDate: string;
+    operator: Operator;
+    crop: Crop;
+    variety: Variety;
+    lotNumber: string;
+    tkw: number;
+    quantity: number;
+    packaging: Packaging;
+    bagSize: number;
+    status: OrderStatus;
+    orderRecipe: OrderRecipe; 
 }
 
 export interface NewOrder {

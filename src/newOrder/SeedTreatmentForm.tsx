@@ -46,7 +46,6 @@ const validationSchema = Yup.object().shape({
     productDetails: Yup.array().of(
         Yup.object().shape({
             productId: Yup.string().required("Product is required"),
-            density: Yup.number().positive("Density must be positive").required("Density is required"),
             rate: Yup.number().positive("Rate must be positive").required("Rate is required"),
             rateType: Yup.mixed<RateType>().oneOf(Object.values(RateType)).required("Rate Type is required"),
             rateUnit: Yup.mixed<RateUnit>().oneOf(Object.values(RateUnit)).required("Rate Unit is required"),
@@ -367,18 +366,7 @@ const SeedTreatmentForm: React.FC<SeedTreatmentFormProps> = ({ operators }) => {
                                             </Box>
                                             <Box>
                                                 <Text fontSize="md">Density (g/ml):</Text>
-                                                <Field
-                                                    as={Input}
-                                                    name={`productDetails.${index}.density`}
-                                                    size="md"
-                                                    placeholder="0"
-                                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                        const density = parseInt(e.target.value) || 0;
-                                                        props.setFieldValue(`productDetails.${index}.density`, density);
-                                                        dispatch(updateProductDetail({ ...props.values.productDetails[index], density }));
-                                                    }}
-                                                    borderColor={hasProductDetailError(props.errors, props.touched, index, 'density') ? "red.500" : "gray.300"}
-                                                />
+                                                <Text>{props.values.productDetails[index].product?.density}</Text>
                                             </Box>
                                             <Box>
                                                 <Text fontSize="md">

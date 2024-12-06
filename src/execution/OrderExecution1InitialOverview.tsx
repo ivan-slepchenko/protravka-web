@@ -38,8 +38,7 @@ const OrderExecution1InitialOverview = () => {
                 <Text>Lot number: {order.lotNumber}</Text>
                 <Text>Quantity to treat: {order.quantity}</Text>
                 <Text>Bag size: {order.bagSize}</Text>
-                <Text>Expected amount of bags: <b>XXX</b></Text>
-                <Text>Batch size: <b>XXX</b></Text>
+                <Text>Expected amount of bags: <b>{order.orderRecipe.numberOfBags}</b></Text>
             </Box>
             <Table variant="simple" mt={4} border="1px solid" borderColor="gray.200">
                 <Thead bg="orange.100">
