@@ -50,47 +50,52 @@ export default function OrderExecution9ConsumptionDetails() {
         }
     };
 
-    const renderTableBody = () => (
-        <Tbody>
-            <Tr>
-                <Td>
-                    {applicationMethod === 'Surry' ? order?.orderRecipe?.slurryTotalKgRecipeToWeight.toFixed(2) : 'xxx'}
-                </Td>
-                <Td>
-                    <Input
-                        placeholder="Enter value"
-                        onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
-                    />
-                </Td>
-            </Tr>
-        </Tbody>
-    );
+    const renderTableBody = () => {
+        const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
+        return (
+            <Tbody>
+                <Tr>
+                    <Td>
+                        {applicationMethod === 'Surry' ? order?.orderRecipe?.slurryTotalKgRecipeToWeight.toFixed(2) : productRecipe?.kgSlurryRecipeToMix.toFixed(2)}
+                    </Td>
+                    <Td>
+                        <Input
+                            placeholder="Enter value"
+                            onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
+                        />
+                    </Td>
+                </Tr>
+            </Tbody>
+        )
+    };
 
-    const renderContent = () => (
-        <>
-            <Heading size="md" mb={4}>
-                {applicationMethod === 'Surry'
-                    ? `Total Surry consumption per ${(order?.quantity ?? 0) * (order?.extraSlurry ?? 0)} kg`
-                    : <span>
-                        {'Product: '}
-                        {order?.productDetails[currentProductIndex].product?.name}
-                        {' #'}
-                        {currentProductIndex + 1}
-                        {'  out of '}
-                        {order?.productDetails.length}
-                        {' Per XXX kg seeds'}
-                    </span>
-                }
-            </Heading>
-            <Table variant="simple" mb={4}>
-                {renderTableHeaders()}
-                {renderTableBody()}
-            </Table>
-            <Text mb={4}  mt='auto'>
-                You are obliged to make a photo of scales display on the next page!
-            </Text>
-        </>
-    );
+    const renderContent = () => {
+        return (
+            <>
+                <Heading size="md" mb={4}>
+                    {applicationMethod === 'Surry'
+                        ? `Total Surry consumption per ${(order?.quantity ?? 0) * (order?.extraSlurry ?? 0)} kg`
+                        : <span>
+                            {'Product: '}
+                            {order?.productDetails[currentProductIndex].product?.name}
+                            {' #'}
+                            {currentProductIndex + 1}
+                            {'  out of '}
+                            {order?.productDetails.length}
+                            {` Per ${(order?.quantity ?? 0) * (order?.extraSlurry ?? 0)} kg seeds`}
+                        </span>
+                    }
+                </Heading>
+                <Table variant="simple" mb={4}>
+                    {renderTableHeaders()}
+                    {renderTableBody()}
+                </Table>
+                <Text mb={4}  mt='auto'>
+                    You are obliged to make a photo of scales display on the next page!
+                </Text>
+            </>
+        );
+    };
 
     return (
         <VStack p={4} w="full" h="full">

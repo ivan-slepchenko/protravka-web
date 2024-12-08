@@ -62,10 +62,26 @@ const OrderExecution3ApplyingProduct = () => {
         }
     };
 
-    const renderTableBody = () => (
+    const renderTableBodyForSurry = () => (
         <Tbody>
             <Tr>
-                <Td>{productRecipe?.kgSlurryRecipeToMix.toFixed(2)}</Td>
+                <Td>{((productRecipe?.rateGTo100Kg ?? 0)/1000).toFixed(2)}</Td>
+                <Td>
+                    <Input
+                        placeholder="Enter value"
+                        value={currentProductExecution ? currentProductExecution.appliedQuantity : ''}
+                        onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
+                        borderColor={inputError ? 'red.500' : 'gray.200'}
+                    />
+                </Td>
+            </Tr>
+        </Tbody>
+    );
+
+    const renderTableBodyForNonSurry = () => (
+        <Tbody>
+            <Tr>
+                <Td>{((productRecipe?.rateGTo100Kg ?? 0)/1000).toFixed(2)}</Td>
                 <Td>
                     <Input
                         placeholder="Enter value"
@@ -93,7 +109,7 @@ const OrderExecution3ApplyingProduct = () => {
                     </Text>
                     <Table variant="simple" mb={4}>
                         {renderTableHeaders()}
-                        {renderTableBody()}
+                        {applicationMethod === 'Surry' ? renderTableBodyForSurry() : renderTableBodyForNonSurry()}
                     </Table>
                     <Text mb={4}>You are obliged to make a photo of scales display on the next page!</Text>
                     <HStack justifyContent={"center"} mt='auto'>
