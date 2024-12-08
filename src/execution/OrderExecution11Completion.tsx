@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { completeExecution, nextPage } from '../store/executionSlice';
 import { OrderExecutionPage } from './OrderExecutionPage';
+import { changeOrderStatus } from '../store/ordersSlice';
+import { OrderStatus } from '../store/newOrderSlice';
 
 const OrderExecution11Completion = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -12,8 +14,13 @@ const OrderExecution11Completion = () => {
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
 
     const handleCompleteClick = () => {
-        dispatch(nextPage(OrderExecutionPage.InitialOverview));
-        dispatch(completeExecution());
+        if (currentOrderId !== null) {
+            dispatch(nextPage(OrderExecutionPage.InitialOverview));
+            dispatch(completeExecution());
+            dispatch(changeOrderStatus({ id: currentOrderId, status: OrderStatus.Executed }));
+        } else {
+            console.error('No current order id');
+        }
     };
 
     return (

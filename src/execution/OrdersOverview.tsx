@@ -4,7 +4,8 @@ import { FiArrowRight } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { startExecution } from '../store/executionSlice';
-import { fetchOrders } from '../store/ordersSlice';
+import { changeOrderStatus, fetchOrders } from '../store/ordersSlice';
+import { OrderStatus } from '../store/newOrderSlice';
 
 const currentDate = new Date().toLocaleDateString();
 
@@ -15,6 +16,7 @@ const OrdersOverview: React.FC = () => {
 
     const handleOrderClick = (orderId: string) => {
         dispatch(startExecution(orderId));
+        dispatch(changeOrderStatus({ id: orderId, status: OrderStatus.InProgress }));
     };
 
     useEffect(() => {

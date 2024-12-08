@@ -17,7 +17,7 @@ export interface ProductRecipe {
   rateMlTo100Kg: number;
   rateGTo100Kg: number;
   literSlurryRecipeToMix: number;
-  kgSlurryRecipeToWeight: number;
+  kgSlurryRecipeToMix: number;
 }
 
 export interface OrderRecipe {
@@ -32,7 +32,6 @@ export interface OrderRecipe {
     extraSlurryPipesAndPompFeedingMl: number;
     nbSeedsUnits: number;
     productRecipes: ProductRecipe[];
-    numberOfBags: number;
 }
 
 interface OperatorsState {
