@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 
 interface ProductExecution {
@@ -50,6 +50,14 @@ const saveOrderExecutionToBackend = (orderExecution: OrderExecution) => {
             console.error('Failed to save order execution:', error);
         });
 };
+
+export const fetchOrderExecution = createAsyncThunk('execution/fetchOrderExecution', async (orderId: string) => {
+    const response = await fetch(`${BACKEND_URL}/api/order-executions/${orderId}`, {
+        credentials: 'include', // Include credentials in the request
+    });
+    const data = await response.json();
+    return { ...data, orderId };
+});
 
 const executionSlice = createSlice({
     name: 'execution',
@@ -205,6 +213,16 @@ const executionSlice = createSlice({
                     });
             }
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchOrderExecution.fulfilled, (state, action: PayloadAction<OrderExecution>) => {
+            const index = state.orderExecutions.findIndex(execution => execution.orderId === action.payload.orderId);
+            if (index !== -1) {
+                state.orderExecutions[index] = action.payload;
+            } else {
+                state.orderExecutions.push(action.payload);
+            }
+        });
     },
 });
 

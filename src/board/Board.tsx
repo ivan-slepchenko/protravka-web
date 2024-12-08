@@ -8,7 +8,7 @@ import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 
 const Board: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.Acknowledge, OrderStatus.Archived];
+    const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.Executed, OrderStatus.Acknowledge];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
     const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 

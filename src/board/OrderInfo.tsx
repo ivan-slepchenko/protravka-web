@@ -1,11 +1,11 @@
 import React from "react";
-import { Box, Button, Text, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Select, Grid, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { Box, Text, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Grid, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { OrderStatus, updateStatus } from "../store/newOrderSlice";
 import { fetchProducts } from "../store/productsSlice";
 import { getRateTypeLabel, getRateUnitLabel } from "../newOrder/NewOrder";
-// import { getRateUnitLabel, getRateTypeLabel } from "../newOrder/SeedTreatmentForm";
+import { fetchOrderExecution } from "../store/executionSlice";
 
 interface OrderInfoProps {
   isOpen: boolean;
@@ -16,23 +16,21 @@ interface OrderInfoProps {
 const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
     const dispatch: AppDispatch = useDispatch();
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === orderId));
+    const orderExecution = useSelector((state: RootState) => state.execution.orderExecutions.find(execution => execution.orderId === orderId));
 
     React.useEffect(() => {
         if (isOpen) {
             dispatch(fetchProducts());
+            dispatch(fetchOrderExecution(orderId));
         }
-    }, [isOpen, dispatch]);
+    }, [isOpen, dispatch, orderId]);
 
     if (!order) return null;
-
-    const handleStatusChange = (status: OrderStatus) => {
-        dispatch(updateStatus(status));
-    };
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
-            <ModalContent minWidth="800px">
+            <ModalContent minWidth="1200px">
                 <ModalHeader>Order Information</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
@@ -80,7 +78,7 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                             </Box>
                         </Grid>
                         <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
-                        <Box maxHeight="200px" overflowY="auto" bg="gray.50" p="2" borderRadius="md">
+                        <Box maxHeight="300px" overflowY="auto" bg="gray.50" p="2" borderRadius="md">
                             <Table variant="simple" size="sm" w="full">
                                 <Thead bg="orange.100">
                                     <Tr>
@@ -89,12 +87,15 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                                         <Th whiteSpace="nowrap">Rate</Th>
                                         <Th whiteSpace="nowrap">Rate Type</Th>
                                         <Th whiteSpace="nowrap">Rate Unit</Th>
+                                        {order.status === OrderStatus.Executed && <Th whiteSpace="nowrap">Application Photo</Th>}
+                                        {order.status === OrderStatus.Executed && <Th whiteSpace="nowrap">Consumption Photo</Th>}
                                     </Tr>
                                 </Thead>
                                 <Tbody>
                                     {order.productDetails && [...order.productDetails]
                                         .sort((a, b) => a.index - b.index) // Sort by index
                                         .map((productDetail, index) => {
+                                            const productExecution = orderExecution?.productExecutions.find(pe => pe.productId === productDetail.product?.id);
                                             return (
                                                 <Tr key={index}>
                                                     <Td width="35%">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
@@ -102,25 +103,29 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                                                     <Td>{productDetail.rate}</Td>
                                                     <Td>{getRateTypeLabel(productDetail.rateType)}</Td>
                                                     <Td>{getRateUnitLabel(productDetail.rateUnit)}</Td>
+                                                    {order.status === OrderStatus.Executed && <Td>{productExecution?.applicationPhoto ? <img src={productExecution.applicationPhoto} alt="Application" /> : 'No Photo'}</Td>}
+                                                    {order.status === OrderStatus.Executed && <Td>{productExecution?.consumptionPhoto ? <img src={productExecution.consumptionPhoto} alt="Consumption" /> : 'No Photo'}</Td>}
                                                 </Tr>
                                             );
                                         })}
                                 </Tbody>
                             </Table>
                         </Box>
+                        {orderExecution && order.status !== OrderStatus.Executed && (
+                            <>
+                                <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Order Execution Photos</Text>
+                                <Box>
+                                    <Text fontSize="xs">Packing Photo:</Text>
+                                    {orderExecution.packingPhoto ? <img src={orderExecution.packingPhoto} alt="Packing" /> : 'No Photo'}
+                                </Box>
+                                <Box>
+                                    <Text fontSize="xs">Consumption Photo:</Text>
+                                    {orderExecution.consumptionPhoto ? <img src={orderExecution.consumptionPhoto} alt="Consumption" /> : 'No Photo'}
+                                </Box>
+                            </>
+                        )}
                     </Box>
                 </ModalBody>
-                <ModalFooter>
-                    <Select value={order.status} onChange={(e) => handleStatusChange(e.target.value as OrderStatus)}>
-                        <option value={OrderStatus.NotStarted}>Not Started</option>
-                        <option value={OrderStatus.InProgress}>In Progress</option>
-                        <option value={OrderStatus.Acknowledge}>Acknowledge</option>
-                        <option value={OrderStatus.Archived}>Archive</option>
-                    </Select>
-                    <Button colorScheme="blue" ml={3} onClick={onClose}>
-            Close
-                    </Button>
-                </ModalFooter>
             </ModalContent>
         </Modal>
     );

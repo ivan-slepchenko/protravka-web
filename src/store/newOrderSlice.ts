@@ -21,7 +21,7 @@ export interface ProductDetail {
   rate: number;
   index: number; // Add index property
   productId: string; // Add productId property
-  product?: Product; // Add product property
+  product?: Product; // Add product property << when comes from backend
 }
 
 export enum OrderStatus {
