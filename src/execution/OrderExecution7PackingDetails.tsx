@@ -9,7 +9,9 @@ const OrderExecution7PackingDetails = () => {
     const [packedQuantity, setPackedQuantityState] = useState<number>(0);
 
     const dispatch: AppDispatch = useDispatch();
-    const expectedSeeds = useSelector((state: RootState) => state.execution.expectedSeeds);
+    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
+    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
+    const nbSeedsUnits = order?.orderRecipe?.nbSeedsUnits || 0;
 
     const handleNextButtonClick = () => {
         if (typeof packedQuantity === 'number') {
@@ -48,8 +50,8 @@ const OrderExecution7PackingDetails = () => {
             </Box>
             <Text mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
             <Box mt={4} textAlign="left">
-                {expectedSeeds > packedQuantity ? (
-                    <Text>{expectedSeeds - packedQuantity} kg is missing! Please inform your line manager if you cannot find it</Text>
+                {nbSeedsUnits > packedQuantity ? (
+                    <Text>{(nbSeedsUnits - packedQuantity).toFixed(2)} kg is missing! Please inform your line manager if you cannot find it</Text>
                 ) : (
                     <Text>This corresponds to the weight of the lot</Text>
                 )}

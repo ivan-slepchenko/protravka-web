@@ -1,8 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OrderExecutionPage } from '../execution/OrderExecutionPage';
-import { OrderStatus } from './newOrderSlice';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from './store';
 
 interface ProductExecution {
     productId: string;
@@ -25,7 +22,6 @@ interface ExecutionState {
     currentPage: OrderExecutionPage;
     orderExecutions: OrderExecution[];
     currentProductIndex: number;
-    expectedSeeds: number;
 }
 
 const initialState: ExecutionState = {
@@ -33,7 +29,6 @@ const initialState: ExecutionState = {
     currentPage: OrderExecutionPage.InitialOverview,
     orderExecutions: [],
     currentProductIndex: 0,
-    expectedSeeds: Math.floor(Math.random() * 100) + 1,
 };
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
