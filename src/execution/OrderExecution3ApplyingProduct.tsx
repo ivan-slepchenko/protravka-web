@@ -3,7 +3,6 @@ import { Text, Table, Thead, Tbody, Tr, Th, Td, Button, VStack, Input, HStack } 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { setAppliedQuantity, nextPage } from '../store/executionSlice';
-import { RateUnit } from '../store/newOrderSlice';
 
 const OrderExecution3ApplyingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -16,7 +15,6 @@ const OrderExecution3ApplyingProduct = () => {
         const orderExecution = state.execution.orderExecutions.find(order => order.orderId === state.execution.currentOrderId);
         return orderExecution ? orderExecution.productExecutions[state.execution.currentProductIndex] : null;
     });
-    const currentProduct = order?.productDetails[currentProductIndex];
     const currentProductId = order?.productDetails[currentProductIndex].product?.id;
     const [inputError, setInputError] = useState(false);
     const [, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedQuantity : '');

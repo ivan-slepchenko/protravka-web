@@ -11,7 +11,13 @@ const OrderExecution5AllAddedProductsOverview = () => {
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
     const order = orders.find(order => order.id === currentOrderId);
 
-    const totalTargetQty = order?.productDetails.reduce((total, product) => total + product.quantity, 0) || 0;
+    const getTargetQty = (productId: string | undefined) => {
+        if (!productId) return 0;
+        const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === productId);
+        return productRecipe ? productRecipe.kgSlurryRecipeToMix : 0;
+    };
+
+    const totalTargetQty = order?.productDetails.reduce((total, product) => total + getTargetQty(product.product?.id), 0) || 0;
     const totalActualQty = currentOrder?.productExecutions.reduce((total, product) => total + product.appliedQuantity, 0) || 0;
 
     const handleNextButtonClicked = (): void => {
@@ -33,7 +39,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
                     {currentOrder?.productExecutions.map((product, index) => (
                         <Tr key={index} bg={index % 2 === 0 ? 'gray.50' : 'white'}>
                             <Td>{order?.productDetails[index].product?.name}</Td>
-                            <Td>{order?.productDetails[index].quantity || '-'}</Td>
+                            <Td>{getTargetQty(order?.productDetails[index].product?.id).toFixed(2)}</Td>
                             <Td>{product.appliedQuantity}</Td>
                         </Tr>
                     ))}
@@ -41,7 +47,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
                 <Tfoot>
                     <Tr>
                         <Th>Total</Th>
-                        <Th>{totalTargetQty}</Th>
+                        <Th>{totalTargetQty.toFixed(2)}</Th>
                         <Th>{totalActualQty}</Th>
                     </Tr>
                 </Tfoot>
