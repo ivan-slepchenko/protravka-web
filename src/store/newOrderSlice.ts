@@ -52,6 +52,7 @@ export interface Order {
     bagSize: number;
     status: OrderStatus;
     orderRecipe: OrderRecipe; 
+    extraSlurry: number;
 }
 
 export interface NewOrder {

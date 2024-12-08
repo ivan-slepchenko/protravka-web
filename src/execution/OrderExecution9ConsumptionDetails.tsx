@@ -53,7 +53,9 @@ export default function OrderExecution9ConsumptionDetails() {
     const renderTableBody = () => (
         <Tbody>
             <Tr>
-                <Td>xxx</Td>
+                <Td>
+                    {applicationMethod === 'Surry' ? order?.orderRecipe?.slurryTotalKgRecipeToWeight.toFixed(2) : 'xxx'}
+                </Td>
                 <Td>
                     <Input
                         placeholder="Enter value"
@@ -68,7 +70,7 @@ export default function OrderExecution9ConsumptionDetails() {
         <>
             <Heading size="md" mb={4}>
                 {applicationMethod === 'Surry'
-                    ? 'Total Surry consumption per XXX kg'
+                    ? `Total Surry consumption per ${(order?.quantity ?? 0) * (order?.extraSlurry ?? 0)} kg`
                     : <span>
                         {'Product: '}
                         {order?.productDetails[currentProductIndex].product?.name}
