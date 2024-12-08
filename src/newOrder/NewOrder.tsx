@@ -145,7 +145,7 @@ export const NewOrderForm = () => {
                 enableReinitialize
             >
                 {(props: FormikProps<NewOrder>) => (
-                    <form onSubmit={props.handleSubmit}>
+                    <form onSubmit={props.handleSubmit} style={{width: '100%'}}>
                         <Box width="full" mx="auto" p="4">
                             <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb="4">
                 Remington Seeds
@@ -369,7 +369,15 @@ export const NewOrderForm = () => {
                                                 </Box>
                                                 <Box>
                                                     <Text fontSize="md">Density (g/ml):</Text>
-                                                    <Text>{props.values.productDetails[index].product?.density}</Text>
+                                                    <Text fontSize="md">
+                                                        {(() => {
+                                                            const productId = props.values.productDetails[index].productId;
+                                                            const product = products.find(product => product.id === productId);
+
+                                                            console.log('Density', props.values.productDetails[index].product?.density);
+                                                            return product?.density || 0;
+                                                        })()}
+                                                    </Text>
                                                 </Box>
                                                 <Box>
                                                     <Text fontSize="md">

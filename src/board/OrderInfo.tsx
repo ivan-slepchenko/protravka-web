@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { OrderStatus, updateStatus } from "../store/newOrderSlice";
 import { fetchProducts } from "../store/productsSlice";
-import { getRateUnitLabel, getRateTypeLabel } from "../newOrder/SeedTreatmentForm";
+import { getRateTypeLabel, getRateUnitLabel } from "../newOrder/NewOrder";
+// import { getRateUnitLabel, getRateTypeLabel } from "../newOrder/SeedTreatmentForm";
 
 interface OrderInfoProps {
   isOpen: boolean;
