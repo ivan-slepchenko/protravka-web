@@ -122,6 +122,7 @@ const OrderExecution4ProovingProduct = () => {
                         borderRadius="full"
                         colorScheme="orange"
                         onClick={handleNextButtonClick}
+                        disabled={!photo} // Disable button if no photo
                     >
                         Next
                     </Button>

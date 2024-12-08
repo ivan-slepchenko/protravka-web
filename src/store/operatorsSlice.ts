@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Role } from '../operators/Operators';
+import { ProductDetail } from './newOrderSlice';
 
 export interface Operator {
   id: string;
@@ -11,13 +12,14 @@ export interface Operator {
 }
 
 export interface ProductRecipe {
-  id: string;
-  rateMltoU_KS: number;
-  rateGToU_KS: number;
-  rateMlTo100Kg: number;
-  rateGTo100Kg: number;
-  literSlurryRecipeToMix: number;
-  kgSlurryRecipeToMix: number;
+    id: string;
+    rateMltoU_KS: number;
+    rateGToU_KS: number;
+    rateMlTo100Kg: number;
+    rateGTo100Kg: number;
+    literSlurryRecipeToMix: number;
+    kgSlurryRecipeToMix: number;
+    productDetail: ProductDetail;
 }
 
 export interface OrderRecipe {

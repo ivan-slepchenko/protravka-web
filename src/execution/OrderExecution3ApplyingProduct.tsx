@@ -20,6 +20,7 @@ const OrderExecution3ApplyingProduct = () => {
     const currentProductId = order?.productDetails[currentProductIndex].product?.id;
     const [inputError, setInputError] = useState(false);
     const [, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedQuantity : '');
+    const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
 
     useEffect(() => {
         setInputValue(currentProductExecution ? currentProductExecution.appliedQuantity : '');
@@ -46,8 +47,8 @@ const OrderExecution3ApplyingProduct = () => {
             return (
                 <Thead bg="orange.100">
                     <Tr>
-                        <Th>Target rate, {currentProduct?.rateUnit === RateUnit.ML ? 'litres' : 'kg'}</Th>
-                        <Th>Actual rate, {currentProduct?.rateUnit === RateUnit.ML ? 'litres' : 'kg'}</Th>
+                        <Th>Target rate, kg</Th>
+                        <Th>Actual rate, kg</Th>
                     </Tr>
                 </Thead>
             );
@@ -55,8 +56,8 @@ const OrderExecution3ApplyingProduct = () => {
             return (
                 <Thead bg="orange.100">
                     <Tr>
-                        <Th>Target rate, {currentProduct?.rateUnit === RateUnit.ML ? 'litres' : 'kg'}</Th>
-                        <Th>Machine Setting, {currentProduct?.rateUnit === RateUnit.ML ? 'litres' : 'kg'}</Th>
+                        <Th>Target rate, kg</Th>
+                        <Th>Machine Setting, kg</Th>
                     </Tr>
                 </Thead>
             );
@@ -66,7 +67,7 @@ const OrderExecution3ApplyingProduct = () => {
     const renderTableBody = () => (
         <Tbody>
             <Tr>
-                <Td>{currentProduct?.rate}</Td>
+                <Td>{productRecipe?.kgSlurryRecipeToMix.toFixed(2)}</Td>
                 <Td>
                     <Input
                         placeholder="Enter value"
