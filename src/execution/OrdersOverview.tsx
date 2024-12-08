@@ -12,7 +12,11 @@ const currentDate = new Date().toLocaleDateString();
 const OrdersOverview: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const user = useSelector((state: RootState) => state.user);
-    const orders = useSelector((state: RootState) => state.orders.activeOrders.filter(order => order.operator.email === user.email));
+    const orders = useSelector((state: RootState) => 
+        state.orders.activeOrders.filter(order => 
+            order.operator.email === user.email && order.status === OrderStatus.NotStarted
+        )
+    );
 
     const handleOrderClick = (orderId: string) => {
         dispatch(startExecution(orderId));
