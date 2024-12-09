@@ -1,6 +1,5 @@
-
 import React from "react";
-import { Box, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel, Table, Thead, Tbody, Tr, Th, Td, HStack } from "@chakra-ui/react";
+import { Box, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel, HStack } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store/store";
@@ -9,6 +8,7 @@ import { fetchOrderExecution } from "../../store/executionSlice";
 import OrderInformation from "./OrderInformation";
 import RecipeInformation from "./RecipeInformation";
 import ProductDetails from "./ProductDetails";
+import OrderExecutionTab from "./OrderExecutionTab";
 
 const OrderInfo: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
@@ -40,7 +40,7 @@ const OrderInfo: React.FC = () => {
                 <Tabs>
                     <TabList>
                         <Tab>Recipe</Tab>
-                        <Tab>Execution</Tab>
+                        {orderExecution && <Tab>Execution</Tab>}
                     </TabList>
                     <TabPanels>
                         <TabPanel>
@@ -53,45 +53,11 @@ const OrderInfo: React.FC = () => {
                                 <ProductDetails order={order} />
                             </Box>
                         </TabPanel>
-                        <TabPanel>
-                            <Box w="full">
-                                <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Order Execution Photos</Text>
-                                <Box>
-                                    <Text fontSize="xs">Packing Photo:</Text>
-                                    {orderExecution?.packingPhoto ? <img src={orderExecution.packingPhoto} alt="Packing" /> : 'No Photo'}
-                                </Box>
-                                <Box>
-                                    <Text fontSize="xs">Consumption Photo:</Text>
-                                    {orderExecution?.consumptionPhoto ? <img src={orderExecution.consumptionPhoto} alt="Consumption" /> : 'No Photo'}
-                                </Box>
-                                <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Execution Details</Text>
-                                <Box maxHeight="300px" overflowY="auto" bg="gray.50" p="2" borderRadius="md">
-                                    <Table variant="simple" size="sm" w="full">
-                                        <Thead bg="orange.100">
-                                            <Tr>
-                                                <Th width="35%" whiteSpace="nowrap" borderBottom="2px" borderColor="gray.400">Product Name</Th>
-                                                <Th whiteSpace="nowrap" borderBottom="2px" borderColor="gray.400">Application Photo</Th>
-                                                <Th whiteSpace="nowrap" borderBottom="2px" borderColor="gray.400">Consumption Photo</Th>
-                                            </Tr>
-                                        </Thead>
-                                        <Tbody>
-                                            {order.productDetails && [...order.productDetails]
-                                                .sort((a, b) => a.index - b.index) // Sort by index
-                                                .map((productDetail, index) => {
-                                                    const productExecution = orderExecution?.productExecutions.find(pe => pe.productId === productDetail.product?.id);
-                                                    return (
-                                                        <Tr key={index} borderBottom="2px" borderColor="gray.400">
-                                                            <Td width="35%" borderBottom="2px" borderColor="gray.400">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
-                                                            <Td borderBottom="2px" borderColor="gray.400">{productExecution?.applicationPhoto ? <img src={productExecution.applicationPhoto} alt="Application" /> : 'No Photo'}</Td>
-                                                            <Td borderBottom="2px" borderColor="gray.400">{productExecution?.consumptionPhoto ? <img src={productExecution.consumptionPhoto} alt="Consumption" /> : 'No Photo'}</Td>
-                                                        </Tr>
-                                                    );
-                                                })}
-                                        </Tbody>
-                                    </Table>
-                                </Box>
-                            </Box>
-                        </TabPanel>
+                        {orderExecution && (
+                            <TabPanel>
+                                <OrderExecutionTab order={order} orderExecution={orderExecution} />
+                            </TabPanel>
+                        )}
                     </TabPanels>
                 </Tabs>
             </Box>

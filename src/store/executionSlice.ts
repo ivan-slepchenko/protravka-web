@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 
-interface ProductExecution {
+export interface ProductExecution {
     productId: string;
     appliedQuantity: number;
     applicationPhoto?: string;
     consumptionPhoto?: string;
 }
 
-interface OrderExecution {
+export interface OrderExecution {
     orderId: string;
     productExecutions: ProductExecution[];
     applicationMethod: string | null;
@@ -17,7 +17,7 @@ interface OrderExecution {
     packedQuantity: number | null;
 }
 
-interface ExecutionState {
+export interface ExecutionState {
     currentOrderId: string | null;
     currentPage: OrderExecutionPage;
     orderExecutions: OrderExecution[];
