@@ -85,8 +85,12 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                             <Th borderLeft="1px" width="20%" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Product Name</Th>
                             <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Application</Th>
                             <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Application Photo</Th>
-                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Consumption</Th>
-                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Consumption Photo</Th>
+                            {applicationMethod !== 'Surry' && (
+                                <>
+                                    <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Consumption</Th>
+                                    <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Consumption Photo</Th>
+                                </>
+                            )}
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -115,23 +119,27 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                 />
                                             ) : 'No Photo'}
                                         </Td>
-                                        <Td borderBottom="1px" borderColor="gray.400">
-                                            <Text fontSize="xs" fontWeight="bold">{productRecipe?.kgSlurryRecipeToMix.toFixed(2)} kg</Text>
-                                        </Td>
-                                        <Td borderBottom="1px" borderColor="gray.400">
-                                            {productExecution?.consumptionPhoto ? (
-                                                <Image
-                                                    src={productExecution.consumptionPhoto}
-                                                    alt="Consumption"
-                                                    width="150px"
-                                                    height="100px"
-                                                    objectFit="cover"
-                                                    onClick={() => handlePhotoClick(productExecution.consumptionPhoto)}
-                                                    cursor="pointer"
-                                                    title="Expected Consumption Photo"
-                                                />
-                                            ) : 'No Photo'}
-                                        </Td>
+                                        {applicationMethod !== 'Surry' && (
+                                            <>
+                                                <Td borderBottom="1px" borderColor="gray.400">
+                                                    <Text fontSize="xs" fontWeight="bold">{productRecipe?.kgSlurryRecipeToMix.toFixed(2)} kg</Text>
+                                                </Td>
+                                                <Td borderBottom="1px" borderColor="gray.400">
+                                                    {productExecution?.consumptionPhoto ? (
+                                                        <Image
+                                                            src={productExecution.consumptionPhoto}
+                                                            alt="Consumption"
+                                                            width="150px"
+                                                            height="100px"
+                                                            objectFit="cover"
+                                                            onClick={() => handlePhotoClick(productExecution.consumptionPhoto)}
+                                                            cursor="pointer"
+                                                            title="Expected Consumption Photo"
+                                                        />
+                                                    ) : 'No Photo'}
+                                                </Td>
+                                            </>
+                                        )}
                                     </Tr>
                                 );
                             })}
