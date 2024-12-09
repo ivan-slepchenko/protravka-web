@@ -13,7 +13,7 @@ import { Role } from './operators/Operators';
 import Execution from './execution/Execution';
 import MobileMenu from './menus/MobileMenu';
 import DesktopMenu from './menus/DesktopMenu';
-import OrderInfo from './board/OrderInfo';
+import OrderInfo from './board/orderInfo/OrderInfo';
 
 import {
     BrowserRouter,
