@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalBody, HStack, ModalCloseButton, Button } from "@chakra-ui/react";
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { changeOrderStatus } from "../../store/ordersSlice";
 import { Order, OrderStatus } from "../../store/newOrderSlice";
