@@ -50,7 +50,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                 ) : 'No Photo'}
                             </Td>
                             <Td borderBottom="1px" borderColor="gray.400">
-                                <Text fontSize="xs" fontWeight="bold">{orderExecution?.packedQuantity} Units</Text>
+                                <Text fontSize="xs" fontWeight="bold">{orderExecution?.packedQuantity} units</Text>
                             </Td>
                             {applicationMethod === 'Surry' && (
                                 <>
@@ -69,7 +69,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                         ) : 'No Photo'}
                                     </Td>
                                     <Td borderBottom="1px" borderColor="gray.400">
-                                        <Text fontSize="xs" fontWeight="bold">{order?.orderRecipe?.slurryTotalKgRecipeToWeight}</Text>
+                                        <Text fontSize="xs" fontWeight="bold">{order?.orderRecipe?.slurryTotalKgRecipeToWeight.toFixed(2)} kg</Text>
                                     </Td>
                                 </>
                             )}
