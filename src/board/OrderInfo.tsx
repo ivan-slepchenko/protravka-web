@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Grid, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { Box, Text, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Grid, Table, Thead, Tbody, Tr, Th, Td, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { OrderStatus, updateStatus } from "../store/newOrderSlice";
@@ -34,97 +34,192 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ isOpen, onClose, orderId }) => {
                 <ModalHeader>Order Information</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <Box w="full">
-                        <Grid templateColumns="repeat(2, 1fr)" gap="1" mb="2">
-                            <Box>
-                                <Text fontSize="xs">Recipe creation date:</Text>
-                                <Text>{order.recipeDate}</Text>
-                            </Box>
-                            <Box>
-                                <Text fontSize="xs">Application date:</Text>
-                                <Text>{order.applicationDate}</Text>
-                            </Box>
-                            <Box>
-                                <Text fontSize="xs">Operator:</Text>
-                                <Text>{order.operator ? `${order.operator.name} ${order.operator.surname}` : "undefined"}</Text>
-                            </Box>
-                            <Box>
-                                <Text fontSize="xs">Crop:</Text>
-                                <Text>{order.crop.name}</Text>
-                            </Box>
-                            <Box>
-                                <Text fontSize="xs">Variety:</Text>
-                                <Text>{order.variety.name}</Text>
-                            </Box>
-                            <Box>
-                                <Text fontSize="xs">Lot Number:</Text>
-                                <Text>{order.lotNumber}</Text>
-                            </Box>
-                            <Box>
-                                <Text fontSize="xs">TKW (g):</Text>
-                                <Text>{order.tkw}</Text>
-                            </Box>
-                            <Box>
-                                <Text fontSize="xs">Quantity to treat (kg):</Text>
-                                <Text>{order.quantity}</Text>
-                            </Box>
-                            <Box>
-                                <Text fontSize="xs">Packaging:</Text>
-                                <Text>{order.packaging}</Text>
-                            </Box>
-                            <Box>
-                                <Text fontSize="xs">Bag size (K/Seeds):</Text>
-                                <Text>{order.bagSize}</Text>
-                            </Box>
-                        </Grid>
-                        <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
-                        <Box maxHeight="300px" overflowY="auto" bg="gray.50" p="2" borderRadius="md">
-                            <Table variant="simple" size="sm" w="full">
-                                <Thead bg="orange.100">
-                                    <Tr>
-                                        <Th width="35%" whiteSpace="nowrap">Product Name</Th>
-                                        <Th whiteSpace="nowrap">Density (g/ml)</Th>
-                                        <Th whiteSpace="nowrap">Rate</Th>
-                                        <Th whiteSpace="nowrap">Rate Type</Th>
-                                        <Th whiteSpace="nowrap">Rate Unit</Th>
-                                        {order.status === OrderStatus.Executed && <Th whiteSpace="nowrap">Application Photo</Th>}
-                                        {order.status === OrderStatus.Executed && <Th whiteSpace="nowrap">Consumption Photo</Th>}
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {order.productDetails && [...order.productDetails]
-                                        .sort((a, b) => a.index - b.index) // Sort by index
-                                        .map((productDetail, index) => {
-                                            const productExecution = orderExecution?.productExecutions.find(pe => pe.productId === productDetail.product?.id);
-                                            return (
-                                                <Tr key={index}>
-                                                    <Td width="35%">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
-                                                    <Td>{productDetail.product?.density}</Td>
-                                                    <Td>{productDetail.rate}</Td>
-                                                    <Td>{getRateTypeLabel(productDetail.rateType)}</Td>
-                                                    <Td>{getRateUnitLabel(productDetail.rateUnit)}</Td>
-                                                    {order.status === OrderStatus.Executed && <Td>{productExecution?.applicationPhoto ? <img src={productExecution.applicationPhoto} alt="Application" /> : 'No Photo'}</Td>}
-                                                    {order.status === OrderStatus.Executed && <Td>{productExecution?.consumptionPhoto ? <img src={productExecution.consumptionPhoto} alt="Consumption" /> : 'No Photo'}</Td>}
+                    <Tabs>
+                        <TabList>
+                            <Tab>Recipe</Tab>
+                            <Tab>Execution</Tab>
+                        </TabList>
+                        <TabPanels>
+                            <TabPanel>
+                                <Box w="full">
+                                    <Grid templateColumns="repeat(2, 1fr)" gap="4" mb="4">
+                                        <Box border="1px" borderColor="gray.200" p="4" borderRadius="md">
+                                            <Text fontSize="md" fontWeight="bold" mb="2">Order Information</Text>
+                                            <Grid templateColumns="repeat(2, 1fr)" gap="1" mb="4" borderBottom="1px" borderColor="gray.200">
+                                                <Box>
+                                                    <Text fontSize="xs">Recipe creation date:</Text>
+                                                    <Text>{order.recipeDate}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Application date:</Text>
+                                                    <Text>{order.applicationDate}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Operator:</Text>
+                                                    <Text>{order.operator ? `${order.operator.name} ${order.operator.surname}` : "undefined"}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Crop:</Text>
+                                                    <Text>{order.crop.name}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Variety:</Text>
+                                                    <Text>{order.variety.name}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Lot Number:</Text>
+                                                    <Text>{order.lotNumber}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">TKW (g):</Text>
+                                                    <Text>{order.tkw}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Quantity to treat (kg):</Text>
+                                                    <Text>{order.quantity}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Packaging:</Text>
+                                                    <Text>{order.packaging}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Bag size (K/Seeds):</Text>
+                                                    <Text>{order.bagSize}</Text>
+                                                </Box>
+                                            </Grid>
+                                        </Box>
+                                        <Box border="1px" borderColor="gray.200" p="4" borderRadius="md">
+                                            <Text fontSize="md" fontWeight="bold" mb="2">Recipe Information</Text>
+                                            <Grid templateColumns="repeat(2, 1fr)" gap="1" mb="4" borderBottom="1px" borderColor="gray.200">
+                                                <Box>
+                                                    <Text fontSize="xs">Total Compounds Density:</Text>
+                                                    <Text>{order.orderRecipe.totalCompoundsDensity.toFixed(2)}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Slurry Total (ml/U/KS):</Text>
+                                                    <Text>{order.orderRecipe.slurryTotalMltoU_KS.toFixed(2)}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Slurry Total (g/U/KS):</Text>
+                                                    <Text>{order.orderRecipe.slurryTotalGToU_KS.toFixed(2)}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Slurry Total (ml/100kg):</Text>
+                                                    <Text>{order.orderRecipe.slurryTotalMlTo100Kg.toFixed(2)}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Slurry Total (g/100kg):</Text>
+                                                    <Text>{order.orderRecipe.slurryTotalGTo100Kgs.toFixed(2)}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Slurry Total (ml Recipe/Mix):</Text>
+                                                    <Text>{order.orderRecipe.slurryTotalMlRecipeToMix.toFixed(2)}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Slurry Total (kg Recipe/Weight):</Text>
+                                                    <Text>{order.orderRecipe.slurryTotalKgRecipeToWeight.toFixed(2)}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Extra Slurry (Pipes/Pump Feeding ml):</Text>
+                                                    <Text>{order.orderRecipe.extraSlurryPipesAndPompFeedingMl.toFixed(2)}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text fontSize="xs">Number of Seed Units:</Text>
+                                                    <Text>{order.orderRecipe.nbSeedsUnits.toFixed(2)}</Text>
+                                                </Box>
+                                            </Grid>
+                                        </Box>
+                                    </Grid>
+                                    <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
+                                    <Box maxHeight="300px" overflowY="auto" bg="gray.50" p="2" borderRadius="md">
+                                        <Table variant="simple" size="sm" w="full">
+                                            <Thead bg="orange.100">
+                                                <Tr>
+                                                    <Th rowSpan={2} width="35%" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Product Name</Th>
+                                                    <Th rowSpan={2} whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Density (g/ml)</Th>
+                                                    <Th rowSpan={2} whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Rate</Th>
+                                                    <Th rowSpan={2} whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Rate Unit</Th>
+                                                    <Th colSpan={2} whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Slurry Total</Th>
+                                                    <Th colSpan={2} whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Rate</Th>
+                                                    <Th colSpan={2} whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Rate</Th>
+                                                    <Th colSpan={2} whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Slurry</Th>
                                                 </Tr>
-                                            );
-                                        })}
-                                </Tbody>
-                            </Table>
-                        </Box>
-                        {orderExecution && order.status !== OrderStatus.Executed && (
-                            <>
-                                <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Order Execution Photos</Text>
-                                <Box>
-                                    <Text fontSize="xs">Packing Photo:</Text>
-                                    {orderExecution.packingPhoto ? <img src={orderExecution.packingPhoto} alt="Packing" /> : 'No Photo'}
+                                                <Tr>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">ml/U/KS</Th>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">g/U/KS</Th>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">ml/U/KS</Th>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">g/U/KS</Th>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">ml/100kg</Th>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">g/100kg</Th>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">ml Recipe/Mix</Th>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">kg Recipe/Weight</Th>
+                                                </Tr>
+                                            </Thead>
+                                            <Tbody>
+                                                {order.productDetails && [...order.productDetails]
+                                                    .sort((a, b) => a.index - b.index) // Sort by index
+                                                    .map((productDetail, index) => (
+                                                        <Tr key={index} borderBottom="1px" borderColor="gray.200">
+                                                            <Td width="35%" borderBottom="1px" borderColor="gray.200">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{productDetail.product?.density.toFixed(2)}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{productDetail.rate.toFixed(2)}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{`${getRateTypeLabel(productDetail.rateType)}/${getRateUnitLabel(productDetail.rateUnit)}`}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{order.orderRecipe.productRecipes[index]?.kgSlurryRecipeToMix.toFixed(2)}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{order.orderRecipe.productRecipes[index]?.literSlurryRecipeToMix.toFixed(2)}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{order.orderRecipe.productRecipes[index]?.rateMltoU_KS.toFixed(2)}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{order.orderRecipe.productRecipes[index]?.rateGToU_KS.toFixed(2)}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{order.orderRecipe.productRecipes[index]?.rateMlTo100Kg.toFixed(2)}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{order.orderRecipe.productRecipes[index]?.rateGTo100Kg.toFixed(2)}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{order.orderRecipe.productRecipes[index]?.literSlurryRecipeToMix.toFixed(2)}</Td>
+                                                            <Td borderBottom="1px" borderColor="gray.200">{order.orderRecipe.productRecipes[index]?.kgSlurryRecipeToMix.toFixed(2)}</Td>
+                                                        </Tr>
+                                                    ))}
+                                            </Tbody>
+                                        </Table>
+                                    </Box>
                                 </Box>
-                                <Box>
-                                    <Text fontSize="xs">Consumption Photo:</Text>
-                                    {orderExecution.consumptionPhoto ? <img src={orderExecution.consumptionPhoto} alt="Consumption" /> : 'No Photo'}
+                            </TabPanel>
+                            <TabPanel>
+                                <Box w="full">
+                                    <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Order Execution Photos</Text>
+                                    <Box>
+                                        <Text fontSize="xs">Packing Photo:</Text>
+                                        {orderExecution?.packingPhoto ? <img src={orderExecution.packingPhoto} alt="Packing" /> : 'No Photo'}
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="xs">Consumption Photo:</Text>
+                                        {orderExecution?.consumptionPhoto ? <img src={orderExecution.consumptionPhoto} alt="Consumption" /> : 'No Photo'}
+                                    </Box>
+                                    <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Execution Details</Text>
+                                    <Box maxHeight="300px" overflowY="auto" bg="gray.50" p="2" borderRadius="md">
+                                        <Table variant="simple" size="sm" w="full">
+                                            <Thead bg="orange.100">
+                                                <Tr>
+                                                    <Th width="35%" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Product Name</Th>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Application Photo</Th>
+                                                    <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.200">Consumption Photo</Th>
+                                                </Tr>
+                                            </Thead>
+                                            <Tbody>
+                                                {order.productDetails && [...order.productDetails]
+                                                    .sort((a, b) => a.index - b.index) // Sort by index
+                                                    .map((productDetail, index) => {
+                                                        const productExecution = orderExecution?.productExecutions.find(pe => pe.productId === productDetail.product?.id);
+                                                        return (
+                                                            <Tr key={index} borderBottom="1px" borderColor="gray.200">
+                                                                <Td width="35%" borderBottom="1px" borderColor="gray.200">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
+                                                                <Td borderBottom="1px" borderColor="gray.200">{productExecution?.applicationPhoto ? <img src={productExecution.applicationPhoto} alt="Application" /> : 'No Photo'}</Td>
+                                                                <Td borderBottom="1px" borderColor="gray.200">{productExecution?.consumptionPhoto ? <img src={productExecution.consumptionPhoto} alt="Consumption" /> : 'No Photo'}</Td>
+                                                            </Tr>
+                                                        );
+                                                    })}
+                                            </Tbody>
+                                        </Table>
+                                    </Box>
                                 </Box>
-                            </>
-                        )}
-                    </Box>
+                            </TabPanel>
+                        </TabPanels>
+                    </Tabs>
                 </ModalBody>
             </ModalContent>
         </Modal>

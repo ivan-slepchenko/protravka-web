@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Operator, OrderRecipe } from './operatorsSlice';
+import { Operator } from './operatorsSlice';
+import { OrderRecipe } from './ordersSlice';
 import { Crop, Variety } from './cropsSlice';
 import { Product } from './productsSlice';
 
