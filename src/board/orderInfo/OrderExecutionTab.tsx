@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalBody, HStack, ModalCloseButton } from "@chakra-ui/react";
-import { Order } from "../../store/newOrderSlice";
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalBody, HStack, ModalCloseButton, Button } from "@chakra-ui/react";
+import { useDispatch } from "react-redux";
+import { changeOrderStatus } from "../../store/ordersSlice";
+import { Order, OrderStatus } from "../../store/newOrderSlice";
 import { OrderExecution } from "../../store/executionSlice";
+import { AppDispatch } from "../../store/store";
+import { useNavigate } from "react-router-dom";
 
 const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution }> = ({ order, orderExecution }) => {
     const [selectedPhoto, setSelectedPhoto] = useState<string | null | undefined>(null);
+    const dispatch: AppDispatch = useDispatch();
+    const navigate = useNavigate();
 
     const applicationMethod = orderExecution?.applicationMethod;
 
@@ -16,6 +22,13 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
         setSelectedPhoto(null);
     };
 
+    const handleAcknowledge = () => {
+        if (order.id) {
+            dispatch(changeOrderStatus({ id: order.id, status: OrderStatus.Acknowledge }));
+            navigate('/board');
+        }
+    };
+
     return (
         <Box w="full">
             <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Order Execution Photos:</Text>
@@ -23,7 +36,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                 <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Packing Photo</Th>
+                            <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Packing Photo</Th>
                             <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Quantity</Th>
                             {applicationMethod === 'Surry' && (
                                 <>
@@ -82,7 +95,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                 <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th borderLeft="1px" width="20%" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Product Name</Th>
+                            <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Product Name</Th>
                             <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Application</Th>
                             <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Application Photo</Th>
                             {applicationMethod !== 'Surry' && (
@@ -101,7 +114,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                 const productRecipe = order.orderRecipe.productRecipes.find(pr => pr.productDetail.product?.id === productDetail.product?.id);
                                 return (
                                     <Tr key={index} borderBottom="1px" borderColor="gray.400">
-                                        <Td width="20%" borderBottom="1px" borderColor="gray.400">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
+                                        <Td borderBottom="1px" borderColor="gray.400">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
                                         <Td borderBottom="1px" borderColor="gray.400">
                                             <Text fontSize="xs" fontWeight="bold">{productRecipe?.rateGTo100Kg.toFixed(2)} g</Text>
                                         </Td>
@@ -163,6 +176,9 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     </ModalBody>
                 </ModalContent>
             </Modal>
+            <Box mt="4" textAlign="right">
+                <Button colorScheme="blue" onClick={handleAcknowledge}>Acknowledge And Close</Button>
+            </Box>
         </Box>
     );
 };
