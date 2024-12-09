@@ -6,6 +6,12 @@ import { RootState, AppDispatch } from "../store/store";
 import { fetchProducts } from "../store/productsSlice";
 import { getRateTypeLabel, getRateUnitLabel } from "../newOrder/NewOrder";
 import { fetchOrderExecution } from "../store/executionSlice";
+import { Packaging } from "../store/newOrderSlice";
+
+const packagingMap = {
+    [Packaging.InSeeds]: "In Seeds",
+    [Packaging.InKg]: "In Kg",
+};
 
 const OrderInfo: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
@@ -80,7 +86,7 @@ const OrderInfo: React.FC = () => {
                                             </Box>
                                             <Box>
                                                 <Text fontSize="xs">Packaging:</Text>
-                                                <Text>{order.packaging}</Text>
+                                                <Text>{packagingMap[order.packaging]}</Text>
                                             </Box>
                                             <Box>
                                                 <Text fontSize="xs">Bag size (K/Seeds):</Text>
