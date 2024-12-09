@@ -1,27 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import OrderInfo from './OrderInfo';
 import { OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders } from '../store/ordersSlice';
 import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const Board: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
+    const navigate = useNavigate();
     const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.Executed, OrderStatus.Acknowledge];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
     useEffect(() => {
         dispatch(fetchOrders());
     }, [dispatch]);
 
     const handleOrderClick = (orderId: string) => {
-        setSelectedOrder(orderId);
-    };
-
-    const handleClose = () => {
-        setSelectedOrder(null);
+        navigate(`/order/${orderId}`);
     };
 
     return (
@@ -40,7 +36,6 @@ const Board: React.FC = () => {
                                     w="full"
                                     cursor="pointer"
                                     onClick={() => handleOrderClick(order.id)}
-
                                 >
                                     <Text><strong>Lot Number:</strong> {order.lotNumber}</Text>
                                     <Text><strong>Crop:</strong> {order.crop?.name}</Text>
@@ -51,7 +46,6 @@ const Board: React.FC = () => {
                         </VStack>
                     </Box>
                 ))}
-                {selectedOrder && <OrderInfo isOpen={!!selectedOrder} onClose={handleClose} orderId={selectedOrder} />}
             </Flex>
         </Flex>
     );

@@ -13,6 +13,7 @@ import { Role } from './operators/Operators';
 import Execution from './execution/Execution';
 import MobileMenu from './menus/MobileMenu';
 import DesktopMenu from './menus/DesktopMenu';
+import OrderInfo from './board/OrderInfo';
 
 import {
     BrowserRouter,
@@ -93,6 +94,7 @@ const App = () => {
                             <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
                             <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
                             <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
+                            <Route path="/order/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><OrderInfo /></RequireAuth>} />
                             <Route path="/login" element={<LoginRedirect />} />
                             <Route path="/signup" element={<Signup />} />
                         </Routes>
@@ -112,6 +114,7 @@ const App = () => {
                         <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
                         <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
                         <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
+                        <Route path="/order/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><OrderInfo /></RequireAuth>} />
                         <Route path="/login" element={<LoginRedirect />} />
                         <Route path="/signup" element={<Signup />} />
                     </Routes>
