@@ -57,13 +57,13 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                 
             </HStack>
             <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Execution Details</Text>
-            <Box maxHeight="300px" overflowY="auto" bg="gray.50" p="2" borderRadius="md">
+            <Box overflowY="auto" bg="gray.50" borderRadius="md">
                 <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th width="35%" whiteSpace="nowrap" borderBottom="2px" borderColor="gray.400">Product Name</Th>
-                            <Th whiteSpace="nowrap" borderBottom="2px" borderColor="gray.400">Application Photo</Th>
-                            <Th whiteSpace="nowrap" borderBottom="2px" borderColor="gray.400">Consumption Photo</Th>
+                            <Th borderLeft="1px" width="35%" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Product Name</Th>
+                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Application Photo</Th>
+                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Consumption Photo</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -73,9 +73,9 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                 const productExecution = orderExecution?.productExecutions.find(pe => pe.productId === productDetail.product?.id);
                                 const productRecipe = order.orderRecipe.productRecipes.find(pr => pr.productDetail.product?.id === productDetail.product?.id);
                                 return (
-                                    <Tr key={index} borderBottom="2px" borderColor="gray.400">
-                                        <Td width="35%" borderBottom="2px" borderColor="gray.400">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
-                                        <Td borderBottom="2px" borderColor="gray.400">
+                                    <Tr key={index} borderBottom="1px" borderColor="gray.400">
+                                        <Td width="35%" borderBottom="1px" borderColor="gray.400">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
+                                        <Td borderBottom="1px" borderColor="gray.400">
                                             {productExecution?.applicationPhoto ? (
                                                 <>
                                                     <Text fontSize="xs" fontWeight="bold">Expected: {productRecipe?.rateGTo100Kg.toFixed(2)} g</Text>
@@ -92,7 +92,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                 </>
                                             ) : 'No Photo'}
                                         </Td>
-                                        <Td borderBottom="2px" borderColor="gray.400">
+                                        <Td borderBottom="1px" borderColor="gray.400">
                                             {productExecution?.consumptionPhoto ? (
                                                 <>
                                                     <Text fontSize="xs" fontWeight="bold">Expected: {productRecipe?.kgSlurryRecipeToMix.toFixed(2)} kg</Text>
