@@ -1,24 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto } from '../store/executionSlice';
-import { RootState } from '../store/store';
+import { useDispatch } from 'react-redux';
+import { nextPage, resetCurrentProductIndex, resetPhoto, setPhotoForPacking } from '../store/executionSlice';
 import { FaCamera } from 'react-icons/fa';
-import { OrderExecutionPage } from './OrderExecutionPage';
-import { ProductDetail } from '../store/newOrderSlice';
-import { Product } from '../store/productsSlice';
 
-const OrderExecution10ConsumptionPhotoConfirmation = () => {
+const OrderExecution8PackingProoving = () => {
     const dispatch = useDispatch();
     const [photo, setPhotoState] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const orderExecution = useSelector((state: RootState) => state.execution.orderExecutions.find(orderExecution => orderExecution.orderId === state.execution.currentOrderId));
-    const applicationMethod = orderExecution?.applicationMethod;
-    const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === state.execution.currentOrderId));
-    const totalProducts = order?.productDetails.length || 0;
 
     useEffect(() => {
         startCamera();
@@ -44,25 +34,7 @@ const OrderExecution10ConsumptionPhotoConfirmation = () => {
                 context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
                 const photoData = canvasRef.current.toDataURL('image/png');
                 setPhotoState(photoData);
-                if (applicationMethod === 'CDS') {
-                    if (order === undefined) {
-                        throw new Error(`Order not found for the current order id ${currentOrderId}`);
-                    }
-                    if (order.productDetails[currentProductIndex] == undefined) {
-                        throw new Error(`Product details not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
-                    }
-
-                    const productDetails: ProductDetail = order.productDetails[currentProductIndex];
-                    if (productDetails.product !== undefined) {
-                        const product: Product = productDetails.product;
-                        const productId = product.id;
-                        dispatch(setProductConsumptionPhoto({ photo: photoData, productId }));
-                    } else {
-                        throw new Error(`Product not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
-                    }
-                } else {
-                    dispatch(setConsumptionPhoto(photoData));
-                }
+                dispatch(setPhotoForPacking(photoData));
             }
         }
     };
@@ -70,25 +42,18 @@ const OrderExecution10ConsumptionPhotoConfirmation = () => {
     const handleRetakeClick = () => {
         setPhotoState(null);
         startCamera();
+        dispatch(resetPhoto());
     };
 
     const handleNextButtonClick = () => {
-        if (applicationMethod === 'Surry') {
-            dispatch(nextPage());
-        } else {
-            if (currentProductIndex < totalProducts - 1) {
-                dispatch(incrementProductIndex());
-                dispatch(nextPage(OrderExecutionPage.ConsumptionDetails));
-            } else {
-                dispatch(nextPage());
-            }
-        }
+        dispatch(resetCurrentProductIndex())
+        dispatch(nextPage());
     };
 
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh" p={4}>
             <VStack spacing={8} width="100%" maxWidth="400px">
-                <Text mb={2} fontSize="xl" fontWeight="bold">Make a consumption photo proof.</Text>
+                <Text mb={2} fontSize="xl" fontWeight="bold">How many seeds did you pack out of?</Text>
                 <Box
                     width="100%"
                     height="300px"
@@ -133,4 +98,4 @@ const OrderExecution10ConsumptionPhotoConfirmation = () => {
     );
 };
 
-export default OrderExecution10ConsumptionPhotoConfirmation;
+export default OrderExecution8PackingProoving;

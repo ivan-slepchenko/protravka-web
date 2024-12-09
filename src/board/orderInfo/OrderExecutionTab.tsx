@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalBody } from "@chakra-ui/react";
 import { Order } from "../../store/newOrderSlice";
@@ -24,7 +23,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     <Image
                         src={orderExecution.packingPhoto}
                         alt="Packing"
-                        boxSize="400px"
+                        width="150px"
+                        height="100px"
                         objectFit="cover"
                         onClick={() => handlePhotoClick(orderExecution.packingPhoto)}
                         cursor="pointer"
@@ -38,7 +38,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     <Image
                         src={orderExecution.consumptionPhoto}
                         alt="Consumption"
-                        boxSize="400px"
+                        width="150px"
+                        height="100px"
                         objectFit="cover"
                         onClick={() => handlePhotoClick(orderExecution.consumptionPhoto)}
                         cursor="pointer"
@@ -69,7 +70,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                 <Image
                                                     src={productExecution.applicationPhoto}
                                                     alt="Application"
-                                                    boxSize="200px"
+                                                    width="150px"
+                                                    height="100px"
                                                     objectFit="cover"
                                                     onClick={() => handlePhotoClick(productExecution.applicationPhoto)}
                                                     cursor="pointer"
@@ -82,7 +84,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                 <Image
                                                     src={productExecution.consumptionPhoto}
                                                     alt="Consumption"
-                                                    boxSize="200px"
+                                                    width="150px"
+                                                    height="100px"
                                                     objectFit="cover"
                                                     onClick={() => handlePhotoClick(productExecution.consumptionPhoto)}
                                                     cursor="pointer"
@@ -100,7 +103,15 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                 <ModalOverlay />
                 <ModalContent>
                     <ModalBody>
-                        {selectedPhoto && <Image src={selectedPhoto} alt="Full Size" />}
+                        {selectedPhoto && (
+                            <Image
+                                src={selectedPhoto}
+                                alt="Full Size"
+                                width="800px"
+                                height="600px"
+                                objectFit="cover"
+                            />
+                        )}
                     </ModalBody>
                 </ModalContent>
             </Modal>

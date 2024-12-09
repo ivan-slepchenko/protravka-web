@@ -11,11 +11,11 @@ import OrderExecution3ApplyingProduct from './OrderExecution3ApplyingProduct';
 import OrderExecution11Completion from './OrderExecution11Completion';
 import OrderExecution9ConsumptionDetails from './OrderExecution9ConsumptionDetails';
 import OrderExecution7PackingDetails from './OrderExecution7PackingDetails';
-import OrderExecution8PhotoConfirmation from './OrderExecution8PhotoConfirmation';
+import OrderExecution8PackingProoving from './OrderExecution8PackingProoving';
 import OrderExecution4ProovingProduct from './OrderExecution4ProovingProduct';
 import OrderExecution6TreatingConfirmation from './OrderExecution6TreatingConfirmation';
 import { OrderExecutionPage } from './OrderExecutionPage';
-import OrderExecution10ConsumptionPhotoConfirmation from './OrderExecution10ConsumptionPhotoConfirmation';
+import OrderExecution10ConsumptionProoving from './OrderExecution10ConsumptionProoving';
 
 const Execution = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -45,11 +45,11 @@ const Execution = () => {
         case OrderExecutionPage.ConsumptionDetails:
             return <OrderExecution9ConsumptionDetails />;
         case OrderExecutionPage.ProovingConsumption:
-            return <OrderExecution10ConsumptionPhotoConfirmation />;
+            return <OrderExecution10ConsumptionProoving />;
         case OrderExecutionPage.PackingDetails:
             return <OrderExecution7PackingDetails />;
         case OrderExecutionPage.PhotoConfirmation:
-            return <OrderExecution8PhotoConfirmation />;
+            return <OrderExecution8PackingProoving />;
         case OrderExecutionPage.ProovingProduct:
             return <OrderExecution4ProovingProduct />;
         case OrderExecutionPage.TreatingConfirmation:
