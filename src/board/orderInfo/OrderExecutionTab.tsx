@@ -61,8 +61,10 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                 <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th borderLeft="1px" width="35%" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Product Name</Th>
+                            <Th borderLeft="1px" width="20%" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Product Name</Th>
+                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Application</Th>
                             <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Application Photo</Th>
+                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Consumption</Th>
                             <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Consumption Photo</Th>
                         </Tr>
                     </Thead>
@@ -74,39 +76,39 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                 const productRecipe = order.orderRecipe.productRecipes.find(pr => pr.productDetail.product?.id === productDetail.product?.id);
                                 return (
                                     <Tr key={index} borderBottom="1px" borderColor="gray.400">
-                                        <Td width="35%" borderBottom="1px" borderColor="gray.400">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
+                                        <Td width="20%" borderBottom="1px" borderColor="gray.400">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
+                                        <Td borderBottom="1px" borderColor="gray.400">
+                                            <Text fontSize="xs" fontWeight="bold">{productRecipe?.rateGTo100Kg.toFixed(2)} g</Text>
+                                        </Td>
                                         <Td borderBottom="1px" borderColor="gray.400">
                                             {productExecution?.applicationPhoto ? (
-                                                <>
-                                                    <Text fontSize="xs" fontWeight="bold">Expected: {productRecipe?.rateGTo100Kg.toFixed(2)} g</Text>
-                                                    <Image
-                                                        src={productExecution.applicationPhoto}
-                                                        alt="Application"
-                                                        width="150px"
-                                                        height="100px"
-                                                        objectFit="cover"
-                                                        onClick={() => handlePhotoClick(productExecution.applicationPhoto)}
-                                                        cursor="pointer"
-                                                        title="Expected Application Photo"
-                                                    />
-                                                </>
+                                                <Image
+                                                    src={productExecution.applicationPhoto}
+                                                    alt="Application"
+                                                    width="150px"
+                                                    height="100px"
+                                                    objectFit="cover"
+                                                    onClick={() => handlePhotoClick(productExecution.applicationPhoto)}
+                                                    cursor="pointer"
+                                                    title="Expected Application Photo"
+                                                />
                                             ) : 'No Photo'}
                                         </Td>
                                         <Td borderBottom="1px" borderColor="gray.400">
+                                            <Text fontSize="xs" fontWeight="bold">{productRecipe?.kgSlurryRecipeToMix.toFixed(2)} kg</Text>
+                                        </Td>
+                                        <Td borderBottom="1px" borderColor="gray.400">
                                             {productExecution?.consumptionPhoto ? (
-                                                <>
-                                                    <Text fontSize="xs" fontWeight="bold">Expected: {productRecipe?.kgSlurryRecipeToMix.toFixed(2)} kg</Text>
-                                                    <Image
-                                                        src={productExecution.consumptionPhoto}
-                                                        alt="Consumption"
-                                                        width="150px"
-                                                        height="100px"
-                                                        objectFit="cover"
-                                                        onClick={() => handlePhotoClick(productExecution.consumptionPhoto)}
-                                                        cursor="pointer"
-                                                        title="Expected Consumption Photo"
-                                                    />
-                                                </>
+                                                <Image
+                                                    src={productExecution.consumptionPhoto}
+                                                    alt="Consumption"
+                                                    width="150px"
+                                                    height="100px"
+                                                    objectFit="cover"
+                                                    onClick={() => handlePhotoClick(productExecution.consumptionPhoto)}
+                                                    cursor="pointer"
+                                                    title="Expected Consumption Photo"
+                                                />
                                             ) : 'No Photo'}
                                         </Td>
                                     </Tr>
@@ -117,14 +119,14 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
             </Box>
             <Modal isOpen={!!selectedPhoto} onClose={handleClose}>
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent width="800px" height="600px" maxWidth="unset">
                     <ModalBody>
                         {selectedPhoto && (
                             <Image
                                 src={selectedPhoto}
                                 alt="Full Size"
-                                width="800px"
-                                height="600px"
+                                width="full"
+                                height="full"
                                 objectFit="cover"
                             />
                         )}
