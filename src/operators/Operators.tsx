@@ -21,6 +21,7 @@ const Operators = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedOperatorId, setSelectedOperatorId] = useState<string | null>(null);
     const cancelRef = React.useRef<HTMLButtonElement>(null);
+    
 
     useEffect(() => {
         dispatch(fetchOperators());

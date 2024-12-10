@@ -36,7 +36,6 @@ import { fetchProducts } from "../store/productsSlice";
 import { fetchOperators } from '../store/operatorsSlice';
 import { useNavigate } from "react-router-dom";
 
-
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),
     applicationDate: Yup.date().required("Application Date is required"),
@@ -57,6 +56,7 @@ const validationSchema = Yup.object().shape({
         })
     ).min(1, "At least one product is required")
 });
+
 
 const hasProductDetailError = (errors: FormikErrors<NewOrder>, touched: FormikTouched<NewOrder>, index: number, field: keyof ProductDetail): boolean => {
     if(!touched.productDetails?.[index]?.rateType) return false; 
@@ -392,16 +392,16 @@ export const NewOrderForm = () => {
                                                         >
                                                             {products.map((product) => (
                                                                 <option key={product.id} value={product.id}>
-                                                                    {product.name}{'   ['}{product.density}{' g/ml]'}
+                                                                    {product.name} <span style={{ float: 'right', color: 'gray' }}>({product.density} g/ml)</span>
                                                                 </option>
                                                             ))}
                                                         </Field>
                                                     </Box>
-                                                    <Box w="500px">
+                                                    <Box>
                                                         <Text fontSize="md">
                                                             {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
                                                         </Text>
-                                                        <InputGroup size="md" w="full">
+                                                        <InputGroup size="md" width="400px">
                                                             <Field
                                                                 as={Input}
                                                                 name={`productDetails.${index}.rate`}
@@ -475,7 +475,7 @@ export const NewOrderForm = () => {
                                 {/* Action Buttons */}
                                 <HStack justifyContent="space-between" spacing="4" mb="4">
                                     <Box p="2" fontWeight="bold" ml="auto">
-                                        <Text fontSize="md">Slurry Total: {formData.slurryTotalKgRecipeToMix?.toFixed(2)} kg / {formData.slurryTotalMlRecipeToMix?.toFixed(2)} l</Text>
+                                        <Text fontSize="md">Slurry Total: {formData.slurryTotalKgRecipeToMix?.toFixed(2)} kg / {formData.slurryTotalMlRecipeToMix?.toFixed(2)} ml</Text>
                                     </Box>
                                     <HStack>
                                         <Button colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
@@ -515,7 +515,7 @@ export const NewOrderForm = () => {
                                 </ModalContent>
                             </Modal>
                         </form>
-                    )
+                    );
                 }}
             </Formik>
         </Center>
