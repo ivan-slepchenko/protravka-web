@@ -82,7 +82,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                         ) : 'No Photo'}
                                     </Td>
                                     <Td borderBottom="1px" borderColor="gray.400">
-                                        <Text fontSize="xs" fontWeight="bold">{order?.orderRecipe?.slurryTotalKgRecipeToWeight.toFixed(2)} kg</Text>
+                                        <Text fontSize="xs" fontWeight="bold">{order?.orderRecipe?.slurryTotalKgRecipeToMix.toFixed(2)} kg</Text>
                                     </Td>
                                 </>
                             )}

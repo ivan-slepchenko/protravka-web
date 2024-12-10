@@ -1,8 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Operator } from './operatorsSlice';
 import { OrderRecipe } from './ordersSlice';
 import { Crop, Variety } from './cropsSlice';
 import { Product } from './productsSlice';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 export enum RateUnit {
   ML = 'ml',
@@ -57,20 +59,22 @@ export interface Order {
 }
 
 export interface NewOrder {
-  id: string;
-  productDetails: ProductDetail[];
-  recipeDate: string;
-  applicationDate: string;
-  operatorId?: string;
-  cropId?: string;
-  varietyId?: string;
-  lotNumber: string;
-  tkw: number;
-  quantity: number;
-  packaging: Packaging;
-  bagSize: number;
-  status: OrderStatus;
-  extraSlurry: number; // Add extraSlurry field
+    id: string;
+    productDetails: ProductDetail[];
+    recipeDate: string;
+    applicationDate: string;
+    operatorId?: string;
+    cropId?: string;
+    varietyId?: string;
+    lotNumber: string;
+    tkw: number;
+    quantity: number;
+    packaging: Packaging;
+    bagSize: number;
+    status: OrderStatus;
+    extraSlurry: number; // Add extraSlurry field
+    slurryTotalMlRecipeToMix?: number;
+    slurryTotalKgRecipeToMix?: number;
 }
 
 export const createNewEmptyOrder: () => NewOrder = () => ({
@@ -101,6 +105,28 @@ export const createNewEmptyProduct: () => ProductDetail = () => ({
     index: 0, // Initialize index
     productId: "", // Initialize productId
 });
+
+export const fetchCalculatedValues = createAsyncThunk(
+    'newOrder/fetchCalculatedValues',
+    async (order: NewOrder, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/calculate-order`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(order),
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch calculated values');
+            }
+            return await response.json();
+        } catch (error) {
+            return rejectWithValue((error as Error).message);
+        }
+    }
+);
 
 const newOrderSlice = createSlice({
     name: 'newOrder',
@@ -156,9 +182,19 @@ const newOrderSlice = createSlice({
         updateExtraSlurry: (state, action: PayloadAction<number>) => {
             state.extraSlurry = action.payload;
         },
+        updateCalculatedValues: (state, action: PayloadAction<{ slurryTotalMlRecipeToMix: number; slurryTotalKgRecipeToMix: number }>) => {
+            state.slurryTotalMlRecipeToMix = action.payload.slurryTotalMlRecipeToMix;
+            state.slurryTotalKgRecipeToMix = action.payload.slurryTotalKgRecipeToMix;
+        },
         setOrderState: (state, action: PayloadAction<NewOrder>) => {
             return action.payload;
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchCalculatedValues.fulfilled, (state, action) => {
+            state.slurryTotalMlRecipeToMix = action.payload.slurryTotalMlRecipeToMix;
+            state.slurryTotalKgRecipeToMix = action.payload.slurryTotalKgRecipeToMix;
+        });
     },
 });
 
@@ -178,6 +214,7 @@ export const {
     updateBagSize,
     updateStatus,
     updateExtraSlurry,
+    updateCalculatedValues,
     setOrderState,
 } = newOrderSlice.actions;
 export default newOrderSlice.reducer;

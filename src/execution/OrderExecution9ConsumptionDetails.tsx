@@ -56,7 +56,7 @@ export default function OrderExecution9ConsumptionDetails() {
             <Tbody>
                 <Tr>
                     <Td>
-                        {applicationMethod === 'Surry' ? order?.orderRecipe?.slurryTotalKgRecipeToWeight.toFixed(2) : productRecipe?.kgSlurryRecipeToMix.toFixed(2)}
+                        {applicationMethod === 'Surry' ? order?.orderRecipe?.slurryTotalKgRecipeToMix.toFixed(2) : productRecipe?.kgSlurryRecipeToMix.toFixed(2)}
                     </Td>
                     <Td>
                         <Input

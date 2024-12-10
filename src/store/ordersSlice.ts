@@ -136,7 +136,7 @@ export interface ProductRecipe {
     slurryTotalMlTo100Kg: number;
     slurryTotalGTo100Kgs: number;
     slurryTotalMlRecipeToMix: number;
-    slurryTotalKgRecipeToWeight: number;
+    slurryTotalKgRecipeToMix: number;
     extraSlurryPipesAndPompFeedingMl: number;
     nbSeedsUnits: number;
     productRecipes: ProductRecipe[];

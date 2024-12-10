@@ -27,13 +27,15 @@ import {
     RateType,
     addProductDetail,
     updateExtraSlurry,
-    Packaging
+    Packaging,
+    fetchCalculatedValues
 } from "../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchCrops } from "../store/cropsSlice";
 import { fetchProducts } from "../store/productsSlice";
 import { fetchOperators } from '../store/operatorsSlice';
 import { useNavigate } from "react-router-dom";
+
 
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),
@@ -157,356 +159,365 @@ export const NewOrderForm = () => {
                 initialValues={formData}
                 onSubmit={handleSubmit}
                 enableReinitialize
+                validationSchema={validationSchema}
+                validateOnChange={true}
+                validateOnBlur={true}
             >
-                {(props: FormikProps<NewOrder>) => (
-                    <form onSubmit={props.handleSubmit} style={{width: '100%'}}>
-                        <Box width="full" mx="auto" p="4">
-                            <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb="4">
-                Remington Seeds
-                            </Text>
+                {(props: FormikProps<NewOrder>) => {
+                    useEffect(() => {
+                        if (props.isValid) {
+                            const filteredValues = {
+                                ...props.values,
+                                productDetails: props.values.productDetails.filter(pd => pd.productId),
+                            };
+                            dispatch(fetchCalculatedValues(filteredValues));
+                        }
+                    }, [props.values, props.isValid, dispatch]);
 
-                            {/* Recipe Info */}
-                            <Grid templateColumns="repeat(2, 1fr)" gap="4" mb="4">
-                                <Box>
-                                    <Text fontSize="md">Recipe creation date:</Text>
-                                    <Field
-                                        as={Input}
-                                        type="date"
-                                        name="recipeDate"
-                                        size="md"
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.handleChange(e);
-                                            dispatch(updateRecipeDate(e.target.value));
-                                        }}
-                                        borderColor={props.errors.recipeDate && props.touched.recipeDate ? "red.500" : "gray.300"}
-                                    />
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md">Application date:</Text>
-                                    <Field
-                                        as={Input}
-                                        type="date"
-                                        name="applicationDate"
-                                        size="md"
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.handleChange(e);
-                                            dispatch(updateApplicationDate(e.target.value));
-                                        }}
-                                        borderColor={props.errors.applicationDate && props.touched.applicationDate ? "red.500" : "gray.300"}
-                                    />
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md">Operator:</Text>
-                                    <Field
-                                        as={Select}
-                                        name="operatorId"
-                                        placeholder="Select operator"
-                                        size="md"
-                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                            props.handleChange(e);
-                                            dispatch(updateOperator(e.target.value));
-                                        }}
-                                        borderColor={props.errors.operatorId && props.touched.operatorId ? "red.500" : "gray.300"}
-                                    >
-                                        {filteredOperators.map((operator) => (
-                                            <option key={operator.id} value={operator.id}>
-                                                {operator.name} {operator.surname}
-                                            </option>
-                                        ))}
-                                    </Field>
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md">Crop:</Text>
-                                    <Field
-                                        as={Select}
-                                        name="cropId"
-                                        placeholder="Select crop"
-                                        size="md"
-                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                            props.handleChange(e);
-                                            dispatch(updateCrop(e.target.value));
-                                        }}
-                                        borderColor={props.errors.cropId && props.touched.cropId ? "red.500" : "gray.300"}
-                                    >
-                                        {crops.map((crop) => (
-                                            <option key={crop.id} value={crop.id}>
-                                                {crop.name}
-                                            </option>
-                                        ))}
-                                    </Field>
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md">Variety:</Text>
-                                    <Field
-                                        as={Select}
-                                        name="varietyId"
-                                        placeholder={selectedCropId === undefined ? "Select crop first" : "Select variety"}
-                                        size="md"
-                                        disabled={selectedCropId === undefined}
-                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                            props.handleChange(e);
-                                            if (selectedCropId === undefined) {
-                                                throw new Error("Crop is not selected");
-                                            }
-                                            dispatch(updateVariety(e.target.value));
-                                        }}
-                                        borderColor={props.errors.varietyId && props.touched.varietyId ? "red.500" : "gray.300"}
-                                    >
-                                        {crops.find(crop => crop.id === selectedCropId)?.varieties.map((variety) => (
-                                            <option key={variety.id} value={variety.id}>
-                                                {variety.name}
-                                            </option>
-                                        ))}
-                                    </Field>
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md">Lot Number:</Text>
-                                    <Field
-                                        as={Input}
-                                        name="lotNumber"
-                                        size="md"
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.handleChange(e);
-                                            dispatch(updateLotNumber(e.target.value));
-                                        }}
-                                        borderColor={props.errors.lotNumber && props.touched.lotNumber ? "red.500" : "gray.300"}
-                                    />
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md">TKW (g):</Text>
-                                    <Field
-                                        as={Input}
-                                        name="tkw"
-                                        size="md"
-                                        placeholder="0"
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.handleChange(e);
-                                            dispatch(updateTkw(parseFloat(e.target.value) || 0));
-                                        }}
-                                        borderColor={props.errors.tkw && props.touched.tkw ? "red.500" : "gray.300"}
-                                    />
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md">Quantity to treat (kg):</Text>
-                                    <Field
-                                        as={Input}
-                                        name="quantity"
-                                        size="md"
-                                        placeholder="0"
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                            props.handleChange(e);
-                                            dispatch(updateQuantity(parseFloat(e.target.value) || 0));
-                                        }}
-                                        borderColor={props.errors.quantity && props.touched.quantity ? "red.500" : "gray.300"}
-                                    />
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md" mb="2">How do you want to pack?</Text>
-                                    <Field
-                                        as={Select}
-                                        name="packaging"
-                                        size="md"
-                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                            props.handleChange(e);
-                                            dispatch(updatePackaging(e.target.value as Packaging));
-                                        }}
-                                        borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
-                                    >
-                                        <option value={Packaging.InSeeds}>s/units</option>
-                                        <option value={Packaging.InKg}>kg</option>
-                                    </Field>
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md" mb="2">Bag size:</Text>
-                                    <InputGroup size="md">
+                    return (
+                        <form onSubmit={props.handleSubmit} style={{ width: '100%' }}>
+                            <Box width="full" mx="auto" p="4">
+                                <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb="4">
+                                    {'Remington Seeds'}
+                                </Text>
+
+                                {/* Recipe Info */}
+                                <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4">
+                                    <Box>
+                                        <Text fontSize="md">Recipe creation date:</Text>
                                         <Field
                                             as={Input}
-                                            name="bagSize"
-                                            placeholder="0"
+                                            type="date"
+                                            name="recipeDate"
+                                            size="md"
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                 props.handleChange(e);
-                                                dispatch(updateBagSize(parseFloat(e.target.value) || 0));
+                                                dispatch(updateRecipeDate(e.target.value));
                                             }}
-                                            borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
+                                            borderColor={props.errors.recipeDate && props.touched.recipeDate ? "red.500" : "gray.300"}
                                         />
-                                    </InputGroup>
-                                </Box>
-                                <Box>
-                                    <Text fontSize="md" mb="2">Extra Slurry (%):</Text>
-                                    <InputGroup size="md">
-                                        <Field
-                                            as={Input}
-                                            name="extraSlurry"
-                                            placeholder="0"
-                                            type="number"
-                                            min="0"
-                                            max="100"
-                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                props.handleChange(e);
-                                                dispatch(updateExtraSlurry(parseFloat(e.target.value)));
-                                            }}
-                                            borderColor={props.errors.extraSlurry && props.touched.extraSlurry ? "red.500" : "gray.300"}
-                                        />
-                                    </InputGroup>
-                                </Box>
-                            </Grid>
-
-                            {/* Product Details */}
-                            <FieldArray name="productDetails">
-                                {({ push }) => (
-                                    <Box border="1px solid" borderColor="gray.200" p="4" borderRadius="md" mb="4">
-                                        {props.values.productDetails.map((productDetail, index) => (
-                                            <Grid key={index} w="full" templateColumns="2fr 1fr 2fr" gap="4" alignItems="center" mb="4">
-                                                <Box>
-                                                    <Text fontSize="md">Product name:</Text>
-                                                    <Field
-                                                        as={Select}
-                                                        name={`productDetails.${index}.productId`}
-                                                        placeholder="Select product"
-                                                        size="md"
-                                                        focusBorderColor="transparent"
-                                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                                            const selectedProduct = products.find(product => product.id === e.target.value);
-                                                            if (selectedProduct) {
-                                                                props.setFieldValue(`productDetails.${index}.productId`, selectedProduct.id);
-                                                                dispatch(updateProductDetail({ ...props.values.productDetails[index], productId: selectedProduct.id }));
-                                                            }
-                                                        }}
-                                                        borderColor={hasProductDetailError(props.errors, props.touched, index, 'productId') ? "red.500" : "gray.300"}
-                                                    >
-                                                        {products.map((product) => (
-                                                            <option key={product.id} value={product.id}>
-                                                                {product.name}
-                                                            </option>
-                                                        ))}
-                                                    </Field>
-                                                </Box>
-                                                <Box>
-                                                    <Text fontSize="md">Density (g/ml):</Text>
-                                                    <Text fontSize="md">
-                                                        {(() => {
-                                                            const productId = props.values.productDetails[index].productId;
-                                                            const product = products.find(product => product.id === productId);
-
-                                                            console.log('Density', props.values.productDetails[index].product?.density);
-                                                            return product?.density || 0;
-                                                        })()}
-                                                    </Text>
-                                                </Box>
-                                                <Box>
-                                                    <Text fontSize="md">
-                                                        {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
-                                                    </Text>
-                                                    <InputGroup size="md">
-                                                        <Field
-                                                            as={Input}
-                                                            name={`productDetails.${index}.rate`}
-                                                            placeholder="0"
-                                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                                const rate = parseInt(e.target.value) || 0;
-                                                                props.setFieldValue(`productDetails.${index}.rate`, rate);
-                                                                dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
-                                                            }}
-                                                            borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
-                                                        />
-                                                        <InputRightElement width="auto">
-                                                            <HStack spacing="0">
-                                                                <Field
-                                                                    as={Select}
-                                                                    width="150px"
-                                                                    name={`productDetails.${index}.rateType`}
-                                                                    size="md"
-                                                                    fontWeight="bold"
-                                                                    bg="gray.50"
-                                                                    border="1px solid"
-                                                                    focusBorderColor="transparent"
-                                                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                                                        const rateType = e.target.value as RateType;
-                                                                        props.setFieldValue(`productDetails.${index}.rateType`, rateType);
-                                                                        dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
-                                                                    }}
-                                                                    borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
-                                                                    borderRadius="0"
-                                                                >
-                                                                    <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
-                                                                    <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
-                                                                </Field>
-                                                                <Field
-                                                                    as={Select}
-                                                                    width="150px"
-                                                                    name={`productDetails.${index}.rateUnit`}
-                                                                    size="md"
-                                                                    fontWeight="bold"
-                                                                    bg="gray.50"
-                                                                    border="1px solid"
-                                                                    focusBorderColor="transparent"
-                                                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                                                        const rateUnit = e.target.value as RateUnit;
-                                                                        props.setFieldValue(`productDetails.${index}.rateUnit`, rateUnit);
-                                                                        dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
-                                                                    }}
-                                                                    borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
-                                                                    borderLeftRadius="0"
-                                                                >
-                                                                    <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
-                                                                    <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
-                                                                </Field>
-                                                            </HStack>
-                                                        </InputRightElement>
-                                                    </InputGroup>
-                                                </Box>
-                                            </Grid>
-                                        ))}
-                                        <HStack>
-                                            <Button colorScheme="blue" size="md" onClick={() => {
-                                                const newEmptyProduct = createNewEmptyProduct();
-                                                push(newEmptyProduct);
-                                                dispatch(addProductDetail(createNewEmptyProduct()));
-                                            }} ml="auto" mb={4}>+ Add Product</Button>
-                                        </HStack>
                                     </Box>
-                                )}
-                            </FieldArray>
+                                    <Box>
+                                        <Text fontSize="md">Application date:</Text>
+                                        <Field
+                                            as={Input}
+                                            type="date"
+                                            name="applicationDate"
+                                            size="md"
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                props.handleChange(e);
+                                                dispatch(updateApplicationDate(e.target.value));
+                                            }}
+                                            borderColor={props.errors.applicationDate && props.touched.applicationDate ? "red.500" : "gray.300"}
+                                        />
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="md">Operator:</Text>
+                                        <Field
+                                            as={Select}
+                                            name="operatorId"
+                                            placeholder="Select operator"
+                                            size="md"
+                                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                props.handleChange(e);
+                                                dispatch(updateOperator(e.target.value));
+                                            }}
+                                            borderColor={props.errors.operatorId && props.touched.operatorId ? "red.500" : "gray.300"}
+                                        >
+                                            {filteredOperators.map((operator) => (
+                                                <option key={operator.id} value={operator.id}>
+                                                    {operator.name} {operator.surname}
+                                                </option>
+                                            ))}
+                                        </Field>
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="md">Crop:</Text>
+                                        <Field
+                                            as={Select}
+                                            name="cropId"
+                                            placeholder="Select crop"
+                                            size="md"
+                                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                props.handleChange(e);
+                                                dispatch(updateCrop(e.target.value));
+                                            }}
+                                            borderColor={props.errors.cropId && props.touched.cropId ? "red.500" : "gray.300"}
+                                        >
+                                            {crops.map((crop) => (
+                                                <option key={crop.id} value={crop.id}>
+                                                    {crop.name}
+                                                </option>
+                                            ))}
+                                        </Field>
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="md">Variety:</Text>
+                                        <Field
+                                            as={Select}
+                                            name="varietyId"
+                                            placeholder={selectedCropId === undefined ? "Select crop first" : "Select variety"}
+                                            size="md"
+                                            disabled={selectedCropId === undefined}
+                                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                props.handleChange(e);
+                                                if (selectedCropId === undefined) {
+                                                    throw new Error("Crop is not selected");
+                                                }
+                                                dispatch(updateVariety(e.target.value));
+                                            }}
+                                            borderColor={props.errors.varietyId && props.touched.varietyId ? "red.500" : "gray.300"}
+                                        >
+                                            {crops.find(crop => crop.id === selectedCropId)?.varieties.map((variety) => (
+                                                <option key={variety.id} value={variety.id}>
+                                                    {variety.name}
+                                                </option>
+                                            ))}
+                                        </Field>
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="md">Lot Number:</Text>
+                                        <Field
+                                            as={Input}
+                                            name="lotNumber"
+                                            size="md"
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                props.handleChange(e);
+                                                dispatch(updateLotNumber(e.target.value));
+                                            }}
+                                            borderColor={props.errors.lotNumber && props.touched.lotNumber ? "red.500" : "gray.300"}
+                                        />
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="md">TKW (g):</Text>
+                                        <Field
+                                            as={Input}
+                                            name="tkw"
+                                            size="md"
+                                            placeholder="0"
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                props.handleChange(e);
+                                                dispatch(updateTkw(parseFloat(e.target.value) || 0));
+                                            }}
+                                            borderColor={props.errors.tkw && props.touched.tkw ? "red.500" : "gray.300"}
+                                        />
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="md">Quantity to treat (kg):</Text>
+                                        <Field
+                                            as={Input}
+                                            name="quantity"
+                                            size="md"
+                                            placeholder="0"
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                props.handleChange(e);
+                                                dispatch(updateQuantity(parseFloat(e.target.value) || 0));
+                                            }}
+                                            borderColor={props.errors.quantity && props.touched.quantity ? "red.500" : "gray.300"}
+                                        />
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="md" mb="2">How do you want to pack?</Text>
+                                        <Field
+                                            as={Select}
+                                            name="packaging"
+                                            size="md"
+                                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                props.handleChange(e);
+                                                dispatch(updatePackaging(e.target.value as Packaging));
+                                            }}
+                                            borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
+                                        >
+                                            <option value={Packaging.InSeeds}>s/units</option>
+                                            <option value={Packaging.InKg}>kg</option>
+                                        </Field>
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="md" mb="2">Bag size:</Text>
+                                        <InputGroup size="md">
+                                            <Field
+                                                as={Input}
+                                                name="bagSize"
+                                                placeholder="0"
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                    props.handleChange(e);
+                                                    dispatch(updateBagSize(parseFloat(e.target.value) || 0));
+                                                }}
+                                                borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
+                                            />
+                                        </InputGroup>
+                                    </Box>
+                                    <Box>
+                                        <Text fontSize="md" mb="2">Extra Slurry (%):</Text>
+                                        <InputGroup size="md">
+                                            <Field
+                                                as={Input}
+                                                name="extraSlurry"
+                                                placeholder="0"
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                    props.handleChange(e);
+                                                    dispatch(updateExtraSlurry(parseFloat(e.target.value)));
+                                                }}
+                                                borderColor={props.errors.extraSlurry && props.touched.extraSlurry ? "red.500" : "gray.300"}
+                                            />
+                                        </InputGroup>
+                                    </Box>
+                                </Grid>
 
-                            {/* Action Buttons */}
-                            <HStack justifyContent="flex-end" spacing="4" mb="4">
-                                <Button colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
-                                <Button colorScheme="green" size="md" type="submit">Done</Button>
-                            </HStack>
-                        </Box>
+                                {/* Product Details */}
+                                <FieldArray name="productDetails">
+                                    {({ push }) => (
+                                        <Box border="1px solid" borderColor="gray.200" p="4" borderRadius="md" mb="4">
+                                            {props.values.productDetails.map((productDetail, index) => (
+                                                <Grid key={index} w="full" templateColumns="2fr 1fr 2fr" gap="4" alignItems="center" mb="4">
+                                                    <Box>
+                                                        <Text fontSize="md">Product:</Text>
+                                                        <Field
+                                                            as={Select}
+                                                            name={`productDetails.${index}.productId`}
+                                                            placeholder="Select product"
+                                                            size="md"
+                                                            focusBorderColor="transparent"
+                                                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                                const selectedProduct = products.find(product => product.id === e.target.value);
+                                                                if (selectedProduct) {
+                                                                    props.setFieldValue(`productDetails.${index}.productId`, selectedProduct.id);
+                                                                    dispatch(updateProductDetail({ ...props.values.productDetails[index], productId: selectedProduct.id }));
+                                                                }
+                                                            }}
+                                                            borderColor={hasProductDetailError(props.errors, props.touched, index, 'productId') ? "red.500" : "gray.300"}
+                                                            textAlign="right"
+                                                        >
+                                                            {products.map((product) => (
+                                                                <option key={product.id} value={product.id} style={{width: "full"}}>
+                                                                    <span>{product.name}</span><span style={{ float: 'right', color: 'gray' }}>{'   ['}{product.density}{' g/ml]'})</span>
+                                                                </option>
+                                                            ))}
+                                                        </Field>
+                                                    </Box>
+                                                    <Box w="500px">
+                                                        <Text fontSize="md">
+                                                            {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
+                                                        </Text>
+                                                        <InputGroup size="md" w="full">
+                                                            <Field
+                                                                as={Input}
+                                                                name={`productDetails.${index}.rate`}
+                                                                placeholder="0"
+                                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                    const rate = parseInt(e.target.value) || 0;
+                                                                    props.setFieldValue(`productDetails.${index}.rate`, rate);
+                                                                    dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
+                                                                }}
+                                                                borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
+                                                            />
+                                                            <InputRightElement width="auto">
+                                                                <HStack spacing="0">
+                                                                    <Field
+                                                                        as={Select}
+                                                                        width="150px"
+                                                                        name={`productDetails.${index}.rateType`}
+                                                                        size="md"
+                                                                        fontWeight="bold"
+                                                                        bg="gray.50"
+                                                                        border="1px solid"
+                                                                        focusBorderColor="transparent"
+                                                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                                            const rateType = e.target.value as RateType;
+                                                                            props.setFieldValue(`productDetails.${index}.rateType`, rateType);
+                                                                            dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
+                                                                        }}
+                                                                        borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
+                                                                        borderRadius="0"
+                                                                    >
+                                                                        <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
+                                                                        <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
+                                                                    </Field>
+                                                                    <Field
+                                                                        as={Select}
+                                                                        width="150px"
+                                                                        name={`productDetails.${index}.rateUnit`}
+                                                                        size="md"
+                                                                        fontWeight="bold"
+                                                                        bg="gray.50"
+                                                                        border="1px solid"
+                                                                        focusBorderColor="transparent"
+                                                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                                            const rateUnit = e.target.value as RateUnit;
+                                                                            props.setFieldValue(`productDetails.${index}.rateUnit`, rateUnit);
+                                                                            dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
+                                                                        }}
+                                                                        borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
+                                                                        borderLeftRadius="0"
+                                                                    >
+                                                                        <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
+                                                                        <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
+                                                                    </Field>
+                                                                </HStack>
+                                                            </InputRightElement>
+                                                        </InputGroup>
+                                                    </Box>
+                                                </Grid>
+                                            ))}
+                                            <HStack>
+                                                <Button colorScheme="blue" size="md" onClick={() => {
+                                                    const newEmptyProduct = createNewEmptyProduct();
+                                                    push(newEmptyProduct);
+                                                    dispatch(addProductDetail(createNewEmptyProduct()));
+                                                }} ml="auto" mb={4}>+ Add Product</Button>
+                                            </HStack>
+                                        </Box>
+                                    )}
+                                </FieldArray>
 
-                        {/* Error Modal */}
-                        <Modal isOpen={isOpen} onClose={onClose}>
-                            <ModalOverlay />
-                            <ModalContent>
-                                <ModalHeader>Form Errors</ModalHeader>
-                                <ModalCloseButton />
-                                <ModalBody>
-                                    {formErrors.map((error, index) => (
-                                        <div key={index}>
-                                            {error.message}
-                                        </div>
-                                    ))}
-                                </ModalBody>
-                            </ModalContent>
-                        </Modal>
+                                {/* Action Buttons */}
+                                <HStack justifyContent="space-between" spacing="4" mb="4">
+                                    <Box p="2" fontWeight="bold" ml="auto">
+                                        <Text fontSize="md">Slurry Total: {formData.slurryTotalKgRecipeToMix?.toFixed(2)} kg / {formData.slurryTotalMlRecipeToMix?.toFixed(2)} l</Text>
+                                    </Box>
+                                    <HStack>
+                                        <Button colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
+                                        <Button colorScheme="green" size="md" type="submit">Done</Button>
+                                    </HStack>
+                                </HStack>
+                            </Box>
 
-                        {/* Popup Modal */}
-                        <Modal isOpen={showPopup} onClose={handleClosePopup} isCentered>
-                            <ModalOverlay />
-                            <ModalContent>
-                                <ModalHeader>Order Created</ModalHeader>
-                                <ModalCloseButton />
-                                <ModalBody>
-                                    <Text>New receipt is created for operator {operatorName}, for date {orderDate}.</Text>
-                                </ModalBody>
-                                <Box textAlign="center" mb="4">
-                                    <Button onClick={handleClosePopup}>Close</Button>
-                                </Box>
-                            </ModalContent>
-                        </Modal>
-                    </form>
-                )}
+                            {/* Error Modal */}
+                            <Modal isOpen={isOpen} onClose={onClose}>
+                                <ModalOverlay />
+                                <ModalContent>
+                                    <ModalHeader>Form Errors</ModalHeader>
+                                    <ModalCloseButton />
+                                    <ModalBody>
+                                        {formErrors.map((error, index) => (
+                                            <div key={index}>
+                                                {error.message}
+                                            </div>
+                                        ))}
+                                    </ModalBody>
+                                </ModalContent>
+                            </Modal>
+
+                            {/* Popup Modal */}
+                            <Modal isOpen={showPopup} onClose={handleClosePopup} isCentered>
+                                <ModalOverlay />
+                                <ModalContent>
+                                    <ModalHeader>Order Created</ModalHeader>
+                                    <ModalCloseButton />
+                                    <ModalBody>
+                                        <Text>New receipt is created for operator {operatorName}, for date {orderDate}.</Text>
+                                    </ModalBody>
+                                    <Box textAlign="center" mb="4">
+                                        <Button onClick={handleClosePopup}>Close</Button>
+                                    </Box>
+                                </ModalContent>
+                            </Modal>
+                        </form>
+                    )
+                }}
             </Formik>
         </Center>
     );
