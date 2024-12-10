@@ -406,11 +406,15 @@ export const NewOrderForm = () => {
                                                                 as={Input}
                                                                 name={`productDetails.${index}.rate`}
                                                                 placeholder="0"
+                                                                type="number"
+                                                                step="0.01"
                                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                                    const rate = parseInt(e.target.value) || 0;
+                                                                    const value = e.target.value;
+                                                                    const rate = value === "" ? 0 : parseFloat(value);
                                                                     props.setFieldValue(`productDetails.${index}.rate`, rate);
                                                                     dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
                                                                 }}
+                                                                value={props.values.productDetails[index].rate === 0 ? "" : props.values.productDetails[index].rate}
                                                                 borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
                                                             />
                                                             <InputRightElement width="auto">
