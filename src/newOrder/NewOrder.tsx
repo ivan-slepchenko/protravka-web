@@ -43,14 +43,14 @@ const validationSchema = Yup.object().shape({
     cropId: Yup.string().required("Crop is required"),
     varietyId: Yup.string().required("Variety is required"),
     lotNumber: Yup.string().required("Lot Number is required"),
-    tkw: Yup.number().positive("TKW must be positive").required("TKW is required"),
-    quantity: Yup.number().positive("Quantity must be positive").required("Quantity is required"),
-    bagSize: Yup.number().positive("Bag Size must be positive").required("Bag Size is required"),
+    tkw: Yup.number().moreThan(0, "TKW must be greater than 0").required("TKW is required"),
+    quantity: Yup.number().moreThan(0, "Quantity must be greater than 0").required("Quantity is required"),
+    bagSize: Yup.number().moreThan(0, "Bag Size must be greater than 0").required("Bag Size is required"),
     packaging: Yup.string().required("Packaging is required"),
     productDetails: Yup.array().of(
         Yup.object().shape({
             productId: Yup.string().required("Product is required"),
-            rate: Yup.number().positive("Rate must be positive").required("Rate is required"),
+            rate: Yup.number().moreThan(0, "Rate must be greater than 0").required("Rate is required"),
             rateType: Yup.mixed<RateType>().oneOf(Object.values(RateType)).required("Rate Type is required"),
             rateUnit: Yup.mixed<RateUnit>().oneOf(Object.values(RateUnit)).required("Rate Unit is required"),
         })
