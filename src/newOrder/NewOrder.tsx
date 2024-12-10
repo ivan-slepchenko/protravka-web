@@ -1,4 +1,4 @@
-import { Center } from "@chakra-ui/react";
+import { Center, InputLeftElement } from "@chakra-ui/react";
 import { Role } from '../operators/Operators';
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
@@ -372,7 +372,7 @@ export const NewOrderForm = () => {
                                     {({ push }) => (
                                         <Box border="1px solid" borderColor="gray.200" p="4" borderRadius="md" mb="4">
                                             {props.values.productDetails.map((productDetail, index) => (
-                                                <Grid key={index} w="full" templateColumns="2fr 1fr 2fr" gap="4" alignItems="center" mb="4">
+                                                <Grid key={index} w="full" templateColumns="2fr 3fr" gap="4" alignItems="center" mb="4">
                                                     <Box>
                                                         <Text fontSize="md">Product:</Text>
                                                         <Field
@@ -401,13 +401,54 @@ export const NewOrderForm = () => {
                                                         <Text fontSize="md">
                                                             {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
                                                         </Text>
-                                                        <InputGroup size="md" width="400px">
+                                                        <HStack spacing="0">
+                                                            <Field
+                                                                as={Select}
+                                                                width="200px"
+                                                                name={`productDetails.${index}.rateType`}
+                                                                size="md"
+                                                                fontWeight="bold"
+                                                                bg="gray.50"
+                                                                border="1px solid"
+                                                                focusBorderColor="transparent"
+                                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                                    const rateType = e.target.value as RateType;
+                                                                    props.setFieldValue(`productDetails.${index}.rateType`, rateType);
+                                                                    dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
+                                                                }}
+                                                                borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
+                                                                borderRightRadius="0"
+                                                            >
+                                                                <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
+                                                                <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
+                                                            </Field>
+                                                            <Field
+                                                                as={Select}
+                                                                width="150px"
+                                                                name={`productDetails.${index}.rateUnit`}
+                                                                size="md"
+                                                                fontWeight="bold"
+                                                                bg="gray.50"
+                                                                border="1px solid"
+                                                                focusBorderColor="transparent"
+                                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                                    const rateUnit = e.target.value as RateUnit;
+                                                                    props.setFieldValue(`productDetails.${index}.rateUnit`, rateUnit);
+                                                                    dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
+                                                                }}
+                                                                borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
+                                                                borderRadius="0"
+                                                            >
+                                                                <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
+                                                                <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
+                                                            </Field>
                                                             <Field
                                                                 as={Input}
                                                                 name={`productDetails.${index}.rate`}
                                                                 placeholder="0"
                                                                 type="number"
                                                                 step="0.01"
+                                                                borderLeftRadius="0"
                                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                                     const value = e.target.value;
                                                                     const rate = value === "" ? 0 : parseFloat(value);
@@ -417,51 +458,7 @@ export const NewOrderForm = () => {
                                                                 value={props.values.productDetails[index].rate === 0 ? "" : props.values.productDetails[index].rate}
                                                                 borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
                                                             />
-                                                            <InputRightElement width="auto">
-                                                                <HStack spacing="0">
-                                                                    <Field
-                                                                        as={Select}
-                                                                        width="150px"
-                                                                        name={`productDetails.${index}.rateType`}
-                                                                        size="md"
-                                                                        fontWeight="bold"
-                                                                        bg="gray.50"
-                                                                        border="1px solid"
-                                                                        focusBorderColor="transparent"
-                                                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                                                            const rateType = e.target.value as RateType;
-                                                                            props.setFieldValue(`productDetails.${index}.rateType`, rateType);
-                                                                            dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
-                                                                        }}
-                                                                        borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
-                                                                        borderRadius="0"
-                                                                    >
-                                                                        <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
-                                                                        <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
-                                                                    </Field>
-                                                                    <Field
-                                                                        as={Select}
-                                                                        width="150px"
-                                                                        name={`productDetails.${index}.rateUnit`}
-                                                                        size="md"
-                                                                        fontWeight="bold"
-                                                                        bg="gray.50"
-                                                                        border="1px solid"
-                                                                        focusBorderColor="transparent"
-                                                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                                                            const rateUnit = e.target.value as RateUnit;
-                                                                            props.setFieldValue(`productDetails.${index}.rateUnit`, rateUnit);
-                                                                            dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
-                                                                        }}
-                                                                        borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
-                                                                        borderLeftRadius="0"
-                                                                    >
-                                                                        <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
-                                                                        <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
-                                                                    </Field>
-                                                                </HStack>
-                                                            </InputRightElement>
-                                                        </InputGroup>
+                                                        </HStack>
                                                     </Box>
                                                 </Grid>
                                             ))}
