@@ -333,7 +333,7 @@ export const NewOrderForm = () => {
                                         </Field>
                                     </Box>
                                     <Box>
-                                        <Text fontSize="md" mb="2">Bag size:</Text>
+                                        <Text fontSize="md" mb="2">Bag Size ({formData.packaging === Packaging.InSeeds ? 's/units' : 'kg'}):</Text>
                                         <InputGroup size="md">
                                             <Field
                                                 as={Input}
