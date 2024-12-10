@@ -33,6 +33,7 @@ import { createOrder, fetchOrders } from "../store/ordersSlice";
 import { fetchCrops } from "../store/cropsSlice";
 import { fetchProducts } from "../store/productsSlice";
 import { fetchOperators } from '../store/operatorsSlice';
+import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),
@@ -82,7 +83,7 @@ export const getRateTypeLabel = (type: RateType): string => {
     case RateType.Unit:
         return "per unit";
     case RateType.Per100Kg:
-        return "per 100kg";
+        return "per 100 kg";
     default:
         return type;
     }
@@ -96,6 +97,10 @@ export const NewOrderForm = () => {
     const products = useSelector((state: RootState) => state.products.products);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
+    const navigate = useNavigate();
+    const [showPopup, setShowPopup] = useState(false);
+    const [operatorName, setOperatorName] = useState('');
+    const [orderDate, setOrderDate] = useState('');
 
     useEffect(() => {
         dispatch(fetchCrops());
@@ -108,6 +113,10 @@ export const NewOrderForm = () => {
         dispatch(fetchOrders());
         dispatch(setOrderState(createNewEmptyOrder()));
         resetForm();
+        const operator = operators.find(op => op.id === values.operatorId);
+        setOperatorName(operator ? `${operator.name} ${operator.surname}` : '');
+        setOrderDate(values.applicationDate);
+        setShowPopup(true);
     };
 
     const handleClearAll = (resetForm: () => void) => {
@@ -131,6 +140,11 @@ export const NewOrderForm = () => {
         }
         handleSave(values, resetForm);
         setSubmitting(false);
+    };
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+        navigate('/board');
     };
 
     const operators = useSelector((state: RootState) => state.operators.operators);
@@ -399,7 +413,7 @@ export const NewOrderForm = () => {
                                                             <HStack spacing="0">
                                                                 <Field
                                                                     as={Select}
-                                                                    width="110px"
+                                                                    width="150px"
                                                                     name={`productDetails.${index}.rateType`}
                                                                     size="md"
                                                                     fontWeight="bold"
@@ -412,13 +426,14 @@ export const NewOrderForm = () => {
                                                                         dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
                                                                     }}
                                                                     borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
+                                                                    borderRadius="0"
                                                                 >
                                                                     <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
                                                                     <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
                                                                 </Field>
                                                                 <Field
                                                                     as={Select}
-                                                                    width="110px"
+                                                                    width="150px"
                                                                     name={`productDetails.${index}.rateUnit`}
                                                                     size="md"
                                                                     fontWeight="bold"
@@ -431,6 +446,7 @@ export const NewOrderForm = () => {
                                                                         dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
                                                                     }}
                                                                     borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
+                                                                    borderLeftRadius="0"
                                                                 >
                                                                     <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
                                                                     <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
@@ -472,6 +488,21 @@ export const NewOrderForm = () => {
                                         </div>
                                     ))}
                                 </ModalBody>
+                            </ModalContent>
+                        </Modal>
+
+                        {/* Popup Modal */}
+                        <Modal isOpen={showPopup} onClose={handleClosePopup} isCentered>
+                            <ModalOverlay />
+                            <ModalContent>
+                                <ModalHeader>Order Created</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody>
+                                    <Text>New receipt is created for operator {operatorName}, for date {orderDate}.</Text>
+                                </ModalBody>
+                                <Box textAlign="center" mb="4">
+                                    <Button onClick={handleClosePopup}>Close</Button>
+                                </Box>
                             </ModalContent>
                         </Modal>
                     </form>
