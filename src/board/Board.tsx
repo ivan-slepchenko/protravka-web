@@ -41,6 +41,8 @@ const Board: React.FC = () => {
                                     <Text><strong>Crop:</strong> {order.crop?.name}</Text>
                                     <Text><strong>Variety:</strong> {order.variety?.name}</Text>
                                     <Text><strong>Quantity:</strong> {order.quantity} kg</Text>
+                                    <Text><strong>Operator:</strong> {order.operator?.name} {order.operator?.surname}</Text>
+                                    <Text><strong>Application Date:</strong> {order.applicationDate}</Text>
                                 </Box>
                             ))}
                         </VStack>
