@@ -389,11 +389,10 @@ export const NewOrderForm = () => {
                                                                 }
                                                             }}
                                                             borderColor={hasProductDetailError(props.errors, props.touched, index, 'productId') ? "red.500" : "gray.300"}
-                                                            textAlign="right"
                                                         >
                                                             {products.map((product) => (
-                                                                <option key={product.id} value={product.id} style={{width: "full"}}>
-                                                                    <span>{product.name}</span><span style={{ float: 'right', color: 'gray' }}>{'   ['}{product.density}{' g/ml]'})</span>
+                                                                <option key={product.id} value={product.id}>
+                                                                    {product.name}{'   ['}{product.density}{' g/ml]'}
                                                                 </option>
                                                             ))}
                                                         </Field>
