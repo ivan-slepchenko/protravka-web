@@ -331,7 +331,7 @@ export const NewOrderForm = () => {
                                         />
                                     </Box>
                                     <Box>
-                                        <Text fontSize="md" mb="2">How do you want to pack?</Text>
+                                        <Text fontSize="md">How do you want to pack?</Text>
                                         <Field
                                             as={Select}
                                             name="packaging"
@@ -524,7 +524,9 @@ export const NewOrderForm = () => {
                                     <ModalBody>
                                         <Text>
                                             <span>Recipe successfully created and sent to the operator {operatorName} for processing on {orderDate}.</span>
-                                            <span>You can view created in the Board, by clicking Order and opening Recipe tab.</span>
+                                            <br />
+                                            <span>You can view created in the <strong>Board</strong>, by clicking <strong>Order</strong> and opening <strong>Recipe Tab</strong>.</span>
+                                            <br />
                                             <span>Note: You can modify the recipe only before the operator starts working on it.</span>
                                         </Text>
                                         <Checkbox mt={4} isChecked={doNotShowAgain} onChange={handleCheckboxChange}>
