@@ -1,4 +1,4 @@
-import { Center, InputLeftElement, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure } from "@chakra-ui/react";
+import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure } from "@chakra-ui/react";
 import { Role } from '../operators/Operators';
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
