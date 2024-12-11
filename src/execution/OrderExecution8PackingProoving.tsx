@@ -53,7 +53,7 @@ const OrderExecution8PackingProoving = () => {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh" p={4}>
             <VStack spacing={8} width="100%" maxWidth="400px">
-                <Text mb={2} fontSize="xl" fontWeight="bold">How many seeds did you pack out of?</Text>
+                <Text mb={1} fontSize="md" fontWeight="bold">You are obliged to make a photo of the display showing the amount of the treated seeds.</Text>
                 <Box
                     width="100%"
                     height="300px"
