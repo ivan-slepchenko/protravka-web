@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, Grid, GridItem, HStack } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, Grid, GridItem, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { startExecution } from '../store/executionSlice';
@@ -10,6 +10,9 @@ const currentDate = new Date().toLocaleDateString();
 
 const OrdersOverview: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef(null);
+    const [selectedOrderId, setSelectedOrderId] = React.useState<string | null>(null);
     const user = useSelector((state: RootState) => state.user);
     const orders = useSelector((state: RootState) => 
         state.orders.activeOrders.filter(order => 
@@ -18,8 +21,16 @@ const OrdersOverview: React.FC = () => {
     );
 
     const handleOrderClick = (orderId: string) => {
-        dispatch(startExecution(orderId));
-        dispatch(changeOrderStatus({ id: orderId, status: OrderStatus.InProgress }));
+        setSelectedOrderId(orderId);
+        onOpen();
+    };
+
+    const handleConfirm = () => {
+        if (selectedOrderId) {
+            dispatch(startExecution(selectedOrderId));
+            dispatch(changeOrderStatus({ id: selectedOrderId, status: OrderStatus.InProgress }));
+            onClose();
+        }
     };
 
     useEffect(() => {
@@ -42,7 +53,7 @@ const OrdersOverview: React.FC = () => {
                     </Thead>
                     <Tbody>
                         {orders.map(order => (
-                            <Tr key={order.id} onClick={() => handleOrderClick(order.id)} cursor="pointer" _hover={{ bg: "gray.100" }}>
+                            <Tr key={order.id} onClick={() => handleOrderClick(order.id)} cursor="pointer" _hover={{ bg: "gray.100" }} height={"50px"}>
                                 <Td>
                                     <HStack>
                                         <Text>{order.crop.name}</Text>
@@ -63,7 +74,32 @@ const OrdersOverview: React.FC = () => {
                         ))}
                     </Tbody>
                 </Table>
-            </TableContainer>   
+            </TableContainer>
+            <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+                isCentered
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent margin={4}>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Confirm Start Processing
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                            {'Confirm you want to start processing this order. You cannot cancel this process later.'}
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme="red" onClick={handleConfirm} ml={3}>
+                                Confirm
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
         </VStack>
     );
 };
