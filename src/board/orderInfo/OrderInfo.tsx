@@ -1,14 +1,12 @@
 import React from "react";
-import { Box, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel, HStack } from "@chakra-ui/react";
+import { Box, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store/store";
 import { fetchProducts } from "../../store/productsSlice";
 import { fetchOrderExecution } from "../../store/executionSlice";
-import OrderInformation from "./OrderInformation";
-import RecipeInformation from "./RecipeInformation";
-import ProductDetails from "./ProductDetails";
 import OrderExecutionTab from "./OrderExecutionTab";
+import OrderRecipeTab from "./OrderRecipeTab";
 
 const OrderInfo: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
@@ -44,14 +42,7 @@ const OrderInfo: React.FC = () => {
                     </TabList>
                     <TabPanels>
                         <TabPanel>
-                            <Box w="full">
-                                <HStack w="full">
-                                    <OrderInformation order={order} />
-                                    <RecipeInformation order={order} />
-                                </HStack>
-                                <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
-                                <ProductDetails order={order} />
-                            </Box>
+                            <OrderRecipeTab order={order} />
                         </TabPanel>
                         {orderExecution && (
                             <TabPanel>
