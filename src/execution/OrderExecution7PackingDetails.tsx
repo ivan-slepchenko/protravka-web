@@ -11,7 +11,6 @@ const OrderExecution7PackingDetails = () => {
     const dispatch: AppDispatch = useDispatch();
     const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
-    const nbSeedsUnits = order?.orderRecipe?.nbSeedsUnits || 0;
 
     const handleNextButtonClick = () => {
         if (typeof packedQuantity === 'number') {
@@ -19,6 +18,10 @@ const OrderExecution7PackingDetails = () => {
             dispatch(nextPage());
         }
     };
+
+    if (order?.quantity === undefined) {
+        return <Text>Invalid data, order is not found</Text>;
+    }
 
     return (
         <VStack p={4} w="full" h="full">
@@ -50,8 +53,8 @@ const OrderExecution7PackingDetails = () => {
             </Box>
             <Text mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
             <Box mt={4} textAlign="left">
-                {nbSeedsUnits > packedQuantity ? (
-                    <Text>{(nbSeedsUnits - packedQuantity).toFixed(2)} kg is missing! Please inform your line manager if you cannot find it</Text>
+                {order?.quantity > packedQuantity ? (
+                    <Text>{(order?.quantity - packedQuantity).toFixed(2)} kg is missing! Please inform your line manager if you cannot find it</Text>
                 ) : (
                     <Text>This corresponds to the weight of the lot</Text>
                 )}
