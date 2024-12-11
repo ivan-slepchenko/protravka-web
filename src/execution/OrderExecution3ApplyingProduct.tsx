@@ -45,8 +45,8 @@ const OrderExecution3ApplyingProduct = () => {
             return (
                 <Thead bg="orange.100">
                     <Tr>
-                        <Th>Target rate, kg</Th>
-                        <Th>Actual rate, kg</Th>
+                        <Th w="50%"><span>Target Rate</span><br/>/ Lot, kg</Th>
+                        <Th w="50%"><span>Actual Rate</span><br/>/ Lot, kg</Th>
                     </Tr>
                 </Thead>
             );
@@ -65,7 +65,7 @@ const OrderExecution3ApplyingProduct = () => {
     const renderTableBodyForSurry = () => (
         <Tbody>
             <Tr>
-                <Td>{((productRecipe?.rateGTo100Kg ?? 0)/1000).toFixed(2)}</Td>
+                <Td>{productRecipe?.kgSlurryRecipeToMix.toFixed(2)}</Td>
                 <Td>
                     <Input
                         placeholder="Enter value"
@@ -107,7 +107,7 @@ const OrderExecution3ApplyingProduct = () => {
                         {'  out of '}
                         {order?.productDetails.length}
                     </Text>
-                    <Table variant="simple" mb={4}>
+                    <Table variant="simple" size="sm" mb={4}>
                         {renderTableHeaders()}
                         {applicationMethod === 'Surry' ? renderTableBodyForSurry() : renderTableBodyForNonSurry()}
                     </Table>
