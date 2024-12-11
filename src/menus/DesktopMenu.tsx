@@ -22,7 +22,7 @@ const DesktopMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, oper
     const location = useLocation();
 
     return (
-        <Box display={{ base: 'none', md: 'block' }} width="20%" height="100vh" bg="gray.100" p={4} position="fixed" bgColor={"lightgrey"}>
+        <Box width="20%" height="100vh" bg="gray.100" p={4} bgColor={"lightgrey"}>
             <VStack spacing={4} h="full">
                 <Box w="full" mb={4} p={4} bg="white" borderRadius="md" boxShadow="md">
                     <HStack justifyContent="space-between">

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { ChakraProvider, Box, VStack, Alert, AlertIcon } from "@chakra-ui/react";
+import { ChakraProvider, Box, VStack, Alert, AlertIcon, HStack } from "@chakra-ui/react";
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { AppDispatch, persistor, RootState } from './store/store';
@@ -134,11 +134,11 @@ const App = () => {
                     </Box>
                 </VStack>
             </Box>
-            <Box display={{ base: 'none', md: 'flex' }} w="full" h="full" position="relative"> 
+            <HStack display={{ base: 'none', md: 'flex' }} w="full" h="full" position="relative"> 
                 {isAuthenticated && (
                     <DesktopMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
                 )}
-                <Box ml={isAuthenticated ? "20%" : 'unset'} w="full" h="full" position={'relative'}>
+                <Box h="full" w="full" overflowX="auto">
                     <Routes>
                         <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
                         <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrderForm /></RequireAuth>} />
@@ -152,7 +152,7 @@ const App = () => {
                         <Route path="/signup" element={<Signup />} />
                     </Routes>
                 </Box>
-            </Box>
+            </HStack>
         </>
     );
 };
