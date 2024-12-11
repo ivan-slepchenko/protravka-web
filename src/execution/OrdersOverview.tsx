@@ -62,13 +62,11 @@ const OrdersOverview: React.FC = () => {
                                 </Td>
                                 <Td>{order.lotNumber}</Td>
                                 <Td>
-                                    <Grid templateColumns="1fr 1fr" gap={2}>
+                                    <VStack  gap={2} alignItems={"left"}>
                                         {order.productDetails.map(productDetail => (
-                                            <GridItem key={productDetail.id}>
-                                                <Text fontSize="sm">{productDetail.product?.name}</Text>
-                                            </GridItem>                    
+                                            <Text key={productDetail.id} fontSize="sm">{productDetail.product?.name}</Text>
                                         ))}
-                                    </Grid>
+                                    </VStack>
                                 </Td>
                             </Tr>
                         ))}
