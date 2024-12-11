@@ -3,6 +3,12 @@ import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Checkbox, Button, HS
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { nextPage } from '../store/executionSlice';
+import { Packaging } from '../store/newOrderSlice';
+
+const packagingMap = {
+    [Packaging.InSeeds]: "seeds",
+    [Packaging.InKg]: "kg",
+};
 
 const OrderExecution1InitialOverview = () => {
     const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
@@ -16,6 +22,7 @@ const OrderExecution1InitialOverview = () => {
 
     const totalLitres = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.literSlurryRecipeToMix, 0);
     const totalKg = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.kgSlurryRecipeToMix, 0);
+    const bagSizeUnit = packagingMap[order.packaging];
 
     const handleNextClick = () => {
         dispatch(nextPage());
@@ -27,9 +34,9 @@ const OrderExecution1InitialOverview = () => {
             <Text fontSize="2xl" fontWeight="bold">Order Execution</Text>
             <Box mt={4}>
                 <Text>Lot number: {order.lotNumber}</Text>
-                <Text>Quantity to treat: {order.quantity}</Text>
-                <Text>Bag size: {order.bagSize}</Text>
-                <Text>Expected amount of bags: <b>{order.orderRecipe.nbSeedsUnits.toFixed(1)}</b></Text>
+                <Text>Quantity to treat: {order.quantity} kg</Text>
+                <Text>Bag size: {order.bagSize} {bagSizeUnit}</Text>
+                <Text>Expected amount of bags: {order.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
             </Box>
             <Table variant="simple" mt={4} border="1px solid" borderColor="gray.200" size="sm">
                 <Thead bg="orange.100">
