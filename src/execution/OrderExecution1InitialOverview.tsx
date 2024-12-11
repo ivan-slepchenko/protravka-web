@@ -66,6 +66,9 @@ const OrderExecution1InitialOverview = () => {
                     {'Next'}
                 </Button>
             </HStack>
+            <Text mt={4} textAlign="center">
+                {'You finished treating lot '}{order.lotNumber}{'. Please check your further tasks for today or contact your Manager.'}
+            </Text>
         </VStack>
     );
 };

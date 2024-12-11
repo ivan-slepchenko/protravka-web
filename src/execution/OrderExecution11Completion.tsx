@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, useMediaQuery, VStack, HStack } from '@chakra-ui/react';
+import { Box, Text, Button, useMediaQuery, VStack, HStack, Center } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { completeExecution, nextPage } from '../store/executionSlice';
@@ -25,20 +25,27 @@ const OrderExecution11Completion = () => {
 
     return (
         <VStack p={4} w="full" h="full">
-            <Text fontSize="2xl" fontWeight="bold">
-                {`You finished treating lot ${order?.lotNumber}`}
-            </Text>
-            <Box
-                mt={4}
-                p={8}
-                bg="orange.500"
-                color="white"
-                fontSize="4xl"
-                fontWeight="bold"
-                borderRadius="md"
-            >
-                {'Thank you'}
-            </Box>
+            <Center h="full">
+                <VStack>
+                    <Text mt={4} textAlign="center">
+                        <span><strong>{'You finished treating lot '}{order?.lotNumber}.</strong></span>
+                        <br />
+                        <br />
+                        <span>{'Please check your further tasks for today or contact your Manager.'}</span>
+                    </Text>111
+                    <Box
+                        mt={4}
+                        p={8}
+                        bg="orange.500"
+                        color="white"
+                        fontSize="4xl"
+                        fontWeight="bold"
+                        borderRadius="md"
+                    >
+                        {'Thank you'}
+                    </Box>
+                </VStack>
+            </Center>
             <HStack justifyContent={"center"} mt='auto'>
                 <Button
                     mt={8}
