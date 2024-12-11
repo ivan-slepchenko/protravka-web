@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { ChakraProvider, Box, VStack } from "@chakra-ui/react";
+import { ChakraProvider, Box, VStack, Alert, AlertIcon } from "@chakra-ui/react";
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { AppDispatch, persistor, RootState } from './store/store';
@@ -28,6 +28,39 @@ import Operators from './operators/Operators';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
 import { NewOrderForm } from './newOrder/NewOrder';
+
+const AlertContext = createContext<{ addAlert: (message: string) => void }>({
+    addAlert: () => {
+        return;
+    }
+});
+
+const AlertProvider = ({ children }: { children: React.ReactNode }) => {
+    const [alerts, setAlerts] = useState<string[]>([]);
+
+    const addAlert = useCallback((message: string) => {
+        setAlerts((prevAlerts) => [...prevAlerts, message]);
+        setTimeout(() => {
+            setAlerts((prevAlerts) => prevAlerts.slice(1));
+        }, 3000);
+    }, []);
+
+    return (
+        <AlertContext.Provider value={{ addAlert }}>
+            {children}
+            <Box position="fixed" top="4" right="4" zIndex="1000">
+                {alerts.map((alert, index) => (
+                    <Alert key={index} status="success" variant="subtle" mb={4}>
+                        <AlertIcon />
+                        {alert}
+                    </Alert>
+                ))}
+            </Box>
+        </AlertContext.Provider>
+    );
+};
+
+export const useAlert = () => useContext(AlertContext);
 
 const RequireAuth = ({ children, roles }: { children: JSX.Element, roles?: Role[] }) => {
     const location = useLocation();
@@ -152,9 +185,11 @@ root.render(
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
                 <ChakraProvider>
-                    <BrowserRouter>
-                        <App />
-                    </BrowserRouter>
+                    <AlertProvider>
+                        <BrowserRouter>
+                            <App />
+                        </BrowserRouter>
+                    </AlertProvider>
                 </ChakraProvider>
             </PersistGate>
         </Provider>

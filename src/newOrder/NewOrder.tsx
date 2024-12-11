@@ -1,8 +1,7 @@
-import { Center, InputLeftElement } from "@chakra-ui/react";
+import { Center, InputLeftElement, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure } from "@chakra-ui/react";
 import { Role } from '../operators/Operators';
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import { Box, Button, HStack, Text, Grid, Input, Select, InputGroup, InputRightElement, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { Formik, Field, FieldArray, FormikErrors, FormikTouched, FormikProps } from "formik";
@@ -35,6 +34,7 @@ import { fetchCrops } from "../store/cropsSlice";
 import { fetchProducts } from "../store/productsSlice";
 import { fetchOperators } from '../store/operatorsSlice';
 import { useNavigate } from "react-router-dom";
+import { useAlert } from '../index';
 
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),
@@ -103,6 +103,10 @@ export const NewOrderForm = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [operatorName, setOperatorName] = useState('');
     const [orderDate, setOrderDate] = useState('');
+    const [doNotShowAgain, setDoNotShowAgain] = useState(() => {
+        return localStorage.getItem('doNotShowAgain') === 'true';
+    });
+    const addAlert = useAlert().addAlert;
 
     useEffect(() => {
         dispatch(fetchCrops());
@@ -118,7 +122,11 @@ export const NewOrderForm = () => {
         const operator = operators.find(op => op.id === values.operatorId);
         setOperatorName(operator ? `${operator.name} ${operator.surname}` : '');
         setOrderDate(values.applicationDate);
-        setShowPopup(true);
+        if (!doNotShowAgain) {
+            setShowPopup(true);
+        } else {
+            addAlert('Recipe successfully created.');
+        }
     };
 
     const handleClearAll = (resetForm: () => void) => {
@@ -147,6 +155,12 @@ export const NewOrderForm = () => {
     const handleClosePopup = () => {
         setShowPopup(false);
         navigate('/board');
+    };
+
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = e.target.checked;
+        setDoNotShowAgain(checked);
+        localStorage.setItem('doNotShowAgain', checked.toString());
     };
 
     const operators = useSelector((state: RootState) => state.operators.operators);
@@ -508,7 +522,14 @@ export const NewOrderForm = () => {
                                     <ModalHeader>Order Created</ModalHeader>
                                     <ModalCloseButton />
                                     <ModalBody>
-                                        <Text>New receipt is created for operator {operatorName}, for date {orderDate}.</Text>
+                                        <Text>
+                                            <span>Recipe successfully created and sent to the operator {operatorName} for processing on {orderDate}.</span>
+                                            <span>You can view created in the Board, by clicking Order and opening Recipe tab.</span>
+                                            <span>Note: You can modify the recipe only before the operator starts working on it.</span>
+                                        </Text>
+                                        <Checkbox mt={4} isChecked={doNotShowAgain} onChange={handleCheckboxChange}>
+                                            Do not show this message again.
+                                        </Checkbox>
                                     </ModalBody>
                                     <Box textAlign="center" mb="4">
                                         <Button onClick={handleClosePopup}>Close</Button>
