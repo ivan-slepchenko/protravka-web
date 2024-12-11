@@ -56,7 +56,7 @@ const OrderExecution11Completion = () => {
                     size={isMobile ? "md" : "lg"}
                     onClick={handleCompleteClick}
                 >
-                    {'Next'}
+                    {'Ok'}
                 </Button>
             </HStack>
         </VStack>
