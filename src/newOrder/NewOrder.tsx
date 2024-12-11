@@ -308,6 +308,8 @@ export const NewOrderForm = () => {
                                             as={Input}
                                             name="tkw"
                                             size="md"
+                                            type="number"
+                                            step="0.01"
                                             placeholder="0"
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                 props.handleChange(e);
@@ -323,6 +325,8 @@ export const NewOrderForm = () => {
                                             name="quantity"
                                             size="md"
                                             placeholder="0"
+                                            type="number"
+                                            step="0.01"
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                 props.handleChange(e);
                                                 dispatch(updateQuantity(parseFloat(e.target.value) || 0));
@@ -353,6 +357,8 @@ export const NewOrderForm = () => {
                                                 as={Input}
                                                 name="bagSize"
                                                 placeholder="0"
+                                                type="number"
+                                                step="0.01"
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
                                                     dispatch(updateBagSize(parseFloat(e.target.value) || 0));
@@ -371,6 +377,7 @@ export const NewOrderForm = () => {
                                                 type="number"
                                                 min="0"
                                                 max="100"
+                                                step="0.01"
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
                                                     dispatch(updateExtraSlurry(parseFloat(e.target.value)));

@@ -61,6 +61,8 @@ export default function OrderExecution9ConsumptionDetails() {
                     <Td>
                         <Input
                             placeholder="Enter value"
+                            type="number"
+                            step="0.01"
                             onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
                         />
                     </Td>

@@ -71,6 +71,8 @@ const OrderExecution3ApplyingProduct = () => {
                         placeholder="Enter value"
                         value={currentProductExecution ? currentProductExecution.appliedQuantity : ''}
                         onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
+                        type="number"
+                        step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
                     />
                 </Td>
@@ -87,6 +89,8 @@ const OrderExecution3ApplyingProduct = () => {
                         placeholder="Enter value"
                         value={currentProductExecution ? currentProductExecution.appliedQuantity : ''}
                         onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
+                        type="number"
+                        step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
                     />
                 </Td>
