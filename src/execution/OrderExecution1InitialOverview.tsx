@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Checkbox, Button, HStack, VStack } from '@chakra-ui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { RateUnit } from '../store/newOrderSlice';
 import { nextPage } from '../store/executionSlice';
 
 const OrderExecution1InitialOverview = () => {
@@ -15,16 +14,8 @@ const OrderExecution1InitialOverview = () => {
         return <Text>{'Order not found '}{currentOrderId}</Text>;
     }
 
-    const computeLitresPerLot = (rate: number, rateUnit: RateUnit) => {
-        return rateUnit === RateUnit.ML ? rate / 1000 : 0;
-    };
-
-    const computeKgPerLot = (rate: number, rateUnit: RateUnit) => {
-        return rateUnit === RateUnit.G ? rate / 1000 : 0;
-    };
-
-    const totalLitres = order.productDetails.reduce((total, product) => total + computeLitresPerLot(product.rate, product.rateUnit), 0);
-    const totalKg = order.productDetails.reduce((total, product) => total + computeKgPerLot(product.rate, product.rateUnit), 0);
+    const totalLitres = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.literSlurryRecipeToMix, 0);
+    const totalKg = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.kgSlurryRecipeToMix, 0);
 
     const handleNextClick = () => {
         dispatch(nextPage());
@@ -43,25 +34,27 @@ const OrderExecution1InitialOverview = () => {
             <Table variant="simple" mt={4} border="1px solid" borderColor="gray.200">
                 <Thead bg="orange.100">
                     <Tr>
-                        <Th>Product name</Th>
-                        <Th>Litres per lot</Th>
-                        <Th>Kg per lot</Th>
+                        <Th>Product</Th>
+                        <Th>Litres/Lot</Th>
+                        <Th>Kg/Lot</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {order.productDetails.map(product => (
-                        <Tr key={product.id}>
-                            <Td>{product.product?.name}</Td>
-                            <Td>{computeLitresPerLot(product.rate, product.rateUnit)}</Td>
-                            <Td>{computeKgPerLot(product.rate, product.rateUnit)}</Td>
-                        </Tr>
-                    ))}
+                    {order.orderRecipe.productRecipes.map(productRecipe => {
+                        return (
+                            <Tr key={productRecipe.id}>
+                                <Td>{productRecipe.productDetail.product?.name}</Td>
+                                <Td>{productRecipe.literSlurryRecipeToMix.toFixed(2)}</Td>
+                                <Td>{productRecipe.kgSlurryRecipeToMix.toFixed(2)}</Td>
+                            </Tr>
+                        )
+                    })}
                 </Tbody>
                 <Tfoot>
                     <Tr>
                         <Th>Total</Th>
-                        <Th>{totalLitres}</Th>
-                        <Th>{totalKg}</Th>
+                        <Th>{totalLitres.toFixed(2)}</Th>
+                        <Th>{totalKg.toFixed(2)}</Th>
                     </Tr>
                 </Tfoot>
             </Table>
