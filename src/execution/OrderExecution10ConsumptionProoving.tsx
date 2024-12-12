@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
+import { Box, Text, Button, VStack, Image, Heading } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto } from '../store/executionSlice';
 import { RootState } from '../store/store';
@@ -86,9 +86,9 @@ const OrderExecution10ConsumptionProoving = () => {
     };
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" height="100vh" p={4}>
+        <Box display="flex" justifyContent="center" alignItems="center" h="full" p={4}>
             <VStack spacing={8} width="100%" maxWidth="400px">
-                <Text mb={2} fontSize="xl" fontWeight="bold">Make a consumption photo proof.</Text>
+                <Heading size="md" mb={2}>Make a consumption photo proof.</Heading>
                 <Box
                     width="100%"
                     height="300px"

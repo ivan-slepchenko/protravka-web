@@ -47,14 +47,14 @@ const OrderInfo: React.FC = () => {
                             <OrderRecipeTab order={order} />
                         </TabPanel>
                         {orderExecution && (
-                            <>
-                                <TabPanel px={0}>
-                                    <OrderExecutionTab order={order} orderExecution={orderExecution} />
-                                </TabPanel>
-                                <TabPanel px={0}>
-                                    <ReportTab order={order} orderExecution={orderExecution} />
-                                </TabPanel>
-                            </>
+                            <TabPanel px={0}>
+                                <OrderExecutionTab order={order} orderExecution={orderExecution} />
+                            </TabPanel>
+                        )}
+                        {orderExecution && (
+                            <TabPanel px={0}>
+                                <ReportTab order={order} orderExecution={orderExecution} />
+                            </TabPanel>
                         )}
                     </TabPanels>
                 </Tabs>
