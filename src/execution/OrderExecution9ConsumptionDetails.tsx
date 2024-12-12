@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setAppliedQuantity, nextPage } from '../store/executionSlice';
+import { setAppliedseedsToTreatKg, nextPage } from '../store/executionSlice';
 
 export default function OrderExecution9ConsumptionDetails() {
     const dispatch: AppDispatch = useDispatch();
@@ -18,9 +18,9 @@ export default function OrderExecution9ConsumptionDetails() {
         return null;
     }
     
-    const handleQuantityChange = (productId: string, quantity: number) => {
+    const handleseedsToTreatKgChange = (productId: string, seedsToTreatKg: number) => {
         if (currentOrderId) {
-            dispatch(setAppliedQuantity({ orderId: currentOrderId, productId, quantity }));
+            dispatch(setAppliedseedsToTreatKg({ orderId: currentOrderId, productId, seedsToTreatKg }));
         }
     };
 
@@ -56,14 +56,14 @@ export default function OrderExecution9ConsumptionDetails() {
             <Tbody>
                 <Tr>
                     <Td>
-                        {applicationMethod === 'Surry' ? order?.orderRecipe?.slurryTotalKgRecipeToMix.toFixed(2) : productRecipe?.kgSlurryRecipeToMix.toFixed(2)}
+                        {applicationMethod === 'Surry' ? order?.orderRecipe?.slurryTotalGrRecipeToMix.toFixed(2) : productRecipe?.grSlurryRecipeToMix.toFixed(2)}
                     </Td>
                     <Td>
                         <Input
                             placeholder="Enter value"
                             type="number"
                             step="0.01"
-                            onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
+                            onChange={(e) => handleseedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
                         />
                     </Td>
                 </Tr>
@@ -76,7 +76,7 @@ export default function OrderExecution9ConsumptionDetails() {
             <>
                 <Heading size="md" mb={4}>
                     {applicationMethod === 'Surry'
-                        ? `Total Surry consumption per ${(order?.quantity ?? 0) * (order?.extraSlurry ?? 0)} kg`
+                        ? `Total Surry consumption per ${(order?.seedsToTreatKg ?? 0) * (order?.extraSlurry ?? 0)} kg`
                         : <span>
                             {'Product: '}
                             {order?.productDetails[currentProductIndex].product?.name}
@@ -84,7 +84,7 @@ export default function OrderExecution9ConsumptionDetails() {
                             {currentProductIndex + 1}
                             {'  out of '}
                             {order?.productDetails.length}
-                            {` Per ${(order?.quantity ?? 0) * (order?.extraSlurry ?? 0)} kg seeds`}
+                            {` Per ${(order?.seedsToTreatKg ?? 0) * (order?.extraSlurry ?? 0)} kg seeds`}
                         </span>
                     }
                 </Heading>

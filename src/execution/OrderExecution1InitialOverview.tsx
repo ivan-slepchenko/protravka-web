@@ -20,8 +20,8 @@ const OrderExecution1InitialOverview = () => {
         return <Text>{'Order not found '}{currentOrderId}</Text>;
     }
 
-    const totalLitres = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.literSlurryRecipeToMix, 0);
-    const totalKg = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.kgSlurryRecipeToMix, 0);
+    const totalLitres = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0);
+    const totalKg = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.grSlurryRecipeToMix, 0);
     const bagSizeUnit = packagingMap[order.packaging];
 
     const handleNextClick = () => {
@@ -34,7 +34,7 @@ const OrderExecution1InitialOverview = () => {
             <Text fontSize="2xl" fontWeight="bold">Order Execution</Text>
             <Box mt={4}>
                 <Text>Lot number: {order.lotNumber}</Text>
-                <Text>Quantity to treat: {order.quantity} kg</Text>
+                <Text>seedsToTreatKg to treat: {order.seedsToTreatKg} kg</Text>
                 <Text>Bag size: {order.bagSize} {bagSizeUnit}</Text>
                 <Text>Expected amount of bags: {order.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
             </Box>
@@ -51,8 +51,8 @@ const OrderExecution1InitialOverview = () => {
                         return (
                             <Tr key={productRecipe.id}>
                                 <Td>{productRecipe.productDetail.product?.name}</Td>
-                                <Td>{productRecipe.literSlurryRecipeToMix.toFixed(2)}</Td>
-                                <Td>{productRecipe.kgSlurryRecipeToMix.toFixed(2)}</Td>
+                                <Td>{productRecipe.mlSlurryRecipeToMix.toFixed(2)}</Td>
+                                <Td>{productRecipe.grSlurryRecipeToMix.toFixed(2)}</Td>
                             </Tr>
                         )
                     })}

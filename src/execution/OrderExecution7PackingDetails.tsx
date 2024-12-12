@@ -2,24 +2,24 @@ import React, { useState } from 'react';
 import { Box, Text, Button, useMediaQuery, VStack, HStack, NumberInput, NumberInputField } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { nextPage, setPackedQuantity } from '../store/executionSlice';
+import { nextPage, setPackedseedsToTreatKg } from '../store/executionSlice';
 
 const OrderExecution7PackingDetails = () => {
     const [isMobile] = useMediaQuery("(max-width: 600px)");
-    const [packedQuantity, setPackedQuantityState] = useState<number>(0);
+    const [packedseedsToTreatKg, setPackedseedsToTreatKgState] = useState<number>(0);
 
     const dispatch: AppDispatch = useDispatch();
     const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
 
     const handleNextButtonClick = () => {
-        if (typeof packedQuantity === 'number') {
-            dispatch(setPackedQuantity(packedQuantity));
+        if (typeof packedseedsToTreatKg === 'number') {
+            dispatch(setPackedseedsToTreatKg(packedseedsToTreatKg));
             dispatch(nextPage());
         }
     };
 
-    if (order?.quantity === undefined) {
+    if (order?.seedsToTreatKg === undefined) {
         return <Text>Invalid data, order is not found</Text>;
     }
 
@@ -36,8 +36,8 @@ const OrderExecution7PackingDetails = () => {
                 borderRadius="md"
             >
                 <NumberInput
-                    value={packedQuantity}
-                    onChange={(valueString) => setPackedQuantityState(valueString === "" ? 0 : Number(valueString))}
+                    value={packedseedsToTreatKg}
+                    onChange={(valueString) => setPackedseedsToTreatKgState(valueString === "" ? 0 : Number(valueString))}
                     min={0}
                     width="100%"
                 >
@@ -53,8 +53,8 @@ const OrderExecution7PackingDetails = () => {
             </Box>
             <Text mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
             <Box mt={4} textAlign="left">
-                {order?.quantity > packedQuantity ? (
-                    <Text>{(order?.quantity - packedQuantity).toFixed(2)} kg is missing! Please inform your line manager if you cannot find it</Text>
+                {order?.seedsToTreatKg > packedseedsToTreatKg ? (
+                    <Text>{(order?.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} kg is missing! Please inform your line manager if you cannot find it</Text>
                 ) : (
                     <Text>This corresponds to the weight of the lot</Text>
                 )}

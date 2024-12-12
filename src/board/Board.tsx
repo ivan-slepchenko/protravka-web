@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const Board: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
-    const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.Executed, OrderStatus.Acknowledge];
+    const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.Completed, OrderStatus.ToAcknowledge];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
     useEffect(() => {
@@ -40,7 +40,7 @@ const Board: React.FC = () => {
                                     <Text><strong>Lot Number:</strong> {order.lotNumber}</Text>
                                     <Text><strong>Crop:</strong> {order.crop?.name}</Text>
                                     <Text><strong>Variety:</strong> {order.variety?.name}</Text>
-                                    <Text><strong>Quantity:</strong> {order.quantity} kg</Text>
+                                    <Text><strong>seedsToTreatKg:</strong> {order.seedsToTreatKg} kg</Text>
                                     <Text><strong>Operator:</strong> {order.operator?.name} {order.operator?.surname}</Text>
                                     <Text><strong>Application Date:</strong> {order.applicationDate}</Text>
                                 </Box>

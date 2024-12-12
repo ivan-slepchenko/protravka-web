@@ -18,7 +18,6 @@ export enum RateType {
 
 export interface ProductDetail {
   id: string;
-  quantity: number;
   rateUnit: RateUnit;
   rateType: RateType;
   rate: number;
@@ -28,11 +27,12 @@ export interface ProductDetail {
 }
 
 export enum OrderStatus {
-  NotStarted = 'Not Started',
-  InProgress = 'In Progress',
-  Acknowledge = 'Acknowledge',
-  Archived = 'Archived',
-  Executed = "Executed",
+    NotStarted = 'Not Started',
+    InProgress = 'In Progress',
+    ToAcknowledge = 'ToAcknowledge',
+    Archived = 'Archived',
+    Completed = "Completed",
+    Failed = "Failed",
 }
 
 export enum Packaging {
@@ -50,7 +50,7 @@ export interface Order {
     variety: Variety;
     lotNumber: string;
     tkw: number;
-    quantity: number;
+    seedsToTreatKg: number;
     packaging: Packaging;
     bagSize: number;
     status: OrderStatus;
@@ -68,13 +68,13 @@ export interface NewOrder {
     varietyId?: string;
     lotNumber: string;
     tkw: number;
-    quantity: number;
+    seedsToTreatKg: number;
     packaging: Packaging;
     bagSize: number;
     status: OrderStatus;
     extraSlurry: number; // Add extraSlurry field
     slurryTotalMlRecipeToMix?: number;
-    slurryTotalKgRecipeToMix?: number;
+    slurryTotalGrRecipeToMix?: number;
 }
 
 export const createNewEmptyOrder: () => NewOrder = () => ({
@@ -87,7 +87,7 @@ export const createNewEmptyOrder: () => NewOrder = () => ({
     varietyId: undefined,
     lotNumber: "",
     tkw: 0,
-    quantity: 0,
+    seedsToTreatKg: 0,
     packaging: Packaging.InSeeds,
     bagSize: 0,
     status: OrderStatus.NotStarted,
@@ -97,7 +97,6 @@ export const createNewEmptyOrder: () => NewOrder = () => ({
 export const createNewEmptyProduct: () => ProductDetail = () => ({
     id: new Date().toISOString(),
     name: "",
-    quantity: 0,
     rateUnit: RateUnit.ML,
     rateType: RateType.Unit,
     density: 0,
@@ -167,8 +166,8 @@ const newOrderSlice = createSlice({
         updateTkw: (state, action: PayloadAction<number>) => {
             state.tkw = action.payload;
         },
-        updateQuantity: (state, action: PayloadAction<number>) => {
-            state.quantity = action.payload;
+        updateseedsToTreatKg: (state, action: PayloadAction<number>) => {
+            state.seedsToTreatKg = action.payload;
         },
         updatePackaging: (state, action: PayloadAction<Packaging>) => {
             state.packaging = action.payload;
@@ -182,9 +181,9 @@ const newOrderSlice = createSlice({
         updateExtraSlurry: (state, action: PayloadAction<number>) => {
             state.extraSlurry = action.payload;
         },
-        updateCalculatedValues: (state, action: PayloadAction<{ slurryTotalMlRecipeToMix: number; slurryTotalKgRecipeToMix: number }>) => {
+        updateCalculatedValues: (state, action: PayloadAction<{ slurryTotalMlRecipeToMix: number; slurryTotalGrRecipeToMix: number }>) => {
             state.slurryTotalMlRecipeToMix = action.payload.slurryTotalMlRecipeToMix;
-            state.slurryTotalKgRecipeToMix = action.payload.slurryTotalKgRecipeToMix;
+            state.slurryTotalGrRecipeToMix = action.payload.slurryTotalGrRecipeToMix;
         },
         setOrderState: (state, action: PayloadAction<NewOrder>) => {
             return action.payload;
@@ -193,7 +192,7 @@ const newOrderSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchCalculatedValues.fulfilled, (state, action) => {
             state.slurryTotalMlRecipeToMix = action.payload.slurryTotalMlRecipeToMix;
-            state.slurryTotalKgRecipeToMix = action.payload.slurryTotalKgRecipeToMix;
+            state.slurryTotalGrRecipeToMix = action.payload.slurryTotalGrRecipeToMix;
         });
     },
 });
@@ -209,7 +208,7 @@ export const {
     updateVariety,
     updateLotNumber,
     updateTkw,
-    updateQuantity,
+    updateseedsToTreatKg,
     updatePackaging,
     updateBagSize,
     updateStatus,

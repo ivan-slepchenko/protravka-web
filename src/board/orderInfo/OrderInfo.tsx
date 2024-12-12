@@ -7,6 +7,7 @@ import { fetchProducts } from "../../store/productsSlice";
 import { fetchOrderExecution } from "../../store/executionSlice";
 import OrderExecutionTab from "./OrderExecutionTab";
 import OrderRecipeTab from "./OrderRecipeTab";
+import ReportTab from "./report/ReportTab";
 
 const OrderInfo: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
@@ -39,15 +40,21 @@ const OrderInfo: React.FC = () => {
                     <TabList>
                         <Tab>Recipe</Tab>
                         {orderExecution && <Tab>Execution</Tab>}
+                        {orderExecution && <Tab>Report</Tab>}
                     </TabList>
                     <TabPanels>
                         <TabPanel px={0}>
                             <OrderRecipeTab order={order} />
                         </TabPanel>
                         {orderExecution && (
-                            <TabPanel px={0}>
-                                <OrderExecutionTab order={order} orderExecution={orderExecution} />
-                            </TabPanel>
+                            <>
+                                <TabPanel px={0}>
+                                    <OrderExecutionTab order={order} orderExecution={orderExecution} />
+                                </TabPanel>
+                                <TabPanel px={0}>
+                                    <ReportTab order={order} orderExecution={orderExecution} />
+                                </TabPanel>
+                            </>
                         )}
                     </TabPanels>
                 </Tabs>

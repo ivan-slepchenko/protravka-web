@@ -16,7 +16,7 @@ import {
     updateVariety,
     updateLotNumber,
     updateTkw,
-    updateQuantity,
+    updateseedsToTreatKg,
     updateProductDetail,
     updatePackaging,
     updateBagSize,
@@ -44,7 +44,7 @@ const validationSchema = Yup.object().shape({
     varietyId: Yup.string().required("Variety is required"),
     lotNumber: Yup.string().required("Lot Number is required"),
     tkw: Yup.number().moreThan(0, "TKW must be greater than 0").required("TKW is required"),
-    quantity: Yup.number().moreThan(0, "Quantity must be greater than 0").required("Quantity is required"),
+    seedsToTreatKg: Yup.number().moreThan(0, "seedsToTreatKg must be greater than 0").required("seedsToTreatKg is required"),
     bagSize: Yup.number().moreThan(0, "Bag Size must be greater than 0").required("Bag Size is required"),
     packaging: Yup.string().required("Packaging is required"),
     productDetails: Yup.array().of(
@@ -319,19 +319,19 @@ export const NewOrderForm = () => {
                                         />
                                     </Box>
                                     <Box>
-                                        <Text fontSize="md">Quantity to treat (kg):</Text>
+                                        <Text fontSize="md">seedsToTreatKg to treat (kg):</Text>
                                         <Field
                                             as={Input}
-                                            name="quantity"
+                                            name="seedsToTreatKg"
                                             size="md"
                                             placeholder="0"
                                             type="number"
                                             step="0.01"
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                 props.handleChange(e);
-                                                dispatch(updateQuantity(parseFloat(e.target.value) || 0));
+                                                dispatch(updateseedsToTreatKg(parseFloat(e.target.value) || 0));
                                             }}
-                                            borderColor={props.errors.quantity && props.touched.quantity ? "red.500" : "gray.300"}
+                                            borderColor={props.errors.seedsToTreatKg && props.touched.seedsToTreatKg ? "red.500" : "gray.300"}
                                         />
                                     </Box>
                                     <Box>
@@ -496,9 +496,11 @@ export const NewOrderForm = () => {
 
                                 {/* Action Buttons */}
                                 <HStack justifyContent="space-between" spacing="4" mb="4">
-                                    <Box p="2" fontWeight="bold" ml="auto">
-                                        <Text fontSize="md">Slurry Total: {formData.slurryTotalKgRecipeToMix?.toFixed(2)} kg / {formData.slurryTotalMlRecipeToMix?.toFixed(2)} ml</Text>
-                                    </Box>
+                                    {formData.slurryTotalGrRecipeToMix !== undefined && !isNaN(formData.slurryTotalGrRecipeToMix) && formData.slurryTotalMlRecipeToMix !== undefined && !isNaN(formData.slurryTotalMlRecipeToMix) && (
+                                        <Box p="2" fontWeight="bold" ml="auto">
+                                            <Text fontSize="md">Slurry Total: {(formData.slurryTotalGrRecipeToMix / 1000)?.toFixed(2)} kg / {(formData.slurryTotalMlRecipeToMix / 1000)?.toFixed(2)} l</Text>
+                                        </Box>
+                                    )}
                                     <HStack>
                                         <Button colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
                                         <Button colorScheme="green" size="md" type="submit">Done</Button>
@@ -532,7 +534,7 @@ export const NewOrderForm = () => {
                                         <Text>
                                             <span>Recipe successfully created and sent to the operator {operatorName} for processing on {orderDate}.</span>
                                             <br />
-                                            <span>You can view created in the <strong>Board</strong>, by clicking <strong>Order</strong> and opening <strong>Recipe Tab</strong>.</span>
+                                            <span>You can view this Order Recipe in the <strong>Board</strong>, by clicking on your <strong>Order</strong> and opening <strong>Recipe Tab</strong>.</span>
                                             <br />
                                             <span>Note: You can modify the recipe only before the operator starts working on it.</span>
                                         </Text>

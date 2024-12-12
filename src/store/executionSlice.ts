@@ -3,7 +3,7 @@ import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 
 export interface ProductExecution {
     productId: string;
-    appliedQuantity: number;
+    appliedseedsToTreatKg: number;
     applicationPhoto?: string;
     consumptionPhoto?: string;
 }
@@ -14,7 +14,7 @@ export interface OrderExecution {
     applicationMethod: string | null;
     packingPhoto: string | null;
     consumptionPhoto: string | null;
-    packedQuantity: number | null;
+    packedseedsToTreatKg: number | null;
 }
 
 export interface ExecutionState {
@@ -75,7 +75,7 @@ const executionSlice = createSlice({
                     applicationMethod: null,
                     packingPhoto: null,
                     consumptionPhoto: null,
-                    packedQuantity: null,
+                    packedseedsToTreatKg: null,
                 };
                 state.orderExecutions.push(newOrderExecution);
                 saveOrderExecutionToBackend(newOrderExecution);
@@ -123,15 +123,15 @@ const executionSlice = createSlice({
                 saveOrderExecutionToBackend(orderExecution);
             }
         },
-        setAppliedQuantity: (state, action: PayloadAction<{ orderId: string, productId: string, quantity: number }>) => {
-            const { orderId, productId, quantity } = action.payload;
+        setAppliedseedsToTreatKg: (state, action: PayloadAction<{ orderId: string, productId: string, seedsToTreatKg: number }>) => {
+            const { orderId, productId, seedsToTreatKg } = action.payload;
             const orderExecution = state.orderExecutions.find(execution => execution.orderId === orderId);
             if (orderExecution) {
                 const productExecution = orderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
                 if (productExecution) {
-                    productExecution.appliedQuantity = quantity;
+                    productExecution.appliedseedsToTreatKg = seedsToTreatKg;
                 } else {
-                    orderExecution.productExecutions.push({ productId, appliedQuantity: quantity });
+                    orderExecution.productExecutions.push({ productId, appliedseedsToTreatKg: seedsToTreatKg });
                 }
                 saveOrderExecutionToBackend(orderExecution);
             }
@@ -179,10 +179,10 @@ const executionSlice = createSlice({
                 saveOrderExecutionToBackend(orderExecution);
             }
         },
-        setPackedQuantity: (state, action: PayloadAction<number>) => {
+        setPackedseedsToTreatKg: (state, action: PayloadAction<number>) => {
             const orderExecution = state.orderExecutions.find(execution => execution.orderId === state.currentOrderId);
             if (orderExecution) {
-                orderExecution.packedQuantity = action.payload;
+                orderExecution.packedseedsToTreatKg = action.payload;
                 saveOrderExecutionToBackend(orderExecution);
             }
         },
@@ -234,12 +234,12 @@ export const {
     resetExecution,
     completeExecution,
     setApplicationMethod,
-    setAppliedQuantity,
+    setAppliedseedsToTreatKg,
     setPhotoForProvingProductApplication,
     setProductConsumptionPhoto,
     setPhotoForPacking,
     resetPhoto,
-    setPackedQuantity,
+    setPackedseedsToTreatKg,
     incrementProductIndex,
     setConsumptionPhoto,
     saveOrderExecution

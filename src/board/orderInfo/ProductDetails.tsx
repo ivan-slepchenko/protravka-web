@@ -40,14 +40,14 @@ const ProductDetails: React.FC<{ order: Order }> = ({ order }) => (
                             <Td borderBottom="1px" borderColor="gray.400">{productDetail.product?.density.toFixed(2)}</Td>
                             <Td borderBottom="1px" borderColor="gray.400">{productDetail.rate.toFixed(2)}</Td>
                             <Td borderBottom="1px" borderColor="gray.400">{`${getRateTypeLabel(productDetail.rateType)}/${getRateUnitLabel(productDetail.rateUnit)}`}</Td>
-                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.literSlurryRecipeToMix.toFixed(2)}</Td>
-                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.kgSlurryRecipeToMix.toFixed(2)}</Td>
+                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.mlSlurryRecipeToMix.toFixed(2)}</Td>
+                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.grSlurryRecipeToMix.toFixed(2)}</Td>
                             <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateMltoU_KS.toFixed(2)}</Td>
-                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateGToU_KS.toFixed(2)}</Td>
+                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateGrToU_KS.toFixed(2)}</Td>
                             <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateMlTo100Kg.toFixed(2)}</Td>
-                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateGTo100Kg.toFixed(2)}</Td>
-                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.literSlurryRecipeToMix.toFixed(2)}</Td>
-                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.kgSlurryRecipeToMix.toFixed(2)}</Td>
+                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateGrTo100Kg.toFixed(2)}</Td>
+                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.mlSlurryRecipeToMix.toFixed(2)}</Td>
+                            <Td borderBottom="1px" borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.grSlurryRecipeToMix.toFixed(2)}</Td>
                         </Tr>
                     ))}
             </Tbody>

@@ -3,12 +3,12 @@ import { Order, OrderStatus, NewOrder, ProductDetail } from './newOrderSlice';
 
 interface OrdersState {
   activeOrders: Order[];
-  archivedOrders: Order[];
+  ArchivedOrders: Order[];
 }
 
 const initialState: OrdersState = {
     activeOrders: [],
-    archivedOrders: [],
+    ArchivedOrders: [],
 };
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -87,7 +87,7 @@ const ordersSlice = createSlice({
             const index = state.activeOrders.findIndex(order => order.lotNumber === action.payload);
             if (index !== -1) {
                 const [order] = state.activeOrders.splice(index, 1);
-                state.archivedOrders.push(order);
+                state.ArchivedOrders.push(order);
             }
         },
     },
@@ -110,7 +110,7 @@ const ordersSlice = createSlice({
                 state.activeOrders[index].status = action.payload.status;
                 if (action.payload.status === OrderStatus.Archived) {
                     const [order] = state.activeOrders.splice(index, 1);
-                    state.archivedOrders.push(order);
+                    state.ArchivedOrders.push(order);
                 }
             }
         });
@@ -122,11 +122,11 @@ export default ordersSlice.reducer;
 export interface ProductRecipe {
     id: string;
     rateMltoU_KS: number;
-    rateGToU_KS: number;
+    rateGrToU_KS: number;
     rateMlTo100Kg: number;
-    rateGTo100Kg: number;
-    literSlurryRecipeToMix: number;
-    kgSlurryRecipeToMix: number;
+    rateGrTo100Kg: number;
+    mlSlurryRecipeToMix: number;
+    grSlurryRecipeToMix: number;
     productDetail: ProductDetail;
 }export interface OrderRecipe {
     id: string;
@@ -136,7 +136,7 @@ export interface ProductRecipe {
     slurryTotalMlTo100Kg: number;
     slurryTotalGTo100Kgs: number;
     slurryTotalMlRecipeToMix: number;
-    slurryTotalKgRecipeToMix: number;
+    slurryTotalGrRecipeToMix: number;
     extraSlurryPipesAndPompFeedingMl: number;
     nbSeedsUnits: number;
     productRecipes: ProductRecipe[];

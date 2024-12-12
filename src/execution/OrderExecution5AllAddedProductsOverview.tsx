@@ -14,11 +14,11 @@ const OrderExecution5AllAddedProductsOverview = () => {
     const getTargetQty = (productId: string | undefined) => {
         if (!productId) return 0;
         const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === productId);
-        return productRecipe ? productRecipe.kgSlurryRecipeToMix : 0;
+        return productRecipe ? productRecipe.grSlurryRecipeToMix : 0;
     };
 
     const totalTargetQty = order?.productDetails.reduce((total, product) => total + getTargetQty(product.product?.id), 0) || 0;
-    const totalActualQty = currentOrder?.productExecutions.reduce((total, product) => total + product.appliedQuantity, 0) || 0;
+    const totalActualQty = currentOrder?.productExecutions.reduce((total, product) => total + product.appliedseedsToTreatKg, 0) || 0;
 
     const handleNextButtonClicked = (): void => {
         dispatch(nextPage());
@@ -40,7 +40,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
                         <Tr key={index} bg={index % 2 === 0 ? 'gray.50' : 'white'}>
                             <Td>{order?.productDetails[index].product?.name}</Td>
                             <Td>{getTargetQty(order?.productDetails[index].product?.id).toFixed(2)}</Td>
-                            <Td>{product.appliedQuantity}</Td>
+                            <Td>{product.appliedseedsToTreatKg}</Td>
                         </Tr>
                     ))}
                 </Tbody>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, Table, Thead, Tbody, Tr, Th, Td, Button, VStack, Input, HStack } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setAppliedQuantity, nextPage } from '../store/executionSlice';
+import { setAppliedseedsToTreatKg, nextPage } from '../store/executionSlice';
 
 const OrderExecution3ApplyingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -17,22 +17,22 @@ const OrderExecution3ApplyingProduct = () => {
     });
     const currentProductId = order?.productDetails[currentProductIndex].product?.id;
     const [inputError, setInputError] = useState(false);
-    const [, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedQuantity : '');
+    const [, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : '');
     const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
 
     useEffect(() => {
-        setInputValue(currentProductExecution ? currentProductExecution.appliedQuantity : '');
+        setInputValue(currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : '');
     }, [currentProductExecution]);
 
     if (currentProductId === undefined) {
         return null;
     }
 
-    const handleQuantityChange = (productId: string, quantity: number) => {
+    const handleseedsToTreatKgChange = (productId: string, seedsToTreatKg: number) => {
         if (currentOrderId) {
-            dispatch(setAppliedQuantity({ orderId: currentOrderId, productId, quantity: isNaN(quantity) ? 0 : quantity }));
+            dispatch(setAppliedseedsToTreatKg({ orderId: currentOrderId, productId, seedsToTreatKg: isNaN(seedsToTreatKg) ? 0 : seedsToTreatKg }));
             setInputError(false);
-            setInputValue(quantity);
+            setInputValue(seedsToTreatKg);
         }
     };
 
@@ -65,12 +65,12 @@ const OrderExecution3ApplyingProduct = () => {
     const renderTableBodyForSurry = () => (
         <Tbody>
             <Tr>
-                <Td>{productRecipe?.kgSlurryRecipeToMix.toFixed(2)}</Td>
+                <Td>{productRecipe?.grSlurryRecipeToMix.toFixed(2)}</Td>
                 <Td>
                     <Input
                         placeholder="Enter value"
-                        value={currentProductExecution ? currentProductExecution.appliedQuantity : ''}
-                        onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
+                        value={currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : ''}
+                        onChange={(e) => handleseedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
@@ -83,12 +83,12 @@ const OrderExecution3ApplyingProduct = () => {
     const renderTableBodyForNonSurry = () => (
         <Tbody>
             <Tr>
-                <Td>{((productRecipe?.rateGTo100Kg ?? 0)/1000).toFixed(2)}</Td>
+                <Td>{((productRecipe?.rateGrTo100Kg ?? 0)/1000).toFixed(2)}</Td>
                 <Td>
                     <Input
                         placeholder="Enter value"
-                        value={currentProductExecution ? currentProductExecution.appliedQuantity : ''}
-                        onChange={(e) => handleQuantityChange(currentProductId, parseFloat(e.target.value))}
+                        value={currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : ''}
+                        onChange={(e) => handleseedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
@@ -123,7 +123,7 @@ const OrderExecution3ApplyingProduct = () => {
                             borderRadius="full"
                             _hover={{ backgroundColor: 'orange.200' }}
                             onClick={handleMakePhotoClick}
-                            isDisabled={!currentProductExecution?.appliedQuantity || currentProductExecution.appliedQuantity <= 0}
+                            isDisabled={!currentProductExecution?.appliedseedsToTreatKg || currentProductExecution.appliedseedsToTreatKg <= 0}
                         >
                             Make Photo
                         </Button>

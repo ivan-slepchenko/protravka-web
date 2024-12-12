@@ -41,8 +41,8 @@ const OrderInformation: React.FC<{ order: Order }> = ({ order }) => (
                 <Text>{order.tkw}</Text>
             </Box>
             <Box>
-                <Text fontSize="xs">Quantity to treat (kg):</Text>
-                <Text>{order.quantity}</Text>
+                <Text fontSize="xs">seedsToTreatKg to treat (kg):</Text>
+                <Text>{order.seedsToTreatKg}</Text>
             </Box>
             <Box>
                 <Text fontSize="xs">Packaging:</Text>
