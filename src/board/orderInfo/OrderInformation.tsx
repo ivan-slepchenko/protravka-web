@@ -13,11 +13,11 @@ const OrderInformation: React.FC<{ order: Order }> = ({ order }) => (
         <Text fontSize="md" fontWeight="bold" mb="2">Order Information</Text>
         <Grid templateColumns="repeat(2, 1fr)" gap="1" borderColor="gray.200">
             <Box>
-                <Text fontSize="xs">Recipe creation date:</Text>
+                <Text fontSize="xs">Recipe Creation Date:</Text>
                 <Text>{order.recipeDate}</Text>
             </Box>
             <Box>
-                <Text fontSize="xs">Application date:</Text>
+                <Text fontSize="xs">Application Date:</Text>
                 <Text>{order.applicationDate}</Text>
             </Box>
             <Box>
@@ -41,7 +41,7 @@ const OrderInformation: React.FC<{ order: Order }> = ({ order }) => (
                 <Text>{order.tkw}</Text>
             </Box>
             <Box>
-                <Text fontSize="xs">seedsToTreatKg to treat (kg):</Text>
+                <Text fontSize="xs">Seeds To Treat (kg):</Text>
                 <Text>{order.seedsToTreatKg}</Text>
             </Box>
             <Box>
@@ -49,7 +49,7 @@ const OrderInformation: React.FC<{ order: Order }> = ({ order }) => (
                 <Text>{packagingMap[order.packaging]}</Text>
             </Box>
             <Box>
-                <Text fontSize="xs">Bag size (K/Seeds):</Text>
+                <Text fontSize="xs">Bag Size (K/Seeds):</Text>
                 <Text>{order.bagSize}</Text>
             </Box>
         </Grid>

@@ -44,7 +44,7 @@ const validationSchema = Yup.object().shape({
     varietyId: Yup.string().required("Variety is required"),
     lotNumber: Yup.string().required("Lot Number is required"),
     tkw: Yup.number().moreThan(0, "TKW must be greater than 0").required("TKW is required"),
-    seedsToTreatKg: Yup.number().moreThan(0, "seedsToTreatKg must be greater than 0").required("seedsToTreatKg is required"),
+    seedsToTreatKg: Yup.number().moreThan(0, "Seeds To Treat must be greater than 0").required("Seeds To Treat is required"),
     bagSize: Yup.number().moreThan(0, "Bag Size must be greater than 0").required("Bag Size is required"),
     packaging: Yup.string().required("Packaging is required"),
     productDetails: Yup.array().of(
@@ -319,7 +319,7 @@ export const NewOrderForm = () => {
                                         />
                                     </Box>
                                     <Box>
-                                        <Text fontSize="md">seedsToTreatKg to treat (kg):</Text>
+                                        <Text fontSize="md">Seeds To Treat (kg):</Text>
                                         <Field
                                             as={Input}
                                             name="seedsToTreatKg"

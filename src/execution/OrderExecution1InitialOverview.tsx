@@ -20,8 +20,8 @@ const OrderExecution1InitialOverview = () => {
         return <Text>{'Order not found '}{currentOrderId}</Text>;
     }
 
-    const totalLitres = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0);
-    const totalKg = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.grSlurryRecipeToMix, 0);
+    const totalLitres = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0) / 1000;
+    const totalKg = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.grSlurryRecipeToMix, 0) / 1000;
     const bagSizeUnit = packagingMap[order.packaging];
 
     const handleNextClick = () => {
@@ -33,10 +33,10 @@ const OrderExecution1InitialOverview = () => {
         <VStack p={4} w="full" h="full">
             <Text fontSize="2xl" fontWeight="bold">Order Execution</Text>
             <Box mt={4}>
-                <Text>Lot number: {order.lotNumber}</Text>
-                <Text>seedsToTreatKg to treat: {order.seedsToTreatKg} kg</Text>
-                <Text>Bag size: {order.bagSize} {bagSizeUnit}</Text>
-                <Text>Expected amount of bags: {order.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
+                <Text>Lot Number: {order.lotNumber}</Text>
+                <Text>Seeds To Treat: {order.seedsToTreatKg} kg</Text>
+                <Text>Bag Size: {order.bagSize} {bagSizeUnit}</Text>
+                <Text>Expected Amount Of Bags: {order.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
             </Box>
             <Table variant="simple" mt={4} border="1px solid" borderColor="gray.200" size="sm">
                 <Thead bg="orange.100">
@@ -51,8 +51,8 @@ const OrderExecution1InitialOverview = () => {
                         return (
                             <Tr key={productRecipe.id}>
                                 <Td>{productRecipe.productDetail.product?.name}</Td>
-                                <Td>{productRecipe.mlSlurryRecipeToMix.toFixed(2)}</Td>
-                                <Td>{productRecipe.grSlurryRecipeToMix.toFixed(2)}</Td>
+                                <Td>{(productRecipe.mlSlurryRecipeToMix / 1000).toFixed(2)}</Td>
+                                <Td>{(productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
                             </Tr>
                         )
                     })}

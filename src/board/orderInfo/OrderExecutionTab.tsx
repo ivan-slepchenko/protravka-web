@@ -37,7 +37,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     <Thead bg="orange.100">
                         <Tr>
                             <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Packing Photo</Th>
-                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected seedsToTreatKg</Th>
+                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Seeds To Treat</Th>
                             {applicationMethod === 'Surry' && (
                                 <>
                                     <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Consumption Photo</Th>
