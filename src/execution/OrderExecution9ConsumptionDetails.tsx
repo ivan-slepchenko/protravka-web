@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack } from "@chakra-ui/react";
+import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack, Center } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { setAppliedseedsToTreatKg, nextPage } from '../store/executionSlice';
@@ -74,24 +74,28 @@ export default function OrderExecution9ConsumptionDetails() {
     const renderContent = () => {
         return (
             <>
-                <Heading size="md" mb={4}>
-                    {applicationMethod === 'Surry'
-                        ? `Total Surry consumption per ${(order?.seedsToTreatKg ?? 0) * (order?.extraSlurry ?? 0)} kg`
-                        : <span>
-                            {'Product: '}
-                            {order?.productDetails[currentProductIndex].product?.name}
-                            {' #'}
-                            {currentProductIndex + 1}
-                            {'  out of '}
-                            {order?.productDetails.length}
-                            {` Per ${(order?.seedsToTreatKg ?? 0) * (order?.extraSlurry ?? 0)} kg seeds`}
-                        </span>
-                    }
-                </Heading>
-                <Table variant="simple" mb={4}  size="sm">
-                    {renderTableHeaders()}
-                    {renderTableBody()}
-                </Table>
+                <Center w="full" h="full">
+                    <VStack>
+                        <Heading size="md" mb={4}>
+                            {applicationMethod === 'Surry'
+                                ? `Total Surry Consumption / ${(order?.seedsToTreatKg ?? 0) * (order?.extraSlurry ?? 0)} kg`
+                                : <span>
+                                    {'Product: '}
+                                    {order?.productDetails[currentProductIndex].product?.name}
+                                    {' #'}
+                                    {currentProductIndex + 1}
+                                    {'  out of '}
+                                    {order?.productDetails.length}
+                                    {` Per ${(order?.seedsToTreatKg ?? 0) * (order?.extraSlurry ?? 0)} kg seeds`}
+                                </span>
+                            }
+                        </Heading>
+                        <Table variant="simple" mb={4}  size="sm">
+                            {renderTableHeaders()}
+                            {renderTableBody()}
+                        </Table>
+                    </VStack>
+                </Center>
                 <Text mb={4}  mt='auto'>
                     You are obliged to make a photo of scales display on the next page!
                 </Text>

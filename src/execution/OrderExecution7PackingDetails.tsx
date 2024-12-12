@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Button, useMediaQuery, VStack, HStack, NumberInput, NumberInputField } from '@chakra-ui/react';
+import { Box, Text, Button, useMediaQuery, VStack, HStack, NumberInput, NumberInputField, Center } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { nextPage, setPackedseedsToTreatKg } from '../store/executionSlice';
@@ -24,55 +24,57 @@ const OrderExecution7PackingDetails = () => {
     }
 
     return (
-        <VStack p={4} w="full" h="full">
-            <Text fontSize="xl" fontWeight="bold">How many seeds did you pack out of?</Text>
-            <Box
-                mt={4}
-                p={8}
-                bg="orange.500"
-                color="white"
-                fontSize="4xl"
-                fontWeight="bold"
-                borderRadius="md"
-            >
-                <NumberInput
-                    value={packedseedsToTreatKg}
-                    onChange={(valueString) => setPackedseedsToTreatKgState(valueString === "" ? 0 : Number(valueString))}
-                    min={0}
-                    width="100%"
+        <Center w="full" h="full">
+            <VStack p={4}>
+                <Text fontSize="xl" fontWeight="bold" textAlign="center"><span>How many seeds (kg)</span><br/><span>did you pack out of?</span></Text>
+                <Box
+                    mt={4}
+                    p={8}
+                    bg="orange.500"
+                    color="white"
+                    fontSize="4xl"
+                    fontWeight="bold"
+                    borderRadius="md"
                 >
-                    <NumberInputField
-                        textAlign="center"
-                        fontSize="inherit"
-                        fontWeight="inherit"
-                        background="inherit"
-                        color="inherit"
-                        border="none"
-                    />
-                </NumberInput>
-            </Box>
-            <Text mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
-            <Box mt={4} textAlign="left">
-                {order?.seedsToTreatKg > packedseedsToTreatKg ? (
-                    <Text>{(order?.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} kg is missing! Please inform your line manager if you cannot find it</Text>
-                ) : (
-                    <Text>This corresponds to the weight of the lot</Text>
-                )}
-            </Box>
-            <HStack justifyContent={"center"} mt='auto'>
-                <Button
-                    mt={8}
-                    w="100px" 
-                    colorScheme="orange"
-                    borderRadius="full"
-                    _hover={{ bg: "orange.600" }}
-                    size={isMobile ? "md" : "lg"}
-                    onClick={handleNextButtonClick}
-                >
-                    Next
-                </Button>
-            </HStack>
-        </VStack>
+                    <NumberInput
+                        value={packedseedsToTreatKg}
+                        onChange={(valueString) => setPackedseedsToTreatKgState(valueString === "" ? 0 : Number(valueString))}
+                        min={0}
+                        width="100%"
+                    >
+                        <NumberInputField
+                            textAlign="center"
+                            fontSize="inherit"
+                            fontWeight="inherit"
+                            background="inherit"
+                            color="inherit"
+                            border="none"
+                        />
+                    </NumberInput>
+                </Box>
+                <Text p={2} mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
+                <Box p={2} mt={4} w="full">
+                    {order?.seedsToTreatKg > packedseedsToTreatKg ? (
+                        <Text><b><span style={{ color: "red" }}>{(order?.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} kg is missing!</span></b> Please inform your line manager if you cannot find it</Text>
+                    ) : (
+                        <Text>This corresponds to the weight of the lot.</Text>
+                    )}
+                </Box>
+                <HStack justifyContent={"center"} mt='auto'>
+                    <Button
+                        mt={8}
+                        w="100px" 
+                        colorScheme="orange"
+                        borderRadius="full"
+                        _hover={{ bg: "orange.600" }}
+                        size={isMobile ? "md" : "lg"}
+                        onClick={handleNextButtonClick}
+                    >
+                        Next
+                    </Button>
+                </HStack>
+            </VStack>
+        </Center>
     );
 };
 
