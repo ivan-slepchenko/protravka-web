@@ -4,13 +4,13 @@ import { Order } from "../../store/newOrderSlice";
 import { getRateTypeLabel, getRateUnitLabel } from "../../newOrder/NewOrder";
 
 const ProductDetails: React.FC<{ order: Order }> = ({ order }) => (
-    <VStack alignItems="start">
-        <Box overflowY="auto" borderRadius="md">
+    <VStack alignItems="start" w="full">
+        <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
+        <Box overflowY="auto" borderRadius="md" w="full">
             <Table variant="simple" bg="gray.50" size="sm" w="full">
                 <Thead bg="orange.100">
                     <Tr>
                         <Th rowSpan={2} whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Product Name</Th>
-                        <Th rowSpan={2} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Active Ingredient</Th>
                         <Th rowSpan={1} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Density</Th>
                         <Th rowSpan={2} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Rate</Th>
                         <Th rowSpan={2} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Rate Unit</Th>
@@ -34,7 +34,6 @@ const ProductDetails: React.FC<{ order: Order }> = ({ order }) => (
                         .map((productDetail, index) => (
                             <Tr key={index} borderBottom="1px" borderColor="gray.400">
                                 <Td borderColor="gray.400">{productDetail.product ? productDetail.product.name : '--'}</Td>
-                                <Td borderColor="gray.400">{productDetail.product ? productDetail.product.activeIngredient : '--'}</Td>
                                 <Td borderColor="gray.400">{productDetail.product?.density.toFixed(2)}</Td>
                                 <Td borderColor="gray.400">{productDetail.rate.toFixed(2)}</Td>
                                 <Td borderColor="gray.400">{`${getRateTypeLabel(productDetail.rateType)}/${getRateUnitLabel(productDetail.rateUnit)}`}</Td>

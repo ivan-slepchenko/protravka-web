@@ -36,18 +36,21 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                 <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Packing Photo</Th>
-                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Seeds To Treat</Th>
+                            <Th whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Expected Seeds To Pack</Th>
+                            <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Packing Photo</Th>                      
                             {applicationMethod === 'Surry' && (
                                 <>
-                                    <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Consumption Photo</Th>
                                     <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Consumption Info</Th>
+                                    <Th borderLeft="1px" whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Consumption Photo</Th>
                                 </>
                             )}
                         </Tr>
                     </Thead>
                     <Tbody>
                         <Tr borderBottom="1px" borderColor="gray.400">
+                            <Td borderBottom="1px" borderColor="gray.400">
+                                <Text fontSize="xs" fontWeight="bold">{orderExecution.packedseedsToTreatKg} kg</Text>
+                            </Td>
                             <Td borderBottom="1px" borderColor="gray.400">
                                 {orderExecution?.packingPhoto ? (
                                     <Image
@@ -62,11 +65,11 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                     />
                                 ) : 'No Photo'}
                             </Td>
-                            <Td borderBottom="1px" borderColor="gray.400">
-                                <Text fontSize="xs" fontWeight="bold">{orderExecution?.packedseedsToTreatKg} units</Text>
-                            </Td>
                             {applicationMethod === 'Surry' && (
                                 <>
+                                    <Td borderBottom="1px" borderColor="gray.400">
+                                        <Text fontSize="xs" fontWeight="bold">{order?.orderRecipe?.slurryTotalGrRecipeToMix.toFixed(2)} kg</Text>
+                                    </Td>
                                     <Td borderBottom="1px" borderColor="gray.400">
                                         {orderExecution?.consumptionPhoto ? (
                                             <Image
@@ -80,9 +83,6 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                 title="Expected Consumption Photo"
                                             />
                                         ) : 'No Photo'}
-                                    </Td>
-                                    <Td borderBottom="1px" borderColor="gray.400">
-                                        <Text fontSize="xs" fontWeight="bold">{order?.orderRecipe?.slurryTotalGrRecipeToMix.toFixed(2)} kg</Text>
                                     </Td>
                                 </>
                             )}
