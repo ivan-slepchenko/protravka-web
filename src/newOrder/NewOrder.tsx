@@ -495,12 +495,16 @@ export const NewOrderForm = () => {
                                 </FieldArray>
 
                                 {/* Action Buttons */}
-                                <HStack justifyContent="space-between" spacing="4" mb="4">
+                                <HStack justifyContent="space-between">
                                     {!!formData.slurryTotalGrRecipeToMix && !!formData.slurryTotalMlRecipeToMix  && !!formData.totalCompoundsDensity &&(
-                                        <HStack p="2" fontWeight="bold" ml="auto">
-                                            <Text fontSize="md">Slurry Density: {formData.totalCompoundsDensity} g / ml</Text>
-                                            <Text fontSize="md">Slurry Per 100 kg: {(100 * formData.slurryTotalGrRecipeToMix / (1000 * formData.seedsToTreatKg))?.toFixed(2)} kg / {(100 * formData.slurryTotalMlRecipeToMix / (1000 * formData.seedsToTreatKg))?.toFixed(2)} l</Text>
-                                            <Text fontSize="md">Slurry Per Lot: {(formData.slurryTotalGrRecipeToMix / 1000)?.toFixed(2)} kg / {(formData.slurryTotalMlRecipeToMix / 1000)?.toFixed(2)} l</Text>
+                                        <HStack w="full">
+                                            <Text fontSize="md" fontWeight="bold" >Slurry Density:</Text>
+                                            <Text fontSize="md">{formData.totalCompoundsDensity}{' g / ml, '}</Text>
+                                            <Text fontSize="md" fontWeight="bold" >Slurry / 100 kg:</Text>
+                                            <Text fontSize="md">{(100 * formData.slurryTotalGrRecipeToMix / (1000 * formData.seedsToTreatKg))?.toFixed(2)} kg / {(100 * formData.slurryTotalMlRecipeToMix / (1000 * formData.seedsToTreatKg))?.toFixed(2)}{' l, '}</Text>
+                                            <Text fontSize="md" fontWeight="bold" >Slurry / Lot:</Text>
+                                            <Text fontSize="md">{(formData.slurryTotalGrRecipeToMix / 1000)?.toFixed(2)} kg / {(formData.slurryTotalMlRecipeToMix / 1000)?.toFixed(2)} l</Text>
+                                           
                                         </HStack>
                                     )}
                                     <HStack>
