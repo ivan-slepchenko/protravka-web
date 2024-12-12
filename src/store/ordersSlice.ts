@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Order, OrderStatus, NewOrder, ProductDetail } from './newOrderSlice';
+import { Order, OrderStatus, NewOrderState, ProductDetail } from './newOrderSlice';
 
 interface OrdersState {
   activeOrders: Order[];
@@ -20,7 +20,7 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
     return response.json();
 });
 
-export const createOrder = createAsyncThunk('orders/createOrder', async (order: NewOrder) => {
+export const createOrder = createAsyncThunk('orders/createOrder', async (order: NewOrderState) => {
     if (!order.operatorId || !order.cropId || !order.varietyId) {
         throw new Error('Operator, crop, and variety must be defined');
     }

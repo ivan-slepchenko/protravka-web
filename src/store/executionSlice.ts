@@ -55,6 +55,9 @@ export const fetchOrderExecution = createAsyncThunk('execution/fetchOrderExecuti
     const response = await fetch(`${BACKEND_URL}/api/order-executions/${orderId}`, {
         credentials: 'include', // Include credentials in the request
     });
+    if (!response.ok) {
+        throw new Error(`Failed to fetch order execution: ${response.statusText}`);
+    }
     const data = await response.json();
     return { ...data, orderId };
 });

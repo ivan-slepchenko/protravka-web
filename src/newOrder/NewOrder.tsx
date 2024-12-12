@@ -20,7 +20,7 @@ import {
     updateProductDetail,
     updatePackaging,
     updateBagSize,
-    NewOrder,
+    NewOrderState,
     ProductDetail,
     RateUnit,
     RateType,
@@ -58,7 +58,7 @@ const validationSchema = Yup.object().shape({
 });
 
 
-const hasProductDetailError = (errors: FormikErrors<NewOrder>, touched: FormikTouched<NewOrder>, index: number, field: keyof ProductDetail): boolean => {
+const hasProductDetailError = (errors: FormikErrors<NewOrderState>, touched: FormikTouched<NewOrderState>, index: number, field: keyof ProductDetail): boolean => {
     if(!touched.productDetails?.[index]?.rateType) return false; 
     if (Array.isArray(errors.productDetails)) {
         const productDetailErrors = errors.productDetails[index];
@@ -93,7 +93,7 @@ export const getRateTypeLabel = (type: RateType): string => {
 
 export const NewOrderForm = () => {
     const dispatch: AppDispatch = useDispatch();
-    const formData = useSelector((state: RootState) => state.newOrder as NewOrder);
+    const formData = useSelector((state: RootState) => state.newOrder as NewOrderState);
     const crops = useSelector((state: RootState) => state.crops.crops);
     const selectedCropId = useSelector((state: RootState) => state.newOrder.cropId);
     const products = useSelector((state: RootState) => state.products.products);
@@ -114,7 +114,7 @@ export const NewOrderForm = () => {
         dispatch(fetchOperators());
     }, [dispatch]);
 
-    const handleSave = (values: NewOrder, resetForm: () => void) => {
+    const handleSave = (values: NewOrderState, resetForm: () => void) => {
         dispatch(createOrder(values));
         dispatch(fetchOrders());
         dispatch(setOrderState(createNewEmptyOrder()));
@@ -134,7 +134,7 @@ export const NewOrderForm = () => {
         resetForm();
     };
 
-    const handleSubmit = (values: NewOrder, { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }) => {
+    const handleSubmit = (values: NewOrderState, { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }) => {
         try {
             validationSchema.validateSync(values, { abortEarly: false });
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -177,7 +177,7 @@ export const NewOrderForm = () => {
                 validateOnChange={true}
                 validateOnBlur={true}
             >
-                {(props: FormikProps<NewOrder>) => {
+                {(props: FormikProps<NewOrderState>) => {
                     useEffect(() => {
                         if (props.isValid) {
                             const filteredValues = {
@@ -496,10 +496,12 @@ export const NewOrderForm = () => {
 
                                 {/* Action Buttons */}
                                 <HStack justifyContent="space-between" spacing="4" mb="4">
-                                    {formData.slurryTotalGrRecipeToMix !== undefined && !isNaN(formData.slurryTotalGrRecipeToMix) && formData.slurryTotalMlRecipeToMix !== undefined && !isNaN(formData.slurryTotalMlRecipeToMix) && (
-                                        <Box p="2" fontWeight="bold" ml="auto">
-                                            <Text fontSize="md">Slurry Total: {(formData.slurryTotalGrRecipeToMix / 1000)?.toFixed(2)} kg / {(formData.slurryTotalMlRecipeToMix / 1000)?.toFixed(2)} l</Text>
-                                        </Box>
+                                    {!!formData.slurryTotalGrRecipeToMix && !!formData.slurryTotalMlRecipeToMix  && !!formData.totalCompoundsDensity &&(
+                                        <HStack p="2" fontWeight="bold" ml="auto">
+                                            <Text fontSize="md">Slurry Density: {formData.totalCompoundsDensity} g / ml</Text>
+                                            <Text fontSize="md">Slurry Per 100 kg: {(100 * formData.slurryTotalGrRecipeToMix / (1000 * formData.seedsToTreatKg))?.toFixed(2)} kg / {(100 * formData.slurryTotalMlRecipeToMix / (1000 * formData.seedsToTreatKg))?.toFixed(2)} l</Text>
+                                            <Text fontSize="md">Slurry Per Lot: {(formData.slurryTotalGrRecipeToMix / 1000)?.toFixed(2)} kg / {(formData.slurryTotalMlRecipeToMix / 1000)?.toFixed(2)} l</Text>
+                                        </HStack>
                                     )}
                                     <HStack>
                                         <Button colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>

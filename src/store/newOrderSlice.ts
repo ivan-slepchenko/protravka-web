@@ -58,7 +58,7 @@ export interface Order {
     extraSlurry: number;
 }
 
-export interface NewOrder {
+export interface NewOrderState {
     id: string;
     productDetails: ProductDetail[];
     recipeDate: string;
@@ -75,9 +75,10 @@ export interface NewOrder {
     extraSlurry: number; // Add extraSlurry field
     slurryTotalMlRecipeToMix?: number;
     slurryTotalGrRecipeToMix?: number;
+    totalCompoundsDensity?: number;
 }
 
-export const createNewEmptyOrder: () => NewOrder = () => ({
+export const createNewEmptyOrder: () => NewOrderState = () => ({
     id: new Date().toISOString(),
     productDetails: [],
     recipeDate: new Date().toISOString().split("T")[0],
@@ -107,7 +108,7 @@ export const createNewEmptyProduct: () => ProductDetail = () => ({
 
 export const fetchCalculatedValues = createAsyncThunk(
     'newOrder/fetchCalculatedValues',
-    async (order: NewOrder, { rejectWithValue }) => {
+    async (order: NewOrderState, { rejectWithValue }) => {
         try {
             const response = await fetch(`${BACKEND_URL}/api/calculate-order`, {
                 method: 'POST',
@@ -185,7 +186,7 @@ const newOrderSlice = createSlice({
             state.slurryTotalMlRecipeToMix = action.payload.slurryTotalMlRecipeToMix;
             state.slurryTotalGrRecipeToMix = action.payload.slurryTotalGrRecipeToMix;
         },
-        setOrderState: (state, action: PayloadAction<NewOrder>) => {
+        setOrderState: (state, action: PayloadAction<NewOrderState>) => {
             return action.payload;
         },
     },
@@ -193,6 +194,7 @@ const newOrderSlice = createSlice({
         builder.addCase(fetchCalculatedValues.fulfilled, (state, action) => {
             state.slurryTotalMlRecipeToMix = action.payload.slurryTotalMlRecipeToMix;
             state.slurryTotalGrRecipeToMix = action.payload.slurryTotalGrRecipeToMix;
+            state.totalCompoundsDensity = action.payload.totalCompoundsDensity;
         });
     },
 });
