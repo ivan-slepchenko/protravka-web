@@ -7,7 +7,6 @@ import { fetchProducts } from "../../store/productsSlice";
 import { fetchOrderExecution } from "../../store/executionSlice";
 import OrderExecutionTab from "./OrderExecutionTab";
 import OrderRecipeTab from "./OrderRecipeTab";
-import ReportTab from "./report/ReportTab";
 
 const OrderInfo: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
@@ -49,11 +48,6 @@ const OrderInfo: React.FC = () => {
                         {orderExecution && (
                             <TabPanel px={0}>
                                 <OrderExecutionTab order={order} orderExecution={orderExecution} />
-                            </TabPanel>
-                        )}
-                        {orderExecution && (
-                            <TabPanel px={0}>
-                                <ReportTab order={order} orderExecution={orderExecution} />
                             </TabPanel>
                         )}
                     </TabPanels>

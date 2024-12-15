@@ -10,10 +10,9 @@ import {
     Text,
     Badge,
 } from '@chakra-ui/react';
-import { Order, OrderStatus } from '../../../store/newOrderSlice';
-import { OrderExecution } from '../../../store/executionSlice';
+import { OrderStatus } from '../../../store/newOrderSlice';
 
-const ReportTab:React.FC<{ order: Order, orderExecution: OrderExecution }> = ({ order, orderExecution }) => {
+const ReportTab:React.FC = () => {
     // Example data structure; replace or update with your values
     const data = [
         {
