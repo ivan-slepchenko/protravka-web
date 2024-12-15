@@ -40,46 +40,44 @@ const LotReport: React.FC = () => {
 
     return (
         <Box w="full" h="full" overflowY="auto" p={4}>
-            <Text fontSize="2xl" fontWeight="bold" mb={4}>5. By Lot</Text>
+            <Text fontSize="2xl" fontWeight="bold" mb={4}>{`Lot: ${order.lotNumber}`}</Text>
             <HStack spacing={4} mb={4}>
-                <Box>
-                    <Text fontSize="sm" mb={1}>Lot</Text>
-                    <Text>{order.lotNumber}</Text>
-                </Box>
-                <Box>
-                    <Text fontSize="sm" mb={1}>Crop</Text>
-                    <Text>{order.crop.name}</Text>
-                </Box>
-                <Box>
-                    <Text fontSize="sm" mb={1}>Variety</Text>
-                    <Text>{order.variety.name}</Text>
-                </Box>
-                <Box>
-                    <Text fontSize="sm" mb={1}>Status</Text>
-                    <Text>{order.status}</Text>
-                </Box>
-            </HStack>
-            <HStack spacing={4} mb={4}>
-                <Box>
-                    <Text fontSize="sm" mb={1}>TKW</Text>
-                    <Text>{order.tkw}</Text>
-                </Box>
-                <Box>
-                    <Text fontSize="sm" mb={1}>s.u., number of seeds</Text>
-                    <Text>{order.orderRecipe.nbSeedsUnits.toFixed(1)}</Text>
-                </Box>
-                <Box>
-                    <Text fontSize="sm" mb={1}>s.u., kg</Text>
-                    <Text>{order.seedsToTreatKg}</Text>
-                </Box>
-                <Box>
-                    <Text fontSize="sm" mb={1}>Total amount, s.u.</Text>
-                    <Text>{order.orderRecipe.nbSeedsUnits.toFixed(1)}</Text>
-                </Box>
-                <Box>
-                    <Text fontSize="sm" mb={1}>Total amount, kg</Text>
-                    <Text>{order.seedsToTreatKg}</Text>
-                </Box>
+                <Table variant="simple" size="md" border="1px solid black">
+                    <Thead>
+                        <Tr>
+                            <Th>Crop</Th>
+                            <Th>Variety</Th>
+                            <Th>Status</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        <Tr>
+                            <Td>{order.crop.name}</Td>
+                            <Td>{order.variety.name}</Td>
+                            <Td>{order.status}</Td>
+                        </Tr>
+                    </Tbody>
+                </Table>
+                <Table variant="simple" size="md" border="1px solid black">
+                    <Thead>
+                        <Tr>
+                            <Th>TKW</Th>
+                            <Th>s.u., number of seeds</Th>
+                            <Th>s.u., kg</Th>
+                            <Th>Total amount, s.u.</Th>
+                            <Th>Total amount, kg</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        <Tr>
+                            <Td>{order.tkw}</Td>
+                            <Td>{order.orderRecipe.nbSeedsUnits.toFixed(1)}</Td>
+                            <Td>{order.seedsToTreatKg}</Td>
+                            <Td>{order.orderRecipe.nbSeedsUnits.toFixed(1)}</Td>
+                            <Td>{order.seedsToTreatKg}</Td>
+                        </Tr>
+                    </Tbody>
+                </Table>
             </HStack>
             <VStack spacing={4} align="stretch">
                 <Box>
