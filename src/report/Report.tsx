@@ -1,28 +1,37 @@
-import React from "react";
-import { Box, Text, Button } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { Box, Text, Button, Table, Thead, Tbody, Tr, Th, Td, Badge } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import ReportTab from "../board/orderInfo/report/ReportTab";
+import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
-import { fetchOrderExecution } from "../store/executionSlice";
+import { fetchOrders } from "../store/ordersSlice";
+import { OrderStatus } from "../store/newOrderSlice";
 
 const Report: React.FC = () => {
-    const { orderId } = useParams<{ orderId: string }>();
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === orderId));
-    const orderExecution = useSelector((state: RootState) => state.execution.orderExecutions.find(execution => execution.orderId === orderId));
+    const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
-    React.useEffect(() => {
-        if (orderId !== undefined) {
-            dispatch(fetchOrderExecution(orderId));
-        }
-    }, [dispatch, orderId]);
-
-    if (!order) return null;
+    useEffect(() => {
+        dispatch(fetchOrders());
+    }, [dispatch]);
 
     const handleClose = () => {
         navigate('/board');
+    };
+
+    const getStatusBadge = (status: OrderStatus) => {
+        switch (status) {
+        case OrderStatus.InProgress:
+            return <Badge colorScheme="yellow">In Progress</Badge>;
+        case OrderStatus.ToAcknowledge:
+            return <Badge colorScheme="red">To Acknowledge</Badge>;
+        case OrderStatus.Completed:
+            return <Badge colorScheme="green">Completed</Badge>;
+        case OrderStatus.Failed:
+            return <Badge colorScheme="green">Failed</Badge>;
+        default:
+            return <Badge colorScheme="gray">Unknown</Badge>;
+        }
     };
 
     return (
@@ -32,7 +41,41 @@ const Report: React.FC = () => {
                 <Button onClick={handleClose}>Close</Button>
             </Box>
             <Box p="4">
-                <ReportTab/>
+                <Box maxW="100%" overflowX="auto" p={5}>
+                    <Text fontSize="xl" fontWeight="bold" mb={4}>
+                        Seed Processing Report
+                    </Text>
+                    <Table variant="striped" colorScheme="teal">
+                        <Thead>
+                            <Tr>
+                                <Th>#</Th>
+                                <Th>Crop</Th>
+                                <Th>Variety</Th>
+                                <Th>Lot</Th>
+                                <Th>Treatment Date</Th>
+                                <Th>Operator</Th>
+                                <Th>Lot Size (s.u.)</Th>
+                                <Th>Lot Size (kg)</Th>
+                                <Th>Status</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {orders.map((order, index) => (
+                                <Tr key={order.id}>
+                                    <Td>{index + 1}</Td>
+                                    <Td>{order.crop.name}</Td>
+                                    <Td>{order.variety.name}</Td>
+                                    <Td>{order.lotNumber}</Td>
+                                    <Td>{order.applicationDate}</Td>
+                                    <Td>{order.operator.name}</Td>
+                                    <Td>{order.seedsToTreatKg}</Td>
+                                    <Td>{order.seedsToTreatKg}</Td>
+                                    <Td>{getStatusBadge(order.status)}</Td>
+                                </Tr>
+                            ))}
+                        </Tbody>
+                    </Table>
+                </Box>
             </Box>
         </Box>
     );
