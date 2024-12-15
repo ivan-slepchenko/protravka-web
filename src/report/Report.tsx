@@ -296,8 +296,8 @@ const Report: React.FC = () => {
                     {/* Seed Processing Report */}
                     <Box gridColumn="1 / 2" gridRow="1 / 2">
                         <Text fontSize="lg" fontWeight="bold" mb={4} textAlign="center">Seed Processing Report</Text>
-                        <Table variant="striped" size="md" border="1px solid black">
-                            <Thead>
+                        <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200">
+                            <Thead bg="orange.100">
                                 <Tr>
                                     <Th>#</Th>
                                     <Th>Crop</Th>
@@ -331,8 +331,8 @@ const Report: React.FC = () => {
                     {/* Total */}
                     <Box gridColumn="2 / 3" gridRow="1 / 2">
                         <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={4}>Total</Text>
-                        <Table variant="striped" size="md" border="1px solid black">
-                            <Thead>
+                        <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200">
+                            <Thead bg="orange.100">
                                 <Tr>
                                     <Th>Crop</Th>
                                     <Th>s.u.</Th>
@@ -355,8 +355,8 @@ const Report: React.FC = () => {
                     {filters.status === "" && (
                         <Box gridColumn="1 / 2" gridRow="2 / 3">
                             <Text fontSize="lg" fontWeight="bold" mt={8} mb={4} textAlign="center">Summary</Text>
-                            <Table variant="simple" size="md" border="1px solid black">
-                                <Thead>
+                            <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200">
+                                <Thead bg="orange.100">
                                     <Tr>
                                         <Th>Category</Th>
                                         <Th>Number of Lots</Th>

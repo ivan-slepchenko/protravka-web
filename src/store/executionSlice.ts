@@ -3,6 +3,7 @@ import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 
 export interface ProductExecution {
     productId: string;
+    //TODO: rename to appliedSeedsToTreatKg //actually should be appliedRateKg
     appliedseedsToTreatKg: number;
     applicationPhoto?: string;
     consumptionPhoto?: string;

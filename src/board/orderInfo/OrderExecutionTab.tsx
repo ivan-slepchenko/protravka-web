@@ -68,7 +68,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                             {applicationMethod === 'Surry' && (
                                 <>
                                     <Td borderBottom="1px" borderColor="gray.400">
-                                        <Text fontSize="xs" fontWeight="bold">{order?.orderRecipe?.slurryTotalGrRecipeToMix.toFixed(2)} kg</Text>
+                                        <Text fontSize="xs" fontWeight="bold">{(order?.orderRecipe?.slurryTotalGrRecipeToMix / 1000).toFixed(2)} kg</Text>
                                     </Td>
                                     <Td borderBottom="1px" borderColor="gray.400">
                                         {orderExecution?.consumptionPhoto ? (
@@ -177,7 +177,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                 </ModalContent>
             </Modal>
             <Box mt="4" textAlign="right">
-                <Button colorScheme="blue" onClick={handleToAcknowledge}>ToAcknowledge And Close</Button>
+                <Button colorScheme="blue" onClick={handleToAcknowledge}>To Acknowledge And Close</Button>
             </Box>
         </Box>
     );

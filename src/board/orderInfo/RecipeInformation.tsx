@@ -28,12 +28,12 @@ const RecipeInformation: React.FC<{ order: Order }> = ({ order }) => (
                 <Text>{order.orderRecipe.slurryTotalGTo100Kgs.toFixed(2)}</Text>
             </Box>
             <Box>
-                <Text fontSize="xs">Slurry Total (ml Recipe/Mix):</Text>
-                <Text>{order.orderRecipe.slurryTotalMlRecipeToMix.toFixed(2)}</Text>
+                <Text fontSize="xs">Slurry Total (l Recipe/Mix):</Text>
+                <Text>{(order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2)}</Text>
             </Box>
             <Box>
                 <Text fontSize="xs">Slurry Total (kg Recipe/Weight):</Text>
-                <Text>{order.orderRecipe.slurryTotalGrRecipeToMix.toFixed(2)}</Text>
+                <Text>{(order.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2)}</Text>
             </Box>
             <Box>
                 <Text fontSize="xs">Extra Slurry (Pipes/Pump Feeding ml):</Text>

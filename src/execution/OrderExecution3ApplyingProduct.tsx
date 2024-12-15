@@ -28,7 +28,7 @@ const OrderExecution3ApplyingProduct = () => {
         return null;
     }
 
-    const handleseedsToTreatKgChange = (productId: string, seedsToTreatKg: number) => {
+    const handleSeedsToTreatKgChange = (productId: string, seedsToTreatKg: number) => {
         if (currentOrderId) {
             dispatch(setAppliedseedsToTreatKg({ orderId: currentOrderId, productId, seedsToTreatKg: isNaN(seedsToTreatKg) ? 0 : seedsToTreatKg }));
             setInputError(false);
@@ -70,7 +70,7 @@ const OrderExecution3ApplyingProduct = () => {
                     <Input
                         placeholder="Enter value"
                         value={currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : ''}
-                        onChange={(e) => handleseedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
+                        onChange={(e) => handleSeedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
@@ -88,7 +88,7 @@ const OrderExecution3ApplyingProduct = () => {
                     <Input
                         placeholder="Enter value"
                         value={currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : ''}
-                        onChange={(e) => handleseedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
+                        onChange={(e) => handleSeedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
