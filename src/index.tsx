@@ -29,6 +29,7 @@ import Operators from './operators/Operators';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
 import { NewOrderForm } from './newOrder/NewOrder';
+import LotReport from './report/LotReport';
 
 const AlertContext = createContext<{ addAlert: (message: string) => void }>({
     addAlert: () => {
@@ -147,6 +148,7 @@ const App = () => {
                         <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrderForm /></RequireAuth>} />
                         <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                         <Route path="/report" element={<RequireAuth roles={[Role.MANAGER]}><Report /></RequireAuth>} />
+                        <Route path="/lot-report/:lotNumber" element={<LotReport />} />
                         <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
                         <Route path="/crops" element={<RequireAuth roles={[Role.ADMIN]}><Crops /></RequireAuth>} />
                         <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
