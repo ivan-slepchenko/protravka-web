@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Box, Text, Button, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Text, Button, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, Select, Input } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
@@ -20,32 +20,67 @@ import {
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+type StatusColorMap = {
+    [key in OrderStatus]: string;
+};
+
+const statusColorMap: StatusColorMap = {
+    [OrderStatus.Completed]: "#48BB78", // Green color (Chakra UI green.400)
+    [OrderStatus.ToAcknowledge]: "#ECC94B", // Yellow color (Chakra UI yellow.400)
+    [OrderStatus.Failed]: "#F56565", // Red color (Chakra UI red.400)
+    [OrderStatus.InProgress]: "#ED8936", // Orange color (Chakra UI orange.400)
+    [OrderStatus.Archived]: "#4299E1", // Blue color (Chakra UI blue.400)
+    [OrderStatus.NotStarted]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+};
+
 const Report: React.FC = () => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
+    const [filteredOrders, setFilteredOrders] = useState(orders);
+    const [filters, setFilters] = useState({
+        crop: "",
+        variety: "",
+        startDate: "",
+        endDate: "",
+        operator: "",
+        status: "",
+    });
+
     useEffect(() => {
         dispatch(fetchOrders());
     }, [dispatch]);
+
+    useEffect(() => {
+        setFilteredOrders(orders);
+    }, [orders]);
+
+    useEffect(() => {
+        const filtered = orders.filter(order => {
+            const matchesCrop = filters.crop ? order.crop.name.includes(filters.crop) : true;
+            const matchesVariety = filters.variety ? order.variety.name.includes(filters.variety) : true;
+            const matchesOperator = filters.operator ? order.operator.name.includes(filters.operator) : true;
+            const matchesStatus = filters.status ? order.status === filters.status : true;
+            const matchesStartDate = filters.startDate ? new Date(order.applicationDate) >= new Date(filters.startDate) : true;
+            const matchesEndDate = filters.endDate ? new Date(order.applicationDate) <= new Date(filters.endDate) : true;
+            return matchesCrop && matchesVariety && matchesOperator && matchesStatus && matchesStartDate && matchesEndDate;
+        });
+        setFilteredOrders(filtered);
+    }, [filters, orders]);
+
+    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
+    };
 
     const handleClose = () => {
         navigate('/board');
     };
 
     const getStatusBadge = (status: OrderStatus) => {
-        switch (status) {
-            case OrderStatus.InProgress:
-                return <Badge colorScheme="yellow">In Progress</Badge>;
-            case OrderStatus.ToAcknowledge:
-                return <Badge colorScheme="red">To Acknowledge</Badge>;
-            case OrderStatus.Completed:
-                return <Badge colorScheme="green">Completed</Badge>;
-            case OrderStatus.Failed:
-                return <Badge colorScheme="red">Failed</Badge>;
-            default:
-                return <Badge colorScheme="gray">Unknown</Badge>;
-        }
+        const color = statusColorMap[status];
+        return <Badge bgColor={color}>{status}</Badge>;
     };
 
     // Collect crops from state.orders
@@ -139,22 +174,22 @@ const Report: React.FC = () => {
             {
                 label: "Approved",
                 data: [categoryStats.approved],
-                backgroundColor: "#28a745", // Green color
+                backgroundColor: statusColorMap[OrderStatus.Completed],
             },
             {
                 label: "To Acknowledge",
                 data: [categoryStats.toAcknowledge],
-                backgroundColor: "#ffc107", // Yellow color
+                backgroundColor: statusColorMap[OrderStatus.ToAcknowledge],
             },
             {
                 label: "Disapproved",
                 data: [categoryStats.disapproved],
-                backgroundColor: "#dc3545", // Red color
+                backgroundColor: statusColorMap[OrderStatus.Failed],
             },
             {
-                label: "In Progress", // Add In Progress label
+                label: "In Progress",
                 data: [categoryStats.inProgress],
-                backgroundColor: "#17a2b8", // Blue color
+                backgroundColor: statusColorMap[OrderStatus.InProgress],
             },
         ],
     };
@@ -163,16 +198,18 @@ const Report: React.FC = () => {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            x: { stacked: true },
-            y: { stacked: true },
+            x: {
+                stacked: true,
+                barThickness: 16,
+                barPercentage: 0.5,
+            },
+            y: {
+                stacked: true,
+                beginAtZero: true,
+            },
         },
         plugins: {
-            legend: { position: "top" as const },
-            title: {
-                display: true,
-                text: "Treatment Overview",
-                font: { size: 18, weight: "bold" as const },
-            },
+            legend: { position: "bottom" as const },
         },
     };
 
@@ -182,113 +219,140 @@ const Report: React.FC = () => {
                 <Text fontSize="2xl" fontWeight="bold">Report</Text>
                 <Button onClick={handleClose}>Close</Button>
             </Box>
-            <Box p="4">
-                <Box maxW="100%" overflowX="auto" p={5}>
-                    <HStack>
-                        <VStack>
-                            <Text fontSize="xl" fontWeight="bold" mb={4}>
-                                {'Seed Processing Report'}
-                            </Text>                            {/* Original Table */}
-                            <Table variant="striped">
-                                <Thead>
-                                    <Tr>
-                                        <Th>#</Th>
-                                        <Th>Crop</Th>
-                                        <Th>Variety</Th>
-                                        <Th>Lot</Th>
-                                        <Th>Treatment Date</Th>
-                                        <Th>Operator</Th>
-                                        <Th>Lot Size (s.u.)</Th>
-                                        <Th>Lot Size (kg)</Th>
-                                        <Th>Status</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {orders.map((order, index) => (
-                                        <Tr key={order.id}>
-                                            <Td>{index + 1}</Td>
-                                            <Td>{order.crop.name}</Td>
-                                            <Td>{order.variety.name}</Td>
-                                            <Td>{order.lotNumber}</Td>
-                                            <Td>{order.applicationDate}</Td>
-                                            <Td>{order.operator.name}</Td>
-                                            <Td>{order.orderRecipe.nbSeedsUnits.toFixed(1)}</Td>
-                                            <Td>{order.seedsToTreatKg}</Td>
-                                            <Td>{getStatusBadge(order.status)}</Td>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
-                        </VStack>
-                        <Box flex="0.5">
-                            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>Total</Text>
-                            <Table variant="simple" size="md" border="1px solid black">
-                                <Thead>
-                                    <Tr>
-                                        <Th>Crop</Th>
-                                        <Th>s.u.</Th>
-                                        <Th>kg</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {cropStats.map((stat) => (
-                                        <Tr key={stat.crop}>
-                                            <Td>{stat.crop}</Td>
-                                            <Td>{stat.su.toFixed(1)}</Td>
-                                            <Td>{stat.kg.toFixed(1)}</Td>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
-                        </Box>
-                    </HStack>
+            <Box p="4" px={6}>
+                {/* Filters */}
+                <HStack spacing={4} mb={4}>
+                    <Select placeholder="Crop" name="crop" onChange={handleFilterChange}>
+                        {Array.from(new Set(orders.map(order => order.crop.name))).map(crop => (
+                            <option key={crop} value={crop}>{crop}</option>
+                        ))}
+                    </Select>
+                    <Select placeholder="Variety" name="variety" onChange={handleFilterChange}>
+                        {Array.from(new Set(orders.map(order => order.variety.name))).map(variety => (
+                            <option key={variety} value={variety}>{variety}</option>
+                        ))}
+                    </Select>
+                    <Input type="date" placeholder="Start Date" name="startDate" onChange={handleFilterChange} />
+                    <Input type="date" placeholder="End Date" name="endDate" onChange={handleFilterChange} />
+                    <Select placeholder="Operator" name="operator" onChange={handleFilterChange}>
+                        {Array.from(new Set(orders.map(order => order.operator.name))).map(operator => (
+                            <option key={operator} value={operator}>{operator}</option>
+                        ))}
+                    </Select>
+                    <Select placeholder="Status" name="status" onChange={handleFilterChange}>
+                        {Object.values(OrderStatus).map(status => (
+                            <option key={status} value={status}>{status}</option>
+                        ))}
+                    </Select>
+                </HStack>
 
-                    {/* New Summary Table */}
-                    <Text fontSize="lg" fontWeight="bold" mt={8} mb={4}>Summary</Text>
-                    <Table variant="simple" size="md" border="1px solid black">
-                        <Thead>
-                            <Tr>
-                                <Th>Category</Th>
-                                <Th>Number of Lots</Th>
-                                <Th>s.u.</Th>
-                                <Th>kg</Th>
-                                <Th>%</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            <Tr bg="green.200">
-                                <Td>Approved by manager</Td>
-                                <Td>{stats.approved.count}</Td>
-                                <Td>{stats.approved.su.toFixed(1)}</Td>
-                                <Td>{stats.approved.kg.toFixed(1)}</Td>
-                                <Td>{((stats.approved.count / total.count) * 100).toFixed(1)}%</Td>
-                            </Tr>
-                            <Tr bg="yellow.200">
-                                <Td>To be acknowledged</Td>
-                                <Td>{stats.toAcknowledge.count}</Td>
-                                <Td>{stats.toAcknowledge.su.toFixed(1)}</Td>
-                                <Td>{stats.toAcknowledge.kg.toFixed(1)}</Td>
-                                <Td>{((stats.toAcknowledge.count / total.count) * 100).toFixed(1)}%</Td>
-                            </Tr>
-                            <Tr bg="red.300">
-                                <Td>Disapproved by manager</Td>
-                                <Td>{stats.disapproved.count}</Td>
-                                <Td>{stats.disapproved.su.toFixed(1)}</Td>
-                                <Td>{stats.disapproved.kg.toFixed(1)}</Td>
-                                <Td>{((stats.disapproved.count / total.count) * 100).toFixed(1)}%</Td>
-                            </Tr>
-                            <Tr fontWeight="bold">
-                                <Td>Total</Td>
-                                <Td>{total.count}</Td>
-                                <Td>{total.su.toFixed(1)}</Td>
-                                <Td>{total.kg.toFixed(1)}</Td>
-                                <Td>100%</Td>
-                            </Tr>
-                        </Tbody>
-                    </Table>
+                <Box display="grid" gridTemplateColumns="70% 30%" gridTemplateRows="auto auto" gap={4}>
+                    {/* Seed Processing Report */}
+                    <Box gridColumn="1 / 2" gridRow="1 / 2">
+                        <Text fontSize="lg" fontWeight="bold" mb={4} textAlign="center">Seed Processing Report</Text>
+                        <Table variant="striped" size="md" border="1px solid black">
+                            <Thead>
+                                <Tr>
+                                    <Th>#</Th>
+                                    <Th>Crop</Th>
+                                    <Th>Variety</Th>
+                                    <Th>Lot</Th>
+                                    <Th>Treatment Date</Th>
+                                    <Th>Operator</Th>
+                                    <Th>Lot Size (s.u.)</Th>
+                                    <Th>Lot Size (kg)</Th>
+                                    <Th>Status</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {filteredOrders.map((order, index) => (
+                                    <Tr key={order.id}>
+                                        <Td>{index + 1}</Td>
+                                        <Td>{order.crop.name}</Td>
+                                        <Td>{order.variety.name}</Td>
+                                        <Td>{order.lotNumber}</Td>
+                                        <Td>{order.applicationDate}</Td>
+                                        <Td>{order.operator.name}</Td>
+                                        <Td>{order.orderRecipe.nbSeedsUnits.toFixed(1)}</Td>
+                                        <Td>{order.seedsToTreatKg}</Td>
+                                        <Td>{getStatusBadge(order.status)}</Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </Box>
+
+                    {/* Total */}
+                    <Box gridColumn="2 / 3" gridRow="1 / 2">
+                        <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={4}>Total</Text>
+                        <Table variant="striped" size="md" border="1px solid black">
+                            <Thead>
+                                <Tr>
+                                    <Th>Crop</Th>
+                                    <Th>s.u.</Th>
+                                    <Th>kg</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {cropStats.map((stat) => (
+                                    <Tr key={stat.crop}>
+                                        <Td>{stat.crop}</Td>
+                                        <Td>{stat.su.toFixed(1)}</Td>
+                                        <Td>{stat.kg.toFixed(1)}</Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </Box>
+
+                    {/* Summary */}
+                    <Box gridColumn="1 / 2" gridRow="2 / 3">
+                        <Text fontSize="lg" fontWeight="bold" mt={8} mb={4} textAlign="center">Summary</Text>
+                        <Table variant="simple" size="md" border="1px solid black">
+                            <Thead>
+                                <Tr>
+                                    <Th>Category</Th>
+                                    <Th>Number of Lots</Th>
+                                    <Th>s.u.</Th>
+                                    <Th>kg</Th>
+                                    <Th>%</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                <Tr bg="green.200">
+                                    <Td>Approved by manager</Td>
+                                    <Td>{stats.approved.count}</Td>
+                                    <Td>{stats.approved.su.toFixed(1)}</Td>
+                                    <Td>{stats.approved.kg.toFixed(1)}</Td>
+                                    <Td>{((stats.approved.count / total.count) * 100).toFixed(1)}%</Td>
+                                </Tr>
+                                <Tr bg="yellow.200">
+                                    <Td>To be acknowledged</Td>
+                                    <Td>{stats.toAcknowledge.count}</Td>
+                                    <Td>{stats.toAcknowledge.su.toFixed(1)}</Td>
+                                    <Td>{stats.toAcknowledge.kg.toFixed(1)}</Td>
+                                    <Td>{((stats.toAcknowledge.count / total.count) * 100).toFixed(1)}%</Td>
+                                </Tr>
+                                <Tr bg="red.300">
+                                    <Td>Disapproved by manager</Td>
+                                    <Td>{stats.disapproved.count}</Td>
+                                    <Td>{stats.disapproved.su.toFixed(1)}</Td>
+                                    <Td>{stats.disapproved.kg.toFixed(1)}</Td>
+                                    <Td>{((stats.disapproved.count / total.count) * 100).toFixed(1)}%</Td>
+                                </Tr>
+                                <Tr fontWeight="bold">
+                                    <Td>Total</Td>
+                                    <Td>{total.count}</Td>
+                                    <Td>{total.su.toFixed(1)}</Td>
+                                    <Td>{total.kg.toFixed(1)}</Td>
+                                    <Td>100%</Td>
+                                </Tr>
+                            </Tbody>
+                        </Table>
+                    </Box>
 
                     {/* Treatment Overview Chart */}
-                    <Box mt={10} height="400px">
+                    <Box gridColumn="2 / 3" gridRow="2 / 3" mt={10} height="300px">
                         <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>Treatment Overview</Text>
                         <Bar data={chartData} options={chartOptions} />
                     </Box>
