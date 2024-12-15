@@ -5,6 +5,20 @@ import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchOrders } from "../store/ordersSlice";
 import { OrderStatus } from "../store/newOrderSlice";
+import { Bar } from "react-chartjs-2"; // Import Bar chart
+
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from "chart.js";
+
+// Register Chart.js components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Report: React.FC = () => {
     const navigate = useNavigate();
@@ -49,7 +63,7 @@ const Report: React.FC = () => {
         }
         return acc;
     }, [] as { crop: string; su: number; kg: number }[]);
-
+    
     // Group orders based on their status
     const getCategoryStats = () => {
         const stats = {
@@ -57,7 +71,7 @@ const Report: React.FC = () => {
             toAcknowledge: { count: 0, su: 0, kg: 0 },
             disapproved: { count: 0, su: 0, kg: 0 },
         };
-
+    
         orders.forEach((order) => {
             switch (order.status) {
                 case OrderStatus.Completed:
@@ -79,17 +93,88 @@ const Report: React.FC = () => {
                     break;
             }
         });
-
+    
         const total = {
             count: stats.approved.count + stats.toAcknowledge.count + stats.disapproved.count,
             su: stats.approved.su + stats.toAcknowledge.su + stats.disapproved.su,
             kg: stats.approved.kg + stats.toAcknowledge.kg + stats.disapproved.kg,
         };
-
+    
         return { stats, total };
     };
-
+    
     const { stats, total } = getCategoryStats();
+
+    // Calculate category stats for the chart
+    const categoryStats = {
+        approved: 0,
+        toAcknowledge: 0,
+        disapproved: 0,
+        inProgress: 0, // Add inProgress category
+    };
+
+    orders.forEach((order) => {
+        switch (order.status) {
+            case OrderStatus.Completed:
+                categoryStats.approved++;
+                break;
+            case OrderStatus.ToAcknowledge:
+                categoryStats.toAcknowledge++;
+                break;
+            case OrderStatus.Failed:
+                categoryStats.disapproved++;
+                break;
+            case OrderStatus.InProgress: // Add case for In Progress
+                categoryStats.inProgress++;
+                break;
+            default:
+                break;
+        }
+    });
+
+    // Chart Data
+    const chartData = {
+        labels: ["Orders"],
+        datasets: [
+            {
+                label: "Approved",
+                data: [categoryStats.approved],
+                backgroundColor: "#28a745", // Green color
+            },
+            {
+                label: "To Acknowledge",
+                data: [categoryStats.toAcknowledge],
+                backgroundColor: "#ffc107", // Yellow color
+            },
+            {
+                label: "Disapproved",
+                data: [categoryStats.disapproved],
+                backgroundColor: "#dc3545", // Red color
+            },
+            {
+                label: "In Progress", // Add In Progress label
+                data: [categoryStats.inProgress],
+                backgroundColor: "#17a2b8", // Blue color
+            },
+        ],
+    };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: { stacked: true },
+            y: { stacked: true },
+        },
+        plugins: {
+            legend: { position: "top" as const },
+            title: {
+                display: true,
+                text: "Treatment Overview",
+                font: { size: 18, weight: "bold" as const },
+            },
+        },
+    };
 
     return (
         <Box w="full" h="full" overflowY="auto">
@@ -103,8 +188,7 @@ const Report: React.FC = () => {
                         <VStack>
                             <Text fontSize="xl" fontWeight="bold" mb={4}>
                                 {'Seed Processing Report'}
-                            </Text>
-                            {/* Original Table */}
+                            </Text>                            {/* Original Table */}
                             <Table variant="striped">
                                 <Thead>
                                     <Tr>
@@ -202,6 +286,12 @@ const Report: React.FC = () => {
                             </Tr>
                         </Tbody>
                     </Table>
+
+                    {/* Treatment Overview Chart */}
+                    <Box mt={10} height="400px">
+                        <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>Treatment Overview</Text>
+                        <Bar data={chartData} options={chartOptions} />
+                    </Box>
                 </Box>
             </Box>
         </Box>
