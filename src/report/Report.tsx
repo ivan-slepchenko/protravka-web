@@ -10,22 +10,6 @@ const Report: React.FC = () => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    const cropStats = [
-        { crop: "Sunflower", su: 0, kg: 0 },
-        { crop: "Corn", su: 0, kg: 0 },
-        { crop: "Wheat", su: 0, kg: 0 },
-        { crop: "Barley", su: 0, kg: 0 },
-        { crop: "Chick Peas", su: 0, kg: 0 },
-        { crop: "Peas", su: 0, kg: 0 },
-    ];
-
-    orders.forEach((order) => {
-        const cropStat = cropStats.find(stat => stat.crop === order.crop.name);
-        if (cropStat) {
-            cropStat.su += order.orderRecipe.nbSeedsUnits;
-            cropStat.kg += order.seedsToTreatKg;
-        }
-    });
 
     useEffect(() => {
         dispatch(fetchOrders());
@@ -49,6 +33,22 @@ const Report: React.FC = () => {
                 return <Badge colorScheme="gray">Unknown</Badge>;
         }
     };
+
+    // Collect crops from state.orders
+    const cropStats = orders.reduce((acc, order) => {
+        const cropStat = acc.find(stat => stat.crop === order.crop.name);
+        if (cropStat) {
+            cropStat.su += order.orderRecipe.nbSeedsUnits;
+            cropStat.kg += order.seedsToTreatKg;
+        } else {
+            acc.push({
+                crop: order.crop.name,
+                su: order.orderRecipe.nbSeedsUnits,
+                kg: order.seedsToTreatKg,
+            });
+        }
+        return acc;
+    }, [] as { crop: string; su: number; kg: number }[]);
 
     // Group orders based on their status
     const getCategoryStats = () => {
