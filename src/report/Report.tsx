@@ -83,8 +83,8 @@ const Report: React.FC = () => {
         return <Badge bgColor={color}>{status}</Badge>;
     };
 
-    // Collect crops from state.orders
-    const cropStats = orders.reduce((acc, order) => {
+    // Collect crops from filtered orders
+    const cropStats = filteredOrders.reduce((acc, order) => {
         const cropStat = acc.find(stat => stat.crop === order.crop.name);
         if (cropStat) {
             cropStat.su += order.orderRecipe.nbSeedsUnits;
@@ -98,16 +98,18 @@ const Report: React.FC = () => {
         }
         return acc;
     }, [] as { crop: string; su: number; kg: number }[]);
-    
-    // Group orders based on their status
+
+    // Group filtered orders based on their status
     const getCategoryStats = () => {
         const stats = {
             approved: { count: 0, su: 0, kg: 0 },
             toAcknowledge: { count: 0, su: 0, kg: 0 },
             disapproved: { count: 0, su: 0, kg: 0 },
+            inProgress: { count: 0, su: 0, kg: 0 },
+            notStarted: { count: 0, su: 0, kg: 0 },
         };
-    
-        orders.forEach((order) => {
+
+        filteredOrders.forEach((order) => {
             switch (order.status) {
                 case OrderStatus.Completed:
                     stats.approved.count++;
@@ -124,20 +126,30 @@ const Report: React.FC = () => {
                     stats.disapproved.su += order.orderRecipe.nbSeedsUnits;
                     stats.disapproved.kg += order.seedsToTreatKg;
                     break;
+                case OrderStatus.InProgress:
+                    stats.inProgress.count++;
+                    stats.inProgress.su += order.orderRecipe.nbSeedsUnits;
+                    stats.inProgress.kg += order.seedsToTreatKg;
+                    break;
+                case OrderStatus.NotStarted:
+                    stats.notStarted.count++;
+                    stats.notStarted.su += order.orderRecipe.nbSeedsUnits;
+                    stats.notStarted.kg += order.seedsToTreatKg;
+                    break;
                 default:
                     break;
             }
         });
-    
+
         const total = {
-            count: stats.approved.count + stats.toAcknowledge.count + stats.disapproved.count,
-            su: stats.approved.su + stats.toAcknowledge.su + stats.disapproved.su,
-            kg: stats.approved.kg + stats.toAcknowledge.kg + stats.disapproved.kg,
+            count: stats.approved.count + stats.toAcknowledge.count + stats.disapproved.count + stats.inProgress.count + stats.notStarted.count,
+            su: stats.approved.su + stats.toAcknowledge.su + stats.disapproved.su + stats.inProgress.su + stats.notStarted.su,
+            kg: stats.approved.kg + stats.toAcknowledge.kg + stats.disapproved.kg + stats.inProgress.kg + stats.notStarted.kg,
         };
-    
+
         return { stats, total };
     };
-    
+
     const { stats, total } = getCategoryStats();
 
     // Calculate category stats for the chart
@@ -148,7 +160,7 @@ const Report: React.FC = () => {
         inProgress: 0, // Add inProgress category
     };
 
-    orders.forEach((order) => {
+    filteredOrders.forEach((order) => {
         switch (order.status) {
             case OrderStatus.Completed:
                 categoryStats.approved++;
@@ -213,6 +225,17 @@ const Report: React.FC = () => {
         },
     };
 
+    // Get varieties based on selected crop
+    const getVarieties = () => {
+        if (filters.crop) {
+            const selectedCrop = orders.find(order => order.crop.name === filters.crop);
+            if (selectedCrop) {
+                return Array.from(new Set(orders.filter(order => order.crop.name === filters.crop).map(order => order.variety.name)));
+            }
+        }
+        return Array.from(new Set(orders.map(order => order.variety.name)));
+    };
+
     return (
         <Box w="full" h="full" overflowY="auto">
             <Box display="flex" justifyContent="space-between" alignItems="center" p="4" borderBottom="1px solid #ccc">
@@ -221,29 +244,47 @@ const Report: React.FC = () => {
             </Box>
             <Box p="4" px={6}>
                 {/* Filters */}
-                <HStack spacing={4} mb={4}>
-                    <Select placeholder="Crop" name="crop" onChange={handleFilterChange}>
-                        {Array.from(new Set(orders.map(order => order.crop.name))).map(crop => (
-                            <option key={crop} value={crop}>{crop}</option>
-                        ))}
-                    </Select>
-                    <Select placeholder="Variety" name="variety" onChange={handleFilterChange}>
-                        {Array.from(new Set(orders.map(order => order.variety.name))).map(variety => (
-                            <option key={variety} value={variety}>{variety}</option>
-                        ))}
-                    </Select>
-                    <Input type="date" placeholder="Start Date" name="startDate" onChange={handleFilterChange} />
-                    <Input type="date" placeholder="End Date" name="endDate" onChange={handleFilterChange} />
-                    <Select placeholder="Operator" name="operator" onChange={handleFilterChange}>
-                        {Array.from(new Set(orders.map(order => order.operator.name))).map(operator => (
-                            <option key={operator} value={operator}>{operator}</option>
-                        ))}
-                    </Select>
-                    <Select placeholder="Status" name="status" onChange={handleFilterChange}>
-                        {Object.values(OrderStatus).map(status => (
-                            <option key={status} value={status}>{status}</option>
-                        ))}
-                    </Select>
+                <HStack spacing={4} mb={4} w="full">
+                    <Box flex="1">
+                        <Text fontSize="sm" mb={1}>Crop</Text>
+                        <Select placeholder="All Crops" name="crop" onChange={handleFilterChange}>
+                            {Array.from(new Set(orders.map(order => order.crop.name))).map(crop => (
+                                <option key={crop} value={crop}>{crop}</option>
+                            ))}
+                        </Select>
+                    </Box>
+                    <Box flex="1">
+                        <Text fontSize="sm" mb={1}>Variety</Text>
+                        <Select placeholder="All Varieties" name="variety" onChange={handleFilterChange}>
+                            {getVarieties().map(variety => (
+                                <option key={variety} value={variety}>{variety}</option>
+                            ))}
+                        </Select>
+                    </Box>
+                    <Box flex="1">
+                        <Text fontSize="sm" mb={1}>Start Date</Text>
+                        <Input type="date" placeholder="Start Date" name="startDate" onChange={handleFilterChange} />
+                    </Box>
+                    <Box flex="1">
+                        <Text fontSize="sm" mb={1}>End Date</Text>
+                        <Input type="date" placeholder="End Date" name="endDate" onChange={handleFilterChange} />
+                    </Box>
+                    <Box flex="1">
+                        <Text fontSize="sm" mb={1}>Operator</Text>
+                        <Select placeholder="All Operators" name="operator" onChange={handleFilterChange}>
+                            {Array.from(new Set(orders.map(order => order.operator.name))).map(operator => (
+                                <option key={operator} value={operator}>{operator}</option>
+                            ))}
+                        </Select>
+                    </Box>
+                    <Box flex="1">
+                        <Text fontSize="sm" mb={1}>Status</Text>
+                        <Select placeholder="All Statuses" name="status" onChange={handleFilterChange}>
+                            {Object.values(OrderStatus).map(status => (
+                                <option key={status} value={status}>{status}</option>
+                            ))}
+                        </Select>
+                    </Box>
                 </HStack>
 
                 <Box display="grid" gridTemplateColumns="70% 30%" gridTemplateRows="auto auto" gap={4}>
@@ -306,56 +347,74 @@ const Report: React.FC = () => {
                     </Box>
 
                     {/* Summary */}
-                    <Box gridColumn="1 / 2" gridRow="2 / 3">
-                        <Text fontSize="lg" fontWeight="bold" mt={8} mb={4} textAlign="center">Summary</Text>
-                        <Table variant="simple" size="md" border="1px solid black">
-                            <Thead>
-                                <Tr>
-                                    <Th>Category</Th>
-                                    <Th>Number of Lots</Th>
-                                    <Th>s.u.</Th>
-                                    <Th>kg</Th>
-                                    <Th>%</Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                <Tr bg="green.200">
-                                    <Td>Approved by manager</Td>
-                                    <Td>{stats.approved.count}</Td>
-                                    <Td>{stats.approved.su.toFixed(1)}</Td>
-                                    <Td>{stats.approved.kg.toFixed(1)}</Td>
-                                    <Td>{((stats.approved.count / total.count) * 100).toFixed(1)}%</Td>
-                                </Tr>
-                                <Tr bg="yellow.200">
-                                    <Td>To be acknowledged</Td>
-                                    <Td>{stats.toAcknowledge.count}</Td>
-                                    <Td>{stats.toAcknowledge.su.toFixed(1)}</Td>
-                                    <Td>{stats.toAcknowledge.kg.toFixed(1)}</Td>
-                                    <Td>{((stats.toAcknowledge.count / total.count) * 100).toFixed(1)}%</Td>
-                                </Tr>
-                                <Tr bg="red.300">
-                                    <Td>Disapproved by manager</Td>
-                                    <Td>{stats.disapproved.count}</Td>
-                                    <Td>{stats.disapproved.su.toFixed(1)}</Td>
-                                    <Td>{stats.disapproved.kg.toFixed(1)}</Td>
-                                    <Td>{((stats.disapproved.count / total.count) * 100).toFixed(1)}%</Td>
-                                </Tr>
-                                <Tr fontWeight="bold">
-                                    <Td>Total</Td>
-                                    <Td>{total.count}</Td>
-                                    <Td>{total.su.toFixed(1)}</Td>
-                                    <Td>{total.kg.toFixed(1)}</Td>
-                                    <Td>100%</Td>
-                                </Tr>
-                            </Tbody>
-                        </Table>
-                    </Box>
+                    {filters.status === "" && (
+                        <Box gridColumn="1 / 2" gridRow="2 / 3">
+                            <Text fontSize="lg" fontWeight="bold" mt={8} mb={4} textAlign="center">Summary</Text>
+                            <Table variant="simple" size="md" border="1px solid black">
+                                <Thead>
+                                    <Tr>
+                                        <Th>Category</Th>
+                                        <Th>Number of Lots</Th>
+                                        <Th>s.u.</Th>
+                                        <Th>kg</Th>
+                                        <Th>%</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    <Tr bg="green.200">
+                                        <Td>Approved by manager</Td>
+                                        <Td>{stats.approved.count}</Td>
+                                        <Td>{stats.approved.su.toFixed(1)}</Td>
+                                        <Td>{stats.approved.kg.toFixed(1)}</Td>
+                                        <Td>{((stats.approved.count / total.count) * 100).toFixed(1)}%</Td>
+                                    </Tr>
+                                    <Tr bg="yellow.200">
+                                        <Td>To be acknowledged</Td>
+                                        <Td>{stats.toAcknowledge.count}</Td>
+                                        <Td>{stats.toAcknowledge.su.toFixed(1)}</Td>
+                                        <Td>{stats.toAcknowledge.kg.toFixed(1)}</Td>
+                                        <Td>{((stats.toAcknowledge.count / total.count) * 100).toFixed(1)}%</Td>
+                                    </Tr>
+                                    <Tr bg="red.300">
+                                        <Td>Disapproved by manager</Td>
+                                        <Td>{stats.disapproved.count}</Td>
+                                        <Td>{stats.disapproved.su.toFixed(1)}</Td>
+                                        <Td>{stats.disapproved.kg.toFixed(1)}</Td>
+                                        <Td>{((stats.disapproved.count / total.count) * 100).toFixed(1)}%</Td>
+                                    </Tr>
+                                    <Tr bg="orange.200">
+                                        <Td>In Progress</Td>
+                                        <Td>{stats.inProgress.count}</Td>
+                                        <Td>{stats.inProgress.su.toFixed(1)}</Td>
+                                        <Td>{stats.inProgress.kg.toFixed(1)}</Td>
+                                        <Td>{((stats.inProgress.count / total.count) * 100).toFixed(1)}%</Td>
+                                    </Tr>
+                                    <Tr bg="gray.200">
+                                        <Td>Not Started</Td>
+                                        <Td>{stats.notStarted.count}</Td>
+                                        <Td>{stats.notStarted.su.toFixed(1)}</Td>
+                                        <Td>{stats.notStarted.kg.toFixed(1)}</Td>
+                                        <Td>{((stats.notStarted.count / total.count) * 100).toFixed(1)}%</Td>
+                                    </Tr>
+                                    <Tr fontWeight="bold">
+                                        <Td>Total</Td>
+                                        <Td>{total.count}</Td>
+                                        <Td>{total.su.toFixed(1)}</Td>
+                                        <Td>{total.kg.toFixed(1)}</Td>
+                                        <Td>100%</Td>
+                                    </Tr>
+                                </Tbody>
+                            </Table>
+                        </Box>
+                    )}
 
                     {/* Treatment Overview Chart */}
-                    <Box gridColumn="2 / 3" gridRow="2 / 3" mt={10} height="300px">
-                        <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>Treatment Overview</Text>
-                        <Bar data={chartData} options={chartOptions} />
-                    </Box>
+                    {filters.status === "" && (
+                        <Box gridColumn="2 / 3" gridRow="2 / 3" mt={10} height="300px">
+                            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>Treatment Overview</Text>
+                            <Bar data={chartData} options={chartOptions} />
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </Box>
