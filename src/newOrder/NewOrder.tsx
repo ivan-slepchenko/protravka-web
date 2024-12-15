@@ -71,23 +71,23 @@ const hasProductDetailError = (errors: FormikErrors<NewOrderState>, touched: For
 
 export const getRateUnitLabel = (unit: RateUnit): string => {
     switch (unit) {
-    case RateUnit.ML:
-        return "ml";
-    case RateUnit.G:
-        return "g";
-    default:
-        return unit;
+        case RateUnit.ML:
+            return "ml";
+        case RateUnit.G:
+            return "g";
+        default:
+            return unit;
     }
 };
 
 export const getRateTypeLabel = (type: RateType): string => {
     switch (type) {
-    case RateType.Unit:
-        return "per unit";
-    case RateType.Per100Kg:
-        return "per 100 kg";
-    default:
-        return type;
+        case RateType.Unit:
+            return "per unit";
+        case RateType.Per100Kg:
+            return "per 100 kg";
+        default:
+            return type;
     }
 };
 

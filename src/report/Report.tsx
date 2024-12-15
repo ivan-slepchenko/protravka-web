@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Text, Button, Table, Thead, Tbody, Tr, Th, Td, Badge } from "@chakra-ui/react";
+import { Box, Text, Button, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
@@ -10,6 +10,22 @@ const Report: React.FC = () => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
+    const cropStats = [
+        { crop: "Sunflower", su: 0, kg: 0 },
+        { crop: "Corn", su: 0, kg: 0 },
+        { crop: "Wheat", su: 0, kg: 0 },
+        { crop: "Barley", su: 0, kg: 0 },
+        { crop: "Chick Peas", su: 0, kg: 0 },
+        { crop: "Peas", su: 0, kg: 0 },
+    ];
+
+    orders.forEach((order) => {
+        const cropStat = cropStats.find(stat => stat.crop === order.crop.name);
+        if (cropStat) {
+            cropStat.su += order.orderRecipe.nbSeedsUnits;
+            cropStat.kg += order.seedsToTreatKg;
+        }
+    });
 
     useEffect(() => {
         dispatch(fetchOrders());
@@ -21,18 +37,59 @@ const Report: React.FC = () => {
 
     const getStatusBadge = (status: OrderStatus) => {
         switch (status) {
-        case OrderStatus.InProgress:
-            return <Badge colorScheme="yellow">In Progress</Badge>;
-        case OrderStatus.ToAcknowledge:
-            return <Badge colorScheme="red">To Acknowledge</Badge>;
-        case OrderStatus.Completed:
-            return <Badge colorScheme="green">Completed</Badge>;
-        case OrderStatus.Failed:
-            return <Badge colorScheme="green">Failed</Badge>;
-        default:
-            return <Badge colorScheme="gray">Unknown</Badge>;
+            case OrderStatus.InProgress:
+                return <Badge colorScheme="yellow">In Progress</Badge>;
+            case OrderStatus.ToAcknowledge:
+                return <Badge colorScheme="red">To Acknowledge</Badge>;
+            case OrderStatus.Completed:
+                return <Badge colorScheme="green">Completed</Badge>;
+            case OrderStatus.Failed:
+                return <Badge colorScheme="red">Failed</Badge>;
+            default:
+                return <Badge colorScheme="gray">Unknown</Badge>;
         }
     };
+
+    // Group orders based on their status
+    const getCategoryStats = () => {
+        const stats = {
+            approved: { count: 0, su: 0, kg: 0 },
+            toAcknowledge: { count: 0, su: 0, kg: 0 },
+            disapproved: { count: 0, su: 0, kg: 0 },
+        };
+
+        orders.forEach((order) => {
+            switch (order.status) {
+                case OrderStatus.Completed:
+                    stats.approved.count++;
+                    stats.approved.su += order.orderRecipe.nbSeedsUnits;
+                    stats.approved.kg += order.seedsToTreatKg;
+                    break;
+                case OrderStatus.ToAcknowledge:
+                    stats.toAcknowledge.count++;
+                    stats.toAcknowledge.su += order.orderRecipe.nbSeedsUnits;
+                    stats.toAcknowledge.kg += order.seedsToTreatKg;
+                    break;
+                case OrderStatus.Failed:
+                    stats.disapproved.count++;
+                    stats.disapproved.su += order.orderRecipe.nbSeedsUnits;
+                    stats.disapproved.kg += order.seedsToTreatKg;
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        const total = {
+            count: stats.approved.count + stats.toAcknowledge.count + stats.disapproved.count,
+            su: stats.approved.su + stats.toAcknowledge.su + stats.disapproved.su,
+            kg: stats.approved.kg + stats.toAcknowledge.kg + stats.disapproved.kg,
+        };
+
+        return { stats, total };
+    };
+
+    const { stats, total } = getCategoryStats();
 
     return (
         <Box w="full" h="full" overflowY="auto">
@@ -42,37 +99,107 @@ const Report: React.FC = () => {
             </Box>
             <Box p="4">
                 <Box maxW="100%" overflowX="auto" p={5}>
-                    <Text fontSize="xl" fontWeight="bold" mb={4}>
-                        Seed Processing Report
-                    </Text>
-                    <Table variant="striped" colorScheme="teal">
+                    <HStack>
+                        <VStack>
+                            <Text fontSize="xl" fontWeight="bold" mb={4}>
+                                {'Seed Processing Report'}
+                            </Text>
+                            {/* Original Table */}
+                            <Table variant="striped">
+                                <Thead>
+                                    <Tr>
+                                        <Th>#</Th>
+                                        <Th>Crop</Th>
+                                        <Th>Variety</Th>
+                                        <Th>Lot</Th>
+                                        <Th>Treatment Date</Th>
+                                        <Th>Operator</Th>
+                                        <Th>Lot Size (s.u.)</Th>
+                                        <Th>Lot Size (kg)</Th>
+                                        <Th>Status</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    {orders.map((order, index) => (
+                                        <Tr key={order.id}>
+                                            <Td>{index + 1}</Td>
+                                            <Td>{order.crop.name}</Td>
+                                            <Td>{order.variety.name}</Td>
+                                            <Td>{order.lotNumber}</Td>
+                                            <Td>{order.applicationDate}</Td>
+                                            <Td>{order.operator.name}</Td>
+                                            <Td>{order.orderRecipe.nbSeedsUnits.toFixed(1)}</Td>
+                                            <Td>{order.seedsToTreatKg}</Td>
+                                            <Td>{getStatusBadge(order.status)}</Td>
+                                        </Tr>
+                                    ))}
+                                </Tbody>
+                            </Table>
+                        </VStack>
+                        <Box flex="0.5">
+                            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>Total</Text>
+                            <Table variant="simple" size="md" border="1px solid black">
+                                <Thead>
+                                    <Tr>
+                                        <Th>Crop</Th>
+                                        <Th>s.u.</Th>
+                                        <Th>kg</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    {cropStats.map((stat) => (
+                                        <Tr key={stat.crop}>
+                                            <Td>{stat.crop}</Td>
+                                            <Td>{stat.su.toFixed(1)}</Td>
+                                            <Td>{stat.kg.toFixed(1)}</Td>
+                                        </Tr>
+                                    ))}
+                                </Tbody>
+                            </Table>
+                        </Box>
+                    </HStack>
+
+                    {/* New Summary Table */}
+                    <Text fontSize="lg" fontWeight="bold" mt={8} mb={4}>Summary</Text>
+                    <Table variant="simple" size="md" border="1px solid black">
                         <Thead>
                             <Tr>
-                                <Th>#</Th>
-                                <Th>Crop</Th>
-                                <Th>Variety</Th>
-                                <Th>Lot</Th>
-                                <Th>Treatment Date</Th>
-                                <Th>Operator</Th>
-                                <Th>Lot Size (s.u.)</Th>
-                                <Th>Lot Size (kg)</Th>
-                                <Th>Status</Th>
+                                <Th>Category</Th>
+                                <Th>Number of Lots</Th>
+                                <Th>s.u.</Th>
+                                <Th>kg</Th>
+                                <Th>%</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {orders.map((order, index) => (
-                                <Tr key={order.id}>
-                                    <Td>{index + 1}</Td>
-                                    <Td>{order.crop.name}</Td>
-                                    <Td>{order.variety.name}</Td>
-                                    <Td>{order.lotNumber}</Td>
-                                    <Td>{order.applicationDate}</Td>
-                                    <Td>{order.operator.name}</Td>
-                                    <Td>{order.seedsToTreatKg}</Td>
-                                    <Td>{order.seedsToTreatKg}</Td>
-                                    <Td>{getStatusBadge(order.status)}</Td>
-                                </Tr>
-                            ))}
+                            <Tr bg="green.200">
+                                <Td>Approved by manager</Td>
+                                <Td>{stats.approved.count}</Td>
+                                <Td>{stats.approved.su.toFixed(1)}</Td>
+                                <Td>{stats.approved.kg.toFixed(1)}</Td>
+                                <Td>{((stats.approved.count / total.count) * 100).toFixed(1)}%</Td>
+                            </Tr>
+                            <Tr bg="yellow.200">
+                                <Td>To be acknowledged</Td>
+                                <Td>{stats.toAcknowledge.count}</Td>
+                                <Td>{stats.toAcknowledge.su.toFixed(1)}</Td>
+                                <Td>{stats.toAcknowledge.kg.toFixed(1)}</Td>
+                                <Td>{((stats.toAcknowledge.count / total.count) * 100).toFixed(1)}%</Td>
+                            </Tr>
+                            <Tr bg="red.300">
+                                <Td>Disapproved by manager</Td>
+                                <Td>{stats.disapproved.count}</Td>
+                                <Td>{stats.disapproved.su.toFixed(1)}</Td>
+                                <Td>{stats.disapproved.kg.toFixed(1)}</Td>
+                                <Td>{((stats.disapproved.count / total.count) * 100).toFixed(1)}%</Td>
+                            </Tr>
+                            <Tr fontWeight="bold">
+                                <Td>Total</Td>
+                                <Td>{total.count}</Td>
+                                <Td>{total.su.toFixed(1)}</Td>
+                                <Td>{total.kg.toFixed(1)}</Td>
+                                <Td>100%</Td>
+                            </Tr>
                         </Tbody>
                     </Table>
                 </Box>

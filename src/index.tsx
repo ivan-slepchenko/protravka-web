@@ -131,7 +131,6 @@ const App = () => {
                             <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
                             <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
                             <Route path="/order/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><OrderInfo /></RequireAuth>} />
-                            <Route path="/report/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Report /></RequireAuth>} />
                             <Route path="/login" element={<LoginRedirect />} />
                             <Route path="/signup" element={<Signup />} />
                         </Routes>
@@ -153,7 +152,6 @@ const App = () => {
                         <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
                         <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
                         <Route path="/order/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><OrderInfo /></RequireAuth>} />
-                        <Route path="/report/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Report /></RequireAuth>} />
                         <Route path="/login" element={<LoginRedirect />} />
                         <Route path="/signup" element={<Signup />} />
                     </Routes>

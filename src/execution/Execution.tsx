@@ -32,30 +32,30 @@ const Execution = () => {
         }
 
         switch (currentPage) {
-        case OrderExecutionPage.InitialOverview:
-            return <OrderExecution1InitialOverview />;
-        case OrderExecutionPage.AllAddedProductsOverview:
-            return <OrderExecution5AllAddedProductsOverview />;
-        case OrderExecutionPage.ApplicationMethod:
-            return <OrderExecution2ApplicationMethod />;
-        case OrderExecutionPage.ApplyingProduct:
-            return <OrderExecution3ApplyingProduct />;
-        case OrderExecutionPage.Completion:
-            return <OrderExecution11Completion />;
-        case OrderExecutionPage.ConsumptionDetails:
-            return <OrderExecution9ConsumptionDetails />;
-        case OrderExecutionPage.ProovingConsumption:
-            return <OrderExecution10ConsumptionProoving />;
-        case OrderExecutionPage.PackingDetails:
-            return <OrderExecution7PackingDetails />;
-        case OrderExecutionPage.PhotoConfirmation:
-            return <OrderExecution8PackingProoving />;
-        case OrderExecutionPage.ProovingProduct:
-            return <OrderExecution4ProovingProduct />;
-        case OrderExecutionPage.TreatingConfirmation:
-            return <OrderExecution6TreatingConfirmation />;
-        default:
-            return null;
+            case OrderExecutionPage.InitialOverview:
+                return <OrderExecution1InitialOverview />;
+            case OrderExecutionPage.AllAddedProductsOverview:
+                return <OrderExecution5AllAddedProductsOverview />;
+            case OrderExecutionPage.ApplicationMethod:
+                return <OrderExecution2ApplicationMethod />;
+            case OrderExecutionPage.ApplyingProduct:
+                return <OrderExecution3ApplyingProduct />;
+            case OrderExecutionPage.Completion:
+                return <OrderExecution11Completion />;
+            case OrderExecutionPage.ConsumptionDetails:
+                return <OrderExecution9ConsumptionDetails />;
+            case OrderExecutionPage.ProovingConsumption:
+                return <OrderExecution10ConsumptionProoving />;
+            case OrderExecutionPage.PackingDetails:
+                return <OrderExecution7PackingDetails />;
+            case OrderExecutionPage.PhotoConfirmation:
+                return <OrderExecution8PackingProoving />;
+            case OrderExecutionPage.ProovingProduct:
+                return <OrderExecution4ProovingProduct />;
+            case OrderExecutionPage.TreatingConfirmation:
+                return <OrderExecution6TreatingConfirmation />;
+            default:
+                return null;
         }
     };
 
