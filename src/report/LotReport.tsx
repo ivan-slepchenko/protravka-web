@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton } from "@chakra-ui/react";
+import React, { useEffect, useState, useRef } from "react";
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchOrders } from "../store/ordersSlice";
 import { Order } from "../store/newOrderSlice";
 import { fetchOrderExecution } from "../store/executionSlice";
+import { useReactToPrint } from "react-to-print";
 
 const statusColorMap = {
     green: "#48BB78", // Green color (Chakra UI green.400)
@@ -21,6 +22,7 @@ const LotReport: React.FC = () => {
     const orderExecutions = useSelector((state: RootState) => state.execution.orderExecutions);
     const [order, setOrder] = useState<Order | null>(null);
     const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+    const componentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         dispatch(fetchOrders());
@@ -57,6 +59,11 @@ const LotReport: React.FC = () => {
         setSelectedPhoto(null);
     };
 
+    const print = useReactToPrint({
+        contentRef: componentRef,
+        pageStyle: 'scale(0.8)',
+    });
+
     if (!order) {
         return <Text>Loading...</Text>;
     }
@@ -66,8 +73,11 @@ const LotReport: React.FC = () => {
     const orderRecipe = order.orderRecipe;
 
     return (
-        <Box w="full" h="full" overflowY="auto" p={4}>
-            <Text fontSize="2xl" fontWeight="bold" mb={4}>{`Lot: ${order.lotNumber}`}</Text>
+        <Box w="full" h="full" overflowY="auto" p={4} ref={componentRef}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+                <Text fontSize="2xl" fontWeight="bold">{`Lot: ${order.lotNumber}`}</Text>
+                <Button onClick={()=>print()} colorScheme="blue">Print to PDF</Button>
+            </Box>
             <HStack spacing={4} mb={4}>
                 <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200">
                     <Thead bg="orange.100">
@@ -124,9 +134,9 @@ const LotReport: React.FC = () => {
                         </Tbody>
                     </Table>
                 </Box>
-                <Box>
+                <Box w="full">
                     <Text fontSize="lg" fontWeight="bold" mb={2}>Lot Details</Text>
-                    <Table variant="striped" size="sm" border="1px solid" borderColor="gray.200">
+                    <Table size="sm" border="1px solid" borderColor="gray.200">
                         <Thead bg="orange.100">
                             <Tr>
                                 <Th>Component</Th>
@@ -201,9 +211,9 @@ const LotReport: React.FC = () => {
                         </Tbody>
                     </Table>
                 </Box>
-                <Box>
+                <Box w="full" overflowX="auto">
                     <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Consumption Per Lot</Text>
-                    <Table variant="striped" size="sm" border="1px solid" borderColor="gray.200">
+                    <Table size="sm" border="1px solid" borderColor="gray.200">
                         <Thead bg="orange.100">
                             <Tr>
                                 <Th>Target consumption, ml</Th>
