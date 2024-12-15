@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Text, Button, VStack, Image, Heading } from '@chakra-ui/react';
+import { Box, Button, VStack, Image, Heading } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto } from '../store/executionSlice';
 import { RootState } from '../store/store';
