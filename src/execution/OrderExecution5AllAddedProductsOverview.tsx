@@ -50,7 +50,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
                             <Tr>
                                 <Th>Total</Th>
                                 <Th>{totalTargetQty.toFixed(2)}</Th>
-                                <Th>{totalActualQty}</Th>
+                                <Th>{totalActualQty.toFixed(2)}</Th>
                             </Tr>
                         </Tfoot>
                     </Table>

@@ -22,9 +22,16 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
         setSelectedPhoto(null);
     };
 
-    const handleToAcknowledge = () => {
+    const handleCompleted = () => {
         if (order.id) {
-            dispatch(changeOrderStatus({ id: order.id, status: OrderStatus.ToAcknowledge }));
+            dispatch(changeOrderStatus({ id: order.id, status: OrderStatus.Completed }));
+            navigate('/board');
+        }
+    };
+
+    const handleFailed = () => {
+        if (order.id) {
+            dispatch(changeOrderStatus({ id: order.id, status: OrderStatus.Failed }));
             navigate('/board');
         }
     };
@@ -68,7 +75,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                             {applicationMethod === 'Surry' && (
                                 <>
                                     <Td borderBottom="1px" borderColor="gray.400">
-                                        <Text fontSize="xs" fontWeight="bold">{(order?.orderRecipe?.slurryTotalGrRecipeToMix / 1000).toFixed(2)} kg</Text>
+                                        <Text fontSize="xs" fontWeight="bold">{orderExecution?.slurryConsumptionPerLotKg} kg</Text>
                                     </Td>
                                     <Td borderBottom="1px" borderColor="gray.400">
                                         {orderExecution?.consumptionPhoto ? (
@@ -132,13 +139,13 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                 />
                                             ) : 'No Photo'}
                                         </Td>
-                                        {applicationMethod !== 'Surry' && (
+                                        {applicationMethod !== 'Surry' && productExecution && productExecution.productConsumptionPerLotKg !== undefined && (
                                             <>
                                                 <Td borderBottom="1px" borderColor="gray.400">
-                                                    <Text fontSize="xs" fontWeight="bold">{productRecipe?.grSlurryRecipeToMix.toFixed(2)} kg</Text>
+                                                    <Text fontSize="xs" fontWeight="bold">{productExecution.productConsumptionPerLotKg.toFixed(2)} kg</Text>
                                                 </Td>
                                                 <Td borderBottom="1px" borderColor="gray.400">
-                                                    {productExecution?.consumptionPhoto ? (
+                                                    {productExecution.consumptionPhoto ? (
                                                         <Image
                                                             src={productExecution.consumptionPhoto}
                                                             alt="Consumption"
@@ -177,7 +184,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                 </ModalContent>
             </Modal>
             <Box mt="4" textAlign="right">
-                <Button colorScheme="blue" onClick={handleToAcknowledge}>To Acknowledge And Close</Button>
+                <Button colorScheme="blue" onClick={handleCompleted}>Mark as Completed</Button>
+                <Button colorScheme="red" onClick={handleFailed}>Mark as Failed</Button>
             </Box>
         </Box>
     );

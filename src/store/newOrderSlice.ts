@@ -29,7 +29,7 @@ export interface ProductDetail {
 export enum OrderStatus {
     NotStarted = 'Not Started',
     InProgress = 'In Progress',
-    ToAcknowledge = 'ToAcknowledge',
+    ToAcknowledge = 'To Acknowledge',
     Archived = 'Archived',
     Completed = "Completed",
     Failed = "Failed",

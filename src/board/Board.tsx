@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const Board: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
-    const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.Completed, OrderStatus.ToAcknowledge];
+    const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.ToAcknowledge, OrderStatus.Completed, OrderStatus.Failed];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
     useEffect(() => {

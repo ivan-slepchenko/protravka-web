@@ -5,6 +5,7 @@ export interface ProductExecution {
     productId: string;
     appliedRateKg: number;
     applicationPhoto?: string;
+    productConsumptionPerLotKg?: number;
     consumptionPhoto?: string;
 }
 
@@ -15,6 +16,7 @@ export interface OrderExecution {
     packingPhoto: string | null;
     consumptionPhoto: string | null;
     packedseedsToTreatKg: number | null;
+    slurryConsumptionPerLotKg: number | null;
 }
 
 export interface ExecutionState {
@@ -79,6 +81,7 @@ const executionSlice = createSlice({
                     packingPhoto: null,
                     consumptionPhoto: null,
                     packedseedsToTreatKg: null,
+                    slurryConsumptionPerLotKg: null,
                 };
                 state.orderExecutions.push(newOrderExecution);
                 saveOrderExecutionToBackend(newOrderExecution);
@@ -126,7 +129,7 @@ const executionSlice = createSlice({
                 saveOrderExecutionToBackend(orderExecution);
             }
         },
-        setAppliedseedsToTreatKg: (state, action: PayloadAction<{ orderId: string, productId: string, seedsToTreatKg: number }>) => {
+        setAppliedSeedsToTreatKg: (state, action: PayloadAction<{ orderId: string, productId: string, seedsToTreatKg: number }>) => {
             const { orderId, productId, seedsToTreatKg } = action.payload;
             const orderExecution = state.orderExecutions.find(execution => execution.orderId === orderId);
             if (orderExecution) {
@@ -135,6 +138,27 @@ const executionSlice = createSlice({
                     productExecution.appliedRateKg = seedsToTreatKg;
                 } else {
                     orderExecution.productExecutions.push({ productId, appliedRateKg: seedsToTreatKg });
+                }
+                saveOrderExecutionToBackend(orderExecution);
+            }
+        },
+        setSlurryConsumptionPerLotKg: (state, action: PayloadAction<{ orderId: string, slurryConsumptionPerLotKg: number }>) => {
+            const { orderId, slurryConsumptionPerLotKg } = action.payload;
+            const orderExecution = state.orderExecutions.find(execution => execution.orderId === orderId);
+            if (orderExecution) {
+                orderExecution.slurryConsumptionPerLotKg = slurryConsumptionPerLotKg;
+                saveOrderExecutionToBackend(orderExecution);
+            }
+        },
+        setExecutedProductConsumptionPerLotKg: (state, action: PayloadAction<{ orderId: string, productId: string, productConsumptionPerLotKg: number }>) => {
+            const { orderId, productId, productConsumptionPerLotKg } = action.payload;
+            const orderExecution = state.orderExecutions.find(execution => execution.orderId === orderId);
+            if (orderExecution) {
+                const productExecution = orderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
+                if (productExecution) {
+                    productExecution.productConsumptionPerLotKg = productConsumptionPerLotKg;
+                } else {
+                    orderExecution.productExecutions.push({ productId, appliedRateKg: productConsumptionPerLotKg });
                 }
                 saveOrderExecutionToBackend(orderExecution);
             }
@@ -237,7 +261,7 @@ export const {
     resetExecution,
     completeExecution,
     setApplicationMethod,
-    setAppliedseedsToTreatKg,
+    setAppliedSeedsToTreatKg,
     setPhotoForProvingProductApplication,
     setProductConsumptionPhoto,
     setPhotoForPacking,
@@ -245,6 +269,8 @@ export const {
     setPackedseedsToTreatKg,
     incrementProductIndex,
     setConsumptionPhoto,
-    saveOrderExecution
+    saveOrderExecution,
+    setSlurryConsumptionPerLotKg: setExecutedSlurryConsumptionPerLotKg,
+    setExecutedProductConsumptionPerLotKg,
 } = executionSlice.actions;
 export default executionSlice.reducer;

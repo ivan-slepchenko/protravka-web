@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, Table, Thead, Tbody, Tr, Th, Td, Button, VStack, Input, HStack } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setAppliedseedsToTreatKg, nextPage } from '../store/executionSlice';
+import { setAppliedSeedsToTreatKg, nextPage } from '../store/executionSlice';
 
 const OrderExecution3ApplyingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -30,7 +30,7 @@ const OrderExecution3ApplyingProduct = () => {
 
     const handleSeedsToTreatKgChange = (productId: string, seedsToTreatKg: number) => {
         if (currentOrderId) {
-            dispatch(setAppliedseedsToTreatKg({ orderId: currentOrderId, productId, seedsToTreatKg: isNaN(seedsToTreatKg) ? 0 : seedsToTreatKg }));
+            dispatch(setAppliedSeedsToTreatKg({ orderId: currentOrderId, productId, seedsToTreatKg: isNaN(seedsToTreatKg) ? 0 : seedsToTreatKg }));
             setInputError(false);
             setInputValue(seedsToTreatKg);
         }
@@ -62,10 +62,10 @@ const OrderExecution3ApplyingProduct = () => {
         }
     };
 
-    const renderTableBodyForSurry = () => (
+    const renderTableBodyForSurry = () => productRecipe?.grSlurryRecipeToMix !== undefined ? (
         <Tbody>
             <Tr>
-                <Td>{productRecipe?.grSlurryRecipeToMix.toFixed(2)}</Td>
+                <Td>{(productRecipe?.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
                 <Td>
                     <Input
                         placeholder="Enter value"
@@ -78,7 +78,7 @@ const OrderExecution3ApplyingProduct = () => {
                 </Td>
             </Tr>
         </Tbody>
-    );
+    ) : null;
 
     const renderTableBodyForNonSurry = () => (
         <Tbody>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack, Center } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setAppliedseedsToTreatKg, nextPage } from '../store/executionSlice';
+import { setExecutedProductConsumptionPerLotKg, nextPage, setExecutedSlurryConsumptionPerLotKg } from '../store/executionSlice';
 
 export default function OrderExecution9ConsumptionDetails() {
     const dispatch: AppDispatch = useDispatch();
@@ -18,9 +18,13 @@ export default function OrderExecution9ConsumptionDetails() {
         return null;
     }
     
-    const handleseedsToTreatKgChange = (productId: string, seedsToTreatKg: number) => {
+    const handleInputChange = (value: number) => {
         if (currentOrderId) {
-            dispatch(setAppliedseedsToTreatKg({ orderId: currentOrderId, productId, seedsToTreatKg }));
+            if (applicationMethod === 'Surry') {
+                dispatch(setExecutedSlurryConsumptionPerLotKg({ orderId: currentOrderId, slurryConsumptionPerLotKg: value }));
+            } else {
+                dispatch(setExecutedProductConsumptionPerLotKg({ orderId: currentOrderId, productId: currentProductId, productConsumptionPerLotKg: value }));
+            }
         }
     };
 
@@ -52,18 +56,19 @@ export default function OrderExecution9ConsumptionDetails() {
 
     const renderTableBody = () => {
         const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
+        if(productRecipe === undefined || order === undefined) return null;
         return (
             <Tbody>
                 <Tr>
                     <Td>
-                        {applicationMethod === 'Surry' ? order?.orderRecipe?.slurryTotalGrRecipeToMix.toFixed(2) : productRecipe?.grSlurryRecipeToMix.toFixed(2)}
+                        {applicationMethod === 'Surry' ? (order.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2) : (productRecipe.grSlurryRecipeToMix/1000).toFixed(2)}
                     </Td>
                     <Td>
                         <Input
                             placeholder="Enter value"
                             type="number"
                             step="0.01"
-                            onChange={(e) => handleseedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
+                            onChange={(e) => handleInputChange(parseFloat(e.target.value))}
                         />
                     </Td>
                 </Tr>

@@ -17,7 +17,7 @@ const OrderExecution11Completion = () => {
         if (currentOrderId !== null) {
             dispatch(nextPage(OrderExecutionPage.InitialOverview));
             dispatch(completeExecution());
-            dispatch(changeOrderStatus({ id: currentOrderId, status: OrderStatus.Completed }));
+            dispatch(changeOrderStatus({ id: currentOrderId, status: OrderStatus.ToAcknowledge }));
         } else {
             console.error('No current order id');
         }
