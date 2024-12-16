@@ -21,13 +21,7 @@ const CropComponent: React.FC<CropComponentProps> = ({
     newVarietyName,
     setNewVarietyName,
 }) => {
-    const [isFolded, setIsFolded] = useState(crop.varieties.length === 0);
-
-    useEffect(() => {
-        if (crop.varieties.length === 0) {
-            setIsFolded(false);
-        }
-    }, [crop.varieties.length]);
+    const [isFolded, setIsFolded] = useState(true);
 
     return (
         <Box key={crop.id} p={4} borderWidth={1} borderRadius="md">

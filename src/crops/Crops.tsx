@@ -41,6 +41,7 @@ const Crops: React.FC = () => {
     };
 
     const handleDeleteVariety = (cropId: string, varietyId: string) => {
+        setSelectedCropId(cropId);
         setSelectedItem({ type: 'variety', id: varietyId });
         onOpen();
     };
