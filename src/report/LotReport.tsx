@@ -205,8 +205,8 @@ const LotReport: React.FC = () => {
                         <Tbody>
                             <Tr>
                                 <Td colSpan={10}>Treated seeds</Td>
-                                <Td>{order.orderRecipe.nbSeedsUnits.toFixed(2)}</Td>
-                                <Td>{order.seedsToTreatKg}</Td>
+                                <Td>{orderExecution?.packedseedsToTreatKg ? (orderExecution.packedseedsToTreatKg / order.orderRecipe.unitWeight).toFixed(2) : 0}</Td>
+                                <Td>{orderExecution?.packedseedsToTreatKg?.toFixed(2)}</Td>
                             </Tr>
                         </Tbody>
                     </Table>
