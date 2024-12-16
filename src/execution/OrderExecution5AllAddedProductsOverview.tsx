@@ -14,7 +14,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
     const getTargetQty = (productId: string | undefined) => {
         if (!productId) return 0;
         const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === productId);
-        return productRecipe ? productRecipe.grSlurryRecipeToMix : 0;
+        return productRecipe ? (productRecipe.grSlurryRecipeToMix / 1000) : 0;
     };
 
     const totalTargetQty = order?.productDetails.reduce((total, product) => total + getTargetQty(product.product?.id), 0) || 0;
@@ -39,7 +39,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
                         </Thead>
                         <Tbody>
                             {currentOrder?.productExecutions.map((product, index) => (
-                                <Tr key={index} bg={index % 2 === 0 ? 'gray.50' : 'white'}>
+                                <Tr key={index}>
                                     <Td>{order?.productDetails[index].product?.name}</Td>
                                     <Td>{getTargetQty(order?.productDetails[index].product?.id).toFixed(2)}</Td>
                                     <Td>{product.appliedRateKg}</Td>

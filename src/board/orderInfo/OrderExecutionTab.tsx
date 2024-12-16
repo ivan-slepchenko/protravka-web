@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button } from "@chakra-ui/react";
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, HStack } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { changeOrderStatus } from "../../store/ordersSlice";
 import { Order, OrderStatus } from "../../store/newOrderSlice";
@@ -118,12 +118,11 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                             .sort((a, b) => a.index - b.index) // Sort by index
                             .map((productDetail, index) => {
                                 const productExecution = orderExecution?.productExecutions.find(pe => pe.productId === productDetail.product?.id);
-                                const productRecipe = order.orderRecipe.productRecipes.find(pr => pr.productDetail.product?.id === productDetail.product?.id);
                                 return (
                                     <Tr key={index} borderBottom="1px" borderColor="gray.400">
                                         <Td borderBottom="1px" borderColor="gray.400">{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
                                         <Td borderBottom="1px" borderColor="gray.400">
-                                            <Text fontSize="xs" fontWeight="bold">{productRecipe?.rateGrTo100Kg.toFixed(2)} g</Text>
+                                            <Text fontSize="xs" fontWeight="bold">{productExecution?.appliedRateKg.toFixed(2)} kg</Text>
                                         </Td>
                                         <Td borderBottom="1px" borderColor="gray.400">
                                             {productExecution?.applicationPhoto ? (
@@ -183,10 +182,10 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     </ModalBody>
                 </ModalContent>
             </Modal>
-            <Box mt="4" textAlign="right">
-                <Button colorScheme="blue" onClick={handleCompleted}>Mark as Completed</Button>
+            <HStack w="full" mt="4" textAlign="right">
+                <Button ml="auto" colorScheme="blue" onClick={handleCompleted}>Mark as Completed</Button>
                 <Button colorScheme="red" onClick={handleFailed}>Mark as Failed</Button>
-            </Box>
+            </HStack>
         </Box>
     );
 };

@@ -142,7 +142,7 @@ const executionSlice = createSlice({
                 saveOrderExecutionToBackend(orderExecution);
             }
         },
-        setSlurryConsumptionPerLotKg: (state, action: PayloadAction<{ orderId: string, slurryConsumptionPerLotKg: number }>) => {
+        setExecutedSlurryConsumptionPerLotKg: (state, action: PayloadAction<{ orderId: string, slurryConsumptionPerLotKg: number }>) => {
             const { orderId, slurryConsumptionPerLotKg } = action.payload;
             const orderExecution = state.orderExecutions.find(execution => execution.orderId === orderId);
             if (orderExecution) {
@@ -270,7 +270,7 @@ export const {
     incrementProductIndex,
     setConsumptionPhoto,
     saveOrderExecution,
-    setSlurryConsumptionPerLotKg: setExecutedSlurryConsumptionPerLotKg,
+    setExecutedSlurryConsumptionPerLotKg,
     setExecutedProductConsumptionPerLotKg,
 } = executionSlice.actions;
 export default executionSlice.reducer;
