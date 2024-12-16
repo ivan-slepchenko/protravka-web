@@ -504,8 +504,8 @@ export const NewOrderForm = () => {
                                             <Tbody>
                                                 <Tr>
                                                     <Td>{formData.totalCompoundsDensity} g/ml</Td>
-                                                    <Td>{(100 * formData.slurryTotalMlRecipeToMix / (1000 * formData.seedsToTreatKg)).toFixed(2)} l / {(100 * formData.slurryTotalGrRecipeToMix / (1000 * formData.seedsToTreatKg)).toFixed(2)} kg</Td>
-                                                    <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(2)} l / {(formData.slurryTotalGrRecipeToMix / 1000).toFixed(2)} kg</Td>
+                                                    <Td>{(100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)} ml / {(100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)} gr</Td>
+                                                    <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)} l / {(formData.slurryTotalGrRecipeToMix / 1000).toFixed(3)} kg</Td>
                                                 </Tr>
                                             </Tbody>
                                         </Table>
