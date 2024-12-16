@@ -140,5 +140,6 @@ export interface ProductRecipe {
     extraSlurryPipesAndPompFeedingMl: number;
     nbSeedsUnits: number;
     productRecipes: ProductRecipe[];
+    unitWeight: number;
 }
 
