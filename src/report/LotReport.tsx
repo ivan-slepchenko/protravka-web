@@ -48,7 +48,7 @@ const LotReport: React.FC = () => {
     const calculateDeviation = (actual: number | null, target: number) => {
         if (target === 0) return 0;
         if (actual === null) return 0;
-        return ((actual - target) / target) * 100;
+        return (actual / (target / 100));
     };
 
     const handlePhotoClick = (photoUrl: string | null) => {
