@@ -496,16 +496,24 @@ export const NewOrderForm = () => {
                                         <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200" w="50%">
                                             <Thead bg="orange.100">
                                                 <Tr>
-                                                    <Th>Slurry Density</Th>
-                                                    <Th>Slurry / 100 kg</Th>
-                                                    <Th>Slurry / Lot</Th>
+                                                    <Th rowSpan={2}>Slurry Density</Th>
+                                                    <Th colSpan={2}>Slurry / 100 kg</Th>
+                                                    <Th colSpan={2}>Slurry / Lot</Th>
+                                                </Tr>
+                                                <Tr>
+                                                    <Th>ml</Th>
+                                                    <Th>gr</Th>
+                                                    <Th>l</Th>
+                                                    <Th>kg</Th>
                                                 </Tr>
                                             </Thead>
                                             <Tbody>
                                                 <Tr>
                                                     <Td>{formData.totalCompoundsDensity} g/ml</Td>
-                                                    <Td>{(100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)} ml / {(100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)} gr</Td>
-                                                    <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)} l / {(formData.slurryTotalGrRecipeToMix / 1000).toFixed(3)} kg</Td>
+                                                    <Td>{(100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
+                                                    <Td>{(100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
+                                                    <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)}</Td>
+                                                    <Td>{(formData.slurryTotalGrRecipeToMix / 1000).toFixed(3)}</Td>
                                                 </Tr>
                                             </Tbody>
                                         </Table>
