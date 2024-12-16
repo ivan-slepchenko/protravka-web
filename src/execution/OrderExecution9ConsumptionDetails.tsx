@@ -78,7 +78,7 @@ export default function OrderExecution9ConsumptionDetails() {
                     <VStack>
                         <Heading size="md" mb={2}>
                             {applicationMethod === 'Surry'
-                                ? `Total Surry Consumption / ${(order?.seedsToTreatKg ?? 0) * (order?.extraSlurry ?? 0)} kg`
+                                ? `Total Surry Consumption / ${order?.seedsToTreatKg ?? 0} kg`
                                 : <span>
                                     {'Product: '}
                                     {order?.productDetails[currentProductIndex].product?.name}
