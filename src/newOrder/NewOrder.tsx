@@ -1,4 +1,4 @@
-import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure } from "@chakra-ui/react";
+import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure, Table, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/react";
 import { Role } from '../operators/Operators';
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
@@ -191,10 +191,6 @@ export const NewOrderForm = () => {
                     return (
                         <form onSubmit={props.handleSubmit} style={{ width: '100%' }}>
                             <Box width="full" mx="auto" p="4">
-                                <Text fontSize="2xl" fontWeight="bold" textAlign="center" mb="4">
-                                    {'Remington Seeds'}
-                                </Text>
-
                                 {/* Recipe Info */}
                                 <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4">
                                     <Box>
@@ -495,22 +491,28 @@ export const NewOrderForm = () => {
                                 </FieldArray>
 
                                 {/* Action Buttons */}
-                                <HStack justifyContent="space-between">
-                                    {!!formData.slurryTotalGrRecipeToMix && !!formData.slurryTotalMlRecipeToMix  && !!formData.totalCompoundsDensity &&(
-                                        <HStack w="full">
-                                            <Text fontSize="md" fontWeight="bold" >Slurry Density:</Text>
-                                            <Text fontSize="md">{formData.totalCompoundsDensity}{' g / ml, '}</Text>
-                                            <Text fontSize="md" fontWeight="bold" >Slurry / 100 kg:</Text>
-                                            <Text fontSize="md">{(100 * formData.slurryTotalGrRecipeToMix / (1000 * formData.seedsToTreatKg))?.toFixed(2)} kg / {(100 * formData.slurryTotalMlRecipeToMix / (1000 * formData.seedsToTreatKg))?.toFixed(2)}{' l, '}</Text>
-                                            <Text fontSize="md" fontWeight="bold" >Slurry / Lot:</Text>
-                                            <Text fontSize="md">{(formData.slurryTotalGrRecipeToMix / 1000)?.toFixed(2)} kg / {(formData.slurryTotalMlRecipeToMix / 1000)?.toFixed(2)} l</Text>
-                                           
-                                        </HStack>
+                                <HStack justifyContent="space-between" alignItems={"end"}>
+                                    {!!formData.slurryTotalGrRecipeToMix && !!formData.slurryTotalMlRecipeToMix && !!formData.totalCompoundsDensity && (
+                                        <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200" w="50%">
+                                            <Thead bg="orange.100">
+                                                <Tr>
+                                                    <Th>Slurry Density</Th>
+                                                    <Th>Slurry / 100 kg</Th>
+                                                    <Th>Slurry / Lot</Th>
+                                                </Tr>
+                                            </Thead>
+                                            <Tbody>
+                                                <Tr>
+                                                    <Td>{formData.totalCompoundsDensity} g/ml</Td>
+                                                    <Td>{(100 * formData.slurryTotalMlRecipeToMix / (1000 * formData.seedsToTreatKg)).toFixed(2)} l / {(100 * formData.slurryTotalGrRecipeToMix / (1000 * formData.seedsToTreatKg)).toFixed(2)} kg</Td>
+                                                    <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(2)} l / {(formData.slurryTotalGrRecipeToMix / 1000).toFixed(2)} kg</Td>
+                                                </Tr>
+                                            </Tbody>
+                                        </Table>
                                     )}
-                                    <HStack>
-                                        <Button colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
-                                        <Button colorScheme="green" size="md" type="submit">Done</Button>
-                                    </HStack>
+                                    
+                                    <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
+                                    <Button colorScheme="green" size="md" type="submit">Done</Button>
                                 </HStack>
                             </Box>
 
