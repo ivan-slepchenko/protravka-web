@@ -3,8 +3,7 @@ import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 
 export interface ProductExecution {
     productId: string;
-    //TODO: rename to appliedSeedsToTreatKg //actually should be appliedRateKg
-    appliedseedsToTreatKg: number;
+    appliedRateKg: number;
     applicationPhoto?: string;
     consumptionPhoto?: string;
 }
@@ -133,9 +132,9 @@ const executionSlice = createSlice({
             if (orderExecution) {
                 const productExecution = orderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
                 if (productExecution) {
-                    productExecution.appliedseedsToTreatKg = seedsToTreatKg;
+                    productExecution.appliedRateKg = seedsToTreatKg;
                 } else {
-                    orderExecution.productExecutions.push({ productId, appliedseedsToTreatKg: seedsToTreatKg });
+                    orderExecution.productExecutions.push({ productId, appliedRateKg: seedsToTreatKg });
                 }
                 saveOrderExecutionToBackend(orderExecution);
             }

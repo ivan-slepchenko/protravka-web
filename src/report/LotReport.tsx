@@ -154,15 +154,15 @@ const LotReport: React.FC = () => {
                         <Tbody>
                             {order.productDetails.map((detail, index) => {
                                 const productExecution = orderExecution?.productExecutions.find(pe => pe.productId === detail.product?.id);
-                                const actualRateGrTo100Kg = 100 * (productExecution?.appliedseedsToTreatKg ?? 0) / (orderRecipe.slurryTotalGrRecipeToMix / 1000);
-                                const actualRateGrToU_KS = (100 * (productExecution?.appliedseedsToTreatKg ?? 0) / orderRecipe.nbSeedsUnits);
-                                const deviation = calculateDeviation(productExecution?.appliedseedsToTreatKg ?? 0, productRecipe?.grSlurryRecipeToMix ?? 0);
+                                const actualRateGrTo100Kg = 100 * (productExecution?.appliedRateKg ?? 0) / (orderRecipe.slurryTotalGrRecipeToMix / 1000);
+                                const actualRateGrToU_KS = (100 * (productExecution?.appliedRateKg ?? 0) / orderRecipe.nbSeedsUnits);
+                                const deviation = calculateDeviation(productExecution?.appliedRateKg ?? 0, productRecipe?.grSlurryRecipeToMix ?? 0);
                                 return (
                                     <Tr key={index}>
                                         <Td>{detail.product?.name}</Td>
                                         <Td>{detail.product?.density}</Td>
                                         <Td>{productRecipe?.grSlurryRecipeToMix.toFixed(2)}</Td>
-                                        <Td>{productExecution?.appliedseedsToTreatKg}</Td>
+                                        <Td>{productExecution?.appliedRateKg}</Td>
                                         <Td>
                                             {productExecution?.applicationPhoto ? (
                                                 <Image

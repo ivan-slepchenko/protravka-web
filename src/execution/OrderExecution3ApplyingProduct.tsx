@@ -17,11 +17,11 @@ const OrderExecution3ApplyingProduct = () => {
     });
     const currentProductId = order?.productDetails[currentProductIndex].product?.id;
     const [inputError, setInputError] = useState(false);
-    const [, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : '');
+    const [, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedRateKg : '');
     const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
 
     useEffect(() => {
-        setInputValue(currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : '');
+        setInputValue(currentProductExecution ? currentProductExecution.appliedRateKg : '');
     }, [currentProductExecution]);
 
     if (currentProductId === undefined) {
@@ -69,7 +69,7 @@ const OrderExecution3ApplyingProduct = () => {
                 <Td>
                     <Input
                         placeholder="Enter value"
-                        value={currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : ''}
+                        value={currentProductExecution ? currentProductExecution.appliedRateKg : ''}
                         onChange={(e) => handleSeedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
@@ -87,7 +87,7 @@ const OrderExecution3ApplyingProduct = () => {
                 <Td>
                     <Input
                         placeholder="Enter value"
-                        value={currentProductExecution ? currentProductExecution.appliedseedsToTreatKg : ''}
+                        value={currentProductExecution ? currentProductExecution.appliedRateKg : ''}
                         onChange={(e) => handleSeedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
@@ -123,7 +123,7 @@ const OrderExecution3ApplyingProduct = () => {
                             borderRadius="full"
                             _hover={{ backgroundColor: 'orange.200' }}
                             onClick={handleMakePhotoClick}
-                            isDisabled={!currentProductExecution?.appliedseedsToTreatKg || currentProductExecution.appliedseedsToTreatKg <= 0}
+                            isDisabled={!currentProductExecution?.appliedRateKg || currentProductExecution.appliedRateKg <= 0}
                         >
                             Make Photo
                         </Button>

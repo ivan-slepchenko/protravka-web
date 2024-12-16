@@ -18,7 +18,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
     };
 
     const totalTargetQty = order?.productDetails.reduce((total, product) => total + getTargetQty(product.product?.id), 0) || 0;
-    const totalActualQty = currentOrder?.productExecutions.reduce((total, product) => total + product.appliedseedsToTreatKg, 0) || 0;
+    const totalActualQty = currentOrder?.productExecutions.reduce((total, product) => total + product.appliedRateKg, 0) || 0;
 
     const handleNextButtonClicked = (): void => {
         dispatch(nextPage());
@@ -42,7 +42,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
                                 <Tr key={index} bg={index % 2 === 0 ? 'gray.50' : 'white'}>
                                     <Td>{order?.productDetails[index].product?.name}</Td>
                                     <Td>{getTargetQty(order?.productDetails[index].product?.id).toFixed(2)}</Td>
-                                    <Td>{product.appliedseedsToTreatKg}</Td>
+                                    <Td>{product.appliedRateKg}</Td>
                                 </Tr>
                             ))}
                         </Tbody>

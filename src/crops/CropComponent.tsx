@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Input, VStack, HStack, Text, Tag, TagLabel, TagCloseButton } from '@chakra-ui/react';
 import { Crop } from '../store/cropsSlice';
 
