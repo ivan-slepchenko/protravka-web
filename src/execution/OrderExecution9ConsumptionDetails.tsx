@@ -86,7 +86,7 @@ export default function OrderExecution9ConsumptionDetails() {
                                     {currentProductIndex + 1}
                                     {'  out of '}
                                     {order?.productDetails.length}
-                                    {` Per ${(order?.seedsToTreatKg ?? 0) * (order?.extraSlurry ?? 0)} kg seeds`}
+                                    {` Per ${order?.seedsToTreatKg ?? 0} kg seeds`}
                                 </span>
                             }
                         </Heading>

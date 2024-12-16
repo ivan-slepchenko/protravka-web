@@ -37,8 +37,8 @@ const ProductDetails: React.FC<{ order: Order }> = ({ order }) => (
                                 <Td borderColor="gray.400">{productDetail.product?.density.toFixed(2)}</Td>
                                 <Td borderColor="gray.400">{productDetail.rate.toFixed(2)}</Td>
                                 <Td borderColor="gray.400">{`${getRateTypeLabel(productDetail.rateType)}/${getRateUnitLabel(productDetail.rateUnit)}`}</Td>
-                                <Td borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.mlSlurryRecipeToMix.toFixed(2)}</Td>
-                                <Td borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.grSlurryRecipeToMix.toFixed(2)}</Td>
+                                <Td borderColor="gray.400">{(order.orderRecipe.productRecipes[index]?.mlSlurryRecipeToMix / 1000).toFixed(2)}</Td>
+                                <Td borderColor="gray.400">{(order.orderRecipe.productRecipes[index]?.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
                                 <Td borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateMltoU_KS.toFixed(2)}</Td>
                                 <Td borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateGrToU_KS.toFixed(2)}</Td>
                                 <Td borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateMlTo100Kg.toFixed(2)}</Td>
