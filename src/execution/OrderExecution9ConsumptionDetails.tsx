@@ -95,7 +95,7 @@ export default function OrderExecution9ConsumptionDetails() {
                                 </span>
                             }
                         </Heading>
-                        <Table variant="simple" mb={4}  size="sm">
+                        <Table variant="outline" size="sm" mb={4}>
                             {renderTableHeaders()}
                             {renderTableBody()}
                         </Table>

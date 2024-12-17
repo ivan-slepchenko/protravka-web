@@ -38,7 +38,7 @@ const OrderExecution1InitialOverview = () => {
                 <Text>Bag Size: {order.bagSize} {bagSizeUnit}</Text>
                 <Text>Expected Amount Of Bags: {order.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
             </Box>
-            <Table variant="simple" mt={4} border="1px solid" borderColor="gray.200" size="sm">
+            <Table variant="outline" size="sm" mt={4}>
                 <Thead bg="orange.100">
                     <Tr>
                         <Th>Product</Th>

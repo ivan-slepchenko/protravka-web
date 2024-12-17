@@ -82,7 +82,7 @@ const LotReport: React.FC = () => {
                 <Button onClick={()=>print()} colorScheme="blue">Print to PDF</Button>
             </Box>
             <HStack spacing={4} mb={4}>
-                <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200">
+                <Table variant="outline" size="sm">
                     <Thead bg="orange.100">
                         <Tr>
                             <Th>Crop</Th>
@@ -98,7 +98,7 @@ const LotReport: React.FC = () => {
                         </Tr>
                     </Tbody>
                 </Table>
-                <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200">
+                <Table variant="outline" size="sm">
                     <Thead bg="orange.100">
                         <Tr>
                             <Th>TKW</Th>
@@ -122,7 +122,7 @@ const LotReport: React.FC = () => {
             <VStack spacing={4} align="stretch">
                 <Box w="50%">
                     <Text fontSize="lg" fontWeight="bold" mb={2}>Treatment Info</Text>
-                    <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200">
+                    <Table variant="outline" size="sm">
                         <Thead bg="orange.100">
                             <Tr>
                                 <Th>Treatment date</Th>
@@ -139,7 +139,7 @@ const LotReport: React.FC = () => {
                 </Box>
                 <Box w="full">
                     <Text fontSize="lg" fontWeight="bold" mb={2}>Lot Details</Text>
-                    <Table size="sm" border="1px solid" borderColor="gray.200">
+                    <Table size="sm" variant="outline">
                         <Thead bg="orange.100">
                             <Tr>
                                 <Th>Component</Th>
@@ -199,7 +199,7 @@ const LotReport: React.FC = () => {
                 </Box>
                 <Box w="50%">
                     <Text fontSize="lg" fontWeight="bold" mb={2}>Treated Seeds</Text>
-                    <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200">
+                    <Table variant="outline" size="sm">
                         <Thead bg="orange.100">
                             <Tr>
                                 <Th colSpan={10}>Treated seeds</Th>
@@ -218,7 +218,7 @@ const LotReport: React.FC = () => {
                 </Box>
                 <Box w="full" overflowX="auto">
                     <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Consumption Per Lot</Text>
-                    <Table size="sm" border="1px solid" borderColor="gray.200">
+                    <Table variant="outline" size="sm">
                         <Thead bg="orange.100">
                             <Tr>
                                 <Th>Target consumption, ml</Th>
@@ -276,7 +276,7 @@ const LotReport: React.FC = () => {
             </Modal>
             <Box mt={4} w="50%">
                 <Text fontSize="lg" fontWeight="bold" mb={2}>Status Key/Legend</Text>
-                <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200">
+                <Table variant="outline" size="sm">
                     <Tbody>
                         <Tr>
                             <Td><Badge bgColor={statusColorMap.green}>😊</Badge></Td>

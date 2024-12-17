@@ -7,42 +7,42 @@ const ProductDetails: React.FC<{ order: Order }> = ({ order }) => (
     <VStack alignItems="start" w="full">
         <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
         <Box overflowY="auto" borderRadius="md" w="full">
-            <Table variant="simple" bg="gray.50" size="sm" w="full">
+            <Table variant="outline" size="sm" w="full">
                 <Thead bg="orange.100">
                     <Tr>
-                        <Th rowSpan={2} whiteSpace="nowrap" borderBottom="1px" borderColor="gray.400">Product Name</Th>
-                        <Th rowSpan={1} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Density</Th>
-                        <Th rowSpan={2} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Rate</Th>
-                        <Th rowSpan={2} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Rate Unit</Th>
-                        <Th colSpan={2} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Slurry Total <span style={{color: 'orangered'}}>*</span></Th>
-                        <Th colSpan={2} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Rate</Th>
-                        <Th colSpan={2} whiteSpace="nowrap" borderLeft="1px" borderBottom="1px" borderColor="gray.400">Rate</Th>
+                        <Th rowSpan={2} whiteSpace="nowrap">Product Name</Th>
+                        <Th rowSpan={1} whiteSpace="nowrap">Density</Th>
+                        <Th rowSpan={2} whiteSpace="nowrap">Rate</Th>
+                        <Th rowSpan={2} whiteSpace="nowrap">Rate Unit</Th>
+                        <Th colSpan={2} whiteSpace="nowrap">Slurry Total <span style={{color: 'orangered'}}>*</span></Th>
+                        <Th colSpan={2} whiteSpace="nowrap">Rate</Th>
+                        <Th colSpan={2} whiteSpace="nowrap">Rate</Th>
                     </Tr>
                     <Tr>
-                        <Th whiteSpace="nowrap" borderBottom="1px" borderLeft="1px" borderColor="gray.400">g/ml</Th>
-                        <Th whiteSpace="nowrap" borderBottom="1px" borderLeft="1px" borderColor="gray.400">l</Th>
-                        <Th whiteSpace="nowrap" borderBottom="1px" borderLeft="1px" borderColor="gray.400">kg</Th>
-                        <Th whiteSpace="nowrap" borderBottom="1px" borderLeft="1px" borderColor="gray.400">ml/U/KS</Th>
-                        <Th whiteSpace="nowrap" borderBottom="1px" borderLeft="1px" borderColor="gray.400">g/U/KS</Th>
-                        <Th whiteSpace="nowrap" borderBottom="1px" borderLeft="1px" borderColor="gray.400">ml/100kg</Th>
-                        <Th whiteSpace="nowrap" borderBottom="1px" borderLeft="1px" borderColor="gray.400">g/100kg</Th>
+                        <Th whiteSpace="nowrap">g/ml</Th>
+                        <Th whiteSpace="nowrap">l</Th>
+                        <Th whiteSpace="nowrap">kg</Th>
+                        <Th whiteSpace="nowrap">ml/U/KS</Th>
+                        <Th whiteSpace="nowrap">g/U/KS</Th>
+                        <Th whiteSpace="nowrap">ml/100kg</Th>
+                        <Th whiteSpace="nowrap">g/100kg</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
                     {order.productDetails && [...order.productDetails]
                         .sort((a, b) => a.index - b.index) // Sort by index
                         .map((productDetail, index) => (
-                            <Tr key={index} borderBottom="1px" borderColor="gray.400">
-                                <Td borderColor="gray.400">{productDetail.product ? productDetail.product.name : '--'}</Td>
-                                <Td borderColor="gray.400">{productDetail.product?.density.toFixed(2)}</Td>
-                                <Td borderColor="gray.400">{productDetail.rate.toFixed(2)}</Td>
-                                <Td borderColor="gray.400">{`${getRateTypeLabel(productDetail.rateType)}/${getRateUnitLabel(productDetail.rateUnit)}`}</Td>
-                                <Td borderColor="gray.400">{(order.orderRecipe.productRecipes[index]?.mlSlurryRecipeToMix / 1000).toFixed(2)}</Td>
-                                <Td borderColor="gray.400">{(order.orderRecipe.productRecipes[index]?.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
-                                <Td borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateMltoU_KS.toFixed(2)}</Td>
-                                <Td borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateGrToU_KS.toFixed(2)}</Td>
-                                <Td borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateMlTo100Kg.toFixed(2)}</Td>
-                                <Td borderColor="gray.400">{order.orderRecipe.productRecipes[index]?.rateGrTo100Kg.toFixed(2)}</Td>
+                            <Tr key={index}>
+                                <Td>{productDetail.product ? productDetail.product.name : '--'}</Td>
+                                <Td>{productDetail.product?.density.toFixed(2)}</Td>
+                                <Td>{productDetail.rate.toFixed(2)}</Td>
+                                <Td>{`${getRateTypeLabel(productDetail.rateType)}/${getRateUnitLabel(productDetail.rateUnit)}`}</Td>
+                                <Td>{(order.orderRecipe.productRecipes[index]?.mlSlurryRecipeToMix / 1000).toFixed(2)}</Td>
+                                <Td>{(order.orderRecipe.productRecipes[index]?.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
+                                <Td>{order.orderRecipe.productRecipes[index]?.rateMltoU_KS.toFixed(2)}</Td>
+                                <Td>{order.orderRecipe.productRecipes[index]?.rateGrToU_KS.toFixed(2)}</Td>
+                                <Td>{order.orderRecipe.productRecipes[index]?.rateMlTo100Kg.toFixed(2)}</Td>
+                                <Td>{order.orderRecipe.productRecipes[index]?.rateGrTo100Kg.toFixed(2)}</Td>
                             </Tr>
                         ))}
                 </Tbody>

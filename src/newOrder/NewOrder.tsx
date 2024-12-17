@@ -493,27 +493,27 @@ export const NewOrderForm = () => {
                                 {/* Action Buttons */}
                                 <HStack justifyContent="space-between" alignItems={"end"}>
                                     {!!formData.slurryTotalGrRecipeToMix && !!formData.slurryTotalMlRecipeToMix && !!formData.totalCompoundsDensity && (
-                                        <Table variant="simple" size="sm" border="1px solid" borderColor="gray.200" w="50%">
+                                        <Table variant="outline" size="sm" w="50%">
                                             <Thead bg="orange.100">
                                                 <Tr>
-                                                    <Th rowSpan={2} borderRight="1px solid" borderColor="gray.300">Slurry Density</Th>
-                                                    <Th colSpan={2} borderRight="1px solid" borderColor="gray.300">Slurry / 100 kg</Th>
-                                                    <Th colSpan={2} borderRight="1px solid" borderColor="gray.300">Slurry / Lot</Th>
+                                                    <Th rowSpan={2}>Slurry Density</Th>
+                                                    <Th colSpan={2}>Slurry / 100 kg</Th>
+                                                    <Th colSpan={2}>Slurry / Lot</Th>
                                                 </Tr>
                                                 <Tr>
-                                                    <Th borderRight="1px solid" borderColor="gray.300">ml</Th>
-                                                    <Th borderRight="1px solid" borderColor="gray.300">gr</Th>
-                                                    <Th borderRight="1px solid" borderColor="gray.300">l</Th>
-                                                    <Th borderRight="1px solid" borderColor="gray.300">kg</Th>
+                                                    <Th>ml</Th>
+                                                    <Th>gr</Th>
+                                                    <Th>l</Th>
+                                                    <Th>kg</Th>
                                                 </Tr>
                                             </Thead>
                                             <Tbody>
                                                 <Tr>
-                                                    <Td borderBottom="1px solid" borderColor="gray.300">{formData.totalCompoundsDensity} g/ml</Td>
-                                                    <Td borderBottom="1px solid" borderColor="gray.300">{(100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
-                                                    <Td borderBottom="1px solid" borderColor="gray.300">{(100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
-                                                    <Td borderBottom="1px solid" borderColor="gray.300">{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)}</Td>
-                                                    <Td borderBottom="1px solid" borderColor="gray.300">{(formData.slurryTotalGrRecipeToMix / 1000).toFixed(3)}</Td>
+                                                    <Td>{formData.totalCompoundsDensity} g/ml</Td>
+                                                    <Td>{(100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
+                                                    <Td>{(100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
+                                                    <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)}</Td>
+                                                    <Td>{(formData.slurryTotalGrRecipeToMix / 1000).toFixed(3)}</Td>
                                                 </Tr>
                                             </Tbody>
                                         </Table>

@@ -29,7 +29,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
             <Center w='full' h='full'>
                 <VStack>
                     <Text fontSize="2xl" fontWeight="bold" textAlign="center">You added all products.</Text>
-                    <Table variant="simple" mt={4} border="1px solid" borderColor="gray.200"  size="sm">
+                    <Table variant="outline" size="sm" mt={4}>
                         <Thead bg="orange.100">
                             <Tr>
                                 <Th>Product name</Th>

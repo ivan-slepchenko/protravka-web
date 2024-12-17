@@ -43,7 +43,7 @@ const OrdersOverview: React.FC = () => {
             <Text py={2} px={2} fontSize="md" color="gray.600">Click on a row to start treating</Text>
       
             <TableContainer mt={4} w="full">
-                <Table variant="simple" size="sm" w="full">
+                <Table variant="outline" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
                             <Th>Crop</Th>
