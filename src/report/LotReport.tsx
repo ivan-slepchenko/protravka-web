@@ -69,9 +69,8 @@ const LotReport: React.FC = () => {
     }
 
     const orderExecution = orderExecutions.find(execution => execution.orderId === order.id);
-    const productRecipe = order.orderRecipe.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === order.productDetails[0].product?.id);
     const orderRecipe = order.orderRecipe;
-    if (!orderExecution || !productRecipe || !orderRecipe) {
+    if (!orderExecution || !orderRecipe) {
         return <Text>Loading...</Text>;
     }
     const slurryConsumptionPerLotGr = orderExecution.slurryConsumptionPerLotKg === null ? 0 : orderExecution.slurryConsumptionPerLotKg * 1000;
@@ -158,18 +157,19 @@ const LotReport: React.FC = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {order.productDetails.map((detail, index) => {
-                                const productExecution = orderExecution.productExecutions.find(pe => pe.productId === detail.product?.id);
-                                if (productExecution === undefined) return null;
+                            {order.productDetails.map((productDetail, index) => {
+                                const productExecution = orderExecution.productExecutions.find(pe => pe.productId === productDetail.product?.id);
+                                const productRecipe = order.orderRecipe.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === productDetail.product?.id);
+                                if (productExecution === undefined || productRecipe === undefined) return null;
                                 const appliedRateGr = productExecution.appliedRateKg * 1000;                            
-                                const actualRateGrTo100Kg = 100 * appliedRateGr / order.seedsToTreatKg;
-                                const actualRateGrToU_KS = appliedRateGr / orderRecipe.nbSeedsUnits;
+                                const actualRateGrTo100Kg = 100 * appliedRateGr / (orderExecution.packedseedsToTreatKg ?? 0);
+                                const actualRateGrToU_KS = appliedRateGr / ((orderExecution.packedseedsToTreatKg ?? 0) / orderRecipe.unitWeight);
                                 const deviation = calculateDeviation(actualRateGrToU_KS, productRecipe.rateGrToU_KS);
-                                if (detail.product === undefined) return null;
+                                if (productDetail.product === undefined) return null;
                                 return (
                                     <Tr key={index}>
-                                        <Td>{detail.product.name}</Td>
-                                        <Td>{detail.product.density}</Td>
+                                        <Td>{productDetail.product.name}</Td>
+                                        <Td>{productDetail.product.density}</Td>
                                         <Td>{(productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
                                         <Td>{productExecution.appliedRateKg}</Td>
                                         <Td>

@@ -129,15 +129,15 @@ const executionSlice = createSlice({
                 saveOrderExecutionToBackend(orderExecution);
             }
         },
-        setAppliedSeedsToTreatKg: (state, action: PayloadAction<{ orderId: string, productId: string, seedsToTreatKg: number }>) => {
-            const { orderId, productId, seedsToTreatKg } = action.payload;
+        setAppliedProductRateKg: (state, action: PayloadAction<{ orderId: string, productId: string, appliedRateKg: number }>) => {
+            const { orderId, productId, appliedRateKg } = action.payload;
             const orderExecution = state.orderExecutions.find(execution => execution.orderId === orderId);
             if (orderExecution) {
                 const productExecution = orderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
                 if (productExecution) {
-                    productExecution.appliedRateKg = seedsToTreatKg;
+                    productExecution.appliedRateKg = appliedRateKg;
                 } else {
-                    orderExecution.productExecutions.push({ productId, appliedRateKg: seedsToTreatKg });
+                    orderExecution.productExecutions.push({ productId, appliedRateKg: appliedRateKg });
                 }
                 saveOrderExecutionToBackend(orderExecution);
             }
@@ -261,7 +261,7 @@ export const {
     resetExecution,
     completeExecution,
     setApplicationMethod,
-    setAppliedSeedsToTreatKg,
+    setAppliedProductRateKg,
     setPhotoForProvingProductApplication,
     setProductConsumptionPhoto,
     setPhotoForPacking,

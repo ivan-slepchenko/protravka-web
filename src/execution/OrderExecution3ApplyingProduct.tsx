@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, Table, Thead, Tbody, Tr, Th, Td, Button, VStack, Input, HStack } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setAppliedSeedsToTreatKg, nextPage } from '../store/executionSlice';
+import { setAppliedProductRateKg, nextPage } from '../store/executionSlice';
 
 const OrderExecution3ApplyingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -28,11 +28,11 @@ const OrderExecution3ApplyingProduct = () => {
         return null;
     }
 
-    const handleSeedsToTreatKgChange = (productId: string, seedsToTreatKg: number) => {
+    const handleValueChange = (productId: string, value: number) => {
         if (currentOrderId) {
-            dispatch(setAppliedSeedsToTreatKg({ orderId: currentOrderId, productId, seedsToTreatKg: isNaN(seedsToTreatKg) ? 0 : seedsToTreatKg }));
+            dispatch(setAppliedProductRateKg({ orderId: currentOrderId, productId, appliedRateKg: isNaN(value) ? 0 : value }));
             setInputError(false);
-            setInputValue(seedsToTreatKg);
+            setInputValue(value);
         }
     };
 
@@ -70,7 +70,7 @@ const OrderExecution3ApplyingProduct = () => {
                     <Input
                         placeholder="Enter value"
                         value={currentProductExecution ? currentProductExecution.appliedRateKg : ''}
-                        onChange={(e) => handleSeedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
+                        onChange={(e) => handleValueChange(currentProductId, parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
@@ -88,7 +88,7 @@ const OrderExecution3ApplyingProduct = () => {
                     <Input
                         placeholder="Enter value"
                         value={currentProductExecution ? currentProductExecution.appliedRateKg : ''}
-                        onChange={(e) => handleSeedsToTreatKgChange(currentProductId, parseFloat(e.target.value))}
+                        onChange={(e) => handleValueChange(currentProductId, parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
