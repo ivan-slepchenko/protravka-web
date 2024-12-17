@@ -2,7 +2,6 @@
 import React from "react";
 import { Box, HStack } from "@chakra-ui/react";
 import OrderInformation from "./OrderInformation";
-import RecipeInformation from "./RecipeInformation";
 import ProductDetails from "./ProductDetails";
 import { Order } from "../../store/newOrderSlice";
 
@@ -15,7 +14,6 @@ const OrderRecipeTab: React.FC<OrderRecipeTabProps> = ({ order }) => {
         <Box w="full">
             <HStack w="full">
                 <OrderInformation order={order} />
-                <RecipeInformation order={order} />
             </HStack>
             <ProductDetails order={order} />
         </Box>

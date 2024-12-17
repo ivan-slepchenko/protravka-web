@@ -31,7 +31,7 @@ const OrderInfo: React.FC = () => {
     return (
         <Box w="full" h="full" overflowY="auto">
             <Box display="flex" justifyContent="space-between" alignItems="center" p="4" borderBottom="1px solid #ccc">
-                <Text fontSize="2xl" fontWeight="bold">Your Order</Text>
+                <Text fontSize="2xl" fontWeight="bold">Order {order.lotNumber}</Text>
                 <Button onClick={handleClose}>Close</Button>
             </Box>
             <Box p="4">

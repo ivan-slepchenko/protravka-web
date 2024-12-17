@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Table, Thead, Tbody, Tr, Th, Td, Text, VStack } from "@chakra-ui/react";
+import { Box, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Text, VStack } from "@chakra-ui/react";
 import { Order } from "../../store/newOrderSlice";
 import { getRateTypeLabel, getRateUnitLabel } from "../../newOrder/NewOrder";
 
@@ -46,6 +46,20 @@ const ProductDetails: React.FC<{ order: Order }> = ({ order }) => (
                             </Tr>
                         ))}
                 </Tbody>
+                <Tfoot>
+                    <Tr>
+                        <Th>Total</Th>
+                        <Th>{order.orderRecipe.totalCompoundsDensity.toFixed(2)}</Th>
+                        <Th>---</Th>
+                        <Th>---</Th>
+                        <Th>{(order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2)}</Th>
+                        <Th>{(order.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2)}</Th>
+                        <Th>{order.orderRecipe.slurryTotalMltoU_KS.toFixed(2)}</Th>
+                        <Th>{order.orderRecipe.slurryTotalGToU_KS.toFixed(2)}</Th>
+                        <Th>{order.orderRecipe.slurryTotalMlTo100Kg.toFixed(2)}</Th>
+                        <Th>{order.orderRecipe.slurryTotalGTo100Kgs.toFixed(2)}</Th>
+                    </Tr>
+                </Tfoot>
             </Table>
         </Box>
         <Text><span style={{color: 'orangered'}}>*</span> including extra slurry if any</Text>
