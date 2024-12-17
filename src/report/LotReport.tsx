@@ -74,6 +74,9 @@ const LotReport: React.FC = () => {
     if (!orderExecution || !productRecipe || !orderRecipe) {
         return <Text>Loading...</Text>;
     }
+    const slurryConsumptionPerLotGr = orderExecution.slurryConsumptionPerLotKg === null ? 0 : orderExecution.slurryConsumptionPerLotKg * 1000;
+    const slurryConsumptionDeviation = calculateDeviation(slurryConsumptionPerLotGr, order.orderRecipe.slurryTotalGrRecipeToMix);
+
 
     return (
         <Box w="full" h="full" overflowY="auto" p={4} ref={componentRef}>
@@ -157,16 +160,17 @@ const LotReport: React.FC = () => {
                         <Tbody>
                             {order.productDetails.map((detail, index) => {
                                 const productExecution = orderExecution.productExecutions.find(pe => pe.productId === detail.product?.id);
-                                if(productExecution === undefined) return null;
-                                const actualRateGrTo100Kg = 100 * (productExecution.appliedRateKg ?? 0) / (orderRecipe.slurryTotalGrRecipeToMix / 1000);
-                                const actualRateGrToU_KS = (100 * (productExecution.appliedRateKg ?? 0) / orderRecipe.nbSeedsUnits);
-                                const deviation = calculateDeviation(productExecution.appliedRateKg ?? 0, productRecipe.grSlurryRecipeToMix ?? 0);
+                                if (productExecution === undefined) return null;
+                                const appliedRateGr = productExecution.appliedRateKg * 1000;                            
+                                const actualRateGrTo100Kg = 100 * appliedRateGr / order.seedsToTreatKg;
+                                const actualRateGrToU_KS = appliedRateGr / orderRecipe.nbSeedsUnits;
+                                const deviation = calculateDeviation(actualRateGrToU_KS, productRecipe.rateGrToU_KS);
                                 if (detail.product === undefined) return null;
                                 return (
                                     <Tr key={index}>
                                         <Td>{detail.product.name}</Td>
                                         <Td>{detail.product.density}</Td>
-                                        <Td>{productRecipe.grSlurryRecipeToMix.toFixed(2)}</Td>
+                                        <Td>{(productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
                                         <Td>{productExecution.appliedRateKg}</Td>
                                         <Td>
                                             {productExecution.applicationPhoto ? (
@@ -182,7 +186,7 @@ const LotReport: React.FC = () => {
                                                 />
                                             ) : 'No Photo'}
                                         </Td>
-                                        <Td>{productRecipe.rateGrTo100Kg}</Td>
+                                        <Td>{productRecipe.rateGrTo100Kg.toFixed(2)}</Td>
                                         <Td>{actualRateGrTo100Kg.toFixed(2)}</Td>
                                         <Td>{productRecipe.rateGrToU_KS}</Td>
                                         <Td>{actualRateGrToU_KS.toFixed(2)}</Td>
@@ -229,8 +233,8 @@ const LotReport: React.FC = () => {
                         </Thead>
                         <Tbody>
                             <Tr>
-                                <Td>{order.orderRecipe.slurryTotalMlRecipeToMix.toFixed(2)}</Td>
-                                <Td>{orderExecution.packedseedsToTreatKg}</Td>
+                                <Td>{order.orderRecipe.slurryTotalGrRecipeToMix.toFixed(2)}</Td>
+                                <Td>{orderExecution.slurryConsumptionPerLotKg ? (orderExecution.slurryConsumptionPerLotKg * 1000).toFixed(2) : 0}</Td>
                                 <Td>
                                     {orderExecution.consumptionPhoto ? (
                                         <Image
@@ -247,8 +251,8 @@ const LotReport: React.FC = () => {
                                 </Td>
                                 <Td>
                                     {orderExecution && (
-                                        <Badge bgColor={getDeviationColor(calculateDeviation(orderExecution.packedseedsToTreatKg, order.orderRecipe.slurryTotalMlRecipeToMix))}>
-                                            {calculateDeviation(orderExecution.packedseedsToTreatKg, order.orderRecipe.slurryTotalMlRecipeToMix).toFixed(2)}%
+                                        <Badge bgColor={getDeviationColor(slurryConsumptionDeviation)}>
+                                            {slurryConsumptionDeviation.toFixed(2)}%
                                         </Badge>
                                     )}
                                 </Td>
