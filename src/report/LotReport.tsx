@@ -177,12 +177,8 @@ const LotReport: React.FC = () => {
                                     </Box>
                                 )}
                             </Td>
-                            <Td>
-                                {orderExecution ? (
-                                    <Badge bgColor={getDeviationColor(calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg))} color="white" borderRadius="full" px={2} py={1}>
-                                        {calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed(2)}%
-                                    </Badge>
-                                ) : '---'}
+                            <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(calculateDeviation(orderExecution?.packedseedsToTreatKg ?? 0, order.seedsToTreatKg))}>
+                                {orderExecution ? calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed(2) + '%' : '---'}
                             </Td>
                         </Tr>
                     </Tbody>
@@ -224,9 +220,9 @@ const LotReport: React.FC = () => {
                                     );
                                 }
 
-                                const actualRateGrTo100Kg: number | undefined = productExecution ? 100 * (productExecution.appliedRateKg ?? 0) / (orderRecipe.slurryTotalGrRecipeToMix / 1000) : undefined;
-                                const actualRateGrToU_KS: number | undefined = productExecution ? (100 * (productExecution.appliedRateKg ?? 0) / orderRecipe.nbSeedsUnits) : undefined;
-                                const deviation: number | undefined = productExecution ? calculateDeviation(productExecution.appliedRateKg ?? 0, productRecipe.grSlurryRecipeToMix ?? 0) : undefined;
+                                const actualRateGrTo100Kg: number | undefined = productExecution ? 100 * (productExecution.appliedRateKg ?? 0) / (order.seedsToTreatKg / 1000) : undefined;
+                                const actualRateGrToU_KS: number | undefined = productExecution ? (1000 * (productExecution.appliedRateKg ?? 0) / orderRecipe.nbSeedsUnits) : undefined;
+                                const deviation: number | undefined = productExecution ? calculateDeviation(actualRateGrToU_KS ?? 0, productRecipe.rateGrToU_KS) : undefined;
 
                                 return (
                                     <Tr key={index}>
@@ -256,12 +252,8 @@ const LotReport: React.FC = () => {
                                         <Td>{actualRateGrTo100Kg !== undefined ? actualRateGrTo100Kg.toFixed(2) : '---'}</Td>
                                         <Td>{productRecipe.rateGrToU_KS.toFixed(2)}</Td>
                                         <Td>{actualRateGrToU_KS !== undefined ? actualRateGrToU_KS.toFixed(2) : '---'}</Td>
-                                        <Td>
-                                            {deviation !== undefined ? (
-                                                <Badge bgColor={getDeviationColor(deviation)} color="white" borderRadius="full" px={2} py={1}>
-                                                    {deviation.toFixed(2)}%
-                                                </Badge>
-                                            ) : '---'}
+                                        <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(deviation ?? 0)}>
+                                            {deviation !== undefined ? deviation.toFixed(2) + '%' : '---'}
                                         </Td>
                                     </Tr>
                                 );
@@ -305,12 +297,8 @@ const LotReport: React.FC = () => {
                                         </Box>
                                     )}
                                 </Td>
-                                <Td>
-                                    {orderExecution && (
-                                        <Badge bgColor={getDeviationColor(calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000))} color="white" borderRadius="full" px={2} py={1}>
-                                            {calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2)}%
-                                        </Badge>
-                                    )}
+                                <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(calculateDeviation(orderExecution?.slurryConsumptionPerLotKg ?? 0, order.orderRecipe.slurryTotalMlRecipeToMix / 1000))}>
+                                    {orderExecution ? calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2) + '%' : '---'}
                                 </Td>
                             </Tr>
                         </Tbody>
