@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Heading } from "@chakra-ui/react";
+import { Box, Button, Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Heading } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store/store";
