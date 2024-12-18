@@ -69,9 +69,8 @@ const LotReport: React.FC = () => {
     }
 
     const orderExecution = orderExecutions.find(execution => execution.orderId === order.id);
-    const productRecipe = order.orderRecipe.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === order.productDetails[0].product?.id);
     const orderRecipe = order.orderRecipe;
-    if (!orderExecution || !productRecipe || !orderRecipe) {
+    if (!orderExecution || !orderRecipe) {
         return <Text>Loading...</Text>;
     }
 
@@ -157,7 +156,9 @@ const LotReport: React.FC = () => {
                         <Tbody>
                             {order.productDetails.map((detail, index) => {
                                 const productExecution = orderExecution.productExecutions.find(pe => pe.productId === detail.product?.id);
-                                if(productExecution === undefined) return null;
+                                const productRecipe = order.orderRecipe.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === detail.product?.id);
+    
+                                if (productExecution === undefined || productRecipe === undefined) return null;
                                 const actualRateGrTo100Kg = 100 * (productExecution.appliedRateKg ?? 0) / (orderRecipe.slurryTotalGrRecipeToMix / 1000);
                                 const actualRateGrToU_KS = (100 * (productExecution.appliedRateKg ?? 0) / orderRecipe.nbSeedsUnits);
                                 const deviation = calculateDeviation(productExecution.appliedRateKg ?? 0, productRecipe.grSlurryRecipeToMix ?? 0);
@@ -166,7 +167,7 @@ const LotReport: React.FC = () => {
                                     <Tr key={index}>
                                         <Td>{detail.product.name}</Td>
                                         <Td>{detail.product.density}</Td>
-                                        <Td>{productRecipe.grSlurryRecipeToMix.toFixed(2)}</Td>
+                                        <Td>{(productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
                                         <Td>{productExecution.appliedRateKg}</Td>
                                         <Td>
                                             {productExecution.applicationPhoto ? (
