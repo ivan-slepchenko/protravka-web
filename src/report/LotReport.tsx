@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchOrders, changeOrderStatus } from "../store/ordersSlice";
-import { Order, OrderStatus } from "../store/newOrderSlice";
+import { Order, OrderStatus, Packaging } from "../store/newOrderSlice";
 import { fetchOrderExecution } from "../store/executionSlice";
 import { useReactToPrint } from "react-to-print";
 
@@ -113,6 +113,8 @@ const LotReport: React.FC = () => {
         return <Text>Loading...</Text>;
     }
 
+    const unitNumberOfSeeds = order.packaging === Packaging.InKg ? order.bagSize / order.tkw : order.bagSize;
+
     return (
         <Box w="full" h="full" overflowY="auto" p={4} ref={componentRef}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
@@ -137,34 +139,51 @@ const LotReport: React.FC = () => {
                         <Tr>
                             <Th>Crop</Th>
                             <Th>Variety</Th>
-                            <Th>Status</Th>
+                            <Th>TKW</Th>
+                            <Th>s.u., number of seeds, KS</Th>
+                            <Th>s.u., kg</Th>
+                            <Th>Total amount, s.u.</Th>
+                            <Th>Total amount, kg</Th>
+                            <Th>Packed Seeds, kg</Th>
+                            <Th>Packing Photo</Th>
+                            <Th>Deviation</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
                         <Tr>
                             <Td>{order.crop.name}</Td>
                             <Td>{order.variety.name}</Td>
-                            <Td>{order.status}</Td>
-                        </Tr>
-                    </Tbody>
-                </Table>
-                <Table variant="simple" size="sm">
-                    <Thead bg="orange.100">
-                        <Tr>
-                            <Th>TKW</Th>
-                            <Th>s.u., number of seeds</Th>
-                            <Th>s.u., kg</Th>
-                            <Th>Total amount, s.u.</Th>
-                            <Th>Total amount, kg</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        <Tr>
                             <Td>{order.tkw}</Td>
-                            <Td>{order.orderRecipe.nbSeedsUnits.toFixed(2)}</Td>
+                            <Td>{unitNumberOfSeeds.toFixed(2)}</Td>
                             <Td>{order.orderRecipe.unitWeight.toFixed(2)}</Td>
                             <Td>{order.orderRecipe.nbSeedsUnits.toFixed(2)}</Td>
                             <Td>{order.seedsToTreatKg}</Td>
+                            <Td>{orderExecution && orderExecution.packedseedsToTreatKg || '---'}</Td>
+                            <Td>
+                                {orderExecution && orderExecution.packingPhoto ? (
+                                    <Image
+                                        src={orderExecution.packingPhoto}
+                                        alt="Packing"
+                                        width="150px"
+                                        height="100px"
+                                        objectFit="contain"
+                                        onClick={() => handlePhotoClick(orderExecution.packingPhoto)}
+                                        cursor="pointer"
+                                        title="Packing Photo"
+                                    />
+                                ) : (
+                                    <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
+                                        No Photo
+                                    </Box>
+                                )}
+                            </Td>
+                            <Td>
+                                {orderExecution ? (
+                                    <Badge bgColor={getDeviationColor(calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg))} color="white" borderRadius="full" px={2} py={1}>
+                                        {calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed(2)}%
+                                    </Badge>
+                                ) : '---'}
+                            </Td>
                         </Tr>
                     </Tbody>
                 </Table>
@@ -182,7 +201,7 @@ const LotReport: React.FC = () => {
                                 <Th>Density</Th>
                                 <Th>Target rate kg / slurry</Th>
                                 <Th>Actual rate kg / slurry</Th>
-                                <Th>Photo</Th>
+                                <Th>Application Photo</Th>
                                 <Th>Target rate gr / 100 kg seed</Th>
                                 <Th>Actual rate gr / 100 kg seeds</Th>
                                 <Th>Target rate gr / per s.u.</Th>
@@ -205,27 +224,27 @@ const LotReport: React.FC = () => {
                                     );
                                 }
 
-                                const actualRateGrTo100Kg = productExecution ? 100 * (productExecution.appliedRateKg ?? 0) / (orderRecipe.slurryTotalGrRecipeToMix / 1000) : '---';
-                                const actualRateGrToU_KS = productExecution ? (100 * (productExecution.appliedRateKg ?? 0) / orderRecipe.nbSeedsUnits) : '---';
-                                const deviation = productExecution ? calculateDeviation(productExecution.appliedRateKg ?? 0, productRecipe.grSlurryRecipeToMix ?? 0) : '---';
+                                const actualRateGrTo100Kg: number | undefined = productExecution ? 100 * (productExecution.appliedRateKg ?? 0) / (orderRecipe.slurryTotalGrRecipeToMix / 1000) : undefined;
+                                const actualRateGrToU_KS: number | undefined = productExecution ? (100 * (productExecution.appliedRateKg ?? 0) / orderRecipe.nbSeedsUnits) : undefined;
+                                const deviation: number | undefined = productExecution ? calculateDeviation(productExecution.appliedRateKg ?? 0, productRecipe.grSlurryRecipeToMix ?? 0) : undefined;
 
                                 return (
                                     <Tr key={index}>
                                         <Td>{detail.product.name}</Td>
                                         <Td>{detail.product.density}</Td>
                                         <Td>{(productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
-                                        <Td>{productExecution ? productExecution.appliedRateKg : '---'}</Td>
+                                        <Td>{productExecution ? productExecution.appliedRateKg.toFixed(2) : '---'}</Td>
                                         <Td>
                                             {productExecution && productExecution.applicationPhoto ? (
                                                 <Image
                                                     src={productExecution.applicationPhoto}
-                                                    alt="Detail"
+                                                    alt="Appication"
                                                     width="150px"
                                                     height="100px"
                                                     objectFit="contain"
                                                     onClick={() => handlePhotoClick(productExecution.applicationPhoto || null)}
                                                     cursor="pointer"
-                                                    title="Detail Photo"
+                                                    title="Appication Photo"
                                                 />
                                             ) : (
                                                 <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
@@ -234,11 +253,11 @@ const LotReport: React.FC = () => {
                                             )}
                                         </Td>
                                         <Td>{productRecipe.rateGrTo100Kg.toFixed(2)}</Td>
-                                        <Td>{actualRateGrTo100Kg}</Td>
+                                        <Td>{actualRateGrTo100Kg !== undefined ? actualRateGrTo100Kg.toFixed(2) : '---'}</Td>
                                         <Td>{productRecipe.rateGrToU_KS.toFixed(2)}</Td>
-                                        <Td>{actualRateGrToU_KS}</Td>
+                                        <Td>{actualRateGrToU_KS !== undefined ? actualRateGrToU_KS.toFixed(2) : '---'}</Td>
                                         <Td>
-                                            {deviation !== '---' ? (
+                                            {deviation !== undefined ? (
                                                 <Badge bgColor={getDeviationColor(deviation)} color="white" borderRadius="full" px={2} py={1}>
                                                     {deviation.toFixed(2)}%
                                                 </Badge>
@@ -254,20 +273,20 @@ const LotReport: React.FC = () => {
                     <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Consumption Per Lot</Text>
                     {order.status !== OrderStatus.NotStarted && <StatusKeyLegend />}
                 </Box>
-                <Box w="full" overflowX="auto">
+                <Box w="50%" overflowX="auto">
                     <Table variant="simple" size="sm">
                         <Thead bg="orange.100">
                             <Tr>
-                                <Th>Target consumption, ml</Th>
-                                <Th>Actual consumption, ml</Th>
-                                <Th>Photo</Th>
+                                <Th>Target consumption, kg</Th>
+                                <Th>Actual consumption, kg</Th>
+                                <Th>Consumption Photo</Th>
                                 <Th>Deviation</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
                             <Tr>
-                                <Td>{order.orderRecipe.slurryTotalMlRecipeToMix.toFixed(2)}</Td>
-                                <Td>{orderExecution ? orderExecution.packedseedsToTreatKg : '---'}</Td>
+                                <Td>{(order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2)}</Td>
+                                <Td>{orderExecution ? orderExecution.slurryConsumptionPerLotKg : '---'}</Td>
                                 <Td>
                                     {orderExecution && orderExecution.consumptionPhoto ? (
                                         <Image
@@ -288,8 +307,8 @@ const LotReport: React.FC = () => {
                                 </Td>
                                 <Td>
                                     {orderExecution && (
-                                        <Badge bgColor={getDeviationColor(calculateDeviation(orderExecution.packedseedsToTreatKg, order.orderRecipe.slurryTotalMlRecipeToMix))} color="white" borderRadius="full" px={2} py={1}>
-                                            {calculateDeviation(orderExecution.packedseedsToTreatKg, order.orderRecipe.slurryTotalMlRecipeToMix).toFixed(2)}%
+                                        <Badge bgColor={getDeviationColor(calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000))} color="white" borderRadius="full" px={2} py={1}>
+                                            {calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2)}%
                                         </Badge>
                                     )}
                                 </Td>
