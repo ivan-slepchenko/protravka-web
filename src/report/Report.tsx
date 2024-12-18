@@ -83,9 +83,8 @@ const Report: React.FC = () => {
         return <Badge bgColor={color}>{status}</Badge>;
     };
 
-    const handleLotClick = (lotNumber: string) => {
-        const encodedLotNumber = encodeURIComponent(lotNumber);
-        navigate(`/lot-report/${encodedLotNumber}`);
+    const handleLotClick = (orderId: string) => {
+        navigate(`/lot-report/${orderId}`);
     };
 
     // Collect crops from filtered orders
@@ -312,7 +311,7 @@ const Report: React.FC = () => {
                             </Thead>
                             <Tbody>
                                 {filteredOrders.map((order, index) => (
-                                    <Tr key={order.id} onClick={() => handleLotClick(order.lotNumber)} style={{ cursor: 'pointer' }}>
+                                    <Tr key={order.id} onClick={() => handleLotClick(order.id)} style={{ cursor: 'pointer' }}>
                                         <Td>{index + 1}</Td>
                                         <Td>{order.crop.name}</Td>
                                         <Td>{order.variety.name}</Td>

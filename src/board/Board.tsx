@@ -17,7 +17,7 @@ const Board: React.FC = () => {
     }, [dispatch]);
 
     const handleOrderClick = (orderId: string) => {
-        navigate(`/order/${orderId}`);
+        navigate(`/lot-report/${orderId}`);
     };
 
     return (

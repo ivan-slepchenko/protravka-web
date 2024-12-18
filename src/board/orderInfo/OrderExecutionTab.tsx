@@ -1,19 +1,12 @@
 import React, { useState } from "react";
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, HStack } from "@chakra-ui/react";
-import { useDispatch } from "react-redux";
-import { changeOrderStatus } from "../../store/ordersSlice";
-import { Order, OrderStatus } from "../../store/newOrderSlice";
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody } from "@chakra-ui/react";
+
+import { Order } from "../../store/newOrderSlice";
 import { OrderExecution } from "../../store/executionSlice";
-import { AppDispatch } from "../../store/store";
-import { useNavigate } from "react-router-dom";
 
 const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution }> = ({ order, orderExecution }) => {
     const [selectedPhoto, setSelectedPhoto] = useState<string | null | undefined>(null);
-    const dispatch: AppDispatch = useDispatch();
-    const navigate = useNavigate();
-
-    const applicationMethod = orderExecution?.applicationMethod;
-
+    
     const handlePhotoClick = (photoUrl: string | null | undefined) => {
         setSelectedPhoto(photoUrl);
     };
@@ -22,19 +15,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
         setSelectedPhoto(null);
     };
 
-    const handleCompleted = () => {
-        if (order.id) {
-            dispatch(changeOrderStatus({ id: order.id, status: OrderStatus.Completed }));
-            navigate('/board');
-        }
-    };
 
-    const handleFailed = () => {
-        if (order.id) {
-            dispatch(changeOrderStatus({ id: order.id, status: OrderStatus.Failed }));
-            navigate('/board');
-        }
-    };
+    const applicationMethod = orderExecution?.applicationMethod;
 
     return (
         <Box w="full">
@@ -182,12 +164,6 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     </ModalBody>
                 </ModalContent>
             </Modal>
-            {order.status === OrderStatus.ToAcknowledge && (
-                <HStack w="full" mt="4" textAlign="right">
-                    <Button ml="auto" colorScheme="blue" onClick={handleCompleted}>Mark as Completed</Button>
-                    <Button colorScheme="red" onClick={handleFailed}>Mark as Failed</Button>
-                </HStack>
-            )}
         </Box>
     );
 };
