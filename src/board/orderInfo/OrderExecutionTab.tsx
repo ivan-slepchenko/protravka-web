@@ -182,10 +182,12 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     </ModalBody>
                 </ModalContent>
             </Modal>
-            <HStack w="full" mt="4" textAlign="right">
-                <Button ml="auto" colorScheme="blue" onClick={handleCompleted}>Mark as Completed</Button>
-                <Button colorScheme="red" onClick={handleFailed}>Mark as Failed</Button>
-            </HStack>
+            {order.status === OrderStatus.ToAcknowledge && (
+                <HStack w="full" mt="4" textAlign="right">
+                    <Button ml="auto" colorScheme="blue" onClick={handleCompleted}>Mark as Completed</Button>
+                    <Button colorScheme="red" onClick={handleFailed}>Mark as Failed</Button>
+                </HStack>
+            )}
         </Box>
     );
 };

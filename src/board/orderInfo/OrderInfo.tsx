@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Box, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Heading } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store/store";
@@ -7,6 +7,7 @@ import { fetchProducts } from "../../store/productsSlice";
 import { fetchOrderExecution } from "../../store/executionSlice";
 import OrderExecutionTab from "./OrderExecutionTab";
 import OrderRecipeTab from "./OrderRecipeTab";
+import { OrderStatus } from "../../store/newOrderSlice";
 
 const OrderInfo: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
@@ -28,12 +29,24 @@ const OrderInfo: React.FC = () => {
         navigate('/board');
     };
 
+    const getStatusLabel = () => {
+        switch (order.status) {
+            case OrderStatus.Completed:
+                return <Heading size="lg" color="green.500" fontWeight="bold">Completed</Heading>;
+            case OrderStatus.Failed:
+                return <Heading size="lg" color="red.500" fontWeight="bold">Failed</Heading>;
+            default:
+                return null;
+        }
+    };
+
     return (
         <Box w="full" h="full" overflowY="auto">
-            <Box display="flex" justifyContent="space-between" alignItems="center" p="4" borderBottom="1px solid #ccc">
-                <Text fontSize="2xl" fontWeight="bold">Order {order.lotNumber}</Text>
-                <Button onClick={handleClose}>Close</Button>
-            </Box>
+            <HStack alignItems="center" p="4" borderBottom="1px solid #ccc">
+                <Heading size="lg">Order: {order.lotNumber},</Heading>
+                {getStatusLabel()}
+                <Button ml="auto" onClick={handleClose}>Close</Button>
+            </HStack>
             <Box p="4">
                 <Tabs>
                     <TabList>
