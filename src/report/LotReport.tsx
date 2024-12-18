@@ -183,9 +183,9 @@ const LotReport: React.FC = () => {
                                                 />
                                             ) : 'No Photo'}
                                         </Td>
-                                        <Td>{productRecipe.rateGrTo100Kg}</Td>
+                                        <Td>{productRecipe.rateGrTo100Kg.toFixed(2)}</Td>
                                         <Td>{actualRateGrTo100Kg.toFixed(2)}</Td>
-                                        <Td>{productRecipe.rateGrToU_KS}</Td>
+                                        <Td>{productRecipe.rateGrToU_KS.toFixed(2)}</Td>
                                         <Td>{actualRateGrToU_KS.toFixed(2)}</Td>
                                         <Td>
                                             <Badge bgColor={getDeviationColor(deviation)}>
