@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Box, VStack, Button, Text, HStack, IconButton, Spacer, Divider } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
@@ -12,9 +11,9 @@ interface MenuProps {
     email: string | null;
     roles: Role[];
   };
-  managerLinks: { to: string; label: string }[];
-  adminLinks: { to: string; label: string }[];
-  operatorLinks: { to: string; label: string }[];
+  managerLinks: { to: string; label: string, icon: JSX.Element }[];
+  adminLinks: { to: string; label: string, icon: JSX.Element }[];
+  operatorLinks: { to: string; label: string, icon: JSX.Element }[];
   handleLogout: () => void;
 }
 
@@ -47,6 +46,7 @@ const DesktopMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, oper
                         justifyContent="flex-start"
                         isActive={location.pathname === link.to}
                         color={location.pathname === link.to ? "blue.500" : "black"}
+                        leftIcon={link.icon} // Configure icon
                     >
                         {link.label}
                     </Button>
@@ -62,11 +62,12 @@ const DesktopMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, oper
                         justifyContent="flex-start"
                         isActive={location.pathname === link.to}
                         color={location.pathname === link.to ? "blue.500" : "black"}
+                        leftIcon={link.icon} // Configure icon
                     >
                         {link.label}
                     </Button>
                 ))}
-                <Divider />
+                <Divider colorScheme='blackAlpha'/>
                 {adminLinks.map(link => (
                     <Button
                         w="full"
@@ -77,6 +78,7 @@ const DesktopMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, oper
                         justifyContent="flex-start"
                         isActive={location.pathname === link.to}
                         color={location.pathname === link.to ? "blue.500" : "black"}
+                        leftIcon={link.icon} // Configure icon
                     >
                         {link.label}
                     </Button>

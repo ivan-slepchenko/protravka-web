@@ -111,7 +111,7 @@ const OrderExecution3ApplyingProduct = () => {
                         {'  out of '}
                         {order?.productDetails.length}
                     </Text>
-                    <Table variant="outline" size="sm" mb={4}>
+                    <Table variant="simple" size="sm" mb={4}>
                         {renderTableHeaders()}
                         {applicationMethod === 'Surry' ? renderTableBodyForSurry() : renderTableBodyForNonSurry()}
                     </Table>

@@ -30,6 +30,11 @@ import Login from './auth/Login';
 import Signup from './auth/Signup';
 import { NewOrderForm } from './newOrder/NewOrder';
 import LotReport from './report/LotReport';
+import { FiTrello } from 'react-icons/fi';
+import { TbReportAnalytics } from "react-icons/tb";
+import { AtSignIcon, AddIcon } from '@chakra-ui/icons'; 
+import { BiSolidComponent } from "react-icons/bi";
+import { FaSeedling, FaTasks } from "react-icons/fa";
 
 const AlertContext = createContext<{ addAlert: (message: string) => void }>({
     addAlert: () => {
@@ -87,17 +92,17 @@ const App = () => {
 
     const roleToLinks = {
         [Role.MANAGER]: [
-            { to: "/board", label: "Board" },
-            { to: "/new", label: "New Order" },
-            { to: "/report", label: "Report" },
+            { to: "/board", label: "Board", icon: <FiTrello /> },
+            { to: "/new", label: "New Order", icon: <AddIcon /> },
+            { to: "/report", label: "Report", icon: <TbReportAnalytics /> },
         ],
         [Role.ADMIN]: [
-            { to: "/operators", label: "Operators" },
-            { to: "/crops", label: "Crops" },
-            { to: "/products", label: "Products" },
+            { to: "/operators", label: "Operators", icon: <AtSignIcon /> },
+            { to: "/crops", label: "Crops", icon: <FaSeedling /> },
+            { to: "/products", label: "Products", icon: <BiSolidComponent /> },
         ],
         [Role.OPERATOR]: [
-            { to: "/execution", label: "Execution" },
+            { to: "/execution", label: "Execution", icon: <FaTasks /> },
         ],
     };
 

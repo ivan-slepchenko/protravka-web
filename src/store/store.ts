@@ -12,7 +12,8 @@ import executionReducer from './executionSlice';
 
 const persistConfig = {
     key: 'newOrder',
-    storage
+    storage,
+    blacklist: ['recipeDate', 'applicationDate']
 };
 
 const persistedNewOrderReducer = persistReducer(persistConfig, newOrderReducer);

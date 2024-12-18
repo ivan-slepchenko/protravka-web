@@ -37,12 +37,12 @@ const Board: React.FC = () => {
                                     cursor="pointer"
                                     onClick={() => handleOrderClick(order.id)}
                                 >
-                                    <Text><strong>Lot Number:</strong> {order.lotNumber}</Text>
-                                    <Text><strong>Crop:</strong> {order.crop?.name}</Text>
-                                    <Text><strong>Variety:</strong> {order.variety?.name}</Text>
-                                    <Text><strong>Seeds To Treat (Kg):</strong> {order.seedsToTreatKg} kg</Text>
-                                    <Text><strong>Operator:</strong> {order.operator?.name} {order.operator?.surname}</Text>
-                                    <Text><strong>Application Date:</strong> {order.applicationDate}</Text>
+                                    <Text isTruncated><strong>Lot:</strong> {order.lotNumber}</Text>
+                                    <Text isTruncated><strong>Crop:</strong> {order.crop?.name}</Text>
+                                    <Text isTruncated><strong>Variety:</strong> {order.variety?.name}</Text>
+                                    <Text isTruncated><strong>Seeds To Treat (Kg):</strong> {order.seedsToTreatKg}</Text>
+                                    <Text isTruncated><strong>Operator:</strong> {order.operator?.name} {order.operator?.surname}</Text>
+                                    <Text isTruncated><strong>Application:</strong> {order.applicationDate}</Text>
                                 </Box>
                             ))}
                         </VStack>

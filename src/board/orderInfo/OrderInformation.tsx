@@ -2,11 +2,6 @@ import React from "react";
 import { Box, Text, Grid } from "@chakra-ui/react";
 import { Order, Packaging } from "../../store/newOrderSlice";
 
-const packagingMap = {
-    [Packaging.InSeeds]: "In Seeds",
-    [Packaging.InKg]: "In Kg",
-};
-
 const OrderInformation: React.FC<{ order: Order }> = ({ order }) => (
     <Box border="1px" borderColor="gray.200" p="4" borderRadius="md" w="full">
         <Text fontSize="md" fontWeight="bold" mb="2">Order Information</Text>

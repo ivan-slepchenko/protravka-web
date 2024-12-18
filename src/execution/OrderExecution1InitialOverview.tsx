@@ -33,12 +33,12 @@ const OrderExecution1InitialOverview = () => {
         <VStack p={4} w="full" h="full">
             <Text fontSize="2xl" fontWeight="bold">Order Execution</Text>
             <Box mt={4}>
-                <Text>Lot Number: {order.lotNumber}</Text>
+                <Text>Lot: {order.lotNumber}</Text>
                 <Text>Seeds To Treat: {order.seedsToTreatKg} kg</Text>
                 <Text>Bag Size: {order.bagSize} {bagSizeUnit}</Text>
                 <Text>Expected Amount Of Bags: {order.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
             </Box>
-            <Table variant="outline" size="sm" mt={4}>
+            <Table variant="simple" size="sm" mt={4}>
                 <Thead bg="orange.100">
                     <Tr>
                         <Th>Product</Th>

@@ -7,7 +7,7 @@ const ProductDetails: React.FC<{ order: Order }> = ({ order }) => (
     <VStack alignItems="start" w="full">
         <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
         <Box overflowY="auto" borderRadius="md" w="full">
-            <Table variant="outline" size="sm" w="full">
+            <Table variant="simple" size="sm" w="full">
                 <Thead bg="orange.100">
                     <Tr>
                         <Th rowSpan={2} whiteSpace="nowrap">Product Name</Th>

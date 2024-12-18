@@ -40,7 +40,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
         <Box w="full">
             <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Order Execution Photos:</Text>
             <Box overflowY="auto" bg="gray.50" borderRadius="md" w={applicationMethod !== 'Surry' ? "50%" : "full"}>
-                <Table variant="outline" size="sm" w="full">
+                <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
                             <Th whiteSpace="nowrap">Expected Seeds To Pack</Th>
@@ -99,7 +99,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
             </Box>
             <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Execution Details</Text>
             <Box overflowY="auto" bg="gray.50" borderRadius="md">
-                <Table variant="outline" size="sm" w="full">
+                <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
                             <Th whiteSpace="nowrap">Product Name</Th>
