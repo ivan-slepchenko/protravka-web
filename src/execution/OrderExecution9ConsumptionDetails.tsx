@@ -85,12 +85,12 @@ export default function OrderExecution9ConsumptionDetails() {
                             {applicationMethod === 'Surry'
                                 ? `Total Surry Consumption / ${order?.seedsToTreatKg ?? 0} kg`
                                 : <span>
-                                    {'Product: '}
-                                    {order?.productDetails[currentProductIndex].product?.name}
-                                    {' #'}
+                                    {'Product # '}
                                     {currentProductIndex + 1}
-                                    {'  out of '}
+                                    {' of '}
                                     {order?.productDetails.length}
+                                    {': '}
+                                    {order?.productDetails[currentProductIndex].product?.name}
                                     {` Per ${order?.seedsToTreatKg ?? 0} kg seeds`}
                                 </span>
                             }

@@ -104,12 +104,12 @@ const OrderExecution3ApplyingProduct = () => {
                 <>
                     <Text fontSize="xl" fontWeight="bold" mb={4}>{applicationMethod}</Text>
                     <Text mb={4}>
-                        {'Product: '}
-                        {order?.productDetails[currentProductIndex].product?.name}
-                        {' #'}
+                        {'Product # '}
                         {currentProductIndex + 1}
-                        {'  out of '}
+                        {' of '}
                         {order?.productDetails.length}
+                        {': '}
+                        {order?.productDetails[currentProductIndex].product?.name}
                     </Text>
                     <Table variant="simple" size="sm" mb={4}>
                         {renderTableHeaders()}

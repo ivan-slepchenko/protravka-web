@@ -80,12 +80,12 @@ const OrderExecution4ProovingProduct = () => {
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh" p={4}>
             <VStack spacing={8} width="100%" maxWidth="400px">
                 <Text mb={2}>
-                    {'Product: '}
-                    {order?.productDetails[currentProductIndex].product?.name}
-                    {' #'}
+                    {'Product # '}
                     {currentProductIndex + 1}
-                    {'  out of '}
+                    {' of '}
                     {order?.productDetails.length}
+                    {': '}
+                    {order?.productDetails[currentProductIndex].product?.name}
                 </Text>
                 <Box
                     width="100%"

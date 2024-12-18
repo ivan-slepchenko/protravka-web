@@ -6,7 +6,7 @@ import { nextPage } from '../store/executionSlice';
 import { Packaging } from '../store/newOrderSlice';
 
 const packagingMap = {
-    [Packaging.InSeeds]: "seeds",
+    [Packaging.InSeeds]: "ks",
     [Packaging.InKg]: "kg",
 };
 
@@ -33,10 +33,11 @@ const OrderExecution1InitialOverview = () => {
         <VStack p={4} w="full" h="full">
             <Text fontSize="2xl" fontWeight="bold">Order Execution</Text>
             <Box mt={4}>
-                <Text>Lot: {order.lotNumber}</Text>
-                <Text>Seeds To Treat: {order.seedsToTreatKg} kg</Text>
-                <Text>Bag Size: {order.bagSize} {bagSizeUnit}</Text>
-                <Text>Expected Amount Of Bags: {order.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
+                <Text><strong>Lot:</strong> {order.lotNumber}</Text>
+                <Text><strong>Seeds To Treat:</strong> {order.seedsToTreatKg} kg</Text>
+                <Text><strong>TKW:</strong> {order.tkw} gr</Text>
+                <Text><strong>Bag Size:</strong> {order.bagSize} {bagSizeUnit}</Text>
+                <Text><strong>Expected Amount Of Bags:</strong> {order.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
             </Box>
             <Table variant="simple" size="sm" mt={4}>
                 <Thead bg="orange.100">
