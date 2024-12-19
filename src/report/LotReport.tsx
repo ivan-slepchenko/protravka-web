@@ -95,9 +95,9 @@ const LotReport: React.FC = () => {
     const getStatusLabel = () => {
         switch (order?.status) {
             case OrderStatus.Completed:
-                return <Heading size="lg" color="green.500" fontWeight="bold">Completed</Heading>;
+                return <Badge size="lg" colorScheme="green" mt="3px">Completed</Badge>;
             case OrderStatus.Failed:
-                return <Heading size="lg" color="red.500" fontWeight="bold">Failed</Heading>;
+                return <Badge size="lg" colorScheme="red" mt="3px">Failed</Badge>;
             default:
                 return null;
         }
@@ -119,7 +119,8 @@ const LotReport: React.FC = () => {
         <Box w="full" h="full" overflowY="auto" p={4} ref={componentRef}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
                 <HStack spacing={2}>
-                    <Text fontSize="2xl" fontWeight="bold">{`Lot: ${order.lotNumber}`}</Text>
+                    <Heading size="lg">{order.crop.name}, {order.variety.name}</Heading>
+                    <Text size="md">{'['}{order.lotNumber}{']'}</Text>
                     {getStatusLabel()}
                 </HStack>
                 <HStack spacing={2}>
@@ -137,10 +138,8 @@ const LotReport: React.FC = () => {
                 <Table variant="simple" size="sm">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th>Crop</Th>
-                            <Th>Variety</Th>
                             <Th>TKW</Th>
-                            <Th>s.u., number of seeds, KS</Th>
+                            <Th>s.u., KS</Th>
                             <Th>s.u., kg</Th>
                             <Th>Total amount, s.u.</Th>
                             <Th>Total amount, kg</Th>
@@ -151,8 +150,6 @@ const LotReport: React.FC = () => {
                     </Thead>
                     <Tbody>
                         <Tr>
-                            <Td>{order.crop.name}</Td>
-                            <Td>{order.variety.name}</Td>
                             <Td>{order.tkw}</Td>
                             <Td>{unitNumberOfSeeds.toFixed(2)}</Td>
                             <Td>{order.orderRecipe.unitWeight.toFixed(2)}</Td>
@@ -178,7 +175,7 @@ const LotReport: React.FC = () => {
                                 )}
                             </Td>
                             <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(calculateDeviation(orderExecution?.packedseedsToTreatKg ?? 0, order.seedsToTreatKg))}>
-                                {orderExecution ? calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed(2) + '%' : '---'}
+                                {orderExecution ? calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed() + '%' : '---'}
                             </Td>
                         </Tr>
                     </Tbody>
@@ -186,7 +183,7 @@ const LotReport: React.FC = () => {
             </HStack>
             <VStack spacing={4} align="stretch">
                 <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
-                    <Text fontSize="lg" fontWeight="bold" mb={2}>Lot Details</Text>
+                    <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Preparation per Lot</Text>
                     {order.status !== OrderStatus.NotStarted && <StatusKeyLegend />}
                 </Box>
                 <Box w="full">
@@ -253,7 +250,7 @@ const LotReport: React.FC = () => {
                                         <Td>{productRecipe.rateGrToU_KS.toFixed(2)}</Td>
                                         <Td>{actualRateGrToU_KS !== undefined ? actualRateGrToU_KS.toFixed(2) : '---'}</Td>
                                         <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(deviation ?? 0)}>
-                                            {deviation !== undefined ? deviation.toFixed(2) + '%' : '---'}
+                                            {deviation !== undefined ? deviation.toFixed() + '%' : '---'}
                                         </Td>
                                     </Tr>
                                 );
@@ -298,7 +295,7 @@ const LotReport: React.FC = () => {
                                     )}
                                 </Td>
                                 <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(calculateDeviation(orderExecution?.slurryConsumptionPerLotKg ?? 0, order.orderRecipe.slurryTotalMlRecipeToMix / 1000))}>
-                                    {orderExecution ? calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2) + '%' : '---'}
+                                    {orderExecution ? calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed() + '%' : '---'}
                                 </Td>
                             </Tr>
                         </Tbody>
