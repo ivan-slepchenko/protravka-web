@@ -171,7 +171,7 @@ export const NewOrderForm = () => {
     return (
         <Center w='full' h='full' fontSize={'xs'}>
             <VStack>
-                <Heading size="lg">New Order</Heading>
+                <Heading size="lg">New Receipe</Heading>
                 <Formik
                     initialValues={{
                         ...formData,
@@ -551,13 +551,13 @@ export const NewOrderForm = () => {
                                 <Modal isOpen={showPopup} onClose={handleClosePopup} isCentered>
                                     <ModalOverlay />
                                     <ModalContent>
-                                        <ModalHeader>Order Created</ModalHeader>
+                                        <ModalHeader>Receipe Created</ModalHeader>
                                         <ModalCloseButton />
                                         <ModalBody>
                                             <Text>
                                                 <span>Recipe successfully created and sent to the operator {operatorName} for processing on {orderDate}.</span>
                                                 <br />
-                                                <span>You can view this Order Recipe in the <strong>Board</strong>, by clicking on your <strong>Order</strong> and opening <strong>Recipe Tab</strong>.</span>
+                                                <span>You can view this Recipe in the <strong>Board</strong>, by clicking on your <strong>Receipe</strong> and opening <strong>Recipe Tab</strong>.</span>
                                                 <br />
                                                 <span>Note: You can modify the recipe only before the operator starts working on it.</span>
                                             </Text>

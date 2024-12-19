@@ -85,7 +85,7 @@ const OrdersOverview: React.FC = () => {
                             Confirm Start Processing
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            {'Confirm you want to start processing this order. You cannot cancel this process later.'}
+                            {'Confirm you want to start processing this receipe. You cannot cancel this process later.'}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onClose}>

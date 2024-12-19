@@ -4,7 +4,7 @@ import { Order, Packaging } from "../../store/newOrderSlice";
 
 const OrderInformation: React.FC<{ order: Order }> = ({ order }) => (
     <Box border="1px" borderColor="gray.200" p="4" borderRadius="md" w="full">
-        <Text fontSize="md" fontWeight="bold" mb="2">Order Information</Text>
+        <Text fontSize="md" fontWeight="bold" mb="2">Receipe Information</Text>
         <Grid templateColumns="repeat(4, 1fr)" gap="1" borderColor="gray.200">
             <Box>
                 <Text fontSize="xs">Recipe Creation Date:</Text>

@@ -24,8 +24,8 @@ export const createOrder = createAsyncThunk('orders/createOrder', async (order: 
     if (!order.operatorId || !order.cropId || !order.varietyId) {
         throw new Error('Operator, crop, and variety must be defined');
     }
-    console.log('Creating order', order);
-    const { id, productDetails, ...orderWithoutId } = order; // Remove id from order
+    console.log('Creating receipe', order);
+    const { id, productDetails, ...orderWithoutId } = order; // Remove id from receipe
     id.toString();
     const productDetailsWithoutIds = productDetails.map(({ id, ...rest }) => {
         id.toString();
@@ -40,12 +40,12 @@ export const createOrder = createAsyncThunk('orders/createOrder', async (order: 
         credentials: 'include', // Include credentials in the request
     });
     const jsonResponse = await response.json();
-    console.log('Order created', jsonResponse);
+    console.log('Receipe created', jsonResponse);
     return jsonResponse;
 });
 
 export const modifyOrder = createAsyncThunk('orders/modifyOrder', async (order: Order) => {
-    const { productDetails, ...orderWithoutId } = order; // Remove id from order
+    const { productDetails, ...orderWithoutId } = order; // Remove id from receipe
     const productDetailsWithoutIds = productDetails.map(({ id, ...rest }) => {
         id.toString();
         return rest;

@@ -65,7 +65,7 @@ const OrderInfo: React.FC = () => {
     return (
         <Box w="full" h="full" overflowY="auto">
             <HStack alignItems="center" p="4" borderBottom="1px solid #ccc">
-                <Heading size="lg">Order: {order.lotNumber}</Heading>
+                <Heading size="lg">Receipe: {order.lotNumber}</Heading>
                 {getStatusLabel()}
                 <Button ml="auto" onClick={handleClose}>Close</Button>
             </HStack>

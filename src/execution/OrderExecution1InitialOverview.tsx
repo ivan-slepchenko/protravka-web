@@ -17,7 +17,7 @@ const OrderExecution1InitialOverview = () => {
     const dispatch: AppDispatch = useDispatch();
 
     if (!order) {
-        return <Text>{'Order not found '}{currentOrderId}</Text>;
+        return <Text>{'Receipe not found '}{currentOrderId}</Text>;
     }
 
     const totalLitres = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0) / 1000;
@@ -31,7 +31,7 @@ const OrderExecution1InitialOverview = () => {
 
     return (
         <VStack p={4} w="full" h="full">
-            <Text fontSize="2xl" fontWeight="bold">Order Execution</Text>
+            <Text fontSize="2xl" fontWeight="bold">Receipe Execution</Text>
             <Box mt={4}>
                 <Text><strong>Lot:</strong> {order.lotNumber}</Text>
                 <Text><strong>Seeds To Treat:</strong> {order.seedsToTreatKg} kg</Text>

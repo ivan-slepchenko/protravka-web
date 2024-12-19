@@ -92,7 +92,7 @@ const App = () => {
     const roleToLinks = {
         [Role.MANAGER]: [
             { to: "/board", label: "Board", icon: <FiTrello /> },
-            { to: "/new", label: "New Order", icon: <AddIcon /> },
+            { to: "/new", label: "New Receipe", icon: <AddIcon /> },
             { to: "/report", label: "Report", icon: <TbReportAnalytics /> },
         ],
         [Role.ADMIN]: [

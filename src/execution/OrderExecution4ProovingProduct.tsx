@@ -40,10 +40,10 @@ const OrderExecution4ProovingProduct = () => {
                 const photoData = canvasRef.current.toDataURL('image/png');
                 setPhotoState(photoData);
                 if (order === undefined) {
-                    throw new Error(`Order not found for the current order id ${currentOrderId}`);
+                    throw new Error(`Receipe not found for the current receipe id ${currentOrderId}`);
                 }
                 if (order.productDetails[currentProductIndex] === undefined) {
-                    throw new Error(`Product details not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+                    throw new Error(`Product details not found for the current receipe and product index ${currentOrderId} ${currentProductIndex}`);
                 }
 
                 const productDetails = order.productDetails[currentProductIndex];
@@ -51,7 +51,7 @@ const OrderExecution4ProovingProduct = () => {
                     const productId = productDetails.product.id;
                     dispatch(setPhotoForProvingProductApplication({ photo: photoData, productId }));
                 } else {
-                    throw new Error(`Product not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+                    throw new Error(`Product not found for the current receipe and product index ${currentOrderId} ${currentProductIndex}`);
                 }
             }
         }

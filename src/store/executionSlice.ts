@@ -46,10 +46,10 @@ const saveOrderExecutionToBackend = (orderExecution: OrderExecution) => {
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Order execution saved:', data);
+            console.log('Receipe execution saved:', data);
         })
         .catch(error => {
-            console.error('Failed to save order execution:', error);
+            console.error('Failed to save receipe execution:', error);
         });
 };
 
@@ -233,10 +233,10 @@ const executionSlice = createSlice({
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Order execution saved:', data);
+                        console.log('Receipe execution saved:', data);
                     })
                     .catch(error => {
-                        console.error('Failed to save order execution:', error);
+                        console.error('Failed to save receipe execution:', error);
                     });
             }
         },
