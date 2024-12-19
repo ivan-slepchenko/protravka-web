@@ -16,7 +16,9 @@ const OrdersOverview: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
     const orders = useSelector((state: RootState) => 
         state.orders.activeOrders.filter(order => 
-            order.operator.email === user.email && order.status === OrderStatus.NotStarted
+            order.operator.email === user.email && 
+            order.status === OrderStatus.NotStarted &&
+            new Date(order.applicationDate).toLocaleDateString() === currentDate
         )
     );
 
@@ -34,7 +36,7 @@ const OrdersOverview: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchOrders();
+        dispatch(fetchOrders());
     }, [dispatch]);
 
     return (
