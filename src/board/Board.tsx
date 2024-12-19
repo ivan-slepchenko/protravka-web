@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders } from '../store/ordersSlice';
-import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, VStack, Badge } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 const Board: React.FC = () => {
@@ -38,19 +38,28 @@ const Board: React.FC = () => {
                                         borderWidth={1}
                                         borderStyle={'solid'}
                                         borderRadius="md"
-                                        p={3}
+                                        p={2}
                                         w="full"
                                         cursor="pointer"
                                         onClick={() => handleOrderClick(order.id)}
                                         bg="white"
                                         boxShadow="sm"
                                     >
-                                        <Text isTruncated><strong>Lot:</strong> {order.lotNumber}</Text>
-                                        <Text isTruncated><strong>Crop:</strong> {order.crop?.name}</Text>
-                                        <Text isTruncated><strong>Variety:</strong> {order.variety?.name}</Text>
-                                        <Text isTruncated><strong>Seeds To Treat (Kg):</strong> {order.seedsToTreatKg}</Text>
-                                        <Text isTruncated><strong>Operator:</strong> {order.operator?.name} {order.operator?.surname}</Text>
-                                        <Text isTruncated><strong>Application:</strong> {order.applicationDate}</Text>
+                                        <Box display="grid" gridTemplateColumns="1fr 3fr" gap={2} fontSize="sm">
+                                            <Badge gridColumn="span 3" colorScheme="gray">
+                                                {order.crop?.name}, {order.variety?.name}
+                                            </Badge>
+                                            <Text px={1} gridColumn="span 3" color="gray.600">
+                                                Lot: {order.lotNumber}
+                                            </Text>
+                                            <Text px={1} gridColumn="span 3">
+                                                {'for '}{order.operator?.name} {order.operator?.surname}
+                                            </Text>
+                                            <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
+                                            <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
+                                            <Text px={1} gridColumn="span 2">Application:</Text>
+                                            <Text px={1} isTruncated>{order.applicationDate}</Text>
+                                        </Box>
                                     </Box>
                                 ))}
                             </VStack>
