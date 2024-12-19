@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, VStack, Button, Text, HStack, IconButton, Spacer, Divider } from '@chakra-ui/react';
+import { Box, VStack, Button, Text, HStack, IconButton, Spacer, Divider, Image } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FiLogOut } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
@@ -21,21 +21,23 @@ const DesktopMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, oper
     const location = useLocation();
 
     return (
-        <Box width="20%" height="100vh" bg="gray.100" p={4} bgColor={"lightgrey"}>
-            <VStack spacing={4} h="full">
-                <Box w="full" mb={4} p={4} bg="white" borderRadius="md" boxShadow="md">
-                    <HStack justifyContent="space-between">
-                        <Text fontWeight="bold">{user.name} {user.surname}</Text>
+        <Box width="300px" height="100vh" p={4}>
+            <VStack spacing={4} h="full" alignItems={'start'}>
+                <VStack spacing={2} pl={4} w="full" alignItems={'start'}>
+                    <HStack justifyContent="space-between" w="full">
+                        <Text isTruncated fontWeight="bold" fontSize={'lg'}>{user.name} {user.surname}</Text>
                         <IconButton
                             aria-label="Logout"
                             icon={<FiLogOut />}
-                            size="sm"
+                            size="md"
                             colorScheme="red"
                             onClick={handleLogout}
+                            variant={'ghost'}
                         />
                     </HStack>
-                    <Text>{user.email}</Text>
-                </Box>
+                    <Text fontSize={'sm'} isTruncated>{user.email}</Text>
+                </VStack>
+                <Divider colorScheme='blackAlpha'/>
                 {managerLinks.map(link => (
                     <Button
                         w="full"

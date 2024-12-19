@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Button, VStack, Heading, Alert, AlertIcon, Grid, GridItem, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, useDisclosure, Center } from '@chakra-ui/react';
+import { Input, Button, VStack, Heading, Alert, AlertIcon, Grid, GridItem, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, useDisclosure, Center, Image } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
@@ -51,6 +51,7 @@ const Signup = () => {
     return (
         <Center w="full" h="full" p={8}>
             <VStack spacing={4}>
+                <Image src="/protravka_logo.png" alt="Logo" width="200px" objectFit='contain'/>
                 <Heading>Signup</Heading>
                 {error && (
                     <Alert status="error">

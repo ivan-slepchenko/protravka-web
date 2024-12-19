@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { ChakraProvider, Box, VStack, Alert, AlertIcon, HStack } from "@chakra-ui/react";
+import { ChakraProvider, Box, VStack, Alert, AlertIcon, HStack, Image } from "@chakra-ui/react";
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { AppDispatch, persistor, RootState } from './store/store';
@@ -123,7 +123,9 @@ const App = () => {
             <Box display={{ base: 'block', md: 'none' }} w="full" h="full" position="relative">
                 <VStack w="full" h="full" position="relative">
                     {isAuthenticated && (
-                        <MobileMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
+                        <>
+                            <MobileMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
+                        </>
                     )}
                     <Box w="full" h="full" position={'relative'}>
                         <Routes>
@@ -146,7 +148,8 @@ const App = () => {
                 {isAuthenticated && (
                     <DesktopMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
                 )}
-                <Box h="full" w="full" overflowX="auto">
+                <HStack h="full" w="full" overflowX="auto">
+                    <Box h="full" w="4px" bg="gray.100"/>
                     <Routes>
                         <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
                         <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}><NewOrderForm /></RequireAuth>} />
@@ -160,7 +163,7 @@ const App = () => {
                         <Route path="/login" element={<LoginRedirect />} />
                         <Route path="/signup" element={<Signup />} />
                     </Routes>
-                </Box>
+                </HStack>
             </HStack>
         </>
     );
