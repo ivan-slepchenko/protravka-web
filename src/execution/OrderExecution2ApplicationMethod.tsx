@@ -23,7 +23,7 @@ const OrderExecution2ApplicationMethod = () => {
                 borderColor="gray.300"
                 _hover={{ backgroundColor: 'gray.100' }}
             >
-                Surry
+                Slurry
             </Button>
             <Button
                 onClick={() => handleApplicationMethodSelect('CDS')}
