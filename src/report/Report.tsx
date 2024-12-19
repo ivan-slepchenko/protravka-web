@@ -109,8 +109,6 @@ const Report: React.FC = () => {
             approved: { count: 0, su: 0, kg: 0 },
             toAcknowledge: { count: 0, su: 0, kg: 0 },
             disapproved: { count: 0, su: 0, kg: 0 },
-            inProgress: { count: 0, su: 0, kg: 0 },
-            notStarted: { count: 0, su: 0, kg: 0 },
         };
 
         filteredOrders.forEach((order) => {
@@ -130,25 +128,15 @@ const Report: React.FC = () => {
                     stats.disapproved.su += order.orderRecipe.nbSeedsUnits;
                     stats.disapproved.kg += order.seedsToTreatKg;
                     break;
-                case OrderStatus.InProgress:
-                    stats.inProgress.count++;
-                    stats.inProgress.su += order.orderRecipe.nbSeedsUnits;
-                    stats.inProgress.kg += order.seedsToTreatKg;
-                    break;
-                case OrderStatus.NotStarted:
-                    stats.notStarted.count++;
-                    stats.notStarted.su += order.orderRecipe.nbSeedsUnits;
-                    stats.notStarted.kg += order.seedsToTreatKg;
-                    break;
                 default:
                     break;
             }
         });
 
         const total = {
-            count: stats.approved.count + stats.toAcknowledge.count + stats.disapproved.count + stats.inProgress.count + stats.notStarted.count,
-            su: stats.approved.su + stats.toAcknowledge.su + stats.disapproved.su + stats.inProgress.su + stats.notStarted.su,
-            kg: stats.approved.kg + stats.toAcknowledge.kg + stats.disapproved.kg + stats.inProgress.kg + stats.notStarted.kg,
+            count: stats.approved.count + stats.toAcknowledge.count + stats.disapproved.count,
+            su: stats.approved.su + stats.toAcknowledge.su + stats.disapproved.su,
+            kg: stats.approved.kg + stats.toAcknowledge.kg + stats.disapproved.kg,
         };
 
         return { stats, total };
@@ -385,20 +373,6 @@ const Report: React.FC = () => {
                                         <Td>{stats.disapproved.su.toFixed(1)}</Td>
                                         <Td>{stats.disapproved.kg.toFixed(1)}</Td>
                                         <Td>{((stats.disapproved.count / total.count) * 100).toFixed(1)}%</Td>
-                                    </Tr>
-                                    <Tr bg="orange.200">
-                                        <Td>In Progress</Td>
-                                        <Td>{stats.inProgress.count}</Td>
-                                        <Td>{stats.inProgress.su.toFixed(1)}</Td>
-                                        <Td>{stats.inProgress.kg.toFixed(1)}</Td>
-                                        <Td>{((stats.inProgress.count / total.count) * 100).toFixed(1)}%</Td>
-                                    </Tr>
-                                    <Tr bg="gray.200">
-                                        <Td>Not Started</Td>
-                                        <Td>{stats.notStarted.count}</Td>
-                                        <Td>{stats.notStarted.su.toFixed(1)}</Td>
-                                        <Td>{stats.notStarted.kg.toFixed(1)}</Td>
-                                        <Td>{((stats.notStarted.count / total.count) * 100).toFixed(1)}%</Td>
                                     </Tr>
                                     <Tr fontWeight="bold">
                                         <Td>Total</Td>
