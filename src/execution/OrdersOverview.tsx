@@ -40,7 +40,7 @@ const OrdersOverview: React.FC = () => {
     return (
         <VStack>
             <Text py={2} px={2} fontSize="lg">You have the following lots to treat today, {currentDate}</Text>
-            <Text py={2} px={2} fontSize="md" color="gray.600">Click on a row to start treating</Text>
+            <Text py={2} px={2} fontSize="md" color="gray.600">Choose the lot to start treatment</Text>
       
             <TableContainer mt={4} w="full">
                 <Table variant="simple" size="sm" w="full">

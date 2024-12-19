@@ -102,7 +102,7 @@ const OrderExecution3ApplyingProduct = () => {
         if (applicationMethod === 'Surry' || applicationMethod === 'CDS') {
             return (
                 <>
-                    <Text fontSize="xl" fontWeight="bold" mb={4}>{applicationMethod}</Text>
+                    <Text fontSize="xl" fontWeight="bold" mb={4}>{applicationMethod}{' Preparation'}</Text>
                     <Text mb={4}>
                         {'Product # '}
                         {currentProductIndex + 1}
