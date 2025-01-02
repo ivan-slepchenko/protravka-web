@@ -21,6 +21,10 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "public/service-worker.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

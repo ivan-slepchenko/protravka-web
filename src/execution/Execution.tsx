@@ -16,6 +16,7 @@ import OrderExecution4ProovingProduct from './OrderExecution4ProovingProduct';
 import OrderExecution6TreatingConfirmation from './OrderExecution6TreatingConfirmation';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import OrderExecution10ConsumptionProoving from './OrderExecution10ConsumptionProoving';
+import { fetchUserToOrderExecution } from '../store/executionSlice'; // Import the new thunk
 
 const Execution = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -24,6 +25,7 @@ const Execution = () => {
 
     useEffect(() => {
         dispatch(fetchOrders());
+        dispatch(fetchUserToOrderExecution()); // Fetch the user-to-order-execution state
     }, [dispatch]);
 
     const renderCurrentPage = () => {

@@ -5,7 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import { ChakraProvider, Box, VStack, Alert, AlertIcon, HStack, Image } from "@chakra-ui/react";
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import store, { AppDispatch, persistor, RootState } from './store/store';
+import store, { AppDispatch, RootState } from './store/store';
 import Crops from './crops/Crops';
 import Products from './products/Products';
 import { fetchUserByToken, logoutUser } from './store/userSlice';
@@ -195,18 +195,47 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-                <ChakraProvider>
-                    <AlertProvider>
-                        <BrowserRouter>
-                            <App />
-                        </BrowserRouter>
-                    </AlertProvider>
-                </ChakraProvider>
-            </PersistGate>
+            <ChakraProvider>
+                <AlertProvider>
+                    <BrowserRouter>
+                        <App />
+                    </BrowserRouter>
+                </AlertProvider>
+            </ChakraProvider>
         </Provider>
     </React.StrictMode>
 );
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker
+            .register('/service-worker.js')
+            .then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+
+                // Listen for updates
+                registration.onupdatefound = () => {
+                    const installingWorker = registration.installing;
+                    if (installingWorker) {
+                        installingWorker.onstatechange = () => {
+                            if (installingWorker.state === 'installed') {
+                                if (navigator.serviceWorker.controller) {
+                                    // New update available
+                                    console.log('New content is available; please refresh.');
+                                } else {
+                                    // Content cached for offline use
+                                    console.log('Content is cached for offline use.');
+                                }
+                            }
+                        };
+                    }
+                };
+            })
+            .catch((error) => {
+                console.error('Service Worker registration failed:', error);
+            });
+    });
+}
 
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

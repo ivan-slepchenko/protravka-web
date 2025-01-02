@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
+import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import newOrderReducer from './newOrderSlice';
 import ordersReducer from './ordersSlice';
@@ -8,31 +8,28 @@ import cropsReducer from './cropsSlice';
 import productsReducer from './productsSlice';
 import userReducer from './userSlice';
 import executionReducer from './executionSlice';
-// ...import your reducers here...
 
-const persistConfig = {
-    key: 'newOrder',
+// Configure persist for execution reducer
+const executionPersistConfig = {
+    key: 'execution',
     storage,
-    blacklist: ['recipeDate', 'applicationDate']
+    whitelist: ['execution'], // Only persist the execution state
 };
 
-const persistedNewOrderReducer = persistReducer(persistConfig, newOrderReducer);
-
+const persistedExecutionReducer = persistReducer(executionPersistConfig, executionReducer);
 
 const store = configureStore({
     reducer: {
-        newOrder: persistedNewOrderReducer,
+        newOrder: newOrderReducer,
         orders: ordersReducer,
         operators: operatorsReducer,
         crops: cropsReducer,
         products: productsReducer,
         user: userReducer,
-        execution: executionReducer,
-    // ...add your reducers here...
+        execution: persistedExecutionReducer, // Use persisted reducer
+        // ...add your reducers here...
     }
 });
-
-export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

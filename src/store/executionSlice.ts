@@ -64,6 +64,17 @@ export const fetchOrderExecution = createAsyncThunk('execution/fetchOrderExecuti
     return { ...data, orderId };
 });
 
+export const fetchUserToOrderExecution = createAsyncThunk('execution/fetchUserToOrderExecution', async () => {
+    const response = await fetch(`${BACKEND_URL}/api/user-to-order-execution`, {
+        credentials: 'include', // Include credentials in the request
+    });
+    if (!response.ok) {
+        throw new Error(`Failed to fetch user to order execution: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+});
+
 const executionSlice = createSlice({
     name: 'execution',
     initialState,
@@ -249,6 +260,11 @@ const executionSlice = createSlice({
             } else {
                 state.orderExecutions.push(action.payload);
             }
+        });
+        builder.addCase(fetchUserToOrderExecution.fulfilled, (state, action: PayloadAction<ExecutionState>) => {
+            state.currentOrderId = action.payload.currentOrderId;
+            state.currentPage = action.payload.currentPage;
+            state.currentProductIndex = action.payload.currentProductIndex;
         });
     },
 });

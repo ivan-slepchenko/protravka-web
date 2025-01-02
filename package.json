@@ -15,6 +15,8 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@types/serviceworker": "^0.0.108",
+    "@types/workbox-sw": "^4.3.7",
     "chart.js": "^4.4.7",
     "chartjs-plugin-datalabels": "^2.2.0",
     "express": "^4.19.2",
@@ -36,6 +38,7 @@
     "typescript": "^4.4.2",
     "uuid": "^11.0.2",
     "web-vitals": "^2.1.0",
+    "workbox-background-sync": "^7.3.0",
     "yup": "^1.4.0"
   },
   "scripts": {
@@ -68,6 +71,7 @@
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.4.1",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "workbox-cli": "^7.3.0"
   }
 }
