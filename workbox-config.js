@@ -3,16 +3,6 @@ export const globPatterns = ['**/*.{html,js,css,png,jpg,json}'];
 export const swDest = './build/service-worker.js';
 export const runtimeCaching = [
     {
-        urlPattern: /^https:\/\/api\.yourdomain\.com\//,
-        handler: 'NetworkFirst',
-        options: {
-            cacheName: 'api-cache',
-            expiration: {
-                maxAgeSeconds: 60 * 60, // 1 hour
-            },
-        },
-    },
-    {
         urlPattern: ({ request }) => request.destination === 'document',
         handler: 'NetworkFirst',
         options: {
@@ -25,5 +15,9 @@ export const runtimeCaching = [
         options: {
             cacheName: 'static-resources',
         },
+    },
+    {
+        urlPattern: ({ url }) => url.pathname.startsWith('/api/executions/'),
+        handler: 'NetworkOnly',
     },
 ];
