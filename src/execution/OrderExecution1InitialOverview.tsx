@@ -11,7 +11,8 @@ const packagingMap = {
 };
 
 const OrderExecution1InitialOverview = () => {
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
+    const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
+    const currentOrderId = currentOrderExecution?.orderId;
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
     const [isChecked, setIsChecked] = useState(false);
     const dispatch: AppDispatch = useDispatch();

@@ -6,10 +6,11 @@ import { nextPage } from '../store/executionSlice';
 
 const OrderExecution5AllAddedProductsOverview = () => {
     const dispatch: AppDispatch = useDispatch();
-    const { currentOrderId, orderExecutions } = useSelector((state: RootState) => state.execution);
-    const currentOrder = orderExecutions.find(execution => execution.orderId === currentOrderId);
+    const { currentOrderExecution, orderExecutions } = useSelector((state: RootState) => state.execution);
+    const orderId = currentOrderExecution?.orderId;
+    const currentOrder = orderExecutions.find(execution => execution.orderId === orderId);
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    const order = orders.find(order => order.id === currentOrderId);
+    const order = orders.find(order => order.id === orderId);
 
     const getTargetQty = (productId: string | undefined) => {
         if (!productId) return 0;

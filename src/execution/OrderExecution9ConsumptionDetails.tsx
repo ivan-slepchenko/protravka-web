@@ -6,15 +6,15 @@ import { setExecutedProductConsumptionPerLotKg, nextPage, setExecutedSlurryConsu
 
 export default function OrderExecution9ConsumptionDetails() {
     const dispatch: AppDispatch = useDispatch();
-    const orderExecution = useSelector((state: RootState) => state.execution.orderExecutions.find(orderExecution => orderExecution.orderId === state.execution.currentOrderId));
+    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderExecution?.orderId);
+    const orderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const applicationMethod = orderExecution?.applicationMethod;
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
-    const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);
-    const currentProductId = order?.productDetails[currentProductIndex].product?.id;
+    const currentProductIndex = useSelector((state: RootState) => state.execution.currentOrderExecution?.currentProductIndex);
+    const currentProductId = (currentProductIndex !== undefined && currentProductIndex !== null) ? order?.productDetails[currentProductIndex].product?.id : undefined;
 
 
-    if (currentProductId === undefined) {
+    if (currentProductIndex === null || currentProductIndex === undefined || currentProductId === undefined) {
         return null;
     }
     

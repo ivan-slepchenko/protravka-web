@@ -6,15 +6,12 @@ import { setAppliedProductRateKg, nextPage } from '../store/executionSlice';
 
 const OrderExecution3ApplyingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
-    const orderExecution = useSelector((state: RootState) => state.execution.orderExecutions.find(orderExecution => orderExecution.orderId === state.execution.currentOrderId));
-    const applicationMethod = orderExecution?.applicationMethod;
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
+    const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
+    const currentOrderId = currentOrderExecution?.orderId;
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
-    const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);
-    const currentProductExecution = useSelector((state: RootState) => {
-        const orderExecution = state.execution.orderExecutions.find(order => order.orderId === state.execution.currentOrderId);
-        return orderExecution ? orderExecution.productExecutions[state.execution.currentProductIndex] : null;
-    });
+    const applicationMethod = currentOrderExecution?.applicationMethod;
+    const currentProductIndex = currentOrderExecution?.currentProductIndex ?? 0;
+    const currentProductExecution = currentOrderExecution?.productExecutions[currentProductIndex];
     const currentProductId = order?.productDetails[currentProductIndex].product?.id;
     const [inputError, setInputError] = useState(false);
     const [, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedRateKg : '');

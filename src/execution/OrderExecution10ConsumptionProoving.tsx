@@ -13,12 +13,15 @@ const OrderExecution10ConsumptionProoving = () => {
     const [photo, setPhotoState] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const orderExecution = useSelector((state: RootState) => state.execution.orderExecutions.find(orderExecution => orderExecution.orderId === state.execution.currentOrderId));
-    const applicationMethod = orderExecution?.applicationMethod;
-    const currentProductIndex = useSelector((state: RootState) => state.execution.currentProductIndex);
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === state.execution.currentOrderId));
+    const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
+    const applicationMethod = currentOrderExecution?.applicationMethod;
+    const currentProductIndex = useSelector((state: RootState) => state.execution.currentOrderExecution?.currentProductIndex);
+    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderExecution?.orderId));
     const totalProducts = order?.productDetails.length || 0;
+
+    if (currentProductIndex === null || currentProductIndex === undefined) {
+        return null;
+    }
 
     useEffect(() => {
         startCamera();
@@ -46,10 +49,10 @@ const OrderExecution10ConsumptionProoving = () => {
                 setPhotoState(photoData);
                 if (applicationMethod === 'CDS') {
                     if (order === undefined) {
-                        throw new Error(`Receipe not found for the current receipe id ${currentOrderId}`);
+                        throw new Error(`Receipe not found for the current receipe id ${currentOrderExecution?.orderId}`);
                     }
                     if (order.productDetails[currentProductIndex] == undefined) {
-                        throw new Error(`Product details not found for the current receipe and product index ${currentOrderId} ${currentProductIndex}`);
+                        throw new Error(`Product details not found for the current receipe and product index ${currentOrderExecution?.orderId} ${currentProductIndex}`);
                     }
 
                     const productDetails: ProductDetail = order.productDetails[currentProductIndex];
@@ -58,7 +61,7 @@ const OrderExecution10ConsumptionProoving = () => {
                         const productId = product.id;
                         dispatch(setProductConsumptionPhoto({ photo: photoData, productId }));
                     } else {
-                        throw new Error(`Product not found for the current receipe and product index ${currentOrderId} ${currentProductIndex}`);
+                        throw new Error(`Product not found for the current receipe and product index ${currentOrderExecution?.orderId} ${currentProductIndex}`);
                     }
                 } else {
                     dispatch(setConsumptionPhoto(photoData));

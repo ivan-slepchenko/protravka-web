@@ -16,24 +16,23 @@ import OrderExecution4ProovingProduct from './OrderExecution4ProovingProduct';
 import OrderExecution6TreatingConfirmation from './OrderExecution6TreatingConfirmation';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import OrderExecution10ConsumptionProoving from './OrderExecution10ConsumptionProoving';
-import { fetchUserToOrderExecution } from '../store/executionSlice'; // Import the new thunk
+import { fetchUserOrderExecutions } from '../store/executionSlice';
 
 const Execution = () => {
     const dispatch: AppDispatch = useDispatch();
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
-    const currentPage = useSelector((state: RootState) => state.execution.currentPage);
+    const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
 
     useEffect(() => {
         dispatch(fetchOrders());
-        dispatch(fetchUserToOrderExecution()); // Fetch the user-to-order-execution state
+        dispatch(fetchUserOrderExecutions()); // Load user's in-progress order executions
     }, [dispatch]);
 
     const renderCurrentPage = () => {
-        if (!currentOrderId) {
+        if (!currentOrderExecution) {
             return <OrdersOverview />;
         }
 
-        switch (currentPage) {
+        switch (currentOrderExecution.currentPage) {
             case OrderExecutionPage.InitialOverview:
                 return <OrderExecution1InitialOverview />;
             case OrderExecutionPage.AllAddedProductsOverview:

@@ -8,7 +8,7 @@ const OrderExecution6TreatingConfirmation = () => {
     const [isChecked, setIsChecked] = useState(false);
     const dispatch: AppDispatch = useDispatch();
 
-    const { currentOrderId } = useSelector((state: RootState) => state.execution);
+    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderExecution?.orderId);
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
 
 

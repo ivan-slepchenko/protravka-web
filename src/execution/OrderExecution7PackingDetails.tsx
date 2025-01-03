@@ -9,7 +9,7 @@ const OrderExecution7PackingDetails = () => {
     const [packedseedsToTreatKg, setPackedseedsToTreatKgState] = useState<number>(0);
 
     const dispatch: AppDispatch = useDispatch();
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
+    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderExecution?.orderId);
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
 
     const handleNextButtonClick = () => {

@@ -10,11 +10,16 @@ import { OrderStatus } from '../store/newOrderSlice';
 const OrderExecution11Completion = () => {
     const dispatch: AppDispatch = useDispatch();
     const [isMobile] = useMediaQuery("(max-width: 600px)");
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderId);
+    const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
+    const currentOrderId = currentOrderExecution?.orderId;
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
 
+    if (currentOrderId === null || currentOrderId === undefined) {
+        return null;
+    }
+
     const handleCompleteClick = () => {
-        if (currentOrderId !== null) {
+        if (currentOrderExecution?.orderId !== null) {
             dispatch(nextPage(OrderExecutionPage.InitialOverview));
             dispatch(completeExecution());
             dispatch(changeOrderStatus({ id: currentOrderId, status: OrderStatus.ToAcknowledge }));
