@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, Table, Thead, Tbody, Tr, Th, Td, Button, VStack, Input, HStack } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setAppliedProductRateKg, nextPage } from '../store/executionSlice';
+import { setAppliedProductRateKg, nextPage, saveOrderExecution } from '../store/executionSlice';
 
 const OrderExecution3ApplyingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -28,6 +28,7 @@ const OrderExecution3ApplyingProduct = () => {
     const handleValueChange = (productId: string, value: number) => {
         if (currentOrderId) {
             dispatch(setAppliedProductRateKg({ orderId: currentOrderId, productId, appliedRateKg: isNaN(value) ? 0 : value }));
+            dispatch(saveOrderExecution());
             setInputError(false);
             setInputValue(value);
         }
@@ -35,6 +36,7 @@ const OrderExecution3ApplyingProduct = () => {
 
     const handleMakePhotoClick = () => {
         dispatch(nextPage());
+        dispatch(saveOrderExecution());
     };
 
     const renderTableHeaders = () => {

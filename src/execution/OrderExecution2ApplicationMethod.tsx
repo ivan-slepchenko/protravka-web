@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, Button, VStack } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
-import { nextPage, setApplicationMethod } from '../store/executionSlice';
+import { nextPage, saveOrderExecution, setApplicationMethod } from '../store/executionSlice';
 
 const OrderExecution2ApplicationMethod = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -10,6 +10,7 @@ const OrderExecution2ApplicationMethod = () => {
     const handleApplicationMethodSelect = (method: string) => {
         dispatch(setApplicationMethod(method));
         dispatch(nextPage());
+        dispatch(saveOrderExecution());
     };
 
     return (

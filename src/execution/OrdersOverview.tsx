@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { startExecution } from '../store/executionSlice';
+import { saveOrderExecution, startExecution } from '../store/executionSlice';
 import { changeOrderStatus, fetchOrders } from '../store/ordersSlice';
 import { OrderStatus } from '../store/newOrderSlice';
 
@@ -30,6 +30,7 @@ const OrdersOverview: React.FC = () => {
     const handleConfirm = () => {
         if (selectedOrderId) {
             dispatch(startExecution(selectedOrderId));
+            dispatch(saveOrderExecution());
             dispatch(changeOrderStatus({ id: selectedOrderId, status: OrderStatus.InProgress }));
             onClose();
         }

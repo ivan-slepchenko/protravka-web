@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Button, VStack, Image, Heading } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto } from '../store/executionSlice';
-import { RootState } from '../store/store';
+import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto, saveOrderExecution } from '../store/executionSlice';
+import { AppDispatch, RootState } from '../store/store';
 import { FaCamera } from 'react-icons/fa';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import { ProductDetail } from '../store/newOrderSlice';
 import { Product } from '../store/productsSlice';
 
 const OrderExecution10ConsumptionProoving = () => {
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -60,11 +60,13 @@ const OrderExecution10ConsumptionProoving = () => {
                         const product: Product = productDetails.product;
                         const productId = product.id;
                         dispatch(setProductConsumptionPhoto({ photo: photoData, productId }));
+                        dispatch(saveOrderExecution());
                     } else {
                         throw new Error(`Product not found for the current receipe and product index ${currentOrderExecution?.orderId} ${currentProductIndex}`);
                     }
                 } else {
                     dispatch(setConsumptionPhoto(photoData));
+                    dispatch(saveOrderExecution());
                 }
             }
         }
@@ -85,6 +87,7 @@ const OrderExecution10ConsumptionProoving = () => {
             } else {
                 dispatch(nextPage());
             }
+            dispatch(saveOrderExecution());
         }
     };
 

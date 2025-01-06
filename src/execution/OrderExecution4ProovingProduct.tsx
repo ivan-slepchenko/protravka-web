@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
-import { incrementProductIndex, nextPage, resetPhoto, setPhotoForProvingProductApplication } from '../store/executionSlice';
+import { incrementProductIndex, nextPage, resetPhotoForProvingProductApplication, saveOrderExecution, setPhotoForProvingProductApplication } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { OrderExecutionPage } from './OrderExecutionPage';
@@ -56,6 +56,7 @@ const OrderExecution4ProovingProduct = () => {
                 if (productDetails.product !== undefined) {
                     const productId = productDetails.product.id;
                     dispatch(setPhotoForProvingProductApplication({ photo: photoData, productId }));
+                    dispatch(saveOrderExecution());
                 } else {
                     throw new Error(`Product not found for the current receipe and product index ${currentOrderId} ${currentProductIndex}`);
                 }
@@ -64,9 +65,25 @@ const OrderExecution4ProovingProduct = () => {
     };
 
     const handleRetakePhoto = () => {
+        if (order === undefined) {
+            throw new Error(`Order not found for the current order id ${currentOrderId}`);
+        }
+
+        const productDetails = order.productDetails[currentProductIndex];
+        if (productDetails === undefined) {
+            throw new Error(`Product details not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+        }
+
+        const product = productDetails.product;
+        if (product === undefined) {
+            throw new Error(`Product not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+        }
+
+        dispatch(resetPhotoForProvingProductApplication({ productId: product.id }));
+        dispatch(saveOrderExecution());
+
         setPhotoState(null);
         startCamera();
-        dispatch(resetPhoto());
     };
 
     const handleNextButtonClick = () => {
@@ -78,6 +95,7 @@ const OrderExecution4ProovingProduct = () => {
                 } else {
                     dispatch(nextPage());
                 }
+                dispatch(saveOrderExecution());
             }
         }
     };

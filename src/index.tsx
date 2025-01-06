@@ -4,7 +4,8 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { ChakraProvider, Box, VStack, Alert, AlertIcon, HStack } from "@chakra-ui/react";
 import { Provider, useSelector, useDispatch } from 'react-redux';
-import store, { AppDispatch, RootState } from './store/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import store, { persistor, AppDispatch, RootState } from './store/store';
 import Crops from './crops/Crops';
 import Products from './products/Products';
 import { fetchUserByToken, logoutUser } from './store/userSlice';
@@ -194,13 +195,15 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <ChakraProvider>
-                <AlertProvider>
-                    <BrowserRouter>
-                        <App />
-                    </BrowserRouter>
-                </AlertProvider>
-            </ChakraProvider>
+            <PersistGate loading={null} persistor={persistor}>
+                <ChakraProvider>
+                    <AlertProvider>
+                        <BrowserRouter>
+                            <App />
+                        </BrowserRouter>
+                    </AlertProvider>
+                </ChakraProvider>
+            </PersistGate>
         </Provider>
     </React.StrictMode>
 );

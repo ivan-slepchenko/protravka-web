@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, Button, useMediaQuery, VStack, HStack, NumberInput, NumberInputField, Center } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { nextPage, setPackedseedsToTreatKg } from '../store/executionSlice';
+import { nextPage, saveOrderExecution, setPackedseedsToTreatKg } from '../store/executionSlice';
 
 const OrderExecution7PackingDetails = () => {
     const [isMobile] = useMediaQuery("(max-width: 600px)");
@@ -16,6 +16,7 @@ const OrderExecution7PackingDetails = () => {
         if (typeof packedseedsToTreatKg === 'number') {
             dispatch(setPackedseedsToTreatKg(packedseedsToTreatKg));
             dispatch(nextPage());
+            dispatch(saveOrderExecution());
         }
     };
 

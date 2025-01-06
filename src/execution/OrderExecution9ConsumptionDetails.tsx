@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack, Center } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setExecutedProductConsumptionPerLotKg, nextPage, setExecutedSlurryConsumptionPerLotKg } from '../store/executionSlice';
+import { setExecutedProductConsumptionPerLotKg, nextPage, setExecutedSlurryConsumptionPerLotKg, saveOrderExecution } from '../store/executionSlice';
 
 export default function OrderExecution9ConsumptionDetails() {
     const dispatch: AppDispatch = useDispatch();
@@ -25,11 +25,13 @@ export default function OrderExecution9ConsumptionDetails() {
             } else {
                 dispatch(setExecutedProductConsumptionPerLotKg({ orderId: currentOrderId, productId: currentProductId, productConsumptionPerLotKg: value }));
             }
+            dispatch(saveOrderExecution());
         }
     };
 
     const handleMakePhotoClick = () => {
         dispatch(nextPage());
+        dispatch(saveOrderExecution());
     };
 
     const renderTableHeaders = () => {

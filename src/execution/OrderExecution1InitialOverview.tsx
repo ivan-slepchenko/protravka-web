@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Checkbox, Button, HStack, VStack } from '@chakra-ui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { nextPage } from '../store/executionSlice';
+import { nextPage, saveOrderExecution } from '../store/executionSlice';
 import { Packaging } from '../store/newOrderSlice';
 
 const packagingMap = {
@@ -27,6 +27,7 @@ const OrderExecution1InitialOverview = () => {
 
     const handleNextClick = () => {
         dispatch(nextPage());
+        dispatch(saveOrderExecution());
     // Navigate to the next page if needed
     };
 

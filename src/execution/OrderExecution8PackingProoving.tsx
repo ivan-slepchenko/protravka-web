@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
-import { nextPage, resetCurrentProductIndex, resetPhoto, setPhotoForPacking } from '../store/executionSlice';
+import { nextPage, resetCurrentProductIndex, resetPackingPhoto, saveOrderExecution, setPhotoForPacking } from '../store/executionSlice';
 import { FaCamera } from 'react-icons/fa';
+import { AppDispatch } from '../store/store';
 
 const OrderExecution8PackingProoving = () => {
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -35,6 +36,7 @@ const OrderExecution8PackingProoving = () => {
                 const photoData = canvasRef.current.toDataURL('image/png');
                 setPhotoState(photoData);
                 dispatch(setPhotoForPacking(photoData));
+                dispatch(saveOrderExecution());
             }
         }
     };
@@ -42,12 +44,14 @@ const OrderExecution8PackingProoving = () => {
     const handleRetakeClick = () => {
         setPhotoState(null);
         startCamera();
-        dispatch(resetPhoto());
+        dispatch(resetPackingPhoto());
+        dispatch(saveOrderExecution());
     };
 
     const handleNextButtonClick = () => {
-        dispatch(resetCurrentProductIndex())
+        dispatch(resetCurrentProductIndex());
         dispatch(nextPage());
+        dispatch(saveOrderExecution());
     };
 
     return (

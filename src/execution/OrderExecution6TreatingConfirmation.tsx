@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, Checkbox, Button, VStack, HStack, Center } from '@chakra-ui/react';
-import { nextPage } from '../store/executionSlice';
+import { nextPage, saveOrderExecution } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 
@@ -14,6 +14,7 @@ const OrderExecution6TreatingConfirmation = () => {
 
     const handleNextButtonClick = () => {
         dispatch(nextPage());
+        dispatch(saveOrderExecution());
     };
 
     const lotNumber = order?.lotNumber; // Replace with actual lot number

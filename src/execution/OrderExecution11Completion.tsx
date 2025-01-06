@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Text, Button, useMediaQuery, VStack, HStack, Center } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { completeExecution, nextPage } from '../store/executionSlice';
+import { completeExecution, nextPage, saveOrderExecution } from '../store/executionSlice';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import { changeOrderStatus } from '../store/ordersSlice';
 import { OrderStatus } from '../store/newOrderSlice';
@@ -21,6 +21,7 @@ const OrderExecution11Completion = () => {
     const handleCompleteClick = () => {
         if (currentOrderExecution?.orderId !== null) {
             dispatch(nextPage(OrderExecutionPage.InitialOverview));
+            dispatch(saveOrderExecution());
             dispatch(completeExecution());
             dispatch(changeOrderStatus({ id: currentOrderId, status: OrderStatus.ToAcknowledge }));
         } else {

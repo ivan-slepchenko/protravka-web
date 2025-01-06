@@ -24,9 +24,40 @@ if (workbox) {
     // Precache static assets (e.g., JS, CSS, images, etc.)
     precacheAndRoute(self.__WB_MANIFEST);
 
+    // Cache /api/executions POST requests (use NetworkOnly strategy with BackgroundSyncPlugin)
+    registerRoute(
+        ({ url, request }) => {
+            const isMatch = url.pathname.startsWith('/api/executions') && request.method === 'POST';
+            console.log(`URL: ${url.pathname} and method: ${request.method} ${isMatch ? 'matched' : 'did not matched'} /api/executions POST for background sync`);
+            return isMatch;
+        },
+        new NetworkFirst({
+            cacheName: 'api-executions-cache',
+            plugins: [
+                new ExpirationPlugin({
+                    maxAgeSeconds: 60 * 60, // Cache for 1 hour
+                }),
+                bgSyncPlugin
+            ], // Use Background Sync for failed requests
+        })
+    );
+
+    // Cache /api/user GET calls (use NetworkFirst strategy without BackgroundSyncPlugin)
+    registerRoute(
+        ({ url, request }) => url.pathname.startsWith('/api/user') && (request.method === 'GET'),
+        new NetworkFirst({
+            cacheName: 'api-user-cache',
+            plugins: [
+                new ExpirationPlugin({
+                    maxAgeSeconds: 60 * 60, // Cache for 1 hour
+                }),
+            ],
+        })
+    );
+
     // Cache API calls (use NetworkFirst strategy)
     registerRoute(
-        ({ url }) => url.pathname.startsWith('/api/'),
+        ({ url, request }) => url.pathname.startsWith('/api') && (request.method === 'GET'),
         new NetworkFirst({
             cacheName: 'api-cache',
             plugins: [
@@ -65,6 +96,14 @@ if (workbox) {
                     maxAgeSeconds: 7 * 24 * 60 * 60, // Cache for 7 days
                 }),
             ],
+        })
+    );
+
+    // Cache manifest.json (use NetworkFirst strategy)
+    registerRoute(
+        ({ url }) => url.pathname === '/manifest.json',
+        new NetworkFirst({
+            cacheName: 'manifest-cache',
         })
     );
 
