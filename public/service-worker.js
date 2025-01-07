@@ -8,12 +8,16 @@ if (workbox) {
 
     const { precacheAndRoute } = workbox.precaching;
     const { registerRoute } = workbox.routing;
-    const { CacheFirst, NetworkFirst, StaleWhileRevalidate } = workbox.strategies;
+    const { CacheFirst, NetworkFirst, StaleWhileRevalidate, NetworkOnly } = workbox.strategies;
     const { ExpirationPlugin } = workbox.expiration;
     const { BackgroundSyncPlugin } = workbox.backgroundSync;
 
-    const bgSyncPlugin = new BackgroundSyncPlugin('crud-queue', {
+    const executionSyncPlugin = new BackgroundSyncPlugin('execution-queue', {
         maxRetentionTime: 24 * 60, // Retry for 24 hours
+        onSync: async ({ queue }) => {
+            queue.replayRequests(); 
+            console.log('background sync ran.');
+        }
     });
 
     // Ensure self.__WB_MANIFEST is defined and is an array
@@ -31,15 +35,10 @@ if (workbox) {
             console.log(`URL: ${url.pathname} and method: ${request.method} ${isMatch ? 'matched' : 'did not matched'} /api/executions POST for background sync`);
             return isMatch;
         },
-        new NetworkFirst({
-            cacheName: 'api-executions-cache',
-            plugins: [
-                new ExpirationPlugin({
-                    maxAgeSeconds: 60 * 60, // Cache for 1 hour
-                }),
-                bgSyncPlugin
-            ], // Use Background Sync for failed requests
-        })
+        new NetworkOnly({
+            plugins: [executionSyncPlugin], // Use Background Sync for failed requests
+        }),
+        'POST'
     );
 
     // Cache /api/user GET calls (use NetworkFirst strategy without BackgroundSyncPlugin)
@@ -64,7 +63,6 @@ if (workbox) {
                 new ExpirationPlugin({
                     maxAgeSeconds: 60 * 60, // Cache for 1 hour
                 }),
-                bgSyncPlugin,
             ],
         })
     );
