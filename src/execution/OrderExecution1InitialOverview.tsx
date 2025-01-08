@@ -11,19 +11,18 @@ const packagingMap = {
 };
 
 const OrderExecution1InitialOverview = () => {
-    const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
-    const currentOrderId = currentOrderExecution?.orderId;
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
+
     const [isChecked, setIsChecked] = useState(false);
     const dispatch: AppDispatch = useDispatch();
 
-    if (!order) {
-        return <Text>{'Receipe not found '}{currentOrderId}</Text>;
+    if (!currentOrder) {
+        return <Text>{'Receipe not found '}</Text>;
     }
 
-    const totalLitres = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0) / 1000;
-    const totalKg = order.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.grSlurryRecipeToMix, 0) / 1000;
-    const bagSizeUnit = packagingMap[order.packaging];
+    const totalLitres = currentOrder.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0) / 1000;
+    const totalKg = currentOrder.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.grSlurryRecipeToMix, 0) / 1000;
+    const bagSizeUnit = packagingMap[currentOrder.packaging];
 
     const handleNextClick = () => {
         dispatch(nextPage());
@@ -35,11 +34,11 @@ const OrderExecution1InitialOverview = () => {
         <VStack p={4} w="full" h="full">
             <Text fontSize="2xl" fontWeight="bold">Receipe Execution</Text>
             <Box mt={4}>
-                <Text><strong>Lot:</strong> {order.lotNumber}</Text>
-                <Text><strong>Seeds To Treat:</strong> {order.seedsToTreatKg} kg</Text>
-                <Text><strong>TKW:</strong> {order.tkw} gr</Text>
-                <Text><strong>Bag Size:</strong> {order.bagSize} {bagSizeUnit}</Text>
-                <Text><strong>Expected Amount Of Bags:</strong> {order.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
+                <Text><strong>Lot:</strong> {currentOrder.lotNumber}</Text>
+                <Text><strong>Seeds To Treat:</strong> {currentOrder.seedsToTreatKg} kg</Text>
+                <Text><strong>TKW:</strong> {currentOrder.tkw} gr</Text>
+                <Text><strong>Bag Size:</strong> {currentOrder.bagSize} {bagSizeUnit}</Text>
+                <Text><strong>Expected Amount Of Bags:</strong> {currentOrder.orderRecipe.nbSeedsUnits.toFixed()} bags</Text>
             </Box>
             <Table variant="simple" size="sm" mt={4}>
                 <Thead bg="orange.100">
@@ -50,7 +49,7 @@ const OrderExecution1InitialOverview = () => {
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {order.orderRecipe.productRecipes.map(productRecipe => {
+                    {currentOrder.orderRecipe.productRecipes.map(productRecipe => {
                         return (
                             <Tr key={productRecipe.id}>
                                 <Td>{productRecipe.productDetail.product?.name}</Td>

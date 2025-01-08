@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { fetchOrders } from '../store/ordersSlice';
 import OrdersOverview from './OrdersOverview';
 import OrderExecution1InitialOverview from './OrderExecution1InitialOverview';
 import OrderExecution5AllAddedProductsOverview from './OrderExecution5AllAddedProductsOverview';
@@ -16,15 +15,34 @@ import OrderExecution4ProovingProduct from './OrderExecution4ProovingProduct';
 import OrderExecution6TreatingConfirmation from './OrderExecution6TreatingConfirmation';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import OrderExecution10ConsumptionProoving from './OrderExecution10ConsumptionProoving';
-import { fetchUserOrderExecutions } from '../store/executionSlice';
+import { fetchOrders } from '../store/ordersSlice';
+import { Order } from '../store/newOrderSlice';
+import { completeExecution, fetchOrderExecutionAsCurrent, setCurrentOrder } from '../store/executionSlice';
+
 
 const Execution = () => {
     const dispatch: AppDispatch = useDispatch();
+
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
 
     useEffect(() => {
-        dispatch(fetchOrders());
-        dispatch(fetchUserOrderExecutions()); // Load user's in-progress order executions
+        if (currentOrderExecution) {
+            // in case when user opens app in online mode, after being offline, it may happen that his execution slice is not in sync.
+            dispatch(fetchOrders()).unwrap().then((orders: Order[]) => {
+                const currentOrder = orders.find(order => order.id === currentOrderExecution.orderId);
+                if (!currentOrder) {
+                    dispatch(completeExecution());
+                } else {
+                    //TODO: We should block operator from starting new order if he has unfinished order. 
+                    if (currentOrderExecution.orderId !== currentOrder.id) {
+                        dispatch(fetchOrderExecutionAsCurrent(currentOrder.id));
+                        dispatch(setCurrentOrder(currentOrder));
+                    }
+                }
+            }).catch(() => {
+                console.log('Working in offline mode');
+            });
+        }
     }, [dispatch]);
 
     const renderCurrentPage = () => {

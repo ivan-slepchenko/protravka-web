@@ -8,16 +8,18 @@ const OrderExecution6TreatingConfirmation = () => {
     const [isChecked, setIsChecked] = useState(false);
     const dispatch: AppDispatch = useDispatch();
 
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderExecution?.orderId);
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
 
+    if (currentOrder === null) {
+        return null;
+    }
 
     const handleNextButtonClick = () => {
         dispatch(nextPage());
         dispatch(saveOrderExecution());
     };
 
-    const lotNumber = order?.lotNumber; // Replace with actual lot number
+    const lotNumber = currentOrder.lotNumber;
 
     return (
         <VStack p={4} w="full" h="full" gap={6}>

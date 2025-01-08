@@ -61,7 +61,7 @@ export const modifyOrder = createAsyncThunk('orders/modifyOrder', async (order: 
     return response.json();
 });
 
-export const changeOrderStatus = createAsyncThunk('orders/changeOrderStatus', async ({ id, status }: { id: string, status: string }) => {
+export const changeOrderStatus = createAsyncThunk('orders/changeOrderStatus', async ({ id, status }: { id: string, status: string }, { dispatch }) => {
     const response = await fetch(`${BACKEND_URL}/api/orders/${id}/status`, {
         method: 'PUT',
         headers: {
@@ -70,7 +70,9 @@ export const changeOrderStatus = createAsyncThunk('orders/changeOrderStatus', as
         body: JSON.stringify({ status }),
         credentials: 'include', // Include credentials in the request
     });
-    return response.json();
+    const result = await response.json();
+    await dispatch(fetchOrders()); // We need to refetch orders, to have them in ServiceWorker cache for offline use cases. Probably this should become a pattern.
+    return result;
 });
 
 const ordersSlice = createSlice({

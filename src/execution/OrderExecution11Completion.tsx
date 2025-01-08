@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, useMediaQuery, VStack, HStack, Center } from '@chakra-ui/react';
+import { Box, Text, Button, useMediaQuery, VStack, HStack, Center, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { completeExecution, nextPage, saveOrderExecution } from '../store/executionSlice';
@@ -10,22 +10,22 @@ import { OrderStatus } from '../store/newOrderSlice';
 const OrderExecution11Completion = () => {
     const dispatch: AppDispatch = useDispatch();
     const [isMobile] = useMediaQuery("(max-width: 600px)");
-    const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
-    const currentOrderId = currentOrderExecution?.orderId;
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef(null);
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
 
-    if (currentOrderId === null || currentOrderId === undefined) {
+    if (currentOrder === null) {
         return null;
     }
 
-    const handleCompleteClick = () => {
-        if (currentOrderExecution?.orderId !== null) {
+    const handleCompleteClick = async () => {
+        try {
+            await dispatch(saveOrderExecution()).unwrap();
             dispatch(nextPage(OrderExecutionPage.InitialOverview));
-            dispatch(saveOrderExecution());
+            dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.ToAcknowledge }));
             dispatch(completeExecution());
-            dispatch(changeOrderStatus({ id: currentOrderId, status: OrderStatus.ToAcknowledge }));
-        } else {
-            console.error('No current order id');
+        } catch (error) {
+            onOpen();
         }
     };
 
@@ -34,11 +34,11 @@ const OrderExecution11Completion = () => {
             <Center h="full">
                 <VStack>
                     <Text mt={4} textAlign="center">
-                        <span><strong>{'You finished treating lot '}{order?.lotNumber}.</strong></span>
+                        <span><strong>{'You finished treating lot '}{currentOrder.lotNumber}.</strong></span>
                         <br />
                         <br />
                         <span>{'Please check your further tasks for today or contact your Manager.'}</span>
-                    </Text>111
+                    </Text>
                     <Box
                         mt={4}
                         p={8}
@@ -65,6 +65,28 @@ const OrderExecution11Completion = () => {
                     {'Ok'}
                 </Button>
             </HStack>
+            <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+                isCentered
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent margin={4}>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Internet Connection Required
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                            {'You may complete execution only when internet access is available. Please find better internet connection.'}
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                Close
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
         </VStack>
     );
 };

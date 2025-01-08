@@ -9,17 +9,15 @@ import { OrderExecutionPage } from './OrderExecutionPage';
 const OrderExecution4ProovingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
-    const currentOrderId = currentOrderExecution?.orderId;
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const currentProductIndex = currentOrderExecution?.currentProductIndex;
     const [photo, setPhotoState] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    if (currentOrderId === undefined || currentProductIndex === undefined || currentProductIndex === null) {
+    if (currentOrder === null || currentProductIndex === undefined || currentProductIndex === null) {
         return null;
     }
-
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
 
     useEffect(() => {
         startCamera();
@@ -45,38 +43,31 @@ const OrderExecution4ProovingProduct = () => {
                 context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
                 const photoData = canvasRef.current.toDataURL('image/png');
                 setPhotoState(photoData);
-                if (order === undefined) {
-                    throw new Error(`Receipe not found for the current receipe id ${currentOrderId}`);
-                }
-                if (order.productDetails[currentProductIndex] === undefined) {
-                    throw new Error(`Product details not found for the current receipe and product index ${currentOrderId} ${currentProductIndex}`);
+                if (currentOrder.productDetails[currentProductIndex] === undefined) {
+                    throw new Error(`Product details not found for the current receipe and product index ${currentOrder.id} ${currentProductIndex}`);
                 }
 
-                const productDetails = order.productDetails[currentProductIndex];
+                const productDetails = currentOrder.productDetails[currentProductIndex];
                 if (productDetails.product !== undefined) {
                     const productId = productDetails.product.id;
                     dispatch(setPhotoForProvingProductApplication({ photo: photoData, productId }));
                     dispatch(saveOrderExecution());
                 } else {
-                    throw new Error(`Product not found for the current receipe and product index ${currentOrderId} ${currentProductIndex}`);
+                    throw new Error(`Product not found for the current receipe and product index ${currentOrder.id} ${currentProductIndex}`);
                 }
             }
         }
     };
 
     const handleRetakePhoto = () => {
-        if (order === undefined) {
-            throw new Error(`Order not found for the current order id ${currentOrderId}`);
-        }
-
-        const productDetails = order.productDetails[currentProductIndex];
+        const productDetails = currentOrder.productDetails[currentProductIndex];
         if (productDetails === undefined) {
-            throw new Error(`Product details not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+            throw new Error(`Product details not found for the current order and product index ${currentOrder.id} ${currentProductIndex}`);
         }
 
         const product = productDetails.product;
         if (product === undefined) {
-            throw new Error(`Product not found for the current order and product index ${currentOrderId} ${currentProductIndex}`);
+            throw new Error(`Product not found for the current order and product index ${currentOrder.id} ${currentProductIndex}`);
         }
 
         dispatch(resetPhotoForProvingProductApplication({ productId: product.id }));
@@ -87,17 +78,13 @@ const OrderExecution4ProovingProduct = () => {
     };
 
     const handleNextButtonClick = () => {
-        if (currentOrderId) {
-            if (order) {
-                if (currentProductIndex < order.productDetails.length - 1) {
-                    dispatch(incrementProductIndex());
-                    dispatch(nextPage(OrderExecutionPage.ApplyingProduct));
-                } else {
-                    dispatch(nextPage());
-                }
-                dispatch(saveOrderExecution());
-            }
+        if (currentProductIndex < currentOrder.productDetails.length - 1) {
+            dispatch(incrementProductIndex());
+            dispatch(nextPage(OrderExecutionPage.ApplyingProduct));
+        } else {
+            dispatch(nextPage());
         }
+        dispatch(saveOrderExecution());
     };
 
     return (
@@ -107,9 +94,9 @@ const OrderExecution4ProovingProduct = () => {
                     {'Product # '}
                     {currentProductIndex + 1}
                     {' of '}
-                    {order?.productDetails.length}
+                    {currentOrder.productDetails.length}
                     {': '}
-                    {order?.productDetails[currentProductIndex].product?.name}
+                    {currentOrder.productDetails[currentProductIndex].product?.name}
                 </Text>
                 <Box
                     width="100%"

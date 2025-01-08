@@ -6,20 +6,21 @@ import { nextPage, saveOrderExecution } from '../store/executionSlice';
 
 const OrderExecution5AllAddedProductsOverview = () => {
     const dispatch: AppDispatch = useDispatch();
-    const { currentOrderExecution, orderExecutions } = useSelector((state: RootState) => state.execution);
-    const orderId = currentOrderExecution?.orderId;
-    const currentOrder = orderExecutions.find(execution => execution.orderId === orderId);
-    const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    const order = orders.find(order => order.id === orderId);
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
+    const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
+
+    if (currentOrder === null || currentOrderExecution === null) {
+        return null;
+    }
 
     const getTargetQty = (productId: string | undefined) => {
         if (!productId) return 0;
-        const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === productId);
+        const productRecipe = currentOrder.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === productId);
         return productRecipe ? (productRecipe.grSlurryRecipeToMix / 1000) : 0;
     };
 
-    const totalTargetQty = order?.productDetails.reduce((total, product) => total + getTargetQty(product.product?.id), 0) || 0;
-    const totalActualQty = currentOrder?.productExecutions.reduce((total, product) => total + product.appliedRateKg, 0) || 0;
+    const totalTargetQty = currentOrder.productDetails.reduce((total, product) => total + getTargetQty(product.product?.id), 0) || 0;
+    const totalActualQty = currentOrderExecution.productExecutions.reduce((total, product) => total + product.appliedRateKg, 0) || 0;
 
     const handleNextButtonClicked = (): void => {
         dispatch(nextPage());
@@ -40,10 +41,10 @@ const OrderExecution5AllAddedProductsOverview = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {currentOrder?.productExecutions.map((product, index) => (
+                            {currentOrderExecution.productExecutions.map((product, index) => (
                                 <Tr key={index}>
-                                    <Td>{order?.productDetails[index].product?.name}</Td>
-                                    <Td>{getTargetQty(order?.productDetails[index].product?.id).toFixed(2)}</Td>
+                                    <Td>{currentOrder.productDetails[index].product?.name}</Td>
+                                    <Td>{getTargetQty(currentOrder.productDetails[index].product?.id).toFixed(2)}</Td>
                                     <Td>{product.appliedRateKg}</Td>
                                 </Tr>
                             ))}

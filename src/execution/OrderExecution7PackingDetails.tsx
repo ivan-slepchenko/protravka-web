@@ -9,8 +9,7 @@ const OrderExecution7PackingDetails = () => {
     const [packedseedsToTreatKg, setPackedseedsToTreatKgState] = useState<number>(0);
 
     const dispatch: AppDispatch = useDispatch();
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderExecution?.orderId);
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
 
     const handleNextButtonClick = () => {
         if (typeof packedseedsToTreatKg === 'number') {
@@ -20,7 +19,7 @@ const OrderExecution7PackingDetails = () => {
         }
     };
 
-    if (order?.seedsToTreatKg === undefined) {
+    if (currentOrder === undefined || currentOrder?.seedsToTreatKg === undefined) {
         return <Text>Invalid data, order is not found</Text>;
     }
 
@@ -55,8 +54,8 @@ const OrderExecution7PackingDetails = () => {
                 </Box>
                 <Text p={2} mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
                 <Box p={2} mt={4} w="full">
-                    {order?.seedsToTreatKg > packedseedsToTreatKg ? (
-                        <Text><b><span style={{ color: "red" }}>{(order?.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} kg is missing!</span></b> Please inform your line manager if you cannot find it</Text>
+                    {currentOrder.seedsToTreatKg > packedseedsToTreatKg ? (
+                        <Text><b><span style={{ color: "red" }}>{(currentOrder.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} kg is missing!</span></b> Please inform your line manager if you cannot find it</Text>
                     ) : (
                         <Text>This corresponds to the weight of the lot.</Text>
                     )}

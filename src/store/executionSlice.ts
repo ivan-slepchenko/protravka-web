@@ -1,5 +1,11 @@
+/**
+ * This slice manages the state of the order execution process.
+ * This slice is also persisted to local storage for offline use.
+ */
+
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { OrderExecutionPage } from '../execution/OrderExecutionPage';
+import { Order } from './newOrderSlice';
 
 export interface ProductExecution {
     productId: string;
@@ -23,11 +29,13 @@ export interface OrderExecution {
 }
 
 export interface ExecutionState {
+    currentOrder: Order | null;  
     currentOrderExecution: OrderExecution | null;
     orderExecutions: OrderExecution[];
 }
 
 const initialState: ExecutionState = {
+    currentOrder: null,
     currentOrderExecution: null,
     orderExecutions: [],
 };
@@ -48,7 +56,7 @@ export const saveOrderExecution = createAsyncThunk(
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(orderExecution),
+                body: JSON.stringify(orderExecution),  
                 credentials: 'include', // Include credentials for requests
             });
             return await response.json();
@@ -59,35 +67,29 @@ export const saveOrderExecution = createAsyncThunk(
     }
 );
 
-export const fetchUserOrderExecutions = createAsyncThunk('execution/fetchUserOrderExecutions', async () => {
-    const response = await fetch(`${BACKEND_URL}/api/executions/user-order-executions`, {
-        credentials: 'include', // Include credentials in the request
-    });
-    if (!response.ok) {
-        throw new Error(`Failed to fetch user order executions: ${response.statusText}`);
-    }
-    const data = await response.json();
-    return data;
-});
-
-export const fetchOrderExecution = createAsyncThunk('execution/fetchOrderExecution', async (orderId: string) => {
+export const fetchOrderExecution = async (orderId: string) => {
     const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}`, {
         credentials: 'include', // Include credentials in the request
     });
     if (!response.ok) {
         throw new Error(`Failed to fetch order execution: ${response.statusText}`);
     }
-    const data = await response.json();
-    return { ...data, orderId };
-});
+    return await response.json() as OrderExecution;
+}
+
+export const fetchOrderExecutionAsCurrent = createAsyncThunk(
+    'execution/fetchOrderExecutionAsCurrent',
+    fetchOrderExecution
+);
 
 const executionSlice = createSlice({
     name: 'execution',
     initialState,
     reducers: {
-        startExecution: (state, action: PayloadAction<string>) => {
+        startExecution: (state, action: PayloadAction<Order>) => {
+            state.currentOrder = action.payload;
             const newOrderExecution = {
-                orderId: action.payload,
+                orderId: action.payload.id,
                 productExecutions: [],
                 applicationMethod: null,
                 packingPhoto: null,
@@ -120,6 +122,7 @@ const executionSlice = createSlice({
             }
         },
         completeExecution: (state) => {
+            state.currentOrder = null;
             state.currentOrderExecution = null;
         },
         setApplicationMethod: (state, action: PayloadAction<string>) => {
@@ -202,13 +205,14 @@ const executionSlice = createSlice({
                 state.currentOrderExecution.packedseedsToTreatKg = action.payload;
             }
         },
+        setCurrentOrder: (state, action: PayloadAction<Order>) => {
+            state.currentOrder = action.payload;
+        },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchUserOrderExecutions.fulfilled, (state, action: PayloadAction<OrderExecution[]>) => {
-            if (action.payload.length > 0) {
-                state.currentOrderExecution = action.payload[0]; // Assuming only one in-progress execution per user
-            }
-        })
+        builder.addCase(fetchOrderExecutionAsCurrent.fulfilled, (state, action: PayloadAction<OrderExecution>) => {
+            state.currentOrderExecution = action.payload;
+        });
     },
 });
 
@@ -229,5 +233,6 @@ export const {
     setConsumptionPhoto,
     setExecutedSlurryConsumptionPerLotKg,
     setExecutedProductConsumptionPerLotKg,
+    setCurrentOrder,
 } = executionSlice.actions;
 export default executionSlice.reducer;

@@ -14,14 +14,15 @@ const OrderExecution10ConsumptionProoving = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const applicationMethod = currentOrderExecution?.applicationMethod;
     const currentProductIndex = useSelector((state: RootState) => state.execution.currentOrderExecution?.currentProductIndex);
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderExecution?.orderId));
-    const totalProducts = order?.productDetails.length || 0;
 
-    if (currentProductIndex === null || currentProductIndex === undefined) {
+    if (currentProductIndex === null || currentProductIndex === undefined || currentOrder === null) {
         return null;
     }
+
+    const totalProducts = currentOrder.productDetails.length || 0;
 
     useEffect(() => {
         startCamera();
@@ -48,14 +49,11 @@ const OrderExecution10ConsumptionProoving = () => {
                 const photoData = canvasRef.current.toDataURL('image/png');
                 setPhotoState(photoData);
                 if (applicationMethod === 'CDS') {
-                    if (order === undefined) {
-                        throw new Error(`Receipe not found for the current receipe id ${currentOrderExecution?.orderId}`);
-                    }
-                    if (order.productDetails[currentProductIndex] == undefined) {
+                    if (currentOrder.productDetails[currentProductIndex] == undefined) {
                         throw new Error(`Product details not found for the current receipe and product index ${currentOrderExecution?.orderId} ${currentProductIndex}`);
                     }
 
-                    const productDetails: ProductDetail = order.productDetails[currentProductIndex];
+                    const productDetails: ProductDetail = currentOrder.productDetails[currentProductIndex];
                     if (productDetails.product !== undefined) {
                         const product: Product = productDetails.product;
                         const productId = product.id;

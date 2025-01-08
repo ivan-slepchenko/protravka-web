@@ -3,27 +3,28 @@ import { Box, Button, Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Heading, 
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store/store";
-import { fetchProducts } from "../../store/productsSlice";
-import { fetchOrderExecution } from "../../store/executionSlice";
 import OrderExecutionTab from "./OrderExecutionTab";
 import OrderRecipeTab from "./OrderRecipeTab";
 import { OrderStatus } from "../../store/newOrderSlice";
 import { changeOrderStatus } from "../../store/ordersSlice";
+import { fetchOrderExecution, OrderExecution } from "../../store/executionSlice";
 
 const OrderInfo: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === orderId));
-    const orderExecution = useSelector((state: RootState) => state.execution.orderExecutions.find(execution => execution.orderId === orderId));
+
     const [comment, setComment] = useState<string>('');
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [status, setStatus] = useState<OrderStatus | null>(null);
+    const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
 
     React.useEffect(() => {
         if (orderId !== undefined) {
-            dispatch(fetchProducts());
-            dispatch(fetchOrderExecution(orderId));
+            fetchOrderExecution(orderId).then((order) => {
+                setOrderExecution(order);
+            });
         }
     }, [dispatch, orderId]);
 

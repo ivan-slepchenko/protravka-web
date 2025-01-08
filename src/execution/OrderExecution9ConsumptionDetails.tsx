@@ -6,27 +6,24 @@ import { setExecutedProductConsumptionPerLotKg, nextPage, setExecutedSlurryConsu
 
 export default function OrderExecution9ConsumptionDetails() {
     const dispatch: AppDispatch = useDispatch();
-    const currentOrderId = useSelector((state: RootState) => state.execution.currentOrderExecution?.orderId);
-    const orderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
-    const applicationMethod = orderExecution?.applicationMethod;
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
+    const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
+    const applicationMethod = currentOrderExecution?.applicationMethod;
+    
     const currentProductIndex = useSelector((state: RootState) => state.execution.currentOrderExecution?.currentProductIndex);
-    const currentProductId = (currentProductIndex !== undefined && currentProductIndex !== null) ? order?.productDetails[currentProductIndex].product?.id : undefined;
+    const currentProductId = (currentProductIndex !== undefined && currentProductIndex !== null) ? currentOrder?.productDetails[currentProductIndex].product?.id : undefined;
 
-
-    if (currentProductIndex === null || currentProductIndex === undefined || currentProductId === undefined) {
+    if (currentProductIndex === null || currentProductIndex === undefined || currentProductId === undefined || currentOrder === null) {
         return null;
     }
     
     const handleInputChange = (value: number) => {
-        if (currentOrderId) {
-            if (applicationMethod === 'Surry') {
-                dispatch(setExecutedSlurryConsumptionPerLotKg({ orderId: currentOrderId, slurryConsumptionPerLotKg: value }));
-            } else {
-                dispatch(setExecutedProductConsumptionPerLotKg({ orderId: currentOrderId, productId: currentProductId, productConsumptionPerLotKg: value }));
-            }
-            dispatch(saveOrderExecution());
+        if (applicationMethod === 'Surry') {
+            dispatch(setExecutedSlurryConsumptionPerLotKg({ orderId: currentOrder.id, slurryConsumptionPerLotKg: value }));
+        } else {
+            dispatch(setExecutedProductConsumptionPerLotKg({ orderId: currentOrder.id, productId: currentProductId, productConsumptionPerLotKg: value }));
         }
+        dispatch(saveOrderExecution());
     };
 
     const handleMakePhotoClick = () => {
@@ -57,13 +54,13 @@ export default function OrderExecution9ConsumptionDetails() {
     };
 
     const renderTableBody = () => {
-        const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
-        if(productRecipe === undefined || order === undefined) return null;
+        const productRecipe = currentOrder?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
+        if(productRecipe === undefined || currentOrder === undefined) return null;
         return (
             <Tbody>
                 <Tr>
                     <Td>
-                        {applicationMethod === 'Surry' ? (order.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2) : (productRecipe.grSlurryRecipeToMix/1000).toFixed(2)}
+                        {applicationMethod === 'Surry' ? (currentOrder.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2) : (productRecipe.grSlurryRecipeToMix/1000).toFixed(2)}
                     </Td>
                     <Td>
                         <Input
@@ -85,15 +82,15 @@ export default function OrderExecution9ConsumptionDetails() {
                     <VStack>
                         <Heading size="md" mb={2}>
                             {applicationMethod === 'Surry'
-                                ? `Total Slurry Consumption / ${order?.seedsToTreatKg ?? 0} kg`
+                                ? `Total Slurry Consumption / ${currentOrder?.seedsToTreatKg ?? 0} kg`
                                 : <span>
                                     {'Product # '}
                                     {currentProductIndex + 1}
                                     {' of '}
-                                    {order?.productDetails.length}
+                                    {currentOrder?.productDetails.length}
                                     {': '}
-                                    {order?.productDetails[currentProductIndex].product?.name}
-                                    {` Per ${order?.seedsToTreatKg ?? 0} kg seeds`}
+                                    {currentOrder?.productDetails[currentProductIndex].product?.name}
+                                    {` Per ${currentOrder?.seedsToTreatKg ?? 0} kg seeds`}
                                 </span>
                             }
                         </Heading>

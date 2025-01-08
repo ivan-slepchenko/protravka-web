@@ -5,8 +5,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchOrders, changeOrderStatus } from "../store/ordersSlice";
 import { Order, OrderStatus, Packaging } from "../store/newOrderSlice";
-import { fetchOrderExecution } from "../store/executionSlice";
 import { useReactToPrint } from "react-to-print";
+import { fetchOrderExecution, OrderExecution } from "../store/executionSlice";
 
 const statusColorMap = {
     green: "#48BB78", // Green color (Chakra UI green.400)
@@ -26,7 +26,6 @@ const LotReport: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
     const dispatch: AppDispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    const orderExecutions = useSelector((state: RootState) => state.execution.orderExecutions);
     const [order, setOrder] = useState<Order | null>(null);
     const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
     const componentRef = useRef<HTMLDivElement>(null);
@@ -34,6 +33,7 @@ const LotReport: React.FC = () => {
     const [comment, setComment] = useState<string>('');
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [status, setStatus] = useState<OrderStatus | null>(null);
+    const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
 
     useEffect(() => {
         dispatch(fetchOrders());
@@ -41,11 +41,16 @@ const LotReport: React.FC = () => {
 
     useEffect(() => {
         if (orderId) {
+            fetchOrderExecution(orderId).then((orderExecution) => {
+                setOrderExecution(orderExecution);
+            });
+        }
+    }, [orderId]);
+
+    useEffect(() => {
+        if (orderId) {
             const foundOrder = orders.find(order => order.id === orderId);
             setOrder(foundOrder || null);
-            if (foundOrder && foundOrder.status !== OrderStatus.NotStarted) {
-                dispatch(fetchOrderExecution(foundOrder.id));
-            }
         }
     }, [orders, orderId, dispatch]);
 
@@ -107,7 +112,6 @@ const LotReport: React.FC = () => {
         return <Text>Loading...</Text>;
     }
 
-    const orderExecution = order.status !== OrderStatus.NotStarted ? orderExecutions.find(execution => execution.orderId === order.id) : null;
     const orderRecipe = order.orderRecipe;
     if (!orderRecipe || (order.status !== OrderStatus.NotStarted && !orderExecution)) {
         return <Text>Loading...</Text>;

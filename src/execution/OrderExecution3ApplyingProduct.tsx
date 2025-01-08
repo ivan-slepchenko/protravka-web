@@ -7,27 +7,33 @@ import { setAppliedProductRateKg, nextPage, saveOrderExecution } from '../store/
 const OrderExecution3ApplyingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
-    const currentOrderId = currentOrderExecution?.orderId;
-    const order = useSelector((state: RootState) => state.orders.activeOrders.find(order => order.id === currentOrderId));
-    const applicationMethod = currentOrderExecution?.applicationMethod;
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
+
     const currentProductIndex = currentOrderExecution?.currentProductIndex ?? 0;
     const currentProductExecution = currentOrderExecution?.productExecutions[currentProductIndex];
-    const currentProductId = order?.productDetails[currentProductIndex].product?.id;
+
     const [inputError, setInputError] = useState(false);
     const [, setInputValue] = useState(currentProductExecution ? currentProductExecution.appliedRateKg : '');
-    const productRecipe = order?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
-
     useEffect(() => {
         setInputValue(currentProductExecution ? currentProductExecution.appliedRateKg : '');
     }, [currentProductExecution]);
+
+    if (currentOrder === null || currentOrderExecution === null  ) {
+        return null;
+    }
+
+    const applicationMethod = currentOrderExecution?.applicationMethod;
+    const currentProductId = currentOrder?.productDetails[currentProductIndex].product?.id;
 
     if (currentProductId === undefined) {
         return null;
     }
 
+    const productRecipe = currentOrder?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
+
     const handleValueChange = (productId: string, value: number) => {
-        if (currentOrderId) {
-            dispatch(setAppliedProductRateKg({ orderId: currentOrderId, productId, appliedRateKg: isNaN(value) ? 0 : value }));
+        if (currentOrder.id) {
+            dispatch(setAppliedProductRateKg({ orderId: currentOrder.id, productId, appliedRateKg: isNaN(value) ? 0 : value }));
             dispatch(saveOrderExecution());
             setInputError(false);
             setInputValue(value);
@@ -106,9 +112,9 @@ const OrderExecution3ApplyingProduct = () => {
                         {'Product # '}
                         {currentProductIndex + 1}
                         {' of '}
-                        {order?.productDetails.length}
+                        {currentOrder.productDetails.length}
                         {': '}
-                        {order?.productDetails[currentProductIndex].product?.name}
+                        {currentOrder.productDetails[currentProductIndex].product?.name}
                     </Text>
                     <Table variant="simple" size="sm" mb={4}>
                         {renderTableHeaders()}
