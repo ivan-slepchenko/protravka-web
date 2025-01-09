@@ -516,7 +516,7 @@ export const NewOrderForm = () => {
                                                 </Thead>
                                                 <Tbody>
                                                     <Tr>
-                                                        <Td>{formData.totalCompoundsDensity} g/ml</Td>
+                                                        <Td>{formData.totalCompoundsDensity.toFixed(3)} g/ml</Td>
                                                         <Td>{(100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
                                                         <Td>{(100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
                                                         <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)}</Td>

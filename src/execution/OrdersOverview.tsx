@@ -31,7 +31,6 @@ const OrdersOverview: React.FC = () => {
 
     const handleConfirm = async () => {
         if (selectedOrder) {
-            selectedOrder.status = OrderStatus.InProgress; //update status locally and update sync to execution slice.
             dispatch(startExecution(selectedOrder));
             try {
                 await dispatch(saveOrderExecution()).unwrap(); //if no internet, this fails first. 
