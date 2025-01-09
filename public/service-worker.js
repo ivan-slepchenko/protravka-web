@@ -57,6 +57,19 @@ if (workbox) {
         })
     );
 
+    // Cache /api/user GET calls (use NetworkFirst strategy without BackgroundSyncPlugin)
+    registerRoute(
+        ({ url, request }) => url.pathname.startsWith('/api/user') && (request.method === 'GET'),
+        new NetworkFirst({
+            cacheName: 'api-user-cache',
+            plugins: [
+                new ExpirationPlugin({
+                    maxAgeSeconds: 60 * 60, // Cache for 1 hour
+                }),
+            ],
+        })
+    );
+
     // Listen for updates and prompt the user
     self.addEventListener('message', (event) => {
         if (event.data && event.data.type === 'SKIP_WAITING') {

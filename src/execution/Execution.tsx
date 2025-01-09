@@ -24,24 +24,22 @@ const Execution = () => {
     const dispatch: AppDispatch = useDispatch();
 
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
+    const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
 
     useEffect(() => {
         dispatch(fetchOrders()).unwrap().then((orders: Order[]) => {
-
-
-            const currentOrder = orders.find(order => order.status === OrderStatus.InProgress);
-
-            if (currentOrderExecution) {
-                if (!currentOrder) {
+            const ocurrentOrderByServer = orders.find(order => order.status === OrderStatus.InProgress);
+            if (currentOrder) {
+                if (!ocurrentOrderByServer) {
                     dispatch(completeExecution());
-                } else if (currentOrderExecution.orderId !== currentOrder.id) {
-                    dispatch(fetchOrderExecutionAsCurrent(currentOrder.id));
-                    dispatch(setCurrentOrder(currentOrder));
+                } else if (currentOrder.id !== ocurrentOrderByServer.id) {
+                    dispatch(fetchOrderExecutionAsCurrent(ocurrentOrderByServer.id));
+                    dispatch(setCurrentOrder(ocurrentOrderByServer));
                 }
             } else {
-                if (currentOrder) {
-                    dispatch(fetchOrderExecutionAsCurrent(currentOrder.id));
-                    dispatch(setCurrentOrder(currentOrder));
+                if (ocurrentOrderByServer) {
+                    dispatch(fetchOrderExecutionAsCurrent(ocurrentOrderByServer.id));
+                    dispatch(setCurrentOrder(ocurrentOrderByServer));
                 }
             }
         }).catch(() => {
