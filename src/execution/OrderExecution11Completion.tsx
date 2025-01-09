@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Text, Button, useMediaQuery, VStack, HStack, Center, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Box, Text, Button, useMediaQuery, VStack, HStack, Center, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Spinner } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { completeExecution, nextPage, saveOrderExecution } from '../store/executionSlice';
@@ -13,12 +13,14 @@ const OrderExecution11Completion = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef(null);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
+    const [isSaving, setIsSaving] = useState(false);
 
     if (currentOrder === null) {
         return null;
     }
 
     const handleCompleteClick = async () => {
+        setIsSaving(true);
         try {
             await dispatch(saveOrderExecution()).unwrap();
             dispatch(nextPage(OrderExecutionPage.InitialOverview));
@@ -26,6 +28,8 @@ const OrderExecution11Completion = () => {
             dispatch(completeExecution());
         } catch (error) {
             onOpen();
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -61,8 +65,9 @@ const OrderExecution11Completion = () => {
                     _hover={{ bg: "orange.600" }}
                     size={isMobile ? "md" : "lg"}
                     onClick={handleCompleteClick}
+                    isDisabled={isSaving}
                 >
-                    {'Ok'}
+                    {isSaving ? <Spinner size="sm" /> : 'Ok'}
                 </Button>
             </HStack>
             <AlertDialog
