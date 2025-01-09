@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Checkbox, Button, HStack, VStack, Center, Grid, GridItem } from '@chakra-ui/react';
+import { Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Checkbox, Button, HStack, VStack, Center, Grid, GridItem } from '@chakra-ui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { nextPage, saveOrderExecution } from '../store/executionSlice';
