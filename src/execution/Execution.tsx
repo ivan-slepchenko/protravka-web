@@ -16,7 +16,7 @@ import OrderExecution6TreatingConfirmation from './OrderExecution6TreatingConfir
 import { OrderExecutionPage } from './OrderExecutionPage';
 import OrderExecution10ConsumptionProoving from './OrderExecution10ConsumptionProoving';
 import { fetchOrders } from '../store/ordersSlice';
-import { Order } from '../store/newOrderSlice';
+import { Order, OrderStatus } from '../store/newOrderSlice';
 import { completeExecution, fetchOrderExecutionAsCurrent, setCurrentOrder } from '../store/executionSlice';
 
 
@@ -26,23 +26,27 @@ const Execution = () => {
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
 
     useEffect(() => {
-        if (currentOrderExecution) {
-            // in case when user opens app in online mode, after being offline, it may happen that his execution slice is not in sync.
-            dispatch(fetchOrders()).unwrap().then((orders: Order[]) => {
-                const currentOrder = orders.find(order => order.id === currentOrderExecution.orderId);
+        dispatch(fetchOrders()).unwrap().then((orders: Order[]) => {
+
+
+            const currentOrder = orders.find(order => order.status === OrderStatus.InProgress);
+
+            if (currentOrderExecution) {
                 if (!currentOrder) {
                     dispatch(completeExecution());
-                } else {
-                    //TODO: We should block operator from starting new order if he has unfinished order. 
-                    if (currentOrderExecution.orderId !== currentOrder.id) {
-                        dispatch(fetchOrderExecutionAsCurrent(currentOrder.id));
-                        dispatch(setCurrentOrder(currentOrder));
-                    }
+                } else if (currentOrderExecution.orderId !== currentOrder.id) {
+                    dispatch(fetchOrderExecutionAsCurrent(currentOrder.id));
+                    dispatch(setCurrentOrder(currentOrder));
                 }
-            }).catch(() => {
-                console.log('Working in offline mode');
-            });
-        }
+            } else {
+                if (currentOrder) {
+                    dispatch(fetchOrderExecutionAsCurrent(currentOrder.id));
+                    dispatch(setCurrentOrder(currentOrder));
+                }
+            }
+        }).catch(() => {
+            console.log('Working in offline mode');
+        });
     }, [dispatch]);
 
     const renderCurrentPage = () => {
