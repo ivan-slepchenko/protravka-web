@@ -39,7 +39,7 @@ import { useAlert } from '../index';
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),
     applicationDate: Yup.date().required("Application Date is required"),
-    operatorId: Yup.string().required("Operator is required"),
+    operatorId: Yup.string().optional(),
     cropId: Yup.string().required("Crop is required"),
     varietyId: Yup.string().required("Variety is required"),
     lotNumber: Yup.string().required("Lot Number is required"),
@@ -92,7 +92,7 @@ export const getRateTypeLabel = (type: RateType): string => {
     }
 };
 
-export const NewOrderForm = () => {
+export const NewReceipe = () => {
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder as NewOrderState);
     const crops = useSelector((state: RootState) => state.crops.crops);
@@ -233,7 +233,7 @@ export const NewOrderForm = () => {
                                             <Field
                                                 as={Select}
                                                 name="operatorId"
-                                                placeholder="Select operator"
+                                                placeholder="Any operator"
                                                 size="md"
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
