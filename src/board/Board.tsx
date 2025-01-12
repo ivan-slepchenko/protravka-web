@@ -5,11 +5,15 @@ import { OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders } from '../store/ordersSlice';
 import { Box, Flex, Heading, Text, VStack, Badge } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { useFeatures } from '..';
 
 const Board: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
-    const columns = [OrderStatus.NotStarted, OrderStatus.InProgress, OrderStatus.ToAcknowledge, OrderStatus.Completed, OrderStatus.Failed];
+    const features = useFeatures();
+    const columns = features.features.lab
+        ? [OrderStatus.ReadyToStart, OrderStatus.ForLabToInitiate, OrderStatus.InProgress, OrderStatus.ForLabToControl, OrderStatus.ToAcknowledge, 'Done']
+        : [OrderStatus.ReadyToStart, OrderStatus.InProgress, OrderStatus.ToAcknowledge, 'Done'];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
     useEffect(() => {
@@ -24,44 +28,54 @@ const Board: React.FC = () => {
         <Flex w="full" justifyContent={'center'} h="100vh">
             <Flex p={5} gap={3} w="full" >
                 {columns.map((column) => {
-                    let bgColor = "gray.50";
-                    if (column === OrderStatus.Completed) bgColor = "green.50";
-                    if (column === OrderStatus.Failed) bgColor = "red.50";
+                    const bgColor = "gray.50";
                     return (
                         <Box key={column} w="full" border="gray.100" borderRadius="md" p={2} bg={bgColor}>
                             <Heading size="sm" m={1} mb={2}>{column}</Heading>
                             <VStack spacing={3} w="full">
-                                {orders.filter(order => order.status === column).map((order, index) => (
-                                    <Box
-                                        key={index}
-                                        borderColor={'gray.200'}
-                                        borderWidth={1}
-                                        borderStyle={'solid'}
-                                        borderRadius="md"
-                                        p={2}
-                                        w="full"
-                                        cursor="pointer"
-                                        onClick={() => handleOrderClick(order.id)}
-                                        bg="white"
-                                        boxShadow="sm"
-                                    >
-                                        <Box display="grid" gridTemplateColumns="1fr 3fr" gap={2} fontSize="sm">
-                                            <Badge gridColumn="span 3" colorScheme="gray">
-                                                {order.crop?.name}, {order.variety?.name}
-                                            </Badge>
-                                            <Text px={1} gridColumn="span 3" color="gray.600">
-                                                Lot: {order.lotNumber}
-                                            </Text>
-                                            <Text px={1} gridColumn="span 3">
-                                                {'for '}{order.operator?.name} {order.operator?.surname}
-                                            </Text>
-                                            <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
-                                            <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
-                                            <Text px={1} gridColumn="span 2">Application:</Text>
-                                            <Text px={1} isTruncated>{order.applicationDate}</Text>
+                                {orders.filter(order => column === 'Done' ? [OrderStatus.Completed, OrderStatus.Failed].includes(order.status) : order.status === column).map((order, index) => {
+                                    let cardColor = "white";
+                                    let statusLabel = null;
+                                    if (order.status === OrderStatus.Completed) {
+                                        cardColor = "green.50";
+                                        statusLabel = <Badge colorScheme="green" ml="auto">Success</Badge>;
+                                    } else if (order.status === OrderStatus.Failed) {
+                                        cardColor = "red.50";
+                                        statusLabel = <Badge colorScheme="red" ml="auto">Failed</Badge>;
+                                    }
+                                    return (
+                                        <Box
+                                            key={index}
+                                            borderColor={'gray.200'}
+                                            borderWidth={1}
+                                            borderStyle={'solid'}
+                                            borderRadius="md"
+                                            p={2}
+                                            w="full"
+                                            cursor="pointer"
+                                            onClick={() => handleOrderClick(order.id)}
+                                            bg={cardColor}
+                                            boxShadow="sm"
+                                        >
+                                            <Box display="grid" gridTemplateColumns="1fr 3fr" gap={2} fontSize="sm">
+                                                <Badge gridColumn="span 3" colorScheme="gray">
+                                                    {order.crop?.name}, {order.variety?.name}
+                                                </Badge>
+                                                {statusLabel}
+                                                <Text px={1} gridColumn="span 3" color="gray.600">
+                                                    Lot: {order.lotNumber}
+                                                </Text>
+                                                <Text px={1} gridColumn="span 3">
+                                                    {'for '}{order.operator?.name} {order.operator?.surname}
+                                                </Text>
+                                                <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
+                                                <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
+                                                <Text px={1} gridColumn="span 2">Application:</Text>
+                                                <Text px={1} isTruncated>{order.applicationDate}</Text>
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                ))}
+                                    );
+                                })}
                             </VStack>
                         </Box>
                     );

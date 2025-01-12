@@ -113,7 +113,7 @@ const LotReport: React.FC = () => {
     }
 
     const orderRecipe = order.orderRecipe;
-    if (!orderRecipe || (order.status !== OrderStatus.NotStarted && !orderExecution)) {
+    if (!orderRecipe || (order.status !== OrderStatus.ReadyToStart && !orderExecution)) {
         return <Text>Loading...</Text>;
     }
 
@@ -188,7 +188,7 @@ const LotReport: React.FC = () => {
             <VStack spacing={4} align="stretch">
                 <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
                     <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Preparation per Lot</Text>
-                    {order.status !== OrderStatus.NotStarted && <StatusKeyLegend />}
+                    {order.status !== OrderStatus.ReadyToStart && <StatusKeyLegend />}
                 </Box>
                 <Box w="full">
                     <Table size="sm" variant="simple">
@@ -264,7 +264,7 @@ const LotReport: React.FC = () => {
                 </Box>
                 <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
                     <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Consumption Per Lot</Text>
-                    {order.status !== OrderStatus.NotStarted && <StatusKeyLegend />}
+                    {order.status !== OrderStatus.ReadyToStart && <StatusKeyLegend />}
                 </Box>
                 <Box w="50%" overflowX="auto">
                     <Table variant="simple" size="sm">

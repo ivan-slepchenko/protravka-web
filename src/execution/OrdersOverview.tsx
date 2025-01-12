@@ -19,7 +19,7 @@ const OrdersOverview: React.FC = () => {
     const orders = useSelector((state: RootState) => 
         state.orders.activeOrders.filter(order => 
             (order.operator === null || order.operator.email === user.email) && 
-            order.status === OrderStatus.NotStarted &&
+            order.status === OrderStatus.ReadyToStart &&
             new Date(order.applicationDate).toLocaleDateString() === currentDate
         )
     );

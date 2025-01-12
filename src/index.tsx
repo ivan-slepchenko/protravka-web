@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -66,7 +66,47 @@ const AlertProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+
 export const useAlert = () => useContext(AlertContext);
+
+const FeaturesContext = createContext<{ features: Features }>({
+    features: {
+        lab: false,
+    },
+});
+
+type Features = {
+    lab: boolean;
+}    
+
+const FeaturesProvider = ({ children }: { children: React.ReactNode }) => {
+    const [features, setFeatures] = useState<Features>({
+        lab: false,
+    });
+
+    useEffect(() => {
+        const fetchFeatures = async () => {
+            try {
+                const response = await fetch(`${BACKEND_URL}/features`);
+                const data = await response.json();
+                setFeatures(data);
+            } catch (error) {
+                console.error('Failed to fetch features:', error);
+            }
+        };
+
+        fetchFeatures();
+    }, []);
+
+    return (
+        <FeaturesContext.Provider value={{ features }}>
+            {children}
+        </FeaturesContext.Provider>
+    );
+};
+
+export const useFeatures = () => useContext(FeaturesContext);
 
 const RequireAuth = ({ children, roles }: { children: JSX.Element, roles?: Role[] }) => {
     const location = useLocation();
@@ -114,7 +154,7 @@ const App = () => {
         dispatch(logoutUser());
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!isAuthenticated) dispatch(fetchUserByToken());
     }, [dispatch, isAuthenticated]);
 
@@ -173,7 +213,7 @@ const LoginRedirect = () => {
     const navigate = useNavigate();
     const user = useSelector((state: RootState) => state.user);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (user.email) {
             if (user.roles.includes(Role.OPERATOR)) {
                 navigate('/execution');
@@ -198,9 +238,11 @@ root.render(
             <PersistGate loading={null} persistor={persistor}>
                 <ChakraProvider>
                     <AlertProvider>
-                        <BrowserRouter>
-                            <App />
-                        </BrowserRouter>
+                        <FeaturesProvider>
+                            <BrowserRouter>
+                                <App />
+                            </BrowserRouter>
+                        </FeaturesProvider>
                     </AlertProvider>
                 </ChakraProvider>
             </PersistGate>

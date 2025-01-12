@@ -30,7 +30,9 @@ const statusColorMap: StatusColorMap = {
     [OrderStatus.Failed]: "#F56565", // Red color (Chakra UI red.400)
     [OrderStatus.InProgress]: "#ED8936", // Orange color (Chakra UI orange.400)
     [OrderStatus.Archived]: "#4299E1", // Blue color (Chakra UI blue.400)
-    [OrderStatus.NotStarted]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.ReadyToStart]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.ForLabToInitiate]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.ForLabToControl]: "#A0AEC0", // Gray color (Chakra UI gray.400)
 };
 
 const Report: React.FC = () => {

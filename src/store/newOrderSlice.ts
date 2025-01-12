@@ -27,8 +27,10 @@ export interface ProductDetail {
 }
 
 export enum OrderStatus {
-    NotStarted = 'Not Started',
+    ForLabToInitiate = 'For Lab To Initiate',
+    ReadyToStart = 'Ready To Start',
     InProgress = 'In Progress',
+    ForLabToControl = 'For Lab To Control',
     ToAcknowledge = 'To Acknowledge',
     Archived = 'Archived',
     Completed = "Completed",
@@ -45,7 +47,7 @@ export interface Order {
     productDetails: ProductDetail[];
     recipeDate: string;
     applicationDate: string;
-    operator: Operator | null;
+    operator: Operator;
     crop: Crop;
     variety: Variety;
     lotNumber: string;
@@ -91,7 +93,7 @@ export const createNewEmptyOrder: () => NewOrderState = () => ({
     seedsToTreatKg: 0,
     packaging: Packaging.InSeeds,
     bagSize: 0,
-    status: OrderStatus.NotStarted,
+    status: OrderStatus.ReadyToStart,
     extraSlurry: 0, // Initialize extraSlurry
 });
 
