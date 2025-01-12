@@ -1,9 +1,9 @@
 import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure, Table, Thead, Tr, Th, Tbody, Td, VStack, Heading } from "@chakra-ui/react";
-import { Role } from '../operators/Operators';
+import { Role } from '../../operators/Operators';
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../store/store";
+import { RootState, AppDispatch } from "../../store/store";
 import { Formik, Field, FieldArray, FormikErrors, FormikTouched, FormikProps } from "formik";
 import {
     setOrderState,
@@ -28,13 +28,13 @@ import {
     updateExtraSlurry,
     Packaging,
     fetchCalculatedValues
-} from "../store/newOrderSlice";
-import { createOrder, fetchOrders } from "../store/ordersSlice";
-import { fetchCrops } from "../store/cropsSlice";
-import { fetchProducts } from "../store/productsSlice";
-import { fetchOperators } from '../store/operatorsSlice';
+} from "../../store/newOrderSlice";
+import { createOrder, fetchOrders } from "../../store/ordersSlice";
+import { fetchCrops } from "../../store/cropsSlice";
+import { fetchProducts } from "../../store/productsSlice";
+import { fetchOperators } from '../../store/operatorsSlice';
 import { useNavigate } from "react-router-dom";
-import { useAlert } from '../index';
+import { useAlert } from '../../index';
 
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),
@@ -555,11 +555,9 @@ export const NewReceipe = () => {
                                         <ModalCloseButton />
                                         <ModalBody>
                                             <Text>
-                                                <span>Recipe successfully created and sent to the operator {operatorName} for processing on {orderDate}.</span>
+                                                <span>Recipe successfully created for processing on {orderDate}.</span>
                                                 <br />
                                                 <span>You can view this Recipe in the <strong>Board</strong>, by clicking on your <strong>Receipe</strong> and opening <strong>Recipe Tab</strong>.</span>
-                                                <br />
-                                                <span>Note: You can modify the recipe only before the operator starts working on it.</span>
                                             </Text>
                                             <Checkbox mt={4} isChecked={doNotShowAgain} onChange={handleCheckboxChange}>
                                                 Do not show this message again.

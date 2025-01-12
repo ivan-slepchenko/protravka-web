@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Text, VStack } from "@chakra-ui/react";
 import { Order } from "../../store/newOrderSlice";
-import { getRateTypeLabel, getRateUnitLabel } from "../../newOrder/NewReceipe";
+import { getRateTypeLabel, getRateUnitLabel } from "../../newReceipe/noLab/NewReceipe";
 
 const ProductDetails: React.FC<{ order: Order }> = ({ order }) => {
     const extraSlurryPercentage = order.extraSlurry > 0 ? `Including Extra Slurry ${order.extraSlurry}%` : '';
