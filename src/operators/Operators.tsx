@@ -8,9 +8,10 @@ import { useDisclosure } from '@chakra-ui/react';
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
 
 export enum Role {
-  OPERATOR = 'operator',
-  ADMIN = 'admin',
-  MANAGER = 'manager',
+    OPERATOR = 'operator',
+    ADMIN = 'admin',
+    MANAGER = 'manager',
+    LABORATORY_ASSISTANT = 'laboratory_assistant',
 }
   
 

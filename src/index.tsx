@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { ChakraProvider, Box, VStack, Alert, AlertIcon, HStack } from "@chakra-ui/react";
+import { ChakraProvider, Box, VStack, Alert, AlertIcon, HStack, Text } from "@chakra-ui/react";
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor, AppDispatch, RootState } from './store/store';
@@ -175,6 +175,7 @@ const App = () => {
                             <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}>
                                 {useLab ? <NewReceipeLab /> : <NewReceipeNoLab />}
                             </RequireAuth>} />
+                            <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY_ASSISTANT]}><Text>{"Lab Board"}</Text></RequireAuth>} />
                             <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                             <Route path="/report" element={<RequireAuth roles={[Role.MANAGER]}><Report /></RequireAuth>} />
                             <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
