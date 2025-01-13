@@ -6,19 +6,20 @@ import { FiLogOut, FiMenu } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
 
 interface MenuProps {
-  user: {
-    name: string | null;
-    surname: string | null;
-    email: string | null;
-    roles: Role[];
-  };
-  managerLinks: { to: string; label: string }[];
-  adminLinks: { to: string; label: string }[];
-  operatorLinks: { to: string; label: string }[];
-  handleLogout: () => void;
+    user: {
+        name: string | null;
+        surname: string | null;
+        email: string | null;
+        roles: Role[];
+    };
+    managerLinks: { to: string; label: string }[];
+    adminLinks: { to: string; label: string }[];
+    operatorLinks: { to: string; label: string }[];
+    laboratoryLinks: { to: string; label: string }[];
+    handleLogout: () => void;
 }
 
-const MobileMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, operatorLinks, handleLogout }) => {
+const MobileMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, operatorLinks, laboratoryLinks, handleLogout }) => {
     const location = useLocation();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -54,6 +55,21 @@ const MobileMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, opera
                                 <Text>{user.email}</Text>
                             </Box>
                             {managerLinks.map(link => (
+                                <Button
+                                    w="full"
+                                    as={RouterLink}
+                                    to={link.to}
+                                    key={link.to}
+                                    variant="ghost"
+                                    justifyContent="flex-start"
+                                    isActive={location.pathname === link.to}
+                                    color={location.pathname === link.to ? "blue.500" : "black"}
+                                    onClick={onClose}
+                                >
+                                    {link.label}
+                                </Button>
+                            ))}
+                            {laboratoryLinks.map(link => (
                                 <Button
                                     w="full"
                                     as={RouterLink}

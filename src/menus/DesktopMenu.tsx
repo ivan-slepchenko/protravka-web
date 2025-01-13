@@ -5,19 +5,20 @@ import { FiLogOut } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
 
 interface MenuProps {
-  user: {
-    name: string | null;
-    surname: string | null;
-    email: string | null;
-    roles: Role[];
-  };
-  managerLinks: { to: string; label: string, icon: JSX.Element }[];
-  adminLinks: { to: string; label: string, icon: JSX.Element }[];
-  operatorLinks: { to: string; label: string, icon: JSX.Element }[];
-  handleLogout: () => void;
+    user: {
+        name: string | null;
+        surname: string | null;
+        email: string | null;
+        roles: Role[];
+    };
+    managerLinks: { to: string; label: string, icon: JSX.Element }[];
+    adminLinks: { to: string; label: string, icon: JSX.Element }[];
+    operatorLinks: { to: string; label: string, icon: JSX.Element }[];
+    laboratoryLinks: { to: string; label: string, icon: JSX.Element }[];
+    handleLogout: () => void;
 }
 
-const DesktopMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, operatorLinks, handleLogout }) => {
+const DesktopMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, operatorLinks, laboratoryLinks, handleLogout }) => {
     const location = useLocation();
 
     return (
@@ -39,6 +40,21 @@ const DesktopMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, oper
                 </VStack>
                 <Divider colorScheme='blackAlpha'/>
                 {managerLinks.map(link => (
+                    <Button
+                        w="full"
+                        as={RouterLink}
+                        to={link.to}
+                        key={link.to}
+                        variant="ghost"
+                        justifyContent="flex-start"
+                        isActive={location.pathname === link.to}
+                        color={location.pathname === link.to ? "blue.500" : "black"}
+                        leftIcon={link.icon} // Configure icon
+                    >
+                        {link.label}
+                    </Button>
+                ))}
+                {laboratoryLinks.map(link => (
                     <Button
                         w="full"
                         as={RouterLink}

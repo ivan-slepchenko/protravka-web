@@ -34,7 +34,7 @@ import { FiTrello } from 'react-icons/fi';
 import { TbReportAnalytics } from "react-icons/tb";
 import { AtSignIcon, AddIcon } from '@chakra-ui/icons'; 
 import { BiSolidComponent } from "react-icons/bi";
-import { FaSeedling, FaTasks } from "react-icons/fa";
+import { FaSeedling, FaTasks, FaFlask } from "react-icons/fa";
 
 const AlertContext = createContext<{ addAlert: (message: string) => void }>({
     addAlert: () => {
@@ -145,12 +145,16 @@ const App = () => {
         [Role.OPERATOR]: [
             { to: "/execution", label: "Execution", icon: <FaTasks /> },
         ],
+        [Role.LABORATORY]: [
+            { to: "/lab", label: "Lab", icon: <FaFlask /> },
+        ],
     };
 
     const userRoles = user.roles || [];
     const managerLinks = userRoles.includes(Role.MANAGER) ? roleToLinks[Role.MANAGER] : [];
     const adminLinks = userRoles.includes(Role.ADMIN) ? roleToLinks[Role.ADMIN] : [];
     const operatorLinks = userRoles.includes(Role.OPERATOR) ? roleToLinks[Role.OPERATOR] : [];
+    const laboratoryLinks = userRoles.includes(Role.LABORATORY) ? roleToLinks[Role.LABORATORY] : [];
 
     const handleLogout = () => {
         dispatch(logoutUser());
@@ -166,7 +170,14 @@ const App = () => {
                 <VStack w="full" h="full" position="relative">
                     {isAuthenticated && (
                         <>
-                            <MobileMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
+                            <MobileMenu
+                                user={user}
+                                managerLinks={managerLinks}
+                                adminLinks={adminLinks}
+                                operatorLinks={operatorLinks}
+                                laboratoryLinks={laboratoryLinks}
+                                handleLogout={handleLogout}
+                            />
                         </>
                     )}
                     <Box w="full" h="full" position={'relative'}>
@@ -175,7 +186,7 @@ const App = () => {
                             <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}>
                                 {useLab ? <NewReceipeLab /> : <NewReceipeNoLab />}
                             </RequireAuth>} />
-                            <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY_ASSISTANT]}><Text>{"Lab Board"}</Text></RequireAuth>} />
+                            <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><Text>{"Lab Board"}</Text></RequireAuth>} />
                             <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                             <Route path="/report" element={<RequireAuth roles={[Role.MANAGER]}><Report /></RequireAuth>} />
                             <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
@@ -191,7 +202,14 @@ const App = () => {
             </Box>
             <HStack display={{ base: 'none', md: 'flex' }} w="full" h="full" position="relative"> 
                 {isAuthenticated && (
-                    <DesktopMenu user={user} managerLinks={managerLinks} adminLinks={adminLinks} operatorLinks={operatorLinks} handleLogout={handleLogout} />
+                    <DesktopMenu
+                        user={user}
+                        managerLinks={managerLinks}
+                        adminLinks={adminLinks}
+                        operatorLinks={operatorLinks}
+                        laboratoryLinks={laboratoryLinks}
+                        handleLogout={handleLogout}
+                    />
                 )}
                 <HStack h="full" w="full" overflowX="auto">
                     <Box h="full" w="4px" bg="gray.100"/>
@@ -200,6 +218,7 @@ const App = () => {
                         <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}>
                             {useLab ? <NewReceipeLab /> : <NewReceipeNoLab />}
                         </RequireAuth>} />
+                        <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><Text>{"Lab Board"}</Text></RequireAuth>} />
                         <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                         <Route path="/report" element={<RequireAuth roles={[Role.MANAGER]}><Report /></RequireAuth>} />
                         <Route path="/lot-report/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><LotReport /></RequireAuth>} />
@@ -226,6 +245,8 @@ const LoginRedirect = () => {
                 navigate('/execution');
             } else if (user.roles.includes(Role.MANAGER)) {
                 navigate('/board');
+            } else if (user.roles.includes(Role.LABORATORY)) {
+                navigate('/lab');
             } else {
                 navigate('/operators');
             }
