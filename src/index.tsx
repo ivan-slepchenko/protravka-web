@@ -35,6 +35,7 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { AtSignIcon, AddIcon } from '@chakra-ui/icons'; 
 import { BiSolidComponent } from "react-icons/bi";
 import { FaSeedling, FaTasks, FaFlask } from "react-icons/fa";
+import LabBoard from './board/LabBoard';
 
 const AlertContext = createContext<{ addAlert: (message: string) => void }>({
     addAlert: () => {
@@ -186,7 +187,7 @@ const App = () => {
                             <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}>
                                 {useLab ? <NewReceipeLab /> : <NewReceipeNoLab />}
                             </RequireAuth>} />
-                            <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><Text>{"Lab Board"}</Text></RequireAuth>} />
+                            <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><LabBoard /></RequireAuth>} />
                             <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                             <Route path="/report" element={<RequireAuth roles={[Role.MANAGER]}><Report /></RequireAuth>} />
                             <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />
@@ -218,7 +219,7 @@ const App = () => {
                         <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}>
                             {useLab ? <NewReceipeLab /> : <NewReceipeNoLab />}
                         </RequireAuth>} />
-                        <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><Text>{"Lab Board"}</Text></RequireAuth>} />
+                        <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><LabBoard /></RequireAuth>} />
                         <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                         <Route path="/report" element={<RequireAuth roles={[Role.MANAGER]}><Report /></RequireAuth>} />
                         <Route path="/lot-report/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><LotReport /></RequireAuth>} />

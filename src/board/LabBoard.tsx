@@ -5,15 +5,11 @@ import { OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders } from '../store/ordersSlice';
 import { Box, Flex, Heading, Text, VStack, Badge } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useFeatures } from '..';
 
-const Board: React.FC = () => {
+const LabBoard: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
-    const features = useFeatures();
-    const columns = features.features.lab
-        ? [OrderStatus.ForLabToInitiate, OrderStatus.ReadyToStart, OrderStatus.InProgress, OrderStatus.ForLabToControl, OrderStatus.ToAcknowledge, 'Done']
-        : [OrderStatus.ReadyToStart, OrderStatus.InProgress, OrderStatus.ToAcknowledge, 'Done'];
+    const columns = [OrderStatus.ForLabToInitiate, OrderStatus.ReadyToStart, OrderStatus.ForLabToControl, OrderStatus.ToAcknowledge];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
     useEffect(() => {
@@ -33,7 +29,7 @@ const Board: React.FC = () => {
                         <Box key={column} w="full" border="gray.100" borderRadius="md" p={2} bg={bgColor}>
                             <Heading size="sm" m={1} mb={2}>{column}</Heading>
                             <VStack spacing={3} w="full">
-                                {orders.filter(order => column === 'Done' ? [OrderStatus.Completed, OrderStatus.Failed].includes(order.status) : order.status === column).map((order, index) => {
+                                {orders.filter(order => order.status === column).map((order, index) => {
                                     let cardColor = "white";
                                     let statusLabel = null;
                                     if (order.status === OrderStatus.Completed) {
@@ -85,4 +81,4 @@ const Board: React.FC = () => {
     );
 };
 
-export default Board;
+export default LabBoard;

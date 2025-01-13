@@ -6,9 +6,11 @@ import { completeExecution, nextPage, saveOrderExecution } from '../store/execut
 import { OrderExecutionPage } from './OrderExecutionPage';
 import { changeOrderStatus } from '../store/ordersSlice';
 import { OrderStatus } from '../store/newOrderSlice';
+import { useFeatures } from '..';
 
 const OrderExecution11Completion = () => {
     const dispatch: AppDispatch = useDispatch();
+    const useLab = useFeatures().features.lab;
     const [isMobile] = useMediaQuery("(max-width: 600px)");
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef(null);
@@ -24,7 +26,11 @@ const OrderExecution11Completion = () => {
         try {
             await dispatch(saveOrderExecution()).unwrap();
             dispatch(nextPage(OrderExecutionPage.InitialOverview));
-            dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.ToAcknowledge }));
+            if (useLab) {
+                dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.ForLabToControl }));
+            } else {
+                dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.ToAcknowledge }));
+            }
             dispatch(completeExecution());
         } catch (error) {
             onOpen();
