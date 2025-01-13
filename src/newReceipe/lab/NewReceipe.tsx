@@ -12,6 +12,7 @@ import {
     updateLotNumber,
     updateseedsToTreatKg,
     NewOrderState,
+    OrderStatus,
 } from "../../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../../store/ordersSlice";
 import { fetchCrops } from "../../store/cropsSlice";
@@ -45,6 +46,7 @@ export const NewReceipe = () => {
     }, [dispatch]);
 
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
+        values.status = OrderStatus.ForLabToInitiate;
         dispatch(createOrder(values));
         dispatch(fetchOrders());
         dispatch(setOrderState(createNewEmptyOrder()));

@@ -33,6 +33,7 @@ const statusColorMap: StatusColorMap = {
     [OrderStatus.ReadyToStart]: "#A0AEC0", // Gray color (Chakra UI gray.400)
     [OrderStatus.ForLabToInitiate]: "#A0AEC0", // Gray color (Chakra UI gray.400)
     [OrderStatus.ForLabToControl]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.ByLabInitiated]: "#A0AEC0", // Gray color (Chakra UI gray.400)
 };
 
 const Report: React.FC = () => {

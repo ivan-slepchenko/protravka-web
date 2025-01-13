@@ -21,9 +21,10 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
 });
 
 export const createOrder = createAsyncThunk('orders/createOrder', async (order: NewOrderState) => {
-    if (!order.operatorId || !order.cropId || !order.varietyId) {
+    if (!order.cropId || !order.varietyId) {
         throw new Error('Operator, crop, and variety must be defined');
     }
+    
     console.log('Creating receipe', order);
     const { id, productDetails, ...orderWithoutId } = order; // Remove id from receipe
     id.toString();

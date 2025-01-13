@@ -27,7 +27,8 @@ import {
     addProductDetail,
     updateExtraSlurry,
     Packaging,
-    fetchCalculatedValues
+    fetchCalculatedValues,
+    OrderStatus
 } from "../../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../../store/ordersSlice";
 import { fetchCrops } from "../../store/cropsSlice";
@@ -102,7 +103,6 @@ export const NewReceipe = () => {
     const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
     const navigate = useNavigate();
     const [showPopup, setShowPopup] = useState(false);
-    const [operatorName, setOperatorName] = useState('');
     const [orderDate, setOrderDate] = useState('');
     const [doNotShowAgain, setDoNotShowAgain] = useState(() => {
         return localStorage.getItem('doNotShowAgain') === 'true';
@@ -116,12 +116,11 @@ export const NewReceipe = () => {
     }, [dispatch]);
 
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
+        values.status = OrderStatus.ReadyToStart;
         dispatch(createOrder(values));
         dispatch(fetchOrders());
         dispatch(setOrderState(createNewEmptyOrder()));
         resetForm();
-        const operator = operators.find(op => op.id === values.operatorId);
-        setOperatorName(operator ? `${operator.name} ${operator.surname}` : '');
         setOrderDate(values.applicationDate);
         if (!doNotShowAgain) {
             setShowPopup(true);

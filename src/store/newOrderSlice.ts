@@ -28,6 +28,7 @@ export interface ProductDetail {
 
 export enum OrderStatus {
     ForLabToInitiate = 'For Lab To Initiate',
+    ByLabInitiated = 'By Lab Initiated',
     ReadyToStart = 'Ready To Start',
     InProgress = 'In Progress',
     ForLabToControl = 'For Lab To Control',

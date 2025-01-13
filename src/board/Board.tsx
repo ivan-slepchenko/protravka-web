@@ -12,7 +12,7 @@ const Board: React.FC = () => {
     const navigate = useNavigate();
     const features = useFeatures();
     const columns = features.features.lab
-        ? [OrderStatus.ForLabToInitiate, OrderStatus.ReadyToStart, OrderStatus.InProgress, OrderStatus.ForLabToControl, OrderStatus.ToAcknowledge, 'Done']
+        ? [OrderStatus.ForLabToInitiate, OrderStatus.ByLabInitiated, OrderStatus.ReadyToStart, OrderStatus.InProgress, OrderStatus.ForLabToControl, OrderStatus.ToAcknowledge, 'Done']
         : [OrderStatus.ReadyToStart, OrderStatus.InProgress, OrderStatus.ToAcknowledge, 'Done'];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
@@ -20,7 +20,7 @@ const Board: React.FC = () => {
         dispatch(fetchOrders());
     }, [dispatch]);
 
-    const handleOrderClick = (orderId: string) => {
+    const handleRecipeClick = (orderId: string) => {
         navigate(`/lot-report/${orderId}`);
     };
 
@@ -53,7 +53,7 @@ const Board: React.FC = () => {
                                             p={2}
                                             w="full"
                                             cursor="pointer"
-                                            onClick={() => handleOrderClick(order.id)}
+                                            onClick={() => handleRecipeClick(order.id)}
                                             bg={cardColor}
                                             boxShadow="sm"
                                         >
