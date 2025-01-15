@@ -3,11 +3,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders } from '../store/ordersSlice';
-import { Box, Flex, Heading, Text, Badge, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center } from '@chakra-ui/react';
+import { Box, Flex, Text, Badge, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+
+const statusToLabelMap: { [key: string]: OrderStatus[] } = {
+    'Raw TKW': [OrderStatus.ForLabToInitiate],
+    'In Progress': [OrderStatus.ByLabInitiated, OrderStatus.ReadyToStart, OrderStatus.InProgress],
+    'Treated TKW': [OrderStatus.ForLabToControl],
+    'Finished': [OrderStatus.ToAcknowledge, OrderStatus.Archived, OrderStatus.Completed, OrderStatus.Failed],
+};
 
 const LabBoard: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    const columns = [OrderStatus.ForLabToInitiate, OrderStatus.ByLabInitiated, OrderStatus.ForLabToControl, OrderStatus.ToAcknowledge];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [tkw, setTkw] = useState<number | null>(null);
@@ -39,51 +45,57 @@ const LabBoard: React.FC = () => {
 
     return (
         <Flex w="full" justifyContent={'center'} h="100vh">
-            <Flex p={5} gap={3} w="full" >
-                {columns.map((column) => {
-                    const bgColor = "gray.50";
-                    return (
-                        <Box key={column} w="full" border="gray.100" borderRadius="md" p={2} bg={bgColor}>
-                            <Heading size="sm" m={1} mb={2}>{column}</Heading>
-                            <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={3} w="full">
-                                {orders.filter(order => order.status === column).map((order, index) => {
-                                    const cardColor = "white";
-                                    return (
-                                        <Box
-                                            key={index}
-                                            borderColor={'gray.200'}
-                                            borderWidth={1}
-                                            borderStyle={'solid'}
-                                            borderRadius="md"
-                                            p={2}
-                                            w="full"
-                                            cursor={order.status === OrderStatus.ForLabToInitiate || order.status === OrderStatus.ForLabToControl ? "pointer" : "default"}
-                                            onClick={() => {
-                                                if (order.status === OrderStatus.ForLabToInitiate || order.status === OrderStatus.ForLabToControl) {
-                                                    handleRecipeClick(order);
-                                                }
-                                            }}
-                                            bg={cardColor}
-                                            boxShadow="sm"
-                                        >
-                                            <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
-                                                <Badge gridColumn="span 3" colorScheme="gray">
-                                                    {order.crop?.name}, {order.variety?.name}
-                                                </Badge>
-                                                <Text px={1} gridColumn="span 3" color="gray.600">
-                                                    Lot: {order.lotNumber}
-                                                </Text>
-                                                <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
-                                                <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
-                                            </Grid>
-                                        </Box>
-                                    );
-                                })}
-                            </Grid>
-                        </Box>
-                    );
-                })}
-            </Flex>
+            <Tabs w="full" size='sm' variant='enclosed' isFitted>
+                <TabList>
+                    {Object.keys(statusToLabelMap).map((label) => (
+                        <Tab key={label} p={1}>{label}</Tab>
+                    ))}
+                </TabList>
+                <TabPanels>
+                    {Object.entries(statusToLabelMap).map(([label, statuses]) => (
+                        <TabPanel key={label}>
+                            <Flex p={1} gap={3} w="full">
+                                <Box w="full">
+                                    <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={3} w="full">
+                                        {orders.filter(order => statuses.includes(order.status)).map((order, index) => {
+                                            const cardColor = "white";
+                                            return (
+                                                <Box
+                                                    key={index}
+                                                    borderColor={'gray.200'}
+                                                    borderWidth={1}
+                                                    borderStyle={'solid'}
+                                                    borderRadius="md"
+                                                    p={2}
+                                                    w="full"
+                                                    cursor={order.status === OrderStatus.ForLabToInitiate || order.status === OrderStatus.ForLabToControl ? "pointer" : "default"}
+                                                    onClick={() => {
+                                                        if (order.status === OrderStatus.ForLabToInitiate || order.status === OrderStatus.ForLabToControl) {
+                                                            handleRecipeClick(order);
+                                                        }
+                                                    }}
+                                                    bg={cardColor}
+                                                >
+                                                    <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
+                                                        <Badge gridColumn="span 3" colorScheme="gray">
+                                                            {order.crop?.name}, {order.variety?.name}
+                                                        </Badge>
+                                                        <Text px={1} gridColumn="span 3" color="gray.600">
+                                                            Lot: {order.lotNumber}
+                                                        </Text>
+                                                        <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
+                                                        <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
+                                                    </Grid>
+                                                </Box>
+                                            );
+                                        })}
+                                    </Grid>
+                                </Box>
+                            </Flex>
+                        </TabPanel>
+                    ))}
+                </TabPanels>
+            </Tabs>
             {selectedOrder && (
                 <Modal isOpen={!!selectedOrder} onClose={() => setSelectedOrder(null)}>
                     <ModalOverlay />
