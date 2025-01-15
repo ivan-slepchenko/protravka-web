@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { updateOrderTKW } from '../store/ordersSlice';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox } from '@chakra-ui/react';
 
 interface OrderDetailsModalProps {
     selectedOrder: Order;
@@ -17,6 +17,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ selectedOrder, on
     const [tkwRep2, setTkwRep2] = useState<number | null>(null);
     const [tkwRep3, setTkwRep3] = useState<number | null>(null);
     const [averageTkw, setAverageTkw] = useState<number | null>(null);
+    const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
 
     useEffect(() => {
         setFinalTkw(selectedOrder.tkw);
@@ -136,10 +137,23 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ selectedOrder, on
                     </Center>
                 </ModalBody>
                 <ModalFooter>
-                    <Button variant="ghost" mb="3" onClick={onClose}>Cancel</Button>
-                    <Button colorScheme="blue" mb="3" onClick={handleSave}>
-                        Save
-                    </Button>
+                    <VStack align="start" w="full">
+                        <Checkbox
+                            size="md"
+                            mb={4}
+                            spacing="1rem"
+                            isChecked={isConfirmed}
+                            onChange={(e) => setIsConfirmed(e.target.checked)}
+                        >
+                            I hereby confirm that the TKW was counted by me fully compliant with the official demands
+                        </Checkbox>
+                        <HStack w="full" justify="end">
+                            <Button variant="ghost" mb="3" onClick={onClose}>Cancel</Button>
+                            <Button colorScheme="blue" mb="3" onClick={handleSave} isDisabled={!isConfirmed}>
+                                Save
+                            </Button>
+                        </HStack>
+                    </VStack>
                 </ModalFooter>
             </ModalContent>
         </Modal>
