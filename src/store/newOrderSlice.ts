@@ -53,6 +53,9 @@ export interface Order {
     variety: Variety;
     lotNumber: string;
     tkw: number;
+    tkwRep1: number;
+    tkwRep2: number;
+    tkwRep3: number;
     seedsToTreatKg: number;
     packaging: Packaging;
     bagSize: number;

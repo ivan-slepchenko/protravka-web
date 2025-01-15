@@ -76,6 +76,28 @@ export const changeOrderStatus = createAsyncThunk('orders/changeOrderStatus', as
     return result;
 });
 
+export const updateOrderTKW = createAsyncThunk(
+    'orders/updateOrderTKW',
+    async ({ id, tkwRep1, tkwRep2, tkwRep3, tkw }: { id: string; tkwRep1: number; tkwRep2: number; tkwRep3: number; tkw: number }, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/orders/${id}/tkw`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tkwRep1, tkwRep2, tkwRep3, tkw }),
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error('Failed to update TKW values');
+            }
+            return await response.json();
+        } catch (error) {
+            return rejectWithValue((error as Error).message);
+        }
+    }
+);
+
 const ordersSlice = createSlice({
     name: 'orders',
     initialState,
