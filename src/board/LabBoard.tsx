@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders, updateOrderTKW } from '../store/ordersSlice';
-import { Box, Flex, Text, Badge, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { Box, Flex, Text, Badge, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, Tabs, TabList, TabPanels, Tab, TabPanel, VStack, Divider, HStack } from '@chakra-ui/react';
 
 const statusToLabelMap: { [key: string]: OrderStatus[] } = {
-    'Raw TKW': [OrderStatus.ForLabToInitiate],
+    'Raw': [OrderStatus.ForLabToInitiate],
     'In Progress': [OrderStatus.ByLabInitiated, OrderStatus.ReadyToStart, OrderStatus.InProgress],
-    'Treated TKW': [OrderStatus.ForLabToControl],
+    'Treated': [OrderStatus.ForLabToControl],
     'Finished': [OrderStatus.ToAcknowledge, OrderStatus.Archived, OrderStatus.Completed, OrderStatus.Failed],
 };
 
@@ -56,10 +56,10 @@ const LabBoard: React.FC = () => {
 
     return (
         <Flex w="full" justifyContent={'center'} h="100vh">
-            <Tabs w="full" size='sm' variant='enclosed' isFitted>
+            <Tabs w="full" size='sm' variant='line' isFitted>
                 <TabList>
                     {Object.keys(statusToLabelMap).map((label) => (
-                        <Tab key={label} p={1}>{label}</Tab>
+                        <Tab key={label}>{label}</Tab>
                     ))}
                 </TabList>
                 <TabPanels>
@@ -108,70 +108,87 @@ const LabBoard: React.FC = () => {
                 </TabPanels>
             </Tabs>
             {selectedOrder && (
-                <Modal isOpen={!!selectedOrder} onClose={() => setSelectedOrder(null)}>
+                <Modal isOpen={!!selectedOrder} onClose={() => setSelectedOrder(null)} size="full">
                     <ModalOverlay />
-                    <ModalContent>
-                        <ModalHeader>Order Details</ModalHeader>
+                    <ModalContent borderRadius="none" w="full" h="full">
+                        <ModalHeader>Recipe Details</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
-                            <Center h='full' w='full'>
-                                <Grid templateColumns="3fr 1fr" gap={4} w='full'>
-                                    <GridItem borderBottom="1px dotted">
+                            <Center w="full" h="full">
+                                <Grid templateColumns="3fr 2fr" gap={4} w='full'>
+                                    <GridItem  h={10} alignContent={'center'}>
                                         <Text><strong>Lot:</strong></Text>
                                     </GridItem>
-                                    <GridItem borderBottom="1px dotted">
+                                    <GridItem  h={10} alignContent={'center'}>
                                         <Text>{selectedOrder.lotNumber}</Text>
                                     </GridItem>
 
-                                    <GridItem borderBottom="1px dotted">
+                                    <GridItem  h={10} alignContent={'center'}>
                                         <Text><strong>Seeds To Treat:</strong></Text>
                                     </GridItem>
-                                    <GridItem borderBottom="1px dotted">
-                                        <Text>{selectedOrder.seedsToTreatKg} kg</Text>
+                                    <GridItem  h={10} alignContent={'center'}>
+                                        <Text>{selectedOrder.seedsToTreatKg} kg.</Text>
                                     </GridItem>
 
-                                    <GridItem borderBottom="1px dotted">
+                                    <GridItem colSpan={2}>
+                                        <Divider />
+                                    </GridItem>
+
+                                    <GridItem  h={10} alignContent={'center'}>
                                         <Text><strong>TKW Probe 1:</strong></Text>
                                     </GridItem>
-                                    <GridItem>
-                                        <Input
-                                            placeholder="Set TKW Probe 1"
-                                            value={tkwRep1 ?? ''}
-                                            onChange={(e) => setTkwRep1(Number(e.target.value))}
-                                        />
+                                    <GridItem  h={10} alignContent={'center'}>
+                                        <HStack>
+                                            <Input
+                                                placeholder="Set TKW Probe 1"
+                                                value={tkwRep1 ?? ''}
+                                                onChange={(e) => setTkwRep1(Number(e.target.value))}
+                                            />
+                                            <Text>gr.</Text>
+                                        </HStack>
                                     </GridItem>
 
-                                    <GridItem borderBottom="1px dotted">
+                                    <GridItem h={10} alignContent={'center'}>
                                         <Text><strong>TKW Probe 2:</strong></Text>
                                     </GridItem>
-                                    <GridItem>
-                                        <Input
-                                            placeholder="Set TKW Probe 2"
-                                            value={tkwRep2 ?? ''}
-                                            onChange={(e) => setTkwRep2(Number(e.target.value))}
-                                        />
+                                    <GridItem h={10} alignContent={'center'}>
+                                        <HStack>    
+                                            <Input
+                                                placeholder="Set TKW Probe 2"
+                                                value={tkwRep2 ?? ''}
+                                                onChange={(e) => setTkwRep2(Number(e.target.value))}
+                                            />
+                                            <Text>gr.</Text>
+                                        </HStack>
                                     </GridItem>
 
-                                    <GridItem borderBottom="1px dotted">
+                                    <GridItem  h={10} alignContent={'center'}>
                                         <Text><strong>TKW Probe 3:</strong></Text>
                                     </GridItem>
-                                    <GridItem>
-                                        <Input
-                                            placeholder="Set TKW Probe 3"
-                                            value={tkwRep3 ?? ''}
-                                            onChange={(e) => setTkwRep3(Number(e.target.value))}
-                                        />
+                                    <GridItem h={10} alignContent={'center'}>
+                                        <HStack>
+                                            <Input
+                                                placeholder="Set TKW Probe 3"
+                                                value={tkwRep3 ?? ''}
+                                                onChange={(e) => setTkwRep3(Number(e.target.value))}
+                                            />
+                                            <Text>gr.</Text>
+                                        </HStack>
                                     </GridItem>
-
-                                    <GridItem borderBottom="1px dotted">
+                                    
+                                    <GridItem colSpan={2}>
+                                        <Divider />
+                                    </GridItem>
+                                    
+                                    <GridItem h={10} alignContent={'center'}>
                                         <Text><strong>Average TKW:</strong></Text>
                                     </GridItem>
-                                    <GridItem borderBottom="1px dotted">
-                                        <Text>{averageTkw !== null ? averageTkw.toFixed(2) : 'N/A'} gr</Text>
+                                    <GridItem  h={10} alignContent={'center'}>
+                                        <Text>{averageTkw !== null ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
                                     </GridItem>
 
                                     {selectedOrder.status === OrderStatus.ForLabToControl && (
-                                        <GridItem colSpan={2}>
+                                        <GridItem colSpan={2} h={10} alignContent={'center'}>
                                             <Input
                                                 placeholder="Set Final TKW"
                                                 value={finalTkw ?? ''}
@@ -183,10 +200,10 @@ const LabBoard: React.FC = () => {
                             </Center>
                         </ModalBody>
                         <ModalFooter>
-                            <Button colorScheme="blue" mr={3} onClick={handleSave}>
+                            <Button variant="ghost" mb="3" onClick={() => setSelectedOrder(null)}>Cancel</Button>
+                            <Button colorScheme="blue" mb="3" onClick={handleSave}>
                                 Save
                             </Button>
-                            <Button variant="ghost" onClick={() => setSelectedOrder(null)}>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>
                 </Modal>
