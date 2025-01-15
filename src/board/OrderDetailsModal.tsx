@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { updateOrderTKW } from '../store/ordersSlice';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox, Badge } from '@chakra-ui/react';
 
 interface OrderDetailsModalProps {
     selectedOrder: Order;
@@ -53,6 +53,13 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ selectedOrder, on
                 <ModalBody>
                     <Center w="full" h="full">
                         <Grid templateColumns="3fr 2fr" gap={4} w='full'>
+                            <GridItem colSpan={2} mb={8}>
+                                <Badge autoCapitalize='none' w="full" colorScheme="gray">
+                                    <Text fontSize="lg">
+                                        Counting TKW of UNTREATED seeds
+                                    </Text>
+                                </Badge>
+                            </GridItem>
                             <GridItem h={10} alignContent={'center'}>
                                 <Text><strong>Lot:</strong></Text>
                             </GridItem>
