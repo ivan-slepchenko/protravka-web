@@ -7,23 +7,23 @@ import { Product } from './productsSlice';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 export enum RateUnit {
-  ML = 'ml',
-  G = 'g',
+    ML = 'ml',
+    G = 'g',
 }
 
 export enum RateType {
-  Unit = 'unit',
-  Per100Kg = '100kg',
+    Unit = 'unit',
+    Per100Kg = '100kg',
 }
 
 export interface ProductDetail {
-  id: string;
-  rateUnit: RateUnit;
-  rateType: RateType;
-  rate: number;
-  index: number; // Add index property
-  productId: string; // Add productId property
-  product?: Product; // Add product property << when comes from backend
+    id: string;
+    rateUnit: RateUnit;
+    rateType: RateType;
+    rate: number;
+    index: number; // Add index property
+    productId: string; // Add productId property
+    product?: Product; // Add product property << when comes from backend
 }
 
 export enum OrderStatus {
@@ -34,13 +34,13 @@ export enum OrderStatus {
     ForLabToControl = 'For Lab To Control',
     ToAcknowledge = 'To Acknowledge',
     Archived = 'Archived',
-    Completed = "Completed",
-    Failed = "Failed",
+    Completed = 'Completed',
+    Failed = 'Failed',
 }
 
 export enum Packaging {
-  InSeeds = 'inSeeds',
-  InKg = 'inKg',
+    InSeeds = 'inSeeds',
+    InKg = 'inKg',
 }
 
 export interface Order {
@@ -56,11 +56,12 @@ export interface Order {
     tkwRep1: number;
     tkwRep2: number;
     tkwRep3: number;
+    tkwProbesPhoto: string;
     seedsToTreatKg: number;
     packaging: Packaging;
     bagSize: number;
     status: OrderStatus;
-    orderRecipe: OrderRecipe; 
+    orderRecipe: OrderRecipe;
     extraSlurry: number;
 }
 
@@ -87,12 +88,12 @@ export interface NewOrderState {
 export const createNewEmptyOrder: () => NewOrderState = () => ({
     id: new Date().toISOString(),
     productDetails: [],
-    recipeDate: new Date().toISOString().split("T")[0],
-    applicationDate: new Date().toISOString().split("T")[0],
+    recipeDate: new Date().toISOString().split('T')[0],
+    applicationDate: new Date().toISOString().split('T')[0],
     operatorId: undefined,
     cropId: undefined,
     varietyId: undefined,
-    lotNumber: "",
+    lotNumber: '',
     tkw: 0,
     seedsToTreatKg: 0,
     packaging: Packaging.InSeeds,
@@ -103,13 +104,13 @@ export const createNewEmptyOrder: () => NewOrderState = () => ({
 
 export const createNewEmptyProduct: () => ProductDetail = () => ({
     id: new Date().toISOString(),
-    name: "",
+    name: '',
     rateUnit: RateUnit.ML,
     rateType: RateType.Unit,
     density: 0,
     rate: 0,
     index: 0, // Initialize index
-    productId: "", // Initialize productId
+    productId: '', // Initialize productId
 });
 
 export const fetchCalculatedValues = createAsyncThunk(
@@ -131,7 +132,7 @@ export const fetchCalculatedValues = createAsyncThunk(
         } catch (error) {
             return rejectWithValue((error as Error).message);
         }
-    }
+    },
 );
 
 const newOrderSlice = createSlice({
@@ -143,14 +144,14 @@ const newOrderSlice = createSlice({
             state.productDetails.push(action.payload);
         },
         updateProductDetail: (state, action: PayloadAction<ProductDetail>) => {
-            const index = state.productDetails.findIndex(pd => pd.index === action.payload.index);
+            const index = state.productDetails.findIndex((pd) => pd.index === action.payload.index);
             if (index !== -1) {
                 state.productDetails[index] = action.payload;
             }
         },
         removeProductDetail: (state, action: PayloadAction<number>) => {
-            state.productDetails = state.productDetails.filter(pd => pd.index !== action.payload);
-            state.productDetails.forEach((pd, idx) => pd.index = idx); // Reassign indexes
+            state.productDetails = state.productDetails.filter((pd) => pd.index !== action.payload);
+            state.productDetails.forEach((pd, idx) => (pd.index = idx)); // Reassign indexes
         },
         updateRecipeDate: (state, action: PayloadAction<string>) => {
             state.recipeDate = action.payload;
@@ -188,7 +189,13 @@ const newOrderSlice = createSlice({
         updateExtraSlurry: (state, action: PayloadAction<number>) => {
             state.extraSlurry = action.payload;
         },
-        updateCalculatedValues: (state, action: PayloadAction<{ slurryTotalMlRecipeToMix: number; slurryTotalGrRecipeToMix: number }>) => {
+        updateCalculatedValues: (
+            state,
+            action: PayloadAction<{
+                slurryTotalMlRecipeToMix: number;
+                slurryTotalGrRecipeToMix: number;
+            }>,
+        ) => {
             state.slurryTotalMlRecipeToMix = action.payload.slurryTotalMlRecipeToMix;
             state.slurryTotalGrRecipeToMix = action.payload.slurryTotalGrRecipeToMix;
         },

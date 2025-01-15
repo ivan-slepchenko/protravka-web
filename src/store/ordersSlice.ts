@@ -78,14 +78,14 @@ export const changeOrderStatus = createAsyncThunk('orders/changeOrderStatus', as
 
 export const updateOrderTKW = createAsyncThunk(
     'orders/updateOrderTKW',
-    async ({ id, tkwRep1, tkwRep2, tkwRep3, tkw }: { id: string; tkwRep1: number; tkwRep2: number; tkwRep3: number; tkw: number }, { rejectWithValue }) => {
+    async ({ id, tkwRep1, tkwRep2, tkwRep3, tkw, tkwProbesPhoto }: { id: string; tkwRep1: number; tkwRep2: number; tkwRep3: number; tkw: number; tkwProbesPhoto: string }, { rejectWithValue }) => {
         try {
             const response = await fetch(`${BACKEND_URL}/api/orders/${id}/tkw`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ tkwRep1, tkwRep2, tkwRep3, tkw }),
+                body: JSON.stringify({ tkwRep1, tkwRep2, tkwRep3, tkw, tkwProbesPhoto }),
                 credentials: 'include',
             });
             if (!response.ok) {

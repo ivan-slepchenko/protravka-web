@@ -4,13 +4,22 @@ import { AppDispatch, RootState } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders } from '../store/ordersSlice';
 import { Box, Flex, Text, Badge, Tabs, TabList, TabPanels, Tab, TabPanel, Grid } from '@chakra-ui/react';
-import OrderDetailsModal from './OrderDetailsModal'; // Import the new OrderDetailsModal component
+import RecipeRawTkwDetailsInputModal from './RecipeRawTkwDetailsInputModal';
+import RecipeRawTkwDetailsViewModal from './RecipeRawTkwDetailsViewModal';
 
 const statusToLabelMap: { [key: string]: OrderStatus[] } = {
     'Raw': [OrderStatus.ForLabToInitiate],
     'In Progress': [OrderStatus.ByLabInitiated, OrderStatus.ReadyToStart, OrderStatus.InProgress],
     'Treated': [OrderStatus.ForLabToControl],
     'Finished': [OrderStatus.ToAcknowledge, OrderStatus.Archived, OrderStatus.Completed, OrderStatus.Failed],
+};
+
+const isViewRawTkwMode = (status: OrderStatus): boolean => {
+    return statusToLabelMap['In Progress'].includes(status);
+};
+
+const isInputRawTkwMode = (status: OrderStatus): boolean => {
+    return statusToLabelMap['Raw'].includes(status);
 };
 
 const LabBoard: React.FC = () => {
@@ -51,11 +60,9 @@ const LabBoard: React.FC = () => {
                                                     borderRadius="md"
                                                     p={2}
                                                     w="full"
-                                                    cursor={order.status === OrderStatus.ForLabToInitiate || order.status === OrderStatus.ForLabToControl ? "pointer" : "default"}
+                                                    cursor={order.status === OrderStatus.ForLabToInitiate || order.status === OrderStatus.ForLabToControl || order.status === OrderStatus.InProgress ? "pointer" : "default"}
                                                     onClick={() => {
-                                                        if (order.status === OrderStatus.ForLabToInitiate || order.status === OrderStatus.ForLabToControl) {
-                                                            handleRecipeClick(order);
-                                                        }
+                                                        handleRecipeClick(order);
                                                     }}
                                                     bg={cardColor}
                                                 >
@@ -80,10 +87,20 @@ const LabBoard: React.FC = () => {
                 </TabPanels>
             </Tabs>
             {selectedOrder && (
-                <OrderDetailsModal
-                    selectedOrder={selectedOrder}
-                    onClose={() => setSelectedOrder(null)}
-                />
+                <>
+                    {isViewRawTkwMode(selectedOrder.status) && (
+                        <RecipeRawTkwDetailsViewModal
+                            selectedOrder={selectedOrder}
+                            onClose={() => setSelectedOrder(null)}
+                        />
+                    )};
+                    {isInputRawTkwMode(selectedOrder.status) && (
+                        <RecipeRawTkwDetailsInputModal
+                            selectedOrder={selectedOrder}
+                            onClose={() => setSelectedOrder(null)}
+                        />
+                    )};
+                </> 
             )}
         </Flex>
     );
