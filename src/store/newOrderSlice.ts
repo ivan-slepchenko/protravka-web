@@ -202,6 +202,12 @@ const newOrderSlice = createSlice({
         setOrderState: (state, action: PayloadAction<NewOrderState>) => {
             return action.payload;
         },
+        loadOrderData: (state, action: PayloadAction<Partial<NewOrderState>>) => {
+            return {
+                ...state,
+                ...action.payload,
+            };
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchCalculatedValues.fulfilled, (state, action) => {
@@ -230,5 +236,6 @@ export const {
     updateExtraSlurry,
     updateCalculatedValues,
     setOrderState,
+    loadOrderData,
 } = newOrderSlice.actions;
 export default newOrderSlice.reducer;

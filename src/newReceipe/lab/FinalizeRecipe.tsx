@@ -1,6 +1,6 @@
 import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure, Table, Thead, Tr, Th, Tbody, Td, VStack, Heading } from "@chakra-ui/react";
 import { Role } from '../../operators/Operators';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
@@ -23,13 +23,15 @@ import {
     updateExtraSlurry,
     Packaging,
     fetchCalculatedValues,
-    OrderStatus
+    OrderStatus,
+    loadOrderData,
+    Order
 } from "../../store/newOrderSlice";
-import { createOrder, fetchOrders } from "../../store/ordersSlice";
+import { modifyOrder, fetchOrders, fetchOrderById } from "../../store/ordersSlice";
 import { fetchCrops } from "../../store/cropsSlice";
 import { fetchProducts } from "../../store/productsSlice";
 import { fetchOperators } from '../../store/operatorsSlice';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from '../../index';
 
 const validationSchema = Yup.object().shape({
@@ -84,6 +86,7 @@ export const getRateTypeLabel = (type: RateType): string => {
 };
 
 export const FinalizeRecipe = () => {
+    const { id } = useParams<{ id: string }>();
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder as NewOrderState);
     const crops = useSelector((state: RootState) => state.crops.crops);
@@ -98,6 +101,7 @@ export const FinalizeRecipe = () => {
         return localStorage.getItem('doNotShowAgain') === 'true';
     });
     const addAlert = useAlert().addAlert;
+    const [order, setOrder] = useState<Order | null>(null);
 
     useEffect(() => {
         dispatch(fetchCrops());
@@ -105,19 +109,46 @@ export const FinalizeRecipe = () => {
         dispatch(fetchOperators());
     }, [dispatch]);
 
-    const handleSave = (values: NewOrderState, resetForm: () => void) => {
-        values.status = OrderStatus.ReadyToStart;
-        dispatch(createOrder(values));
-        dispatch(fetchOrders());
-        dispatch(setOrderState(createNewEmptyOrder()));
-        resetForm();
-        setOrderDate(values.applicationDate);
-        if (!doNotShowAgain) {
-            setShowPopup(true);
-        } else {
-            addAlert('Recipe successfully created.');
+    useEffect(() => {
+        if (id) {
+            dispatch(fetchOrderById(id)).then((action) => {
+                if (fetchOrderById.fulfilled.match(action)) {
+                    const fetchedOrder = action.payload;
+                    setOrder(fetchedOrder);
+                    const partialOrderData: Partial<NewOrderState> = {
+                        cropId: fetchedOrder.crop.id,
+                        varietyId: fetchedOrder.variety.id,
+                        lotNumber: fetchedOrder.lotNumber,
+                        tkw: fetchedOrder.tkw,
+                        seedsToTreatKg: fetchedOrder.seedsToTreatKg,
+                    };
+                    dispatch(loadOrderData(partialOrderData));
+                }
+            });
         }
-    };
+    }, [id, dispatch]);
+
+    const handleSave = useCallback((values: NewOrderState, resetForm: () => void) => {
+        if (!id || !order) return;
+        const updatedOrder = {
+            ...order,
+            ...values,
+            id,
+            status: OrderStatus.ReadyToStart,
+        };
+        dispatch(modifyOrder(updatedOrder)).then(() => {
+            dispatch(fetchOrders());
+            dispatch(setOrderState(createNewEmptyOrder()));
+            resetForm();
+            setOrderDate(values.applicationDate);
+            if (!doNotShowAgain) {
+                setShowPopup(true);
+            } else {
+                addAlert('Recipe successfully updated.');
+                navigate('/board');
+            }
+        });
+    }, [id, order, dispatch, doNotShowAgain, addAlert, navigate]);
 
     const handleClearAll = (resetForm: () => void) => {
         dispatch(setOrderState(createNewEmptyOrder()));

@@ -20,8 +20,12 @@ const Board: React.FC = () => {
         dispatch(fetchOrders());
     }, [dispatch]);
 
-    const handleRecipeClick = (orderId: string) => {
-        navigate(`/lot-report/${orderId}`);
+    const handleRecipeClick = (orderId: string, status: OrderStatus) => {
+        if (status === OrderStatus.ByLabInitiated) {
+            navigate(`/finalize/${orderId}`);
+        } else {
+            navigate(`/lot-report/${orderId}`);
+        }
     };
 
     return (
@@ -53,7 +57,7 @@ const Board: React.FC = () => {
                                             p={2}
                                             w="full"
                                             cursor="pointer"
-                                            onClick={() => handleRecipeClick(order.id)}
+                                            onClick={() => handleRecipeClick(order.id, order.status)}
                                             bg={cardColor}
                                             boxShadow="sm"
                                         >
