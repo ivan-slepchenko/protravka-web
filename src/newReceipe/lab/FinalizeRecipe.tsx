@@ -86,7 +86,7 @@ export const getRateTypeLabel = (type: RateType): string => {
 };
 
 export const FinalizeRecipe = () => {
-    const { id } = useParams<{ id: string }>();
+    const { orderId } = useParams<{ orderId: string }>();
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder as NewOrderState);
     const crops = useSelector((state: RootState) => state.crops.crops);
@@ -110,8 +110,8 @@ export const FinalizeRecipe = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        if (id) {
-            dispatch(fetchOrderById(id)).then((action) => {
+        if (orderId) {
+            dispatch(fetchOrderById(orderId)).then((action) => {
                 if (fetchOrderById.fulfilled.match(action)) {
                     const fetchedOrder = action.payload;
                     setOrder(fetchedOrder);
@@ -126,14 +126,14 @@ export const FinalizeRecipe = () => {
                 }
             });
         }
-    }, [id, dispatch]);
+    }, [orderId, dispatch]);
 
     const handleSave = useCallback((values: NewOrderState, resetForm: () => void) => {
-        if (!id || !order) return;
+        if (!orderId || !order) return;
         const updatedOrder = {
             ...order,
             ...values,
-            id,
+            id: orderId,
             status: OrderStatus.ReadyToStart,
         };
         dispatch(modifyOrder(updatedOrder)).then(() => {
@@ -148,7 +148,7 @@ export const FinalizeRecipe = () => {
                 navigate('/board');
             }
         });
-    }, [id, order, dispatch, doNotShowAgain, addAlert, navigate]);
+    }, [orderId, order, dispatch, doNotShowAgain, addAlert, navigate]);
 
     const handleClearAll = (resetForm: () => void) => {
         dispatch(setOrderState(createNewEmptyOrder()));
@@ -191,7 +191,7 @@ export const FinalizeRecipe = () => {
     return (
         <Center w='full' h='full' fontSize={'xs'}>
             <VStack>
-                <Heading size="lg">New Receipe</Heading>
+                <Heading size="lg">Finalize Receipe</Heading>
                 <Formik
                     initialValues={{
                         ...formData,

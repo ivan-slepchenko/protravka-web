@@ -188,7 +188,7 @@ const App = () => {
                             <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}>
                                 {useLab ? <NewReceipeLab /> : <NewReceipeNoLab />}
                             </RequireAuth>} />
-                            <Route path="/finalize" element={<RequireAuth roles={[Role.MANAGER]}><FinalizeRecipe /></RequireAuth>} />
+                            <Route path="/finalize/:orderId" element={<RequireAuth roles={[Role.MANAGER]}><FinalizeRecipe /></RequireAuth>} />
                             <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><LabBoard /></RequireAuth>} />
                             <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                             <Route path="/report" element={<RequireAuth roles={[Role.MANAGER]}><Report /></RequireAuth>} />
@@ -221,7 +221,7 @@ const App = () => {
                         <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}>
                             {useLab ? <NewReceipeLab /> : <NewReceipeNoLab />}
                         </RequireAuth>} />
-                        <Route path="/finalize" element={<RequireAuth roles={[Role.MANAGER]}><FinalizeRecipe /></RequireAuth>} />
+                        <Route path="/finalize/:orderId" element={<RequireAuth roles={[Role.MANAGER]}><FinalizeRecipe /></RequireAuth>} />
                         <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><LabBoard /></RequireAuth>} />
                         <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
                         <Route path="/report" element={<RequireAuth roles={[Role.MANAGER]}><Report /></RequireAuth>} />
