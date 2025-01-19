@@ -60,7 +60,11 @@ export default function OrderExecution9ConsumptionDetails() {
             <Tbody>
                 <Tr>
                     <Td>
-                        {applicationMethod === 'Surry' ? (currentOrder.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2) : (productRecipe.grSlurryRecipeToMix/1000).toFixed(2)}
+                        {applicationMethod === 'Surry'
+                            ? currentOrder.orderRecipe
+                                ? (currentOrder.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2)
+                                : 'N/A'
+                            : (productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}
                     </Td>
                     <Td>
                         <Input

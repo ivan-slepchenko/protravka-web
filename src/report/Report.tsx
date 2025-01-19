@@ -94,12 +94,12 @@ const Report: React.FC = () => {
     const cropStats = filteredOrders.reduce((acc, order) => {
         const cropStat = acc.find(stat => stat.crop === order.crop.name);
         if (cropStat) {
-            cropStat.su += order.orderRecipe.nbSeedsUnits;
+            cropStat.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
             cropStat.kg += order.seedsToTreatKg;
         } else {
             acc.push({
                 crop: order.crop.name,
-                su: order.orderRecipe.nbSeedsUnits,
+                su: order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0,
                 kg: order.seedsToTreatKg,
             });
         }
@@ -118,17 +118,17 @@ const Report: React.FC = () => {
             switch (order.status) {
                 case OrderStatus.Completed:
                     stats.approved.count++;
-                    stats.approved.su += order.orderRecipe.nbSeedsUnits;
+                    stats.approved.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
                     stats.approved.kg += order.seedsToTreatKg;
                     break;
                 case OrderStatus.ToAcknowledge:
                     stats.toAcknowledge.count++;
-                    stats.toAcknowledge.su += order.orderRecipe.nbSeedsUnits;
+                    stats.toAcknowledge.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
                     stats.toAcknowledge.kg += order.seedsToTreatKg;
                     break;
                 case OrderStatus.Failed:
                     stats.disapproved.count++;
-                    stats.disapproved.su += order.orderRecipe.nbSeedsUnits;
+                    stats.disapproved.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
                     stats.disapproved.kg += order.seedsToTreatKg;
                     break;
                 default:
@@ -309,7 +309,7 @@ const Report: React.FC = () => {
                                         <Td>{order.lotNumber}</Td>
                                         <Td>{order.applicationDate}</Td>
                                         <Td>{order.operator.name}</Td>
-                                        <Td>{order.orderRecipe.nbSeedsUnits.toFixed(1)}</Td>
+                                        <Td>{order.orderRecipe ? order.orderRecipe.nbSeedsUnits.toFixed(1) : "N/A"}</Td>
                                         <Td>{order.seedsToTreatKg}</Td>
                                         <Td>{getStatusBadge(order.status)}</Td>
                                     </Tr>

@@ -45,13 +45,13 @@ export const createOrder = createAsyncThunk('orders/createOrder', async (order: 
     return jsonResponse;
 });
 
-export const modifyOrder = createAsyncThunk('orders/modifyOrder', async (order: Order) => {
+export const finalizeOrder = createAsyncThunk('orders/finalizeOrder', async (order: Order) => {
     const { productDetails, ...orderWithoutId } = order; // Remove id from receipe
     const productDetailsWithoutIds = productDetails.map(({ id, ...rest }) => {
         id.toString();
         return rest;
     }); // Remove ids from productDetails
-    const response = await fetch(`${BACKEND_URL}/api/orders/${order.id}`, {
+    const response = await fetch(`${BACKEND_URL}/api/orders/${order.id}/finalize`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ const ordersSlice = createSlice({
         builder.addCase(createOrder.fulfilled, (state, action: PayloadAction<Order>) => {
             state.activeOrders.push(action.payload);
         });
-        builder.addCase(modifyOrder.fulfilled, (state, action: PayloadAction<Order>) => {
+        builder.addCase(finalizeOrder.fulfilled, (state, action: PayloadAction<Order>) => {
             const index = state.activeOrders.findIndex((order) => order.id === action.payload.id);
             if (index !== -1) {
                 state.activeOrders[index] = action.payload;

@@ -7,6 +7,7 @@ import { fetchOrders, changeOrderStatus } from "../store/ordersSlice";
 import { Order, OrderStatus, Packaging } from "../store/newOrderSlice";
 import { useReactToPrint } from "react-to-print";
 import { fetchOrderExecution, OrderExecution } from "../store/executionSlice";
+import { useFeatures } from "..";
 
 const statusColorMap = {
     green: "#48BB78", // Green color (Chakra UI green.400)
@@ -34,18 +35,18 @@ const LotReport: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [status, setStatus] = useState<OrderStatus | null>(null);
     const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
-
+    
     useEffect(() => {
         dispatch(fetchOrders());
     }, [dispatch]);
 
     useEffect(() => {
-        if (orderId) {
+        if (orderId && order !== null && [OrderStatus.ForLabToInitiate, OrderStatus.ByLabInitiated, OrderStatus.ReadyToStart].indexOf(order.status) === -1) {        
             fetchOrderExecution(orderId).then((orderExecution) => {
                 setOrderExecution(orderExecution);
             });
         }
-    }, [orderId]);
+    }, [orderId, order]);
 
     useEffect(() => {
         if (orderId) {
@@ -112,11 +113,6 @@ const LotReport: React.FC = () => {
         return <Text>Loading...</Text>;
     }
 
-    const orderRecipe = order.orderRecipe;
-    if (!orderRecipe || (order.status !== OrderStatus.ReadyToStart && !orderExecution)) {
-        return <Text>Loading...</Text>;
-    }
-
     const unitNumberOfSeeds = order.packaging === Packaging.InKg ? order.bagSize / order.tkw : order.bagSize;
 
     return (
@@ -156,10 +152,10 @@ const LotReport: React.FC = () => {
                         <Tr>
                             <Td>{order.tkw}</Td>
                             <Td>{unitNumberOfSeeds.toFixed(2)}</Td>
-                            <Td>{order.orderRecipe.unitWeight.toFixed(2)}</Td>
-                            <Td>{order.orderRecipe.nbSeedsUnits.toFixed(2)}</Td>
+                            <Td>{order.orderRecipe ? order.orderRecipe.unitWeight.toFixed(2) : 'N/A'}</Td>
+                            <Td>{order.orderRecipe ? order.orderRecipe.nbSeedsUnits.toFixed(2) : 'N/A'}</Td>
                             <Td>{order.seedsToTreatKg}</Td>
-                            <Td>{orderExecution && orderExecution.packedseedsToTreatKg || '---'}</Td>
+                            <Td>{orderExecution && orderExecution.packedseedsToTreatKg || 'N/A'}</Td>
                             <Td>
                                 {orderExecution && orderExecution.packingPhoto ? (
                                     <Image
@@ -178,8 +174,8 @@ const LotReport: React.FC = () => {
                                     </Box>
                                 )}
                             </Td>
-                            <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(calculateDeviation(orderExecution?.packedseedsToTreatKg ?? 0, order.seedsToTreatKg))}>
-                                {orderExecution ? calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed() + '%' : '---'}
+                            <Td fontWeight={orderExecution ? "bold" : "normal"} color={orderExecution ? getDeviationColor(calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg)) : "black"}>
+                                {orderExecution ? calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed() + '%' : 'N/A'}
                             </Td>
                         </Tr>
                     </Tbody>
@@ -209,9 +205,9 @@ const LotReport: React.FC = () => {
                         <Tbody>
                             {order.productDetails.map((detail, index) => {
                                 const productExecution = orderExecution ? orderExecution.productExecutions.find(pe => pe.productId === detail.product?.id) : null;
-                                const productRecipe = order.orderRecipe.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === detail.product?.id);
+                                const productRecipe =  order.orderRecipe ? order.orderRecipe.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === detail.product?.id) : undefined;
 
-                                if (detail.product === undefined || productRecipe === undefined) {
+                                if (detail.product === undefined) {
                                     return (
                                         <Tr key={index} bg="red.100">
                                             <Td colSpan={10} textAlign="center">
@@ -222,15 +218,15 @@ const LotReport: React.FC = () => {
                                 }
 
                                 const actualRateGrTo100Kg: number | undefined = productExecution ? 100 * (productExecution.appliedRateKg ?? 0) / (order.seedsToTreatKg / 1000) : undefined;
-                                const actualRateGrToU_KS: number | undefined = productExecution ? (1000 * (productExecution.appliedRateKg ?? 0) / orderRecipe.nbSeedsUnits) : undefined;
-                                const deviation: number | undefined = productExecution ? calculateDeviation(actualRateGrToU_KS ?? 0, productRecipe.rateGrToU_KS) : undefined;
+                                const actualRateGrToU_KS: number | undefined = (order.orderRecipe !== null && productExecution) ? (1000 * (productExecution.appliedRateKg ?? 0) / order.orderRecipe.nbSeedsUnits) : undefined;
+                                const deviation: number | undefined = (productRecipe && productExecution) ? calculateDeviation(actualRateGrToU_KS ?? 0, productRecipe.rateGrToU_KS) : undefined;
 
                                 return (
                                     <Tr key={index}>
                                         <Td>{detail.product.name}</Td>
                                         <Td>{detail.product.density}</Td>
-                                        <Td>{(productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
-                                        <Td>{productExecution ? productExecution.appliedRateKg.toFixed(2) : '---'}</Td>
+                                        <Td>{productRecipe ? (productRecipe.grSlurryRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
+                                        <Td>{productExecution ? productExecution.appliedRateKg.toFixed(2) : 'N/A'}</Td>
                                         <Td>
                                             {productExecution && productExecution.applicationPhoto ? (
                                                 <Image
@@ -249,12 +245,12 @@ const LotReport: React.FC = () => {
                                                 </Box>
                                             )}
                                         </Td>
-                                        <Td>{productRecipe.rateGrTo100Kg.toFixed(2)}</Td>
-                                        <Td>{actualRateGrTo100Kg !== undefined ? actualRateGrTo100Kg.toFixed(2) : '---'}</Td>
-                                        <Td>{productRecipe.rateGrToU_KS.toFixed(2)}</Td>
-                                        <Td>{actualRateGrToU_KS !== undefined ? actualRateGrToU_KS.toFixed(2) : '---'}</Td>
+                                        <Td>{productRecipe ? productRecipe.rateGrTo100Kg.toFixed(2) : "N/A"}</Td>
+                                        <Td>{actualRateGrTo100Kg !== undefined ? actualRateGrTo100Kg.toFixed(2) : 'N/A'}</Td>
+                                        <Td>{productRecipe ? productRecipe.rateGrToU_KS.toFixed(2) : "N/A"}</Td>
+                                        <Td>{actualRateGrToU_KS !== undefined ? actualRateGrToU_KS.toFixed(2) : 'N/A'}</Td>
                                         <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(deviation ?? 0)}>
-                                            {deviation !== undefined ? deviation.toFixed() + '%' : '---'}
+                                            {deviation !== undefined ? deviation.toFixed() + '%' : 'N/A'}
                                         </Td>
                                     </Tr>
                                 );
@@ -278,8 +274,8 @@ const LotReport: React.FC = () => {
                         </Thead>
                         <Tbody>
                             <Tr>
-                                <Td>{(order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2)}</Td>
-                                <Td>{orderExecution ? orderExecution.slurryConsumptionPerLotKg : '---'}</Td>
+                                <Td>{order.orderRecipe ? (order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
+                                <Td>{orderExecution ? orderExecution.slurryConsumptionPerLotKg : 'N/A'}</Td>
                                 <Td>
                                     {orderExecution && orderExecution.consumptionPhoto ? (
                                         <Image
@@ -298,8 +294,8 @@ const LotReport: React.FC = () => {
                                         </Box>
                                     )}
                                 </Td>
-                                <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(calculateDeviation(orderExecution?.slurryConsumptionPerLotKg ?? 0, order.orderRecipe.slurryTotalMlRecipeToMix / 1000))}>
-                                    {orderExecution ? calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed() + '%' : '---'}
+                                <Td fontWeight={(order.orderRecipe && orderExecution)  ? "bold" : "normal"} color={(order.orderRecipe && orderExecution) ? getDeviationColor(calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000)) : "black"}>
+                                    {(order.orderRecipe && orderExecution) ? calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed() + '%' : 'N/A'}
                                 </Td>
                             </Tr>
                         </Tbody>

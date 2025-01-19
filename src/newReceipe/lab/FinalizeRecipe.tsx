@@ -27,7 +27,7 @@ import {
     loadOrderData,
     Order
 } from "../../store/newOrderSlice";
-import { modifyOrder, fetchOrders, fetchOrderById } from "../../store/ordersSlice";
+import { finalizeOrder, fetchOrders, fetchOrderById } from "../../store/ordersSlice";
 import { fetchCrops } from "../../store/cropsSlice";
 import { fetchProducts } from "../../store/productsSlice";
 import { fetchOperators } from '../../store/operatorsSlice';
@@ -136,7 +136,7 @@ export const FinalizeRecipe = () => {
             id: orderId,
             status: OrderStatus.ReadyToStart,
         };
-        dispatch(modifyOrder(updatedOrder)).then(() => {
+        dispatch(finalizeOrder(updatedOrder)).then(() => {
             dispatch(fetchOrders());
             dispatch(setOrderState(createNewEmptyOrder()));
             resetForm();

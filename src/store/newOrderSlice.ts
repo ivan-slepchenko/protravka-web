@@ -61,7 +61,7 @@ export interface Order {
     packaging: Packaging;
     bagSize: number;
     status: OrderStatus;
-    orderRecipe: OrderRecipe;
+    orderRecipe: OrderRecipe | null;
     extraSlurry: number;
 }
 

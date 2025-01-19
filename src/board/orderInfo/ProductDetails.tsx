@@ -40,27 +40,27 @@ const ProductDetails: React.FC<{ order: Order }> = ({ order }) => {
                                     <Td>{productDetail.product?.density.toFixed(2)}</Td>
                                     <Td>{productDetail.rate.toFixed(2)}</Td>
                                     <Td>{`${getRateTypeLabel(productDetail.rateType)}/${getRateUnitLabel(productDetail.rateUnit)}`}</Td>
-                                    <Td>{(order.orderRecipe.productRecipes[index]?.mlSlurryRecipeToMix / 1000).toFixed(2)}</Td>
-                                    <Td>{(order.orderRecipe.productRecipes[index]?.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
-                                    <Td>{order.orderRecipe.productRecipes[index]?.rateMltoU_KS.toFixed(2)}</Td>
-                                    <Td>{order.orderRecipe.productRecipes[index]?.rateGrToU_KS.toFixed(2)}</Td>
-                                    <Td>{order.orderRecipe.productRecipes[index]?.rateMlTo100Kg.toFixed(2)}</Td>
-                                    <Td>{order.orderRecipe.productRecipes[index]?.rateGrTo100Kg.toFixed(2)}</Td>
+                                    <Td>{order.orderRecipe ? (order.orderRecipe.productRecipes[index]?.mlSlurryRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
+                                    <Td>{order.orderRecipe ? (order.orderRecipe.productRecipes[index]?.grSlurryRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
+                                    <Td>{order.orderRecipe ? order.orderRecipe.productRecipes[index]?.rateMltoU_KS.toFixed(2) : "N/A"}</Td>
+                                    <Td>{order.orderRecipe ? order.orderRecipe.productRecipes[index]?.rateGrToU_KS.toFixed(2) : "N/A"}</Td>
+                                    <Td>{order.orderRecipe ? order.orderRecipe.productRecipes[index]?.rateMlTo100Kg.toFixed(2) : "N/A"}</Td>
+                                    <Td>{order.orderRecipe ? order.orderRecipe.productRecipes[index]?.rateGrTo100Kg.toFixed(2) : "N/A"}</Td>
                                 </Tr>
                             ))}
                     </Tbody>
                     <Tfoot>
                         <Tr>
                             <Th>Total</Th>
-                            <Th>{order.orderRecipe.totalCompoundsDensity.toFixed(2)}</Th>
+                            <Th>{order.orderRecipe ? order.orderRecipe.totalCompoundsDensity.toFixed(2) : "N/A"}</Th>
                             <Th>---</Th>
                             <Th>---</Th>
-                            <Th>{(order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2)}</Th>
-                            <Th>{(order.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2)}</Th>
-                            <Th>{order.orderRecipe.slurryTotalMltoU_KS.toFixed(2)}</Th>
-                            <Th>{order.orderRecipe.slurryTotalGToU_KS.toFixed(2)}</Th>
-                            <Th>{order.orderRecipe.slurryTotalMlTo100Kg.toFixed(2)}</Th>
-                            <Th>{order.orderRecipe.slurryTotalGTo100Kgs.toFixed(2)}</Th>
+                            <Th>{order.orderRecipe ? (order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2) : "N/A"}</Th>
+                            <Th>{order.orderRecipe ? (order.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2) : "N/A"}</Th>
+                            <Th>{order.orderRecipe ? order.orderRecipe.slurryTotalMltoU_KS.toFixed(2) : "N/A"}</Th>
+                            <Th>{order.orderRecipe ? order.orderRecipe.slurryTotalGToU_KS.toFixed(2) : "N/A"}</Th>
+                            <Th>{order.orderRecipe ? order.orderRecipe.slurryTotalMlTo100Kg.toFixed(2) : "N/A"}</Th>
+                            <Th>{order.orderRecipe ? order.orderRecipe.slurryTotalGTo100Kgs.toFixed(2) : "N/A"}</Th>
                         </Tr>
                     </Tfoot>
                 </Table>

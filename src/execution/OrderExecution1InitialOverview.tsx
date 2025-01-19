@@ -20,8 +20,8 @@ const OrderExecution1InitialOverview = () => {
         return <Text>{'Receipe not found '}</Text>;
     }
 
-    const totalLitres = currentOrder.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0) / 1000;
-    const totalKg = currentOrder.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.grSlurryRecipeToMix, 0) / 1000;
+    const totalLitres = currentOrder.orderRecipe ? currentOrder.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0) / 1000 : undefined;
+    const totalKg = currentOrder.orderRecipe ? currentOrder.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.grSlurryRecipeToMix, 0) / 1000 : undefined;
     const bagSizeUnit = packagingMap[currentOrder.packaging];
 
     const handleNextClick = () => {
@@ -70,7 +70,7 @@ const OrderExecution1InitialOverview = () => {
                             <Text><strong>Expected Amount Of Bags:</strong></Text>
                         </GridItem>
                         <GridItem borderBottom="1px dotted">
-                            <Text>{currentOrder.orderRecipe.nbSeedsUnits.toFixed()}</Text>
+                            <Text>{currentOrder.orderRecipe ? currentOrder.orderRecipe.nbSeedsUnits.toFixed() : "N/A"}</Text>
                         </GridItem>
                     </Grid>
                     <Table variant="simple" size="sm" mt={4}>
@@ -82,7 +82,7 @@ const OrderExecution1InitialOverview = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {currentOrder.orderRecipe.productRecipes.map(productRecipe => {
+                            {currentOrder.orderRecipe && currentOrder.orderRecipe.productRecipes.map(productRecipe => {
                                 return (
                                     <Tr key={productRecipe.id}>
                                         <Td>{productRecipe.productDetail.product?.name}</Td>
@@ -95,8 +95,8 @@ const OrderExecution1InitialOverview = () => {
                         <Tfoot>
                             <Tr>
                                 <Th>Total</Th>
-                                <Th>{totalLitres.toFixed(2)}</Th>
-                                <Th>{totalKg.toFixed(2)}</Th>
+                                <Th>{totalLitres ? totalLitres.toFixed(2) : "N/A"}</Th>
+                                <Th>{totalKg ? totalKg.toFixed(2) : "N/A"}</Th>
                             </Tr>
                         </Tfoot>
                     </Table>
