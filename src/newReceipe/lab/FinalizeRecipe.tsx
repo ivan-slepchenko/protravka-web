@@ -133,8 +133,7 @@ export const FinalizeRecipe = () => {
         const updatedOrder = {
             ...order,
             ...values,
-            id: orderId,
-            status: OrderStatus.ReadyToStart,
+            id: orderId
         };
         dispatch(finalizeOrder(updatedOrder)).then(() => {
             dispatch(fetchOrders());

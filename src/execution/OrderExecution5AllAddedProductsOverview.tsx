@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Button, VStack, HStack, Center } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { nextPage, saveOrderExecution } from '../store/executionSlice';
+import { nextPage, saveOrderExecutionTreatmentStartTime } from '../store/executionSlice';
 
 const OrderExecution5AllAddedProductsOverview = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -24,7 +24,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
 
     const handleNextButtonClicked = (): void => {
         dispatch(nextPage());
-        dispatch(saveOrderExecution());
+        dispatch(saveOrderExecutionTreatmentStartTime());
     }
 
     return (

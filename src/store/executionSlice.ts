@@ -29,7 +29,7 @@ export interface OrderExecution {
 }
 
 export interface ExecutionState {
-    currentOrder: Order | null;  
+    currentOrder: Order | null;
     currentOrderExecution: OrderExecution | null;
     orderExecutions: OrderExecution[];
 }
@@ -56,7 +56,7 @@ export const saveOrderExecution = createAsyncThunk(
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(orderExecution),  
+                body: JSON.stringify(orderExecution),
                 credentials: 'include', // Include credentials for requests
             });
             return await response.json();
@@ -64,7 +64,23 @@ export const saveOrderExecution = createAsyncThunk(
             console.error('Failed to save order execution:', error);
             return rejectWithValue(orderExecution); // Return the payload for offline handling
         }
-    }
+    },
+);
+
+export const saveOrderExecutionTreatmentStartTime = createAsyncThunk(
+    'execution/saveOrderExecutionTreatmentStartTime',
+    async (orderId: string, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}/start`, {
+                method: 'PUT',
+                credentials: 'include', // Include credentials for requests
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Failed to save order execution treatment start time:', error);
+            return rejectWithValue(orderId); // Return the payload for offline handling
+        }
+    },
 );
 
 export const fetchOrderExecution = async (orderId: string) => {
@@ -74,12 +90,12 @@ export const fetchOrderExecution = async (orderId: string) => {
     if (!response.ok) {
         throw new Error(`Failed to fetch order execution: ${response.statusText}`);
     }
-    return await response.json() as OrderExecution;
-}
+    return (await response.json()) as OrderExecution;
+};
 
 export const fetchOrderExecutionAsCurrent = createAsyncThunk(
     'execution/fetchOrderExecutionAsCurrent',
-    fetchOrderExecution
+    fetchOrderExecution,
 );
 
 const executionSlice = createSlice({
@@ -103,7 +119,10 @@ const executionSlice = createSlice({
             state.currentOrderExecution = newOrderExecution;
         },
         incrementProductIndex: (state) => {
-            if (state.currentOrderExecution && state.currentOrderExecution.currentProductIndex !== null) {
+            if (
+                state.currentOrderExecution &&
+                state.currentOrderExecution.currentProductIndex !== null
+            ) {
                 state.currentOrderExecution.currentProductIndex += 1;
             }
         },
@@ -117,7 +136,8 @@ const executionSlice = createSlice({
                 if (action.payload !== undefined) {
                     state.currentOrderExecution.currentPage = action.payload;
                 } else {
-                    state.currentOrderExecution.currentPage = (state.currentOrderExecution.currentPage + 1) as OrderExecutionPage;
+                    state.currentOrderExecution.currentPage = (state.currentOrderExecution
+                        .currentPage + 1) as OrderExecutionPage;
                 }
             }
         },
@@ -130,56 +150,94 @@ const executionSlice = createSlice({
                 state.currentOrderExecution.applicationMethod = action.payload;
             }
         },
-        setAppliedProductRateKg: (state, action: PayloadAction<{ orderId: string, productId: string, appliedRateKg: number }>) => {
+        setAppliedProductRateKg: (
+            state,
+            action: PayloadAction<{ orderId: string; productId: string; appliedRateKg: number }>,
+        ) => {
             if (state.currentOrderExecution) {
                 const { productId, appliedRateKg } = action.payload;
-                const productExecution = state.currentOrderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
+                const productExecution = state.currentOrderExecution.productExecutions.find(
+                    (productExecution) => productExecution.productId === productId,
+                );
                 if (productExecution) {
                     productExecution.appliedRateKg = appliedRateKg;
                 } else {
-                    state.currentOrderExecution.productExecutions.push({ productId, appliedRateKg: appliedRateKg });
+                    state.currentOrderExecution.productExecutions.push({
+                        productId,
+                        appliedRateKg: appliedRateKg,
+                    });
                 }
             }
         },
-        setExecutedSlurryConsumptionPerLotKg: (state, action: PayloadAction<{ orderId: string, slurryConsumptionPerLotKg: number }>) => {
+        setExecutedSlurryConsumptionPerLotKg: (
+            state,
+            action: PayloadAction<{ orderId: string; slurryConsumptionPerLotKg: number }>,
+        ) => {
             if (state.currentOrderExecution) {
                 const { slurryConsumptionPerLotKg } = action.payload;
                 state.currentOrderExecution.slurryConsumptionPerLotKg = slurryConsumptionPerLotKg;
             }
         },
-        setExecutedProductConsumptionPerLotKg: (state, action: PayloadAction<{ orderId: string, productId: string, productConsumptionPerLotKg: number }>) => {
+        setExecutedProductConsumptionPerLotKg: (
+            state,
+            action: PayloadAction<{
+                orderId: string;
+                productId: string;
+                productConsumptionPerLotKg: number;
+            }>,
+        ) => {
             if (state.currentOrderExecution) {
                 const { productId, productConsumptionPerLotKg } = action.payload;
-                const productExecution = state.currentOrderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
+                const productExecution = state.currentOrderExecution.productExecutions.find(
+                    (productExecution) => productExecution.productId === productId,
+                );
                 if (productExecution) {
                     productExecution.productConsumptionPerLotKg = productConsumptionPerLotKg;
                 } else {
-                    state.currentOrderExecution.productExecutions.push({ productId, appliedRateKg: productConsumptionPerLotKg });
+                    state.currentOrderExecution.productExecutions.push({
+                        productId,
+                        appliedRateKg: productConsumptionPerLotKg,
+                    });
                 }
             }
         },
-        setPhotoForProvingProductApplication: (state, action: PayloadAction<{ photo: string, productId: string }>) => {
+        setPhotoForProvingProductApplication: (
+            state,
+            action: PayloadAction<{ photo: string; productId: string }>,
+        ) => {
             if (state.currentOrderExecution) {
                 const { photo, productId } = action.payload;
-                const productExecution = state.currentOrderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
+                const productExecution = state.currentOrderExecution.productExecutions.find(
+                    (productExecution) => productExecution.productId === productId,
+                );
                 if (productExecution) {
                     productExecution.applicationPhoto = photo;
                 }
             }
         },
-        resetPhotoForProvingProductApplication: (state, action: PayloadAction<{productId: string}>) => {
+        resetPhotoForProvingProductApplication: (
+            state,
+            action: PayloadAction<{ productId: string }>,
+        ) => {
             if (state.currentOrderExecution) {
                 const { productId } = action.payload;
-                const productExecution = state.currentOrderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
+                const productExecution = state.currentOrderExecution.productExecutions.find(
+                    (productExecution) => productExecution.productId === productId,
+                );
                 if (productExecution) {
                     productExecution.applicationPhoto = undefined;
                 }
             }
         },
-        setProductConsumptionPhoto: (state, action: PayloadAction<{ photo: string, productId: string }>) => {
+        setProductConsumptionPhoto: (
+            state,
+            action: PayloadAction<{ photo: string; productId: string }>,
+        ) => {
             if (state.currentOrderExecution) {
                 const { photo, productId } = action.payload;
-                const productExecution = state.currentOrderExecution.productExecutions.find(productExecution => productExecution.productId === productId);
+                const productExecution = state.currentOrderExecution.productExecutions.find(
+                    (productExecution) => productExecution.productId === productId,
+                );
                 if (productExecution) {
                     productExecution.consumptionPhoto = photo;
                 }
@@ -210,9 +268,12 @@ const executionSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchOrderExecutionAsCurrent.fulfilled, (state, action: PayloadAction<OrderExecution>) => {
-            state.currentOrderExecution = action.payload;
-        });
+        builder.addCase(
+            fetchOrderExecutionAsCurrent.fulfilled,
+            (state, action: PayloadAction<OrderExecution>) => {
+                state.currentOrderExecution = action.payload;
+            },
+        );
     },
 });
 
