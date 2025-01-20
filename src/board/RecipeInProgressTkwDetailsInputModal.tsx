@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
-import { Order, OrderStatus } from '../store/newOrderSlice';
-import { fetchOrders, updateOrderTKW } from '../store/ordersSlice';
+import { Order } from '../store/newOrderSlice';
+import { fetchOrderExecution, fetchTkwMeasurements, saveTkwMeasurement } from '../store/executionSlice';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox, Badge, Box, Image } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
 
-interface RecipeRawTkwDetailsInputModalProps {
+interface RecipeInProgressTkwDetailsInputModalProps {
     selectedOrder: Order;
     onClose: () => void;
 }
 
-const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps> = ({ selectedOrder, onClose }) => {
+const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsInputModalProps> = ({ selectedOrder, onClose }) => {
     const dispatch: AppDispatch = useDispatch();
-    const [finalTkw, setFinalTkw] = useState<number | null>(null);
+    const [orderExecutionId, setOrderExecutionId] = useState<string | null>(null);
     const [tkwRep1, setTkwRep1] = useState<number | null>(null);
     const [tkwRep2, setTkwRep2] = useState<number | null>(null);
     const [tkwRep3, setTkwRep3] = useState<number | null>(null);
@@ -25,8 +25,12 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     useEffect(() => {
-        setFinalTkw(selectedOrder.tkw);
-    }, [selectedOrder]);
+        const fetchExecution = async () => {
+            const orderExecution = await fetchOrderExecution(selectedOrder.id);
+            setOrderExecutionId(orderExecution.id);
+        };
+        fetchExecution();
+    }, [dispatch, selectedOrder]);
 
     useEffect(() => {
         if (tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null) {
@@ -71,17 +75,15 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
     };
 
     const handleSave = () => {
-        if (selectedOrder.status === OrderStatus.ForLabToInitiate && tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null && tkwProbesPhoto !== null) {
-            dispatch(updateOrderTKW({
-                id: selectedOrder.id,
+        if (orderExecutionId && tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null && tkwProbesPhoto !== null) {
+            dispatch(saveTkwMeasurement({
+                orderExecutionId,
                 tkwRep1,
                 tkwRep2,
                 tkwRep3,
                 tkwProbesPhoto: tkwProbesPhoto,
             }));
-            dispatch(fetchOrders());
-        } else if (selectedOrder.status === OrderStatus.ForLabToControl && finalTkw !== null) {
-            // Dispatch action to update final TKW
+            dispatch(fetchTkwMeasurements());
         }
         onClose();
     };
@@ -90,7 +92,7 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
         <Modal isOpen={!!selectedOrder} onClose={onClose} size="full">
             <ModalOverlay />
             <ModalContent borderRadius="none" w="full" h="full">
-                <ModalHeader>Recipe Raw TKW Details</ModalHeader>
+                <ModalHeader>Recipe In Progress TKW Details</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <Center w="full" h="full">
@@ -173,16 +175,6 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
                                 <GridItem h={10} alignContent={'center'}>
                                     <Text>{averageTkw !== null ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
                                 </GridItem>
-
-                                {selectedOrder.status === OrderStatus.ForLabToControl && (
-                                    <GridItem colSpan={2} h={10} alignContent={'center'}>
-                                        <Input
-                                            placeholder="Set Final TKW"
-                                            value={finalTkw ?? ''}
-                                            onChange={(e) => setFinalTkw(Number(e.target.value))}
-                                        />
-                                    </GridItem>
-                                )}
                             </Grid>
                         ) : (
                             <VStack spacing={8} width="100%">
@@ -257,4 +249,4 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
     );
 };
 
-export default RecipeRawTkwDetailsInputModal;
+export default RecipeInProgressTkwDetailsInputModal;

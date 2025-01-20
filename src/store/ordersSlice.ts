@@ -87,14 +87,12 @@ export const updateOrderTKW = createAsyncThunk(
             tkwRep1,
             tkwRep2,
             tkwRep3,
-            tkw,
             tkwProbesPhoto,
         }: {
             id: string;
             tkwRep1: number;
             tkwRep2: number;
             tkwRep3: number;
-            tkw: number;
             tkwProbesPhoto: string;
         },
         { rejectWithValue },
@@ -105,7 +103,7 @@ export const updateOrderTKW = createAsyncThunk(
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ tkwRep1, tkwRep2, tkwRep3, tkw, tkwProbesPhoto }),
+                body: JSON.stringify({ tkwRep1, tkwRep2, tkwRep3, tkwProbesPhoto }),
                 credentials: 'include',
             });
             if (!response.ok) {

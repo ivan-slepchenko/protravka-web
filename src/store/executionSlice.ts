@@ -16,6 +16,7 @@ export interface ProductExecution {
 }
 
 export interface OrderExecution {
+    id: string | null;
     orderId: string;
     productExecutions: ProductExecution[];
     applicationMethod: string | null;
@@ -28,16 +29,29 @@ export interface OrderExecution {
     operatorId: string | null;
 }
 
+export interface TkwMeasurement {
+    id: string;
+    creationDate: string;
+    probeDate?: string;
+    orderExecution: OrderExecution;
+    tkwProbe1?: number;
+    tkwProbe2?: number;
+    tkwProbe3?: number;
+    tkwProbesPhoto?: string;
+}
+
 export interface ExecutionState {
     currentOrder: Order | null;
     currentOrderExecution: OrderExecution | null;
     orderExecutions: OrderExecution[];
+    tkwMeasurements: TkwMeasurement[];
 }
 
 const initialState: ExecutionState = {
     currentOrder: null,
     currentOrderExecution: null,
     orderExecutions: [],
+    tkwMeasurements: [],
 };
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -98,6 +112,56 @@ export const fetchOrderExecutionAsCurrent = createAsyncThunk(
     fetchOrderExecution,
 );
 
+export const fetchTkwMeasurements = createAsyncThunk('execution/fetchTkwMeasurements', async () => {
+    const response = await fetch(`${BACKEND_URL}/api/tkw-measurements`, {
+        credentials: 'include',
+    });
+    return response.json();
+});
+
+export const saveTkwMeasurement = createAsyncThunk(
+    'execution/saveTkwMeasurement',
+    async (
+        {
+            orderExecutionId,
+            tkwRep1,
+            tkwRep2,
+            tkwRep3,
+            tkwProbesPhoto,
+        }: {
+            orderExecutionId: string;
+            tkwRep1: number;
+            tkwRep2: number;
+            tkwRep3: number;
+            tkwProbesPhoto: string;
+        },
+        { rejectWithValue },
+    ) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/tkw-measurements`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    orderExecutionId,
+                    tkwRep1,
+                    tkwRep2,
+                    tkwRep3,
+                    tkwProbesPhoto,
+                }),
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save TKW measurement');
+            }
+            return await response.json();
+        } catch (error) {
+            return rejectWithValue((error as Error).message);
+        }
+    },
+);
+
 const executionSlice = createSlice({
     name: 'execution',
     initialState,
@@ -105,6 +169,7 @@ const executionSlice = createSlice({
         startExecution: (state, action: PayloadAction<Order>) => {
             state.currentOrder = action.payload;
             const newOrderExecution = {
+                id: null,
                 orderId: action.payload.id,
                 productExecutions: [],
                 applicationMethod: null,
@@ -272,6 +337,12 @@ const executionSlice = createSlice({
             fetchOrderExecutionAsCurrent.fulfilled,
             (state, action: PayloadAction<OrderExecution>) => {
                 state.currentOrderExecution = action.payload;
+            },
+        );
+        builder.addCase(
+            fetchTkwMeasurements.fulfilled,
+            (state, action: PayloadAction<TkwMeasurement[]>) => {
+                state.tkwMeasurements = action.payload;
             },
         );
     },
