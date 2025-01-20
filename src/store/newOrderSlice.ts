@@ -63,6 +63,7 @@ export interface Order {
     status: OrderStatus;
     orderRecipe: OrderRecipe | null;
     extraSlurry: number;
+    tkwMeasurementInterval: number;
 }
 
 export interface NewOrderState {
@@ -79,10 +80,11 @@ export interface NewOrderState {
     packaging: Packaging;
     bagSize: number;
     status: OrderStatus;
-    extraSlurry: number; // Add extraSlurry field
+    extraSlurry: number;
     slurryTotalMlRecipeToMix?: number;
     slurryTotalGrRecipeToMix?: number;
     totalCompoundsDensity?: number;
+    tkwMeasurementInterval: number;
 }
 
 export const createNewEmptyOrder: () => NewOrderState = () => ({
@@ -100,6 +102,7 @@ export const createNewEmptyOrder: () => NewOrderState = () => ({
     bagSize: 0,
     status: OrderStatus.ReadyToStart,
     extraSlurry: 0, // Initialize extraSlurry
+    tkwMeasurementInterval: 60, // Initialize tkwMeasurementInterval
 });
 
 export const createNewEmptyProduct: () => ProductDetail = () => ({
@@ -189,6 +192,9 @@ const newOrderSlice = createSlice({
         updateExtraSlurry: (state, action: PayloadAction<number>) => {
             state.extraSlurry = action.payload;
         },
+        updateTkwMeasurementInterval: (state, action: PayloadAction<number>) => {
+            state.tkwMeasurementInterval = action.payload;
+        },
         updateCalculatedValues: (
             state,
             action: PayloadAction<{
@@ -237,5 +243,7 @@ export const {
     updateCalculatedValues,
     setOrderState,
     loadOrderData,
+    updateTkwMeasurementInterval,
 } = newOrderSlice.actions;
+
 export default newOrderSlice.reducer;

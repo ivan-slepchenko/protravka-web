@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Order, OrderStatus, NewOrderState, ProductDetail } from './newOrderSlice';
+import { OrderStatus, NewOrderState, ProductDetail, Order } from './newOrderSlice';
 
 interface OrdersState {
     activeOrders: Order[];
@@ -180,9 +180,6 @@ const ordersSlice = createSlice({
                     state.ArchivedOrders.push(order);
                 }
             }
-        });
-        builder.addCase(fetchOrderById.fulfilled, (state, action: PayloadAction<Order>) => {
-            // Handle the fetched order data if needed
         });
     },
 });

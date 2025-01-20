@@ -23,9 +23,9 @@ import {
     updateExtraSlurry,
     Packaging,
     fetchCalculatedValues,
-    OrderStatus,
     loadOrderData,
-    Order
+    Order,
+    updateTkwMeasurementInterval,
 } from "../../store/newOrderSlice";
 import { finalizeOrder, fetchOrders, fetchOrderById } from "../../store/ordersSlice";
 import { fetchCrops } from "../../store/cropsSlice";
@@ -187,6 +187,8 @@ export const FinalizeRecipe = () => {
     const operatorRole = Role.OPERATOR;
     const filteredOperators = operators.filter(operator => operator.roles.includes(operatorRole));
 
+    const tkwMeasurementIntervals = [60, 45, 30, 20]; // Define available intervals
+
     return (
         <Center w='full' h='full' fontSize={'xs'}>
             <VStack>
@@ -338,6 +340,25 @@ export const FinalizeRecipe = () => {
                                                     borderColor={props.errors.extraSlurry && props.touched.extraSlurry ? "red.500" : "gray.300"}
                                                 />
                                             </InputGroup>
+                                        </Box>
+                                        <Box>
+                                            <Text fontSize="md">TKW Measurement Interval (minutes):</Text>
+                                            <Field
+                                                as={Select}
+                                                name="tkwMeasurementInterval"
+                                                size="md"
+                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                    props.handleChange(e);
+                                                    dispatch(updateTkwMeasurementInterval(parseInt(e.target.value)));
+                                                }}
+                                                borderColor={props.errors.tkwMeasurementInterval && props.touched.tkwMeasurementInterval ? "red.500" : "gray.300"}
+                                            >
+                                                {tkwMeasurementIntervals.map((interval) => (
+                                                    <option key={interval} value={interval}>
+                                                        {interval} minutes
+                                                    </option>
+                                                ))}
+                                            </Field>
                                         </Box>
                                     </Grid>
 
