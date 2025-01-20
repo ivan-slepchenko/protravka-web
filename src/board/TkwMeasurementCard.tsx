@@ -15,6 +15,7 @@ const TkwMeasurementCard: React.FC<TkwMeasurementCardProps> = ({ measurement }) 
     const [order, setOrder] = useState<Order | null>(null);
 
     useEffect(() => {
+        console.log('Fetching order by ID:', measurement.orderExecution.orderId);
         dispatch(fetchOrderById(measurement.orderExecution.orderId)).then((action) => {
             if (fetchOrderById.fulfilled.match(action)) {
                 setOrder(action.payload);

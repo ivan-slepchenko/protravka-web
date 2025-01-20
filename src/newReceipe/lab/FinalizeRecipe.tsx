@@ -187,7 +187,7 @@ export const FinalizeRecipe = () => {
     const operatorRole = Role.OPERATOR;
     const filteredOperators = operators.filter(operator => operator.roles.includes(operatorRole));
 
-    const tkwMeasurementIntervals = [60, 45, 30, 20]; // Define available intervals
+    const tkwMeasurementIntervals = [60, 45, 30, 20, 10]; // Define available intervals
 
     return (
         <Center w='full' h='full' fontSize={'xs'}>

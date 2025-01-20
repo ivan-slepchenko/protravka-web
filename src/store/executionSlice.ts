@@ -86,7 +86,7 @@ export const saveOrderExecutionTreatmentStartTime = createAsyncThunk(
     async (orderId: string, { rejectWithValue }) => {
         try {
             const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}/start`, {
-                method: 'PUT',
+                method: 'POST',
                 credentials: 'include', // Include credentials for requests
             });
             return await response.json();
