@@ -119,16 +119,18 @@ export const fetchTkwMeasurements = createAsyncThunk('execution/fetchTkwMeasurem
     return response.json();
 });
 
-export const saveTkwMeasurement = createAsyncThunk(
-    'execution/saveTkwMeasurement',
+export const updateTkwMeasurement = createAsyncThunk(
+    'execution/updateTkwMeasurement',
     async (
         {
+            id,
             orderExecutionId,
             tkwRep1,
             tkwRep2,
             tkwRep3,
             tkwProbesPhoto,
         }: {
+            id: string;
             orderExecutionId: string;
             tkwRep1: number;
             tkwRep2: number;
@@ -138,8 +140,8 @@ export const saveTkwMeasurement = createAsyncThunk(
         { rejectWithValue },
     ) => {
         try {
-            const response = await fetch(`${BACKEND_URL}/api/tkw-measurements`, {
-                method: 'POST',
+            const response = await fetch(`${BACKEND_URL}/api/tkw-measurements/${id}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -153,7 +155,7 @@ export const saveTkwMeasurement = createAsyncThunk(
                 credentials: 'include',
             });
             if (!response.ok) {
-                throw new Error('Failed to save TKW measurement');
+                throw new Error('Failed to update TKW measurement');
             }
             return await response.json();
         } catch (error) {

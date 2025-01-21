@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
-import { Order } from '../store/newOrderSlice';
-import { fetchOrderExecution, fetchTkwMeasurements, saveTkwMeasurement } from '../store/executionSlice';
+import { fetchOrderById } from '../store/ordersSlice';
+import { fetchOrderExecution, fetchTkwMeasurements, updateTkwMeasurement, TkwMeasurement } from '../store/executionSlice';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox, Badge, Box, Image } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
+import { Order } from '../store/newOrderSlice';
 
 interface RecipeInProgressTkwDetailsInputModalProps {
-    selectedOrder: Order;
+    selectedMeasurement: TkwMeasurement;
     onClose: () => void;
 }
 
-const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsInputModalProps> = ({ selectedOrder, onClose }) => {
+const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsInputModalProps> = ({ selectedMeasurement, onClose }) => {
     const dispatch: AppDispatch = useDispatch();
     const [orderExecutionId, setOrderExecutionId] = useState<string | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [tkwRep1, setTkwRep1] = useState<number | null>(null);
     const [tkwRep2, setTkwRep2] = useState<number | null>(null);
     const [tkwRep3, setTkwRep3] = useState<number | null>(null);
@@ -26,11 +28,19 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
 
     useEffect(() => {
         const fetchExecution = async () => {
-            const orderExecution = await fetchOrderExecution(selectedOrder.id);
+            const orderExecution = await fetchOrderExecution(selectedMeasurement.orderExecution.orderId);
             setOrderExecutionId(orderExecution.id);
         };
         fetchExecution();
-    }, [dispatch, selectedOrder]);
+    }, [dispatch, selectedMeasurement]);
+
+    useEffect(() => {
+        const fetchOrder = async () => {
+            const order = await dispatch(fetchOrderById(selectedMeasurement.orderExecution.orderId)).unwrap();
+            setSelectedOrder(order);
+        };
+        fetchOrder();
+    }, [dispatch, selectedMeasurement]);
 
     useEffect(() => {
         if (tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null) {
@@ -76,7 +86,8 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
 
     const handleSave = () => {
         if (orderExecutionId && tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null && tkwProbesPhoto !== null) {
-            dispatch(saveTkwMeasurement({
+            dispatch(updateTkwMeasurement({
+                id: selectedMeasurement.id,
                 orderExecutionId,
                 tkwRep1,
                 tkwRep2,
@@ -89,7 +100,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     };
 
     return (
-        <Modal isOpen={!!selectedOrder} onClose={onClose} size="full">
+        <Modal isOpen={!!selectedMeasurement} onClose={onClose} size="full">
             <ModalOverlay />
             <ModalContent borderRadius="none" w="full" h="full">
                 <ModalHeader>Recipe In Progress TKW Details</ModalHeader>
@@ -109,14 +120,14 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                                     <Text><strong>Lot:</strong></Text>
                                 </GridItem>
                                 <GridItem h={10} alignContent={'center'}>
-                                    <Text>{selectedOrder.lotNumber}</Text>
+                                    <Text>{selectedOrder ? selectedOrder.lotNumber : 'N/A'}</Text>
                                 </GridItem>
 
                                 <GridItem h={10} alignContent={'center'}>
                                     <Text><strong>Seeds To Treat:</strong></Text>
                                 </GridItem>
                                 <GridItem h={10} alignContent={'center'}>
-                                    <Text>{selectedOrder.seedsToTreatKg} kg.</Text>
+                                    <Text>{selectedOrder ? `${selectedOrder.seedsToTreatKg} kg.` : `N/A`}</Text>
                                 </GridItem>
 
                                 <GridItem colSpan={2}>
@@ -178,9 +189,9 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                             </Grid>
                         ) : (
                             <VStack spacing={8} width="100%">
-                                <Text mb={1} fontSize="md" fontWeight="bold">
+                                {selectedOrder && <Text mb={1} fontSize="md" fontWeight="bold">
                                     You are obliged to take a photo of UNTREATED seeds of {selectedOrder.crop.name} {selectedOrder.lotNumber}
-                                </Text>
+                                </Text>}
                                 <Box
                                     width="100%"
                                     maxWidth="400px"

@@ -8,9 +8,10 @@ import { Order } from '../store/newOrderSlice';
 
 interface TkwMeasurementCardProps {
     measurement: TkwMeasurement;
+    onClick: () => void;
 }
 
-const TkwMeasurementCard: React.FC<TkwMeasurementCardProps> = ({ measurement }) => {
+const TkwMeasurementCard: React.FC<TkwMeasurementCardProps> = ({ measurement, onClick }) => {
     const dispatch: AppDispatch = useDispatch();
     const [order, setOrder] = useState<Order | null>(null);
 
@@ -32,6 +33,8 @@ const TkwMeasurementCard: React.FC<TkwMeasurementCardProps> = ({ measurement }) 
             p={2}
             w="full"
             bg="white"
+            cursor="pointer"
+            onClick={onClick}
         >
             <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
                 <Badge gridColumn="span 3" colorScheme="gray">

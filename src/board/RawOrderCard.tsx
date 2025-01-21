@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Grid, Badge, Text } from '@chakra-ui/react';
-import { Order, OrderStatus } from '../store/newOrderSlice';
+import { Order } from '../store/newOrderSlice';
 
 interface RawOrderCardProps {
     order: Order;
@@ -18,7 +18,7 @@ const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
             borderRadius="md"
             p={2}
             w="full"
-            cursor={order.status === OrderStatus.ForLabToInitiate ? "pointer" : "default"}
+            cursor="pointer"
             onClick={onClick}
             bg={cardColor}
         >

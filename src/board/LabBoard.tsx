@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders } from '../store/ordersSlice';
-import { fetchTkwMeasurements } from '../store/executionSlice';
+import { fetchTkwMeasurements, TkwMeasurement } from '../store/executionSlice';
 import { Box, Flex, Tabs, TabList, TabPanels, Tab, TabPanel, Grid } from '@chakra-ui/react';
 import RecipeRawTkwDetailsInputModal from './RecipeRawTkwDetailsInputModal';
 import RecipeTkwDetailsViewModal from './RecipeTkwDetailsViewModal';
@@ -32,8 +32,9 @@ const isInputInProgressMode = (status: OrderStatus): boolean => {
 const LabBoard: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
+    const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements.filter((measurement) => measurement.probeDate === null));
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [selectedMeasurement, setSelectedMeasurement] = useState<TkwMeasurement | null>(null);
 
     useEffect(() => {
         dispatch(fetchOrders());
@@ -43,6 +44,10 @@ const LabBoard: React.FC = () => {
     const handleRecipeClick = (order: Order) => {
         setSelectedOrder(order);
     };
+
+    const handleMeasurementClick = (measurement: TkwMeasurement) => {
+        setSelectedMeasurement(measurement);
+    }
 
     return (
         <Flex w="full" justifyContent={'center'} h="100vh">
@@ -62,7 +67,7 @@ const LabBoard: React.FC = () => {
                                             <RawOrderCard key={index} order={order} onClick={() => handleRecipeClick(order)} />
                                         ))}
                                         {label === 'In Progress' && tkwMeasurements.map((measurement, index) => (
-                                            <TkwMeasurementCard key={index} measurement={measurement} />
+                                            <TkwMeasurementCard key={index} measurement={measurement} onClick={() => handleMeasurementClick(measurement)} />
                                         ))}
                                     </Grid>
                                 </Box>
@@ -73,25 +78,25 @@ const LabBoard: React.FC = () => {
             </Tabs>
             {selectedOrder && (
                 <>
-                    {isViewTkwMode(selectedOrder.status) && (
+                    {/* {isViewTkwMode(selectedOrder.status) && (
                         <RecipeTkwDetailsViewModal
                             selectedOrder={selectedOrder}
                             onClose={() => setSelectedOrder(null)}
                         />
-                    )}
+                    )} */}
                     {isInputRawTkwMode(selectedOrder.status) && (
                         <RecipeRawTkwDetailsInputModal
                             selectedOrder={selectedOrder}
                             onClose={() => setSelectedOrder(null)}
                         />
                     )}
-                    {isInputInProgressMode(selectedOrder.status) && (
-                        <RecipeInProgressTkwDetailsInputModal
-                            selectedOrder={selectedOrder}
-                            onClose={() => setSelectedOrder(null)}
-                        />
-                    )}
                 </>
+            )}
+            {selectedMeasurement && (
+                <RecipeInProgressTkwDetailsInputModal
+                    selectedMeasurement={selectedMeasurement}
+                    onClose={() => setSelectedMeasurement(null)}
+                />
             )}
         </Flex>
     );
