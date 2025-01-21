@@ -3,13 +3,39 @@ import { OrderStatus, NewOrderState, ProductDetail, Order } from './newOrderSlic
 
 interface OrdersState {
     activeOrders: Order[];
-    ArchivedOrders: Order[];
+    archivedOrders: Order[];
 }
 
 const initialState: OrdersState = {
     activeOrders: [],
-    ArchivedOrders: [],
+    archivedOrders: [],
 };
+
+export interface ProductRecipe {
+    id: string;
+    rateMltoU_KS: number;
+    rateGrToU_KS: number;
+    rateMlTo100Kg: number;
+    rateGrTo100Kg: number;
+    mlSlurryRecipeToMix: number;
+    grSlurryRecipeToMix: number;
+    productDetail: ProductDetail;
+}
+
+export interface OrderRecipe {
+    id: string;
+    totalCompoundsDensity: number;
+    slurryTotalMltoU_KS: number;
+    slurryTotalGToU_KS: number;
+    slurryTotalMlTo100Kg: number;
+    slurryTotalGTo100Kgs: number;
+    slurryTotalMlRecipeToMix: number;
+    slurryTotalGrRecipeToMix: number;
+    extraSlurryPipesAndPompFeedingMl: number;
+    nbSeedsUnits: number;
+    productRecipes: ProductRecipe[];
+    unitWeight: number;
+}
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -17,7 +43,7 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
     const response = await fetch(`${BACKEND_URL}/api/orders`, {
         credentials: 'include', // Include credentials in the request
     });
-    return response.json();
+    return await response.json();
 });
 
 export const createOrder = createAsyncThunk('orders/createOrder', async (order: NewOrderState) => {
@@ -152,7 +178,7 @@ const ordersSlice = createSlice({
             );
             if (index !== -1) {
                 const [order] = state.activeOrders.splice(index, 1);
-                state.ArchivedOrders.push(order);
+                state.archivedOrders.push(order);
             }
         },
     },
@@ -175,7 +201,7 @@ const ordersSlice = createSlice({
                 state.activeOrders[index].status = action.payload.status;
                 if (action.payload.status === OrderStatus.Archived) {
                     const [order] = state.activeOrders.splice(index, 1);
-                    state.ArchivedOrders.push(order);
+                    state.archivedOrders.push(order);
                 }
             }
         });
@@ -184,27 +210,3 @@ const ordersSlice = createSlice({
 
 export const { updateOrder, archiveOrder } = ordersSlice.actions;
 export default ordersSlice.reducer;
-export interface ProductRecipe {
-    id: string;
-    rateMltoU_KS: number;
-    rateGrToU_KS: number;
-    rateMlTo100Kg: number;
-    rateGrTo100Kg: number;
-    mlSlurryRecipeToMix: number;
-    grSlurryRecipeToMix: number;
-    productDetail: ProductDetail;
-}
-export interface OrderRecipe {
-    id: string;
-    totalCompoundsDensity: number;
-    slurryTotalMltoU_KS: number;
-    slurryTotalGToU_KS: number;
-    slurryTotalMlTo100Kg: number;
-    slurryTotalGTo100Kgs: number;
-    slurryTotalMlRecipeToMix: number;
-    slurryTotalGrRecipeToMix: number;
-    extraSlurryPipesAndPompFeedingMl: number;
-    nbSeedsUnits: number;
-    productRecipes: ProductRecipe[];
-    unitWeight: number;
-}

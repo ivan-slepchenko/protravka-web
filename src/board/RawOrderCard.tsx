@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Grid, Badge, Text } from '@chakra-ui/react';
-import { Order } from '../store/newOrderSlice';
+import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
+import { Order, OrderStatus } from '../store/newOrderSlice';
 
 interface RawOrderCardProps {
     order: Order;
@@ -8,7 +8,21 @@ interface RawOrderCardProps {
 }
 
 const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
-    const cardColor = "white";
+    const getStatusLabel = (status: OrderStatus) => {
+        switch (status) {
+            case OrderStatus.ForLabToInitiate:
+                return { label: 'New Recipe', color: 'blue.200' };
+            case OrderStatus.ByLabInitiated:
+            case OrderStatus.ReadyToStart:
+            case OrderStatus.InProgress:
+            case OrderStatus.ForLabToControl:
+                return { label: 'In Treatment', color: 'green.200' };
+            default:
+                return { label: '', color: '' };
+        }
+    };
+
+    const { label, color } = getStatusLabel(order.status);
 
     return (
         <Box
@@ -20,9 +34,13 @@ const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
             w="full"
             cursor="pointer"
             onClick={onClick}
-            bg={cardColor}
+            bg={color}
         >
             <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
+                <HStack justifyContent="space-between" gridColumn="span 3">
+                    <Text fontWeight="bold">{order.lotNumber}</Text>
+                    <Badge colorScheme={color === 'blue.200' ? 'blue' : 'green'}>{label}</Badge>
+                </HStack>
                 <Badge gridColumn="span 3" colorScheme="gray">
                     {order.crop?.name}, {order.variety?.name}
                 </Badge>
