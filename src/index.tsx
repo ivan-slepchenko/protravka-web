@@ -37,94 +37,9 @@ import { BiSolidComponent } from "react-icons/bi";
 import { FaSeedling, FaTasks, FaFlask } from "react-icons/fa";
 import LabBoard from './board/LabBoard';
 import { FinalizeRecipe } from './newReceipe/lab/FinalizeRecipe';
-
-const AlertContext = createContext<{ addAlert: (message: string) => void }>({
-    addAlert: () => {
-        return;
-    }
-});
-
-const AlertProvider = ({ children }: { children: React.ReactNode }) => {
-    const [alerts, setAlerts] = useState<string[]>([]);
-
-    const addAlert = useCallback((message: string) => {
-        setAlerts((prevAlerts) => [...prevAlerts, message]);
-        setTimeout(() => {
-            setAlerts((prevAlerts) => prevAlerts.slice(1));
-        }, 3000);
-    }, []);
-
-    return (
-        <AlertContext.Provider value={{ addAlert }}>
-            {children}
-            <Box position="fixed" top="4" right="4" zIndex="1000">
-                {alerts.map((alert, index) => (
-                    <Alert key={index} status="success" variant="subtle" mb={4}>
-                        <AlertIcon />
-                        {alert}
-                    </Alert>
-                ))}
-            </Box>
-        </AlertContext.Provider>
-    );
-};
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-
-export const useAlert = () => useContext(AlertContext);
-
-const FeaturesContext = createContext<{ features: Features }>({
-    features: {
-        lab: false,
-    },
-});
-
-type Features = {
-    lab: boolean;
-}    
-
-const FeaturesProvider = ({ children }: { children: React.ReactNode }) => {
-    const [features, setFeatures] = useState<Features>({
-        lab: false,
-    });
-
-    useEffect(() => {
-        const fetchFeatures = async () => {
-            try {
-                const response = await fetch(`${BACKEND_URL}/features`);
-                const data = await response.json();
-                setFeatures(data);
-            } catch (error) {
-                console.error('Failed to fetch features:', error);
-            }
-        };
-
-        fetchFeatures();
-    }, []);
-
-    return (
-        <FeaturesContext.Provider value={{ features }}>
-            {children}
-        </FeaturesContext.Provider>
-    );
-};
-
-export const useFeatures = () => useContext(FeaturesContext);
-
-const RequireAuth = ({ children, roles }: { children: JSX.Element, roles?: Role[] }) => {
-    const location = useLocation();
-    const user = useSelector((state: RootState) => state.user);
-
-    if (!user.email) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
-
-    if (roles && !roles.some(role => user.roles.includes(role))) {
-        return <Navigate to="/" replace />;
-    }
-
-    return children;
-};
+import { AlertProvider } from './contexts/AlertContext';
+import { FeaturesProvider, useFeatures } from './contexts/FeaturesContext';
+import RequireAuth from './components/RequireAuth';
 
 const App = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -165,6 +80,8 @@ const App = () => {
     useEffect(() => {
         if (!isAuthenticated) dispatch(fetchUserByToken());
     }, [dispatch, isAuthenticated]);
+
+    console.log('Rendering App');
 
     return (
         <>
@@ -263,6 +180,8 @@ const LoginRedirect = () => {
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+console.log('Rendering root');
 
 root.render(
     <React.StrictMode>

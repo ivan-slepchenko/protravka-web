@@ -24,7 +24,7 @@ const LabBoard: React.FC = () => {
         console.log('Fetching orders and TKW measurements');
         dispatch(fetchTkwMeasurements());
         dispatch(fetchOrders());
-    }, [dispatch]);
+    }, []);
 
     const handleRecipeClick = (order: Order) => {
         setSelectedOrder(order);

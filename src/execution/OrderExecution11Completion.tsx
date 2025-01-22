@@ -6,7 +6,7 @@ import { completeExecution, nextPage, saveOrderExecution } from '../store/execut
 import { OrderExecutionPage } from './OrderExecutionPage';
 import { changeOrderStatus } from '../store/ordersSlice';
 import { OrderStatus } from '../store/newOrderSlice';
-import { useFeatures } from '..';
+import { useFeatures } from '../contexts/FeaturesContext';
 
 const OrderExecution11Completion = () => {
     const dispatch: AppDispatch = useDispatch();

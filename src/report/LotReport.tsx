@@ -7,7 +7,6 @@ import { fetchOrders, changeOrderStatus } from "../store/ordersSlice";
 import { Order, OrderStatus, Packaging } from "../store/newOrderSlice";
 import { useReactToPrint } from "react-to-print";
 import { fetchOrderExecution, OrderExecution } from "../store/executionSlice";
-import { useFeatures } from "..";
 
 const statusColorMap = {
     green: "#48BB78", // Green color (Chakra UI green.400)

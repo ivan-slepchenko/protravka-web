@@ -35,7 +35,7 @@ import { fetchCrops } from "../../store/cropsSlice";
 import { fetchProducts } from "../../store/productsSlice";
 import { fetchOperators } from '../../store/operatorsSlice';
 import { useNavigate } from "react-router-dom";
-import { useAlert } from '../../index';
+import { useAlert } from "../../contexts/AlertContext";
 
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),

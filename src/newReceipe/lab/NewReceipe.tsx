@@ -18,7 +18,7 @@ import { createOrder, fetchOrders } from "../../store/ordersSlice";
 import { fetchCrops } from "../../store/cropsSlice";
 import { fetchProducts } from "../../store/productsSlice";
 import { useNavigate } from "react-router-dom";
-import { useAlert } from '../../index';
+import { useAlert } from "../../contexts/AlertContext";
 
 const validationSchema = Yup.object().shape({
     cropId: Yup.string().required("Crop is required"),

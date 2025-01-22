@@ -5,7 +5,7 @@ import { OrderStatus } from '../store/newOrderSlice';
 import { fetchOrders } from '../store/ordersSlice';
 import { Box, Flex, Heading, Text, VStack, Badge } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useFeatures } from '..';
+import { useFeatures } from '../contexts/FeaturesContext';
 
 const Board: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
