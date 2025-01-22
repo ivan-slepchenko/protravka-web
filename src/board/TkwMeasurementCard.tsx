@@ -48,6 +48,8 @@ const TkwMeasurementCard: React.FC<TkwMeasurementCardProps> = ({ measurement, on
                 <Text px={1} gridColumn="span 3" color="gray.600">
                     Lot: {order ? order.lotNumber : 'Loading...'}
                 </Text>
+                <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
+                <Text px={1} textAlign='right'>{order ? `${order.seedsToTreatKg} kg` : 'Loading...'}</Text>
                 <Text px={1} gridColumn="span 2">Measurement Date:</Text>
                 <Text px={1} isTruncated>{new Date(measurement.creationDate).toLocaleString()}</Text>
             </Grid>

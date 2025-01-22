@@ -1,13 +1,26 @@
 import React from 'react';
 import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
+import { TkwMeasurement } from '../store/executionSlice';
 import { Order } from '../store/newOrderSlice';
 
-interface RawOrderCardProps {
+interface ControlledOrderCardProps {
     order: Order;
+    measurements: TkwMeasurement[];
     onClick: () => void;
 }
 
-const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
+const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measurements, onClick }) => {
+    const calculateAverageTkw = (measurements: TkwMeasurement[]) => {
+        if (measurements.length === 0) return 'N/A';
+        const totalTkw = measurements.reduce((sum, measurement) => {
+            const tkwValues = [measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3].filter((probe) => probe !== undefined) as number[];
+            const tkwAllValues = tkwValues.reduce((a, b) => a + b, 0);
+            return sum + tkwAllValues / tkwValues.length;
+        }, 0);
+        return totalTkw.toFixed(2);
+    };
+
+    const treatedAverageTkw = calculateAverageTkw(measurements);
 
     return (
         <Box
@@ -27,7 +40,7 @@ const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
                             {order.crop?.name}, {order.variety?.name}
                         </Text>
                         <Text>
-                                New Recipe
+                            Controlled
                         </Text>
                     </HStack>
                 </Badge>
@@ -36,9 +49,13 @@ const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
                 </Text>
                 <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
                 <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
+                <Text px={1} gridColumn="span 2">Raw Average TKW:</Text>
+                <Text px={1} isTruncated>{order.tkw.toFixed(2)}</Text>
+                <Text px={1} gridColumn="span 2">Treated Average TKW:</Text>
+                <Text px={1} isTruncated>{treatedAverageTkw}</Text>
             </Grid>
         </Box>
     );
 };
 
-export default RawOrderCard;
+export default ControlledOrderCard;

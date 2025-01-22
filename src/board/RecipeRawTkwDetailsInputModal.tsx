@@ -13,7 +13,6 @@ interface RecipeRawTkwDetailsInputModalProps {
 
 const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps> = ({ selectedOrder, onClose }) => {
     const dispatch: AppDispatch = useDispatch();
-    const [finalTkw, setFinalTkw] = useState<number | null>(null);
     const [tkwRep1, setTkwRep1] = useState<number | null>(null);
     const [tkwRep2, setTkwRep2] = useState<number | null>(null);
     const [tkwRep3, setTkwRep3] = useState<number | null>(null);
@@ -23,10 +22,6 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-    useEffect(() => {
-        setFinalTkw(selectedOrder.tkw);
-    }, [selectedOrder]);
 
     useEffect(() => {
         if (tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null) {
@@ -71,7 +66,7 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
     };
 
     const handleSave = () => {
-        if (selectedOrder.status === OrderStatus.ForLabToInitiate && tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null && tkwProbesPhoto !== null) {
+        if (tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null && tkwProbesPhoto !== null) {
             dispatch(updateOrderTKW({
                 id: selectedOrder.id,
                 tkwRep1,
@@ -80,8 +75,6 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
                 tkwProbesPhoto: tkwProbesPhoto,
             }));
             dispatch(fetchOrders());
-        } else if (selectedOrder.status === OrderStatus.ForLabToControl && finalTkw !== null) {
-            // Dispatch action to update final TKW
         }
         onClose();
     };
@@ -173,16 +166,6 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
                                 <GridItem h={10} alignContent={'center'}>
                                     <Text>{averageTkw !== null ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
                                 </GridItem>
-
-                                {selectedOrder.status === OrderStatus.ForLabToControl && (
-                                    <GridItem colSpan={2} h={10} alignContent={'center'}>
-                                        <Input
-                                            placeholder="Set Final TKW"
-                                            value={finalTkw ?? ''}
-                                            onChange={(e) => setFinalTkw(Number(e.target.value))}
-                                        />
-                                    </GridItem>
-                                )}
                             </Grid>
                         ) : (
                             <VStack spacing={8} width="100%">

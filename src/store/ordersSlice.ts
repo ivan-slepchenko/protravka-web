@@ -144,8 +144,13 @@ export const updateOrderTKW = createAsyncThunk(
 
 export const fetchOrderById = createAsyncThunk(
     'orders/fetchOrderById',
-    async (id: string, { rejectWithValue }) => {
+    async (id: string, { getState, rejectWithValue }) => {
         try {
+            const state = getState() as { orders: OrdersState };
+            const existingOrder = state.orders.activeOrders.find((order) => order.id === id);
+            if (existingOrder) {
+                return existingOrder;
+            }
             const response = await fetch(`${BACKEND_URL}/api/orders/${id}`, {
                 credentials: 'include',
             });

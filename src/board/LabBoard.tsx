@@ -9,6 +9,8 @@ import RecipeRawTkwDetailsInputModal from './RecipeRawTkwDetailsInputModal';
 import TkwMeasurementCard from './TkwMeasurementCard';
 import RawOrderCard from './RawOrderCard';
 import RecipeInProgressTkwDetailsInputModal from './RecipeInProgressTkwDetailsInputModal';
+import ControlledOrderCard from './ControlledOrderCard';
+import TkwDetailsModal from './TkwDetailsModal';
 
 const LabBoard: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -18,13 +20,14 @@ const LabBoard: React.FC = () => {
     const [selectedMeasurement, setSelectedMeasurement] = useState<TkwMeasurement | null>(null);
     const [ordersToControl, setOrdersToControl] = useState<Order[]>([]);
     const [measurementsToControl, setMeasurementsToControl] = useState<TkwMeasurement[]>([]);
+    const [controlledOrders, setControlledOrders] = useState<Order[]>([]);
+    const [selectedControlledOrder, setSelectedControlledOrder] = useState<Order | null>(null);
 
-    
     useEffect(() => {
         console.log('Fetching orders and TKW measurements');
         dispatch(fetchTkwMeasurements());
         dispatch(fetchOrders());
-    }, []);
+    }, [dispatch]);
 
     const handleRecipeClick = (order: Order) => {
         setSelectedOrder(order);
@@ -32,6 +35,14 @@ const LabBoard: React.FC = () => {
 
     const handleMeasurementClick = (measurement: TkwMeasurement) => {
         setSelectedMeasurement(measurement);
+    };
+
+    const handleControlledOrderClick = (order: Order) => {
+        setSelectedControlledOrder(order);
+    };
+
+    const handleCloseTkwDetailsModal = () => {
+        setSelectedControlledOrder(null);
     };
 
     console.log('Orders:', orders);
@@ -42,6 +53,11 @@ const LabBoard: React.FC = () => {
             setOrdersToControl(
                 orders.filter((order) =>
                     [OrderStatus.ForLabToInitiate, OrderStatus.InProgress, OrderStatus.ForLabToControl].includes(order.status)
+                )
+            );
+            setControlledOrders(
+                orders.filter((order) =>
+                    ![OrderStatus.ForLabToInitiate, OrderStatus.ForLabToControl].includes(order.status)
                 )
             );
         }
@@ -69,7 +85,7 @@ const LabBoard: React.FC = () => {
                     <Tab key={ToControl}>{ToControl}</Tab>
                     <Tab key={Controlled}>{Controlled}</Tab>
                 </TabList>
-                <TabPanels>     
+                <TabPanels>
                     <TabPanel key={ToControl}>
                         <Flex p={1} gap={3} w="full">
                             <Box w="full">
@@ -88,11 +104,13 @@ const LabBoard: React.FC = () => {
                         <Flex p={1} gap={3} w="full">
                             <Box w="full">
                                 <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={3} w="full">
-                                    {ordersToControl.map((order, index) => (
-                                        <RawOrderCard key={index} order={order} onClick={() => handleRecipeClick(order)} />
-                                    ))}
-                                    {measurementsToControl.map((measurement, index) => (
-                                        <TkwMeasurementCard key={index} measurement={measurement} onClick={() => handleMeasurementClick(measurement)} />
+                                    {controlledOrders.map((order, index) => (
+                                        <ControlledOrderCard
+                                            key={index}
+                                            order={order}
+                                            measurements={tkwMeasurements.filter(measurement => measurement.orderExecution.orderId === order.id)}
+                                            onClick={() => handleControlledOrderClick(order)}
+                                        />
                                     ))}
                                 </Grid>
                             </Box>
@@ -110,6 +128,13 @@ const LabBoard: React.FC = () => {
                 <RecipeInProgressTkwDetailsInputModal
                     selectedMeasurement={selectedMeasurement}
                     onClose={() => setSelectedMeasurement(null)}
+                />
+            )}
+            {selectedControlledOrder && (
+                <TkwDetailsModal
+                    onClose={handleCloseTkwDetailsModal}
+                    order={selectedControlledOrder}
+                    measurements={tkwMeasurements.filter(measurement => measurement.orderExecution.orderId === selectedControlledOrder.id)}
                 />
             )}
         </Flex>
