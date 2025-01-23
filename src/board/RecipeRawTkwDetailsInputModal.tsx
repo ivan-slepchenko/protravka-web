@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef, FC } from 'react';
+import { useState, useEffect, FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { Order } from '../store/newOrderSlice';
 import { fetchOrders, updateOrderTKW } from '../store/ordersSlice';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox, Badge, Box, Image } from '@chakra-ui/react';
-import { FaCamera } from 'react-icons/fa';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox, Badge, Box, Image, CircularProgress, IconButton } from '@chakra-ui/react';
+import { FaCamera, FaCog } from 'react-icons/fa';
+import useCamera from '../hooks/useCamera';
 
 interface RecipeRawTkwDetailsInputModalProps {
     selectedOrder: Order;
@@ -20,8 +21,8 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
     const [tkwProbesPhoto, setTkwProbesPhoto] = useState<string | null>(null);
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
+    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal } = useCamera();
 
     useEffect(() => {
         if (tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null) {
@@ -31,27 +32,11 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
         }
     }, [tkwRep1, tkwRep2, tkwRep3]);
 
-    const startCamera = () => {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    videoRef.current.onloadedmetadata = () => {
-                        videoRef.current?.play();
-                    };
-                }
-            });
-        }
-    };
-
-    const takeSnapshot = () => {
-        if (canvasRef.current && videoRef.current) {
-            const context = canvasRef.current.getContext('2d');
-            if (context) {
-                context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-                const photoData = canvasRef.current.toDataURL('image/png');
-                setTkwProbesPhoto(photoData);
-            }
+    const handleTakeSnapshot = () => {
+        const photoData = takeSnapshot();
+        if (photoData) {
+            setTkwProbesPhoto(photoData);
+            stopCamera();
         }
     };
 
@@ -66,6 +51,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     };
 
     const handleSave = () => {
+        setIsSaving(true);
         if (tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null && tkwProbesPhoto !== null) {
             dispatch(updateOrderTKW({
                 id: selectedOrder.id,
@@ -73,10 +59,14 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                 tkwRep2,
                 tkwRep3,
                 tkwProbesPhoto,
-            }));
-            dispatch(fetchOrders());
+            })).then(() => {
+                dispatch(fetchOrders());
+                setIsSaving(false);
+                onClose();
+            });
+        } else {
+            setIsSaving(false);
         }
-        onClose();
     };
 
     return (
@@ -184,11 +174,24 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     borderRadius="md"
                                     overflow="hidden"
                                     style={{ aspectRatio: '4 / 3' }}
+                                    position="relative"
                                 >
                                     {tkwProbesPhoto ? (
                                         <Image src={tkwProbesPhoto} alt="Machine display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
                                     ) : (
-                                        <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        <>
+                                            <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            <IconButton
+                                                icon={<FaCog />}
+                                                isRound
+                                                aria-label="Settings"
+                                                position="absolute"
+                                                bottom="10px"
+                                                right="10px"
+                                                size='sm'
+                                                onClick={handleSettingsClick}
+                                            />
+                                        </>
                                     )}
                                 </Box>
                                 <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
@@ -198,8 +201,9 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         borderRadius="full"
                                         border="1px solid"
                                         borderColor="orange.300"
-                                        onClick={tkwProbesPhoto ? handleRetakeClick : takeSnapshot}
+                                        onClick={tkwProbesPhoto ? handleRetakeClick : handleTakeSnapshot}
                                         leftIcon={tkwProbesPhoto ? undefined : <FaCamera />}
+                                        disabled={isSaving}
                                     >
                                         {tkwProbesPhoto ? 'Retake the picture' : 'Take Picture'}
                                     </Button>
@@ -217,25 +221,27 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                 spacing="1rem"
                                 isChecked={isConfirmed}
                                 onChange={(e) => setIsConfirmed(e.target.checked)}
+                                disabled={isSaving}
                             >
                                 I hereby confirm that the TKW was counted by me fully compliant with the official demands
                             </Checkbox>
                         )}
                         <HStack w="full" justify="end">
-                            <Button variant="ghost" mb="3" onClick={onClose}>Cancel</Button>
+                            <Button variant="ghost" mb="3" onClick={onClose} disabled={isSaving}>Cancel</Button>
                             {!isPhotoState ? (
-                                <Button colorScheme="blue" mb="3" onClick={handleNext} isDisabled={!isConfirmed || averageTkw === null}>
+                                <Button colorScheme="blue" mb="3" onClick={handleNext} isDisabled={!isConfirmed || averageTkw === null || isSaving}>
                                     Next
                                 </Button>
                             ) : (
-                                <Button colorScheme="blue" mb="3" onClick={handleSave} isDisabled={!tkwProbesPhoto}>
-                                    Save
+                                <Button colorScheme="blue" mb="3" onClick={handleSave} isDisabled={!tkwProbesPhoto || isSaving}>
+                                    {isSaving ? <CircularProgress isIndeterminate size="24px" color='blue.300' /> : 'Save'}
                                 </Button>
                             )}
                         </HStack>
                     </VStack>
                 </ModalFooter>
             </ModalContent>
+            <SettingsModal />
         </Modal>
     );
 };

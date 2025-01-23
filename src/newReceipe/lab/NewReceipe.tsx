@@ -1,4 +1,4 @@
-import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, useDisclosure, VStack, Heading } from "@chakra-ui/react";
+import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, useDisclosure, VStack, Heading, CircularProgress } from "@chakra-ui/react";
 import React, { useState } from "react";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -37,18 +37,22 @@ export const NewReceipe = () => {
         return localStorage.getItem('doNotShowAgain') === 'true';
     });
     const addAlert = useAlert().addAlert;
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
+        setIsSaving(true);
         values.status = OrderStatus.ForLabToInitiate;
-        dispatch(createOrder(values));
-        dispatch(fetchOrders());
-        dispatch(setOrderState(createNewEmptyOrder()));
-        resetForm();
-        if (!doNotShowAgain) {
-            setShowPopup(true);
-        } else {
-            addAlert('Recipe successfully created.');
-        }
+        dispatch(createOrder(values)).then(() => {
+            dispatch(fetchOrders());
+            dispatch(setOrderState(createNewEmptyOrder()));
+            resetForm();
+            setIsSaving(false);
+            if (!doNotShowAgain) {
+                setShowPopup(true);
+            } else {
+                addAlert('Recipe successfully created.');
+            }
+        });
     };
 
     const handleClearAll = (resetForm: () => void) => {
@@ -85,6 +89,7 @@ export const NewReceipe = () => {
         localStorage.setItem('doNotShowAgain', checked.toString());
     };
 
+
     return (
         <Center w='full' h='full' fontSize={'xs'}>
             <VStack>
@@ -102,7 +107,7 @@ export const NewReceipe = () => {
                     {(props: FormikProps<NewOrderState>) => {
                         return (
                             <form onSubmit={props.handleSubmit} style={{ width: '100%' }}>
-                                <Box width="full" mx="auto" p="4">
+                                <Box width="full" mx="auto" p="4" pointerEvents={isSaving ? 'none' : 'auto'}>
                                     {/* Recipe Info */}
                                     <Grid templateColumns="repeat(4, 1fr)" gap="4" mb="4">
                                         <Box>
@@ -117,6 +122,7 @@ export const NewReceipe = () => {
                                                     dispatch(updateCrop(e.target.value));
                                                 }}
                                                 borderColor={props.errors.cropId && props.touched.cropId ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             >
                                                 {crops.map((crop) => (
                                                     <option key={crop.id} value={crop.id}>
@@ -132,7 +138,7 @@ export const NewReceipe = () => {
                                                 name="varietyId"
                                                 placeholder={selectedCropId === undefined ? "Select crop first" : "Select variety"}
                                                 size="md"
-                                                disabled={selectedCropId === undefined}
+                                                disabled={selectedCropId === undefined || isSaving}
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
                                                     if (selectedCropId === undefined) {
@@ -160,6 +166,7 @@ export const NewReceipe = () => {
                                                     dispatch(updateLotNumber(e.target.value));
                                                 }}
                                                 borderColor={props.errors.lotNumber && props.touched.lotNumber ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             />
                                         </Box>
                                         <Box>
@@ -176,14 +183,17 @@ export const NewReceipe = () => {
                                                     dispatch(updateseedsToTreatKg(parseFloat(e.target.value) || 0));
                                                 }}
                                                 borderColor={props.errors.seedsToTreatKg && props.touched.seedsToTreatKg ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             />
                                         </Box>
                                     </Grid>
 
                                     {/* Action Buttons */}
                                     <HStack justifyContent="space-between" alignItems={"end"}>
-                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
-                                        <Button colorScheme="green" size="md" type="submit">Done</Button>
+                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>Clear All</Button>
+                                        <Button colorScheme="green" size="md" type="submit" disabled={isSaving}>
+                                            {isSaving ? <CircularProgress isIndeterminate size="24px" color='green.300' /> : 'Save'}
+                                        </Button>
                                     </HStack>
                                 </Box>
 
