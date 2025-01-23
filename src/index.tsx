@@ -50,7 +50,7 @@ const App = () => {
                 }
             }
         }
-    }, [dispatch, useLab, isAuthenticated]);
+    }, [dispatch, user, useLab, isAuthenticated]);
 
     console.log('Rendering App');
 
