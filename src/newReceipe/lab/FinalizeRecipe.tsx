@@ -182,7 +182,7 @@ export const FinalizeRecipe = () => {
 
     return (
         <Center w='full' h='full' fontSize={'xs'}>
-            <VStack>
+            <VStack w="full" m={10}>
                 <Heading size="lg">Finalize Receipe</Heading>
                 <Formik
                     initialValues={{
@@ -211,7 +211,7 @@ export const FinalizeRecipe = () => {
                             <form onSubmit={props.handleSubmit} style={{ width: '100%' }}>
                                 <Box width="full" mx="auto" p="4">
                                     {/* Recipe Info */}
-                                    <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4">
+                                    <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4" width="full">
                                         <Box>
                                             <Text fontSize="md">Recipe creation date:</Text>
                                             <Field
@@ -262,23 +262,73 @@ export const FinalizeRecipe = () => {
                                         </Box>
                                         <Box>
                                             <Text fontSize="md">Crop:</Text>
-                                            <Text>{crops.find(crop => crop.id === formData.cropId)?.name}</Text>
+                                            <Box
+                                                p="2"
+                                                border="1px solid"
+                                                borderColor="gray.300"
+                                                borderRadius="md"
+                                                bg="gray.50"
+                                                fontSize='md'
+                                                height="40px"
+                                            >
+                                                {crops.find(crop => crop.id === formData.cropId)?.name}
+                                            </Box>
                                         </Box>
                                         <Box>
                                             <Text fontSize="md">Variety:</Text>
-                                            <Text>{crops.find(crop => crop.id === selectedCropId)?.varieties.find(variety => variety.id === formData.varietyId)?.name}</Text>
+                                            <Box
+                                                p="2"
+                                                border="1px solid"
+                                                borderColor="gray.300"
+                                                borderRadius="md"
+                                                bg="gray.50"
+                                                fontSize='md'
+                                                height="40px"
+                                            >
+                                                {crops.find(crop => crop.id === selectedCropId)?.varieties.find(variety => variety.id === formData.varietyId)?.name}
+                                            </Box>
                                         </Box>
                                         <Box>
                                             <Text fontSize="md">Lot Number:</Text>
-                                            <Text>{formData.lotNumber}</Text>
+                                            <Box
+                                                p="2"
+                                                border="1px solid"
+                                                borderColor="gray.300"
+                                                borderRadius="md"
+                                                bg="gray.50"
+                                                fontSize='md'
+                                                height="40px"
+                                            >
+                                                {formData.lotNumber}
+                                            </Box>
                                         </Box>
                                         <Box>
                                             <Text fontSize="md">TKW (g):</Text>
-                                            <Text>{formData.tkw}</Text>
+                                            <Box
+                                                p="2"
+                                                border="1px solid"
+                                                borderColor="gray.300"
+                                                borderRadius="md"
+                                                bg="gray.50"
+                                                fontSize='md'
+                                                height="40px"
+                                            >
+                                                {formData.tkw}
+                                            </Box>
                                         </Box>
                                         <Box>
                                             <Text fontSize="md">Seeds To Treat (kg):</Text>
-                                            <Text>{formData.seedsToTreatKg}</Text>
+                                            <Box
+                                                p="2"
+                                                border="1px solid"
+                                                borderColor="gray.300"
+                                                borderRadius="md"
+                                                bg="gray.50"
+                                                fontSize='md'
+                                                height="40px"
+                                            >
+                                                {formData.seedsToTreatKg}
+                                            </Box>
                                         </Box>
                                         <Box>
                                             <Text fontSize="md">How do you want to pack?</Text>
@@ -309,6 +359,7 @@ export const FinalizeRecipe = () => {
                                                         props.handleChange(e);
                                                         dispatch(updateBagSize(parseFloat(e.target.value) || 0));
                                                     }}
+                                                    value={props.values.bagSize === 0 ? "" : props.values.bagSize}
                                                     borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
                                                 />
                                             </InputGroup>
@@ -328,12 +379,13 @@ export const FinalizeRecipe = () => {
                                                         props.handleChange(e);
                                                         dispatch(updateExtraSlurry(parseFloat(e.target.value)));
                                                     }}
+                                                    value={props.values.extraSlurry === 0 ? "" : props.values.extraSlurry}
                                                     borderColor={props.errors.extraSlurry && props.touched.extraSlurry ? "red.500" : "gray.300"}
                                                 />
                                             </InputGroup>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">TKW Measurement Interval (minutes):</Text>
+                                            <Text fontSize="md" mb="2">TKW Measurement Interval (minutes):</Text>
                                             <Field
                                                 as={Select}
                                                 name="tkwMeasurementInterval"
