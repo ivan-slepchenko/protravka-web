@@ -28,9 +28,6 @@ import {
     updateTkwMeasurementInterval,
 } from "../../store/newOrderSlice";
 import { finalizeOrder, fetchOrders, fetchOrderById } from "../../store/ordersSlice";
-import { fetchCrops } from "../../store/cropsSlice";
-import { fetchProducts } from "../../store/productsSlice";
-import { fetchOperators } from '../../store/operatorsSlice';
 import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
 
@@ -102,12 +99,6 @@ export const FinalizeRecipe = () => {
     });
     const addAlert = useAlert().addAlert;
     const [order, setOrder] = useState<Order | null>(null);
-
-    useEffect(() => {
-        dispatch(fetchCrops());
-        dispatch(fetchProducts());
-        dispatch(fetchOperators());
-    }, [dispatch]);
 
     useEffect(() => {
         if (orderId) {

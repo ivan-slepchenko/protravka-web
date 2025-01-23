@@ -15,6 +15,10 @@ import DesktopMenu from './menus/DesktopMenu';
 import AppRoutes from './AppRoutes';
 import { fetchOrders } from './store/ordersSlice';
 import { fetchTkwMeasurements } from './store/executionSlice';
+import { fetchProducts } from './store/productsSlice';
+import { Role } from './operators/Operators';
+import { fetchCrops } from './store/cropsSlice';
+import { fetchOperators } from './store/operatorsSlice';
 
 const App = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -32,7 +36,15 @@ const App = () => {
             if (!isAuthenticated) {
                 dispatch(fetchUserByToken());
             } else {
+                
                 dispatch(fetchOrders());
+
+                if (user.roles.includes(Role.ADMIN) || user.roles.includes(Role.MANAGER)) {
+                    dispatch(fetchCrops());
+                    dispatch(fetchProducts());
+                    dispatch(fetchOperators());
+                }
+
                 if(useLab) {
                     dispatch(fetchTkwMeasurements());
                 }

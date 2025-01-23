@@ -1,5 +1,5 @@
 import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, useDisclosure, VStack, Heading } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
@@ -15,8 +15,6 @@ import {
     OrderStatus,
 } from "../../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../../store/ordersSlice";
-import { fetchCrops } from "../../store/cropsSlice";
-import { fetchProducts } from "../../store/productsSlice";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
 
@@ -39,11 +37,6 @@ export const NewReceipe = () => {
         return localStorage.getItem('doNotShowAgain') === 'true';
     });
     const addAlert = useAlert().addAlert;
-
-    useEffect(() => {
-        dispatch(fetchCrops());
-        dispatch(fetchProducts());
-    }, [dispatch]);
 
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
         values.status = OrderStatus.ForLabToInitiate;

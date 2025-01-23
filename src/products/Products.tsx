@@ -1,8 +1,8 @@
-import React from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { createProduct, deleteProduct, fetchProducts } from '../store/productsSlice';
-import { useState, useEffect } from 'react';
+import { createProduct, deleteProduct } from '../store/productsSlice';
+import { Fragment, useRef, useState } from 'react';
 import { Button, Input, HStack, VStack, Grid, GridItem, Text } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
@@ -16,11 +16,7 @@ const Products = () => {
     const [errors, setErrors] = useState<{ name?: boolean; density?: boolean }>({});
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-    const cancelRef = React.useRef<HTMLButtonElement>(null);
-
-    useEffect(() => {
-        dispatch(fetchProducts());
-    }, [dispatch]);
+    const cancelRef = useRef<HTMLButtonElement>(null);
 
     const handleAddProduct = () => {
         const newErrors: { name?: boolean; density?: boolean } = {};
@@ -67,14 +63,14 @@ const Products = () => {
                         .slice()
                         .sort((a, b) => a.name.localeCompare(b.name))
                         .map((product) => (
-                            <React.Fragment key={product.id}>
+                            <Fragment key={product.id}>
                                 <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200"><Text>{product.name}</Text></GridItem>
                                 <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200"><Text>{product.activeIngredient}</Text></GridItem>
                                 <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200"><Text>{product.density}</Text></GridItem>
                                 <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200">
                                     <Button onClick={() => handleDeleteProduct(product.id)} size="sm">Delete</Button>
                                 </GridItem>
-                            </React.Fragment>
+                            </Fragment>
                         ))}
                 </Grid>
             </VStack>
