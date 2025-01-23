@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { AppDispatch, RootState } from '../store/store';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
-import { fetchOrders } from '../store/ordersSlice';
-import { fetchTkwMeasurements, TkwMeasurement } from '../store/executionSlice';
+import { TkwMeasurement } from '../store/executionSlice';
 import { Box, Flex, Tabs, TabList, TabPanels, Tab, TabPanel, Grid } from '@chakra-ui/react';
 import RecipeRawTkwDetailsInputModal from './RecipeRawTkwDetailsInputModal';
 import TkwMeasurementCard from './TkwMeasurementCard';
@@ -13,7 +12,6 @@ import ControlledOrderCard from './ControlledOrderCard';
 import TkwDetailsModal from './TkwDetailsModal';
 
 const LabBoard: React.FC = () => {
-    const dispatch: AppDispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
     const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -22,12 +20,6 @@ const LabBoard: React.FC = () => {
     const [measurementsToControl, setMeasurementsToControl] = useState<TkwMeasurement[]>([]);
     const [controlledOrders, setControlledOrders] = useState<Order[]>([]);
     const [selectedControlledOrder, setSelectedControlledOrder] = useState<Order | null>(null);
-
-    useEffect(() => {
-        console.log('Fetching orders and TKW measurements');
-        dispatch(fetchTkwMeasurements());
-        dispatch(fetchOrders());
-    }, [dispatch]);
 
     const handleRecipeClick = (order: Order) => {
         setSelectedOrder(order);

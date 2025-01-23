@@ -7,19 +7,14 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor, AppDispatch, RootState } from './store/store';
 import { fetchUserByToken, logoutUser } from './store/userSlice';
-import { Role } from './operators/Operators';
-import { fetchOrders } from './store/ordersSlice';
 import { BrowserRouter } from "react-router-dom";
 import { AlertProvider } from './contexts/AlertContext';
 import { FeaturesProvider, useFeatures } from './contexts/FeaturesContext';
 import MobileMenu from './menus/MobileMenu';
 import DesktopMenu from './menus/DesktopMenu';
-import { FiTrello } from 'react-icons/fi';
-import { TbReportAnalytics } from "react-icons/tb";
-import { AtSignIcon, AddIcon } from '@chakra-ui/icons';
-import { BiSolidComponent } from "react-icons/bi";
-import { FaSeedling, FaTasks, FaFlask } from "react-icons/fa";
 import AppRoutes from './AppRoutes';
+import { fetchOrders } from './store/ordersSlice';
+import { fetchTkwMeasurements } from './store/executionSlice';
 
 const App = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -28,39 +23,22 @@ const App = () => {
     const email = user.email;
     const isAuthenticated = !!email;
 
-    const roleToLinks = {
-        [Role.MANAGER]: [
-            { to: "/board", label: "Board", icon: <FiTrello /> },
-            { to: "/new", label: "New Receipe", icon: <AddIcon /> },
-            { to: "/report", label: "Report", icon: <TbReportAnalytics /> },
-        ],
-        [Role.ADMIN]: [
-            { to: "/operators", label: "Operators", icon: <AtSignIcon /> },
-            { to: "/crops", label: "Crops", icon: <FaSeedling /> },
-            { to: "/products", label: "Products", icon: <BiSolidComponent /> },
-        ],
-        [Role.OPERATOR]: [
-            { to: "/execution", label: "Execution", icon: <FaTasks /> },
-        ],
-        [Role.LABORATORY]: [
-            { to: "/lab", label: "Lab", icon: <FaFlask /> },
-        ],
-    };
-
-    const userRoles = user.roles || [];
-    const managerLinks = userRoles.includes(Role.MANAGER) ? roleToLinks[Role.MANAGER] : [];
-    const adminLinks = userRoles.includes(Role.ADMIN) ? roleToLinks[Role.ADMIN] : [];
-    const operatorLinks = userRoles.includes(Role.OPERATOR) ? roleToLinks[Role.OPERATOR] : [];
-    const laboratoryLinks = userRoles.includes(Role.LABORATORY) ? roleToLinks[Role.LABORATORY] : [];
-
     const handleLogout = () => {
         dispatch(logoutUser());
     };
 
     useEffect(() => {
-        if (!isAuthenticated) dispatch(fetchUserByToken());
-        dispatch(fetchOrders());
-    }, [dispatch, isAuthenticated]);
+        if (useLab !== undefined) {
+            if (!isAuthenticated) {
+                dispatch(fetchUserByToken());
+            } else {
+                dispatch(fetchOrders());
+                if(useLab) {
+                    dispatch(fetchTkwMeasurements());
+                }
+            }
+        }
+    }, [dispatch, useLab, isAuthenticated]);
 
     console.log('Rendering App');
 
@@ -71,10 +49,6 @@ const App = () => {
                     {isAuthenticated && (
                         <MobileMenu
                             user={user}
-                            managerLinks={managerLinks}
-                            adminLinks={adminLinks}
-                            operatorLinks={operatorLinks}
-                            laboratoryLinks={laboratoryLinks}
                             handleLogout={handleLogout}
                         />
                     )}
@@ -87,10 +61,6 @@ const App = () => {
                 {isAuthenticated && (
                     <DesktopMenu
                         user={user}
-                        managerLinks={managerLinks}
-                        adminLinks={adminLinks}
-                        operatorLinks={operatorLinks}
-                        laboratoryLinks={laboratoryLinks}
                         handleLogout={handleLogout}
                     />
                 )}

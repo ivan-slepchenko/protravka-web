@@ -3,7 +3,7 @@ import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack, Imag
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
-import { fetchOrders, changeOrderStatus } from "../store/ordersSlice";
+import { changeOrderStatus } from "../store/ordersSlice";
 import { Order, OrderStatus, Packaging } from "../store/newOrderSlice";
 import { useReactToPrint } from "react-to-print";
 import { fetchOrderExecution, OrderExecution } from "../store/executionSlice";
@@ -34,10 +34,6 @@ const LotReport: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [status, setStatus] = useState<OrderStatus | null>(null);
     const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
-    
-    useEffect(() => {
-        dispatch(fetchOrders());
-    }, [dispatch]);
 
     useEffect(() => {
         if (orderId && order !== null && [OrderStatus.ForLabToInitiate, OrderStatus.ByLabInitiated, OrderStatus.ReadyToStart].indexOf(order.status) === -1) {        

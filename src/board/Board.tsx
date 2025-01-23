@@ -1,24 +1,18 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { AppDispatch, RootState } from '../store/store';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 import { OrderStatus } from '../store/newOrderSlice';
-import { fetchOrders } from '../store/ordersSlice';
 import { Box, Flex, Heading, Text, VStack, Badge } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useFeatures } from '../contexts/FeaturesContext';
 
 const Board: React.FC = () => {
-    const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
     const features = useFeatures();
     const columns = features.features.lab
         ? [OrderStatus.ForLabToInitiate, OrderStatus.ByLabInitiated, OrderStatus.ReadyToStart, OrderStatus.InProgress, OrderStatus.ForLabToControl, OrderStatus.ToAcknowledge, 'Done']
         : [OrderStatus.ReadyToStart, OrderStatus.InProgress, OrderStatus.ToAcknowledge, 'Done'];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
-
-    useEffect(() => {
-        dispatch(fetchOrders());
-    }, [dispatch]);
 
     const handleRecipeClick = (orderId: string, status: OrderStatus) => {
         if (status === OrderStatus.ByLabInitiated) {

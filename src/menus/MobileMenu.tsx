@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Box, VStack, Button, Text, HStack, IconButton, Spacer, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Divider } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FiLogOut, FiMenu } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
+import useRoleLinks from '../hooks/useRoleLinks';
 
 interface MenuProps {
     user: {
@@ -12,16 +12,13 @@ interface MenuProps {
         email: string | null;
         roles: Role[];
     };
-    managerLinks: { to: string; label: string }[];
-    adminLinks: { to: string; label: string }[];
-    operatorLinks: { to: string; label: string }[];
-    laboratoryLinks: { to: string; label: string }[];
     handleLogout: () => void;
 }
 
-const MobileMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, operatorLinks, laboratoryLinks, handleLogout }) => {
+const MobileMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
     const location = useLocation();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { managerLinks, adminLinks, operatorLinks, laboratoryLinks } = useRoleLinks(user.roles);
 
     return (
         <>

@@ -15,8 +15,7 @@ import OrderExecution4ProovingProduct from './OrderExecution4ProovingProduct';
 import OrderExecution6TreatingConfirmation from './OrderExecution6TreatingConfirmation';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import OrderExecution10ConsumptionProoving from './OrderExecution10ConsumptionProoving';
-import { fetchOrders } from '../store/ordersSlice';
-import { Order, OrderStatus } from '../store/newOrderSlice';
+import { OrderStatus } from '../store/newOrderSlice';
 import { completeExecution, fetchOrderExecutionAsCurrent, setCurrentOrder } from '../store/executionSlice';
 
 
@@ -25,27 +24,24 @@ const Execution = () => {
 
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
+    const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
     useEffect(() => {
-        dispatch(fetchOrders()).unwrap().then((orders: Order[]) => {
-            const ocurrentOrderByServer = orders.find(order => order.status === OrderStatus.InProgress);
-            if (currentOrder) {
-                if (!ocurrentOrderByServer) {
-                    dispatch(completeExecution());
-                } else if (currentOrder.id !== ocurrentOrderByServer.id) {
-                    dispatch(fetchOrderExecutionAsCurrent(ocurrentOrderByServer.id));
-                    dispatch(setCurrentOrder(ocurrentOrderByServer));
-                }
-            } else {
-                if (ocurrentOrderByServer) {
-                    dispatch(fetchOrderExecutionAsCurrent(ocurrentOrderByServer.id));
-                    dispatch(setCurrentOrder(ocurrentOrderByServer));
-                }
+        const ocurrentOrderByServer = orders.find(order => order.status === OrderStatus.InProgress);
+        if (currentOrder) {
+            if (!ocurrentOrderByServer) {
+                dispatch(completeExecution());
+            } else if (currentOrder.id !== ocurrentOrderByServer.id) {
+                dispatch(fetchOrderExecutionAsCurrent(ocurrentOrderByServer.id));
+                dispatch(setCurrentOrder(ocurrentOrderByServer));
             }
-        }).catch(() => {
-            console.log('Working in offline mode');
-        });
-    }, [dispatch]);
+        } else {
+            if (ocurrentOrderByServer) {
+                dispatch(fetchOrderExecutionAsCurrent(ocurrentOrderByServer.id));
+                dispatch(setCurrentOrder(ocurrentOrderByServer));
+            }
+        }
+    }, [orders]);
 
     const renderCurrentPage = () => {
         if (!currentOrderExecution) {

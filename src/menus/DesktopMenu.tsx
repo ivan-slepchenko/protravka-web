@@ -3,6 +3,7 @@ import { Box, VStack, Button, Text, HStack, IconButton, Spacer, Divider, Image }
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FiLogOut } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
+import useRoleLinks from '../hooks/useRoleLinks';
 
 interface MenuProps {
     user: {
@@ -11,15 +12,12 @@ interface MenuProps {
         email: string | null;
         roles: Role[];
     };
-    managerLinks: { to: string; label: string, icon: JSX.Element }[];
-    adminLinks: { to: string; label: string, icon: JSX.Element }[];
-    operatorLinks: { to: string; label: string, icon: JSX.Element }[];
-    laboratoryLinks: { to: string; label: string, icon: JSX.Element }[];
     handleLogout: () => void;
 }
 
-const DesktopMenu: React.FC<MenuProps> = ({ user, managerLinks, adminLinks, operatorLinks, laboratoryLinks, handleLogout }) => {
+const DesktopMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
     const location = useLocation();
+    const { managerLinks, adminLinks, operatorLinks, laboratoryLinks } = useRoleLinks(user.roles);
 
     return (
         <Box width="300px" height="100vh" p={4}>

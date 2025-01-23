@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
@@ -14,7 +14,6 @@ const OrdersOverview: React.FC = () => {
     const { isOpen: isAlertOpen, onOpen: onAlertOpen, onClose: onAlertClose } = useDisclosure();
     const cancelRef = React.useRef(null);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-    const [fetchError, setFetchError] = useState<boolean>(false);
     const user = useSelector((state: RootState) => state.user);
     const orders = useSelector((state: RootState) => 
         state.orders.activeOrders.filter(order => 
@@ -23,6 +22,7 @@ const OrdersOverview: React.FC = () => {
             new Date(order.applicationDate).toLocaleDateString() === currentDate
         )
     );
+    const fetchError = useSelector((state: RootState) => state.orders.fetchError);
 
     const handleOrderClick = (order: Order) => {
         setSelectedOrder(order);
@@ -44,17 +44,8 @@ const OrdersOverview: React.FC = () => {
     };
 
     const fetchOrdersWithAlert = async () => {
-        try {
-            await dispatch(fetchOrders()).unwrap();
-            setFetchError(false);
-        } catch (error) {
-            setFetchError(true);
-        }
+        dispatch(fetchOrders());
     };
-
-    useEffect(() => {
-        fetchOrdersWithAlert();
-    }, [dispatch]);
 
     return (
         <VStack>

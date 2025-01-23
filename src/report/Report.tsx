@@ -3,7 +3,6 @@ import { Box, Text, Button, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, Sele
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
-import { fetchOrders } from "../store/ordersSlice";
 import { OrderStatus } from "../store/newOrderSlice";
 import { Bar } from "react-chartjs-2"; // Import Bar chart
 
@@ -50,10 +49,6 @@ const Report: React.FC = () => {
         operator: "",
         status: "",
     });
-
-    useEffect(() => {
-        dispatch(fetchOrders());
-    }, [dispatch]);
 
     useEffect(() => {
         setFilteredOrders(orders);

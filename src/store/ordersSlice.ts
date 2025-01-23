@@ -4,11 +4,13 @@ import { OrderStatus, NewOrderState, ProductDetail, Order } from './newOrderSlic
 interface OrdersState {
     activeOrders: Order[];
     archivedOrders: Order[];
+    fetchError: boolean;
 }
 
 const initialState: OrdersState = {
     activeOrders: [],
     archivedOrders: [],
+    fetchError: false,
 };
 
 export interface ProductRecipe {
@@ -39,12 +41,22 @@ export interface OrderRecipe {
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
-export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
-    const response = await fetch(`${BACKEND_URL}/api/orders`, {
-        credentials: 'include', // Include credentials in the request
-    });
-    return await response.json();
-});
+export const fetchOrders = createAsyncThunk(
+    'orders/fetchOrders',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/orders`, {
+                credentials: 'include', // Include credentials in the request
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch orders');
+            }
+            return await response.json();
+        } catch (error) {
+            return rejectWithValue((error as Error).message);
+        }
+    },
+);
 
 export const createOrder = createAsyncThunk('orders/createOrder', async (order: NewOrderState) => {
     if (!order.cropId || !order.varietyId) {
@@ -190,6 +202,10 @@ const ordersSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchOrders.fulfilled, (state, action: PayloadAction<Order[]>) => {
             state.activeOrders = action.payload;
+            state.fetchError = false;
+        });
+        builder.addCase(fetchOrders.rejected, (state) => {
+            state.fetchError = true;
         });
         builder.addCase(createOrder.fulfilled, (state, action: PayloadAction<Order>) => {
             state.activeOrders.push(action.payload);

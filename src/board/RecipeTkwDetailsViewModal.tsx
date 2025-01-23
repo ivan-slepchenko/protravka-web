@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Order } from '../store/newOrderSlice';
-import { fetchTkwMeasurements, TkwMeasurement } from '../store/executionSlice';
-import { RootState, AppDispatch } from '../store/store';
+import { TkwMeasurement } from '../store/executionSlice';
+import { RootState } from '../store/store';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Grid, GridItem, Center, HStack, Text, Box, Image, Button, Divider, VStack } from '@chakra-ui/react';
 
 interface RecipeTkwDetailsViewModalProps {
@@ -11,13 +11,8 @@ interface RecipeTkwDetailsViewModalProps {
 }
 
 const RecipeTkwDetailsViewModal: React.FC<RecipeTkwDetailsViewModalProps> = ({ selectedOrder, onClose }) => {
-    const dispatch: AppDispatch = useDispatch();
     const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
     const [orderTkwMeasurements, setOrderTkwMeasurements] = useState<TkwMeasurement[]>([]);
-
-    useEffect(() => {
-        dispatch(fetchTkwMeasurements());
-    }, [dispatch]);
 
     useEffect(() => {
         const measurements = tkwMeasurements.filter(measurement => measurement.orderExecution.orderId === selectedOrder.id);

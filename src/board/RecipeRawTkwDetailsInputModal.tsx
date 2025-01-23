@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
-import { Order, OrderStatus } from '../store/newOrderSlice';
+import { Order } from '../store/newOrderSlice';
 import { fetchOrders, updateOrderTKW } from '../store/ordersSlice';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox, Badge, Box, Image } from '@chakra-ui/react';
 import { FaCamera } from 'react-icons/fa';
@@ -72,7 +72,7 @@ const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps
                 tkwRep1,
                 tkwRep2,
                 tkwRep3,
-                tkwProbesPhoto: tkwProbesPhoto,
+                tkwProbesPhoto,
             }));
             dispatch(fetchOrders());
         }
