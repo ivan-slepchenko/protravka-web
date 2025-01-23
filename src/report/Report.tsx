@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Text, Button, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, Select, Input } from "@chakra-ui/react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { AppDispatch, RootState } from "../store/store";
+import { RootState } from "../store/store";
 import { OrderStatus } from "../store/newOrderSlice";
 import { Bar } from "react-chartjs-2"; // Import Bar chart
 
@@ -37,7 +37,6 @@ const statusColorMap: StatusColorMap = {
 
 const Report: React.FC = () => {
     const navigate = useNavigate();
-    const dispatch: AppDispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
     const [filteredOrders, setFilteredOrders] = useState(orders);

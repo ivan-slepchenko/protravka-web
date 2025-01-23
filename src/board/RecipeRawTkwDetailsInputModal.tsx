@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, FC } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { Order } from '../store/newOrderSlice';
@@ -11,7 +11,7 @@ interface RecipeRawTkwDetailsInputModalProps {
     onClose: () => void;
 }
 
-const RecipeRawTkwDetailsInputModal: React.FC<RecipeRawTkwDetailsInputModalProps> = ({ selectedOrder, onClose }) => {
+const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({ selectedOrder, onClose }) => {
     const dispatch: AppDispatch = useDispatch();
     const [tkwRep1, setTkwRep1] = useState<number | null>(null);
     const [tkwRep2, setTkwRep2] = useState<number | null>(null);

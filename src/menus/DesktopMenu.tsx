@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, VStack, Button, Text, HStack, IconButton, Spacer, Divider, Image } from '@chakra-ui/react';
+import { FC } from 'react';
+import { Box, VStack, Button, Text, HStack, IconButton, Spacer, Divider } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FiLogOut } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
@@ -15,7 +15,7 @@ interface MenuProps {
     handleLogout: () => void;
 }
 
-const DesktopMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
+const DesktopMenu: FC<MenuProps> = ({ user, handleLogout }) => {
     const location = useLocation();
     const { managerLinks, adminLinks, operatorLinks, laboratoryLinks } = useRoleLinks(user.roles);
 

@@ -71,6 +71,7 @@
     "@types/leaflet": "^1.9.12",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.37.4",
     "prettier": "^3.4.1",
     "react-scripts": "^5.0.1",
     "workbox-cli": "^7.3.0"

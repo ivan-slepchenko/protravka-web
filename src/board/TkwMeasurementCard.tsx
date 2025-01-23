@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { fetchOrderById } from '../store/ordersSlice';
 import { TkwMeasurement } from '../store/executionSlice';
 import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
-import { Order, OrderStatus } from '../store/newOrderSlice';
+import { Order } from '../store/newOrderSlice';
 
 interface TkwMeasurementCardProps {
     measurement: TkwMeasurement;
     onClick: () => void;
 }
 
-const TkwMeasurementCard: React.FC<TkwMeasurementCardProps> = ({ measurement, onClick }) => {
+const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick }) => {
     const dispatch: AppDispatch = useDispatch();
     const [order, setOrder] = useState<Order | null>(null);
 
