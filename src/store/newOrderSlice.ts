@@ -21,9 +21,9 @@ export interface ProductDetail {
     rateUnit: RateUnit;
     rateType: RateType;
     rate: number;
-    index: number; // Add index property
-    productId: string; // Add productId property
-    product?: Product; // Add product property << when comes from backend
+    index: number;
+    productId: string;
+    product?: Product;
 }
 
 export enum OrderStatus {
@@ -71,19 +71,19 @@ export interface NewOrderState {
     productDetails: ProductDetail[];
     recipeDate: string;
     applicationDate: string;
-    operatorId?: string;
-    cropId?: string;
-    varietyId?: string;
+    operatorId: string | null;
+    cropId: string | null;
+    varietyId: string | null;
     lotNumber: string;
-    tkw: number;
-    seedsToTreatKg: number;
+    tkw: number | null;
+    seedsToTreatKg: number | null;
     packaging: Packaging;
-    bagSize: number;
+    bagSize: number | null;
     status: OrderStatus;
-    extraSlurry: number;
-    slurryTotalMlRecipeToMix?: number;
-    slurryTotalGrRecipeToMix?: number;
-    totalCompoundsDensity?: number;
+    extraSlurry: number | null;
+    slurryTotalMlRecipeToMix: number | null;
+    slurryTotalGrRecipeToMix: number | null;
+    totalCompoundsDensity: number | null;
     tkwMeasurementInterval: number;
 }
 
@@ -92,17 +92,20 @@ export const createNewEmptyOrder: () => NewOrderState = () => ({
     productDetails: [],
     recipeDate: new Date().toISOString().split('T')[0],
     applicationDate: new Date().toISOString().split('T')[0],
-    operatorId: undefined,
-    cropId: undefined,
-    varietyId: undefined,
+    operatorId: null,
+    cropId: null,
+    varietyId: null,
     lotNumber: '',
-    tkw: 0,
-    seedsToTreatKg: 0,
+    tkw: null,
+    seedsToTreatKg: null,
     packaging: Packaging.InSeeds,
-    bagSize: 0,
+    bagSize: null,
     status: OrderStatus.ReadyToStart,
-    extraSlurry: 0, // Initialize extraSlurry
-    tkwMeasurementInterval: 60, // Initialize tkwMeasurementInterval
+    extraSlurry: null,
+    tkwMeasurementInterval: 60,
+    slurryTotalMlRecipeToMix: null,
+    slurryTotalGrRecipeToMix: null,
+    totalCompoundsDensity: null,
 });
 
 export const createNewEmptyProduct: () => ProductDetail = () => ({
@@ -214,6 +217,21 @@ const newOrderSlice = createSlice({
                 ...action.payload,
             };
         },
+        resetStateToDefaultFinalize: (state) => {
+            console.log('Resetting state to default');
+            // TODO: Continue on this, as form is not resetting on clear
+            return {
+                ...state,
+                productDetails: [],
+                recipeDate: new Date().toISOString().split('T')[0],
+                applicationDate: new Date().toISOString().split('T')[0],
+                packaging: Packaging.InSeeds,
+                bagSize: null,
+                extraSlurry: null,
+                operatorId: null,
+                tkwMeasurementInterval: 60,
+            };
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchCalculatedValues.fulfilled, (state, action) => {
@@ -244,6 +262,7 @@ export const {
     setOrderState,
     loadOrderData,
     updateTkwMeasurementInterval,
+    resetStateToDefaultFinalize,
 } = newOrderSlice.actions;
 
 export default newOrderSlice.reducer;

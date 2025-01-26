@@ -1,4 +1,4 @@
-import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure, Table, Thead, Tr, Th, Tbody, Td, VStack, Heading } from "@chakra-ui/react";
+import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure, Table, Thead, Tr, Th, Tbody, Td, VStack, Heading, CircularProgress } from "@chakra-ui/react";
 import { Role } from '../../operators/Operators';
 import React, { useEffect, useState, useCallback } from "react";
 import * as Yup from "yup";
@@ -6,8 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { Formik, Field, FieldArray, FormikErrors, FormikTouched, FormikProps } from "formik";
 import {
-    setOrderState,
-    createNewEmptyOrder,
+    resetStateToDefaultFinalize,
     createNewEmptyProduct,
     updateRecipeDate,
     updateApplicationDate,
@@ -34,7 +33,7 @@ import { useAlert } from "../../contexts/AlertContext";
 const validationSchema = Yup.object().shape({
     recipeDate: Yup.date().required("Recipe Date is required"),
     applicationDate: Yup.date().required("Application Date is required"),
-    operatorId: Yup.string().optional(),
+    operatorId: Yup.string().nullable(),
     bagSize: Yup.number().moreThan(0, "Bag Size must be greater than 0").required("Bag Size is required"),
     packaging: Yup.string().required("Packaging is required"),
     productDetails: Yup.array().of(
@@ -85,7 +84,7 @@ export const getRateTypeLabel = (type: RateType): string => {
 export const FinalizeRecipe = () => {
     const { orderId } = useParams<{ orderId: string }>();
     const dispatch: AppDispatch = useDispatch();
-    const formData = useSelector((state: RootState) => state.newOrder as NewOrderState);
+    const formData = useSelector((state: RootState) => state.newOrder);
     const crops = useSelector((state: RootState) => state.crops.crops);
     const selectedCropId = useSelector((state: RootState) => state.newOrder.cropId);
     const products = useSelector((state: RootState) => state.products.products);
@@ -99,6 +98,7 @@ export const FinalizeRecipe = () => {
     });
     const addAlert = useAlert().addAlert;
     const [order, setOrder] = useState<Order | null>(null);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
 
     useEffect(() => {
         if (orderId) {
@@ -119,18 +119,37 @@ export const FinalizeRecipe = () => {
         }
     }, [orderId, dispatch]);
 
-    const handleSave = useCallback((values: NewOrderState, resetForm: () => void) => {
+    const handleSave = useCallback((values: NewOrderState) => {
         if (!orderId || !order) return;
-        const updatedOrder = {
+
+
+        if (
+            values.tkw === null ||
+            values.seedsToTreatKg === null ||
+            values.bagSize === null ||
+            values.extraSlurry === null ||
+            values.slurryTotalMlRecipeToMix === null ||
+            values.slurryTotalGrRecipeToMix === null ||
+            values.totalCompoundsDensity === null
+        ) {
+            throw new Error('Required fields cannot be null');
+        }
+
+        setIsSaving(true);
+        const updatedOrder: Order = {
             ...order,
             ...values,
-            id: orderId
+            id: orderId,
+            tkw: values.tkw,
+            seedsToTreatKg: values.seedsToTreatKg,
+            bagSize: values.bagSize,
+            extraSlurry: values.extraSlurry,
         };
         dispatch(finalizeOrder(updatedOrder)).then(() => {
             dispatch(fetchOrders());
-            dispatch(setOrderState(createNewEmptyOrder()));
-            resetForm();
+            dispatch(resetStateToDefaultFinalize());
             setOrderDate(values.applicationDate);
+            setIsSaving(false);
             if (!doNotShowAgain) {
                 setShowPopup(true);
             } else {
@@ -140,12 +159,23 @@ export const FinalizeRecipe = () => {
         });
     }, [orderId, order, dispatch, doNotShowAgain, addAlert, navigate]);
 
-    const handleClearAll = (resetForm: () => void) => {
-        dispatch(setOrderState(createNewEmptyOrder()));
-        resetForm();
+    const handleClearAll = (resetForm: (nextState?: Partial<FormikProps<NewOrderState>>) => void) => {
+        dispatch(resetStateToDefaultFinalize());
+        resetForm({
+            values: {
+                ...formData, // Reset to default values from Redux store
+                recipeDate: currentDate,
+                applicationDate: currentDate,
+                productDetails: [], // Clear product details array
+                bagSize: null,
+                extraSlurry: null,
+                operatorId: null,
+                tkwMeasurementInterval: 60,
+            },
+        });
     };
 
-    const handleSubmit = (values: NewOrderState, { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }) => {
+    const handleSubmit = (values: NewOrderState, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
         try {
             validationSchema.validateSync(values, { abortEarly: false });
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -159,7 +189,7 @@ export const FinalizeRecipe = () => {
             setSubmitting(false);
             return;
         }
-        handleSave(values, resetForm);
+        handleSave(values);
         setSubmitting(false);
     };
 
@@ -209,7 +239,7 @@ export const FinalizeRecipe = () => {
 
                         return (
                             <form onSubmit={props.handleSubmit} style={{ width: '100%' }}>
-                                <Box width="full" mx="auto" p="4">
+                                <Box width="full" mx="auto" p="4" pointerEvents={isSaving ? 'none' : 'auto'}>
                                     {/* Recipe Info */}
                                     <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4" width="full">
                                         <Box>
@@ -224,6 +254,7 @@ export const FinalizeRecipe = () => {
                                                     dispatch(updateRecipeDate(e.target.value));
                                                 }}
                                                 borderColor={props.errors.recipeDate && props.touched.recipeDate ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             />
                                         </Box>
                                         <Box>
@@ -238,6 +269,7 @@ export const FinalizeRecipe = () => {
                                                     dispatch(updateApplicationDate(e.target.value));
                                                 }}
                                                 borderColor={props.errors.applicationDate && props.touched.applicationDate ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             />
                                         </Box>
                                         <Box>
@@ -251,8 +283,11 @@ export const FinalizeRecipe = () => {
                                                     props.handleChange(e);
                                                     dispatch(updateOperator(e.target.value));
                                                 }}
+                                                value={props.values.operatorId || ''}
                                                 borderColor={props.errors.operatorId && props.touched.operatorId ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             >
+                                                <option value="">Any operator</option>
                                                 {filteredOperators.map((operator) => (
                                                     <option key={operator.id} value={operator.id}>
                                                         {operator.name} {operator.surname}
@@ -341,6 +376,7 @@ export const FinalizeRecipe = () => {
                                                     dispatch(updatePackaging(e.target.value as Packaging));
                                                 }}
                                                 borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             >
                                                 <option value={Packaging.InSeeds}>s/units</option>
                                                 <option value={Packaging.InKg}>kg</option>
@@ -359,8 +395,9 @@ export const FinalizeRecipe = () => {
                                                         props.handleChange(e);
                                                         dispatch(updateBagSize(parseFloat(e.target.value) || 0));
                                                     }}
-                                                    value={props.values.bagSize === 0 ? "" : props.values.bagSize}
+                                                    value={props.values.bagSize !== null ? props.values.bagSize : ''}
                                                     borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
+                                                    disabled={isSaving}
                                                 />
                                             </InputGroup>
                                         </Box>
@@ -379,8 +416,9 @@ export const FinalizeRecipe = () => {
                                                         props.handleChange(e);
                                                         dispatch(updateExtraSlurry(parseFloat(e.target.value)));
                                                     }}
-                                                    value={props.values.extraSlurry === 0 ? "" : props.values.extraSlurry}
+                                                    value={props.values.extraSlurry !== null ? props.values.extraSlurry : ''}
                                                     borderColor={props.errors.extraSlurry && props.touched.extraSlurry ? "red.500" : "gray.300"}
+                                                    disabled={isSaving}
                                                 />
                                             </InputGroup>
                                         </Box>
@@ -395,6 +433,7 @@ export const FinalizeRecipe = () => {
                                                     dispatch(updateTkwMeasurementInterval(parseInt(e.target.value)));
                                                 }}
                                                 borderColor={props.errors.tkwMeasurementInterval && props.touched.tkwMeasurementInterval ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             >
                                                 {tkwMeasurementIntervals.map((interval) => (
                                                     <option key={interval} value={interval}>
@@ -427,6 +466,7 @@ export const FinalizeRecipe = () => {
                                                                     }
                                                                 }}
                                                                 borderColor={hasProductDetailError(props.errors, props.touched, index, 'productId') ? "red.500" : "gray.300"}
+                                                                disabled={isSaving}
                                                             >
                                                                 {products.map((product) => (
                                                                     <option key={product.id} value={product.id}>
@@ -456,6 +496,7 @@ export const FinalizeRecipe = () => {
                                                                     }}
                                                                     borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
                                                                     borderRightRadius="0"
+                                                                    disabled={isSaving}
                                                                 >
                                                                     <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
                                                                     <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
@@ -476,6 +517,7 @@ export const FinalizeRecipe = () => {
                                                                     }}
                                                                     borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
                                                                     borderRadius="0"
+                                                                    disabled={isSaving}
                                                                 >
                                                                     <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
                                                                     <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
@@ -493,8 +535,9 @@ export const FinalizeRecipe = () => {
                                                                         props.setFieldValue(`productDetails.${index}.rate`, rate);
                                                                         dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
                                                                     }}
-                                                                    value={props.values.productDetails[index].rate === 0 ? "" : props.values.productDetails[index].rate}
+                                                                    value={props.values.productDetails[index].rate !== 0 ? props.values.productDetails[index].rate : ''}
                                                                     borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
+                                                                    disabled={isSaving}
                                                                 />
                                                             </HStack>
                                                         </Box>
@@ -505,7 +548,7 @@ export const FinalizeRecipe = () => {
                                                         const newEmptyProduct = createNewEmptyProduct();
                                                         push(newEmptyProduct);
                                                         dispatch(addProductDetail(createNewEmptyProduct()));
-                                                    }} ml="auto" mb={4}>+ Add Product</Button>
+                                                    }} ml="auto" mb={4} disabled={isSaving}>Add Product</Button>
                                                 </HStack>
                                             </Box>
                                         )}
@@ -531,8 +574,8 @@ export const FinalizeRecipe = () => {
                                                 <Tbody>
                                                     <Tr>
                                                         <Td>{formData.totalCompoundsDensity.toFixed(3)} g/ml</Td>
-                                                        <Td>{(100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
-                                                        <Td>{(100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
+                                                        <Td>{formData.seedsToTreatKg ? (100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2) : 'N/A'}</Td>
+                                                        <Td>{formData.seedsToTreatKg ? (100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2) : 'N/A'}</Td>
                                                         <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)}</Td>
                                                         <Td>{(formData.slurryTotalGrRecipeToMix / 1000).toFixed(3)}</Td>
                                                     </Tr>
@@ -540,8 +583,8 @@ export const FinalizeRecipe = () => {
                                             </Table>
                                         )}
                                         
-                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
-                                        <Button colorScheme="green" size="md" type="submit">Done</Button>
+                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>Clear All</Button>
+                                        <Button colorScheme="green" size="md" type="submit" isLoading={isSaving} spinner={<CircularProgress isIndeterminate size="24px" color="green.500" />}>Save</Button>
                                     </HStack>
                                 </Box>
 

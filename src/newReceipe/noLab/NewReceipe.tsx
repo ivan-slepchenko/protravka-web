@@ -507,8 +507,8 @@ export const NewReceipe = () => {
                                                 <Tbody>
                                                     <Tr>
                                                         <Td>{formData.totalCompoundsDensity.toFixed(3)} g/ml</Td>
-                                                        <Td>{(100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
-                                                        <Td>{(100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2)}</Td>
+                                                        <Td>{formData.seedsToTreatKg ? (100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2) : 'N/A'}</Td>
+                                                        <Td>{formData.seedsToTreatKg ? (100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2) : 'N/A'}</Td>
                                                         <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)}</Td>
                                                         <Td>{(formData.slurryTotalGrRecipeToMix / 1000).toFixed(3)}</Td>
                                                     </Tr>
