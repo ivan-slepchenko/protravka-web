@@ -1,7 +1,8 @@
 import React from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, VStack, Text, Box, Image } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, VStack, Text, Box, Grid, GridItem, Center, Heading } from '@chakra-ui/react';
 import { TkwMeasurement } from '../store/executionSlice';
 import { Order } from '../store/newOrderSlice';
+import useImageModal from '../hooks/useImageModal';
 
 interface TkwDetailsModalProps {
     onClose: () => void;
@@ -10,6 +11,8 @@ interface TkwDetailsModalProps {
 }
 
 const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measurements }) => {
+    const { ImageModal, ImageWithModal, selectedPhoto, handlePhotoClick, handleClose } = useImageModal();
+
     const calculateAverageTkw = (measurements: TkwMeasurement[]) => {
         if (measurements.length === 0) return 'N/A';
         const totalTkw = measurements.reduce((sum, measurement) => {
@@ -23,35 +26,55 @@ const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measu
     return (
         <Modal isOpen={!!order} onClose={onClose} size="full">
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent h="full">
                 <ModalHeader>TKW Details</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody>
-                    <VStack spacing={4} align="start">
-                        <Text fontWeight="bold">Raw TKW Probes:</Text>
-                        <Text>Probe 1: {order.tkwRep1} gr.</Text>
-                        <Text>Probe 2: {order.tkwRep2} gr.</Text>
-                        <Text>Probe 3: {order.tkwRep3} gr.</Text>
-                        <Text>Raw Average TKW: {order.tkw.toFixed(2)} gr.</Text>
-                        {order.tkwProbesPhoto && <Image src={order.tkwProbesPhoto} alt="Raw TKW Photo" />}
+                <ModalBody h="full">
+                    <Center w="full" h="full">
+                        <VStack spacing={4} align="start" w="full">
+                            <Heading size={'md'}>Raw Average TKW: {order.tkw.toFixed(2)} gr.</Heading>
+                            <Grid templateColumns="repeat(2, 1fr)" gap={4} w="full">
+                                <GridItem>
+                                    {order.tkwProbesPhoto && <ImageWithModal src={order.tkwProbesPhoto} fullSize />}
+                                </GridItem>
+                                <GridItem>
+                                    <VStack spacing={4} alignItems={'start'}>
+                                        <Text>Probe 1: {order.tkwRep1} gr.</Text>
+                                        <Text>Probe 2: {order.tkwRep2} gr.</Text>
+                                        <Text>Probe 3: {order.tkwRep3} gr.</Text>
+                                    </VStack>
+                                </GridItem>
+                            </Grid>
 
-                        <Text fontWeight="bold">Treated TKW Measurements:</Text>
-                        {measurements.map((measurement, index) => (
-                            <Box key={index} borderWidth={1} borderRadius="md" p={2} w="full">
-                                <Text>Measurement {index + 1}:</Text>
-                                <Text>Probe 1: {measurement.tkwProbe1} gr.</Text>
-                                <Text>Probe 2: {measurement.tkwProbe2} gr.</Text>
-                                <Text>Probe 3: {measurement.tkwProbe3} gr.</Text>
-                                <Text>Average TKW: {calculateAverageTkw([measurement])} gr.</Text>
-                                {measurement.tkwProbesPhoto && <Image src={measurement.tkwProbesPhoto} alt={`Measurement ${index + 1} Photo`} />}
-                            </Box>
-                        ))}
-                    </VStack>
+                            {measurements.length > 0 && 
+                                <>
+                                    <Text fontWeight="bold">Treated TKW Measurements:</Text>
+                                    {measurements.map((measurement, index) => (
+                                        <Grid templateColumns="repeat(2, 1fr)" gap={4} w="full" key={index} borderWidth={1} borderRadius="md" p={2}>
+                                            <GridItem>
+                                                {measurement.tkwProbesPhoto && <ImageWithModal src={measurement.tkwProbesPhoto} fullSize />}
+                                            </GridItem>
+                                            <GridItem>
+                                                <VStack spacing={4} justify="space-around">
+                                                    <Text>Measurement {index + 1}:</Text>
+                                                    <Text>Probe 1: {measurement.tkwProbe1} gr.</Text>
+                                                    <Text>Probe 2: {measurement.tkwProbe2} gr.</Text>
+                                                    <Text>Probe 3: {measurement.tkwProbe3} gr.</Text>
+                                                    <Text>Average TKW: {calculateAverageTkw([measurement])} gr.</Text>
+                                                </VStack>
+                                            </GridItem>
+                                        </Grid>
+                                    ))}
+                                </>
+                            }  
+                        </VStack>
+                    </Center>
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="ghost" onClick={onClose}>Close</Button>
                 </ModalFooter>
             </ModalContent>
+            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
         </Modal>
     );
 };

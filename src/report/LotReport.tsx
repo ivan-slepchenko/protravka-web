@@ -7,6 +7,7 @@ import { changeOrderStatus } from "../store/ordersSlice";
 import { Order, OrderStatus, Packaging } from "../store/newOrderSlice";
 import { useReactToPrint } from "react-to-print";
 import { fetchOrderExecution, OrderExecution } from "../store/executionSlice";
+import useImageModal from "../hooks/useImageModal";
 
 const statusColorMap = {
     green: "#48BB78", // Green color (Chakra UI green.400)
@@ -27,13 +28,13 @@ const LotReport: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
     const [order, setOrder] = useState<Order | null>(null);
-    const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
     const componentRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     const [comment, setComment] = useState<string>('');
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [status, setStatus] = useState<OrderStatus | null>(null);
     const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
+    const { ImageModal, ImageWithModal, selectedPhoto, handlePhotoClick, handleClose } = useImageModal();
 
     useEffect(() => {
         if (orderId && order !== null && [OrderStatus.ForLabToInitiate, OrderStatus.ByLabInitiated, OrderStatus.ReadyToStart].indexOf(order.status) === -1) {        
@@ -60,14 +61,6 @@ const LotReport: React.FC = () => {
         if (target === 0) return 0;
         if (actual === null) return 0;
         return (actual / (target / 100));
-    };
-
-    const handlePhotoClick = (photoUrl: string | null) => {
-        setSelectedPhoto(photoUrl);
-    };
-
-    const handleClose = () => {
-        setSelectedPhoto(null);
     };
 
     const print = useReactToPrint({
@@ -153,16 +146,7 @@ const LotReport: React.FC = () => {
                             <Td>{orderExecution && orderExecution.packedseedsToTreatKg || 'N/A'}</Td>
                             <Td>
                                 {orderExecution && orderExecution.packingPhoto ? (
-                                    <Image
-                                        src={orderExecution.packingPhoto}
-                                        alt="Packing"
-                                        width="150px"
-                                        height="100px"
-                                        objectFit="contain"
-                                        onClick={() => handlePhotoClick(orderExecution.packingPhoto)}
-                                        cursor="pointer"
-                                        title="Packing Photo"
-                                    />
+                                    <ImageWithModal src={orderExecution.packingPhoto} />
                                 ) : (
                                     <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
                                         No Photo
@@ -224,16 +208,7 @@ const LotReport: React.FC = () => {
                                         <Td>{productExecution ? productExecution.appliedRateKg.toFixed(2) : 'N/A'}</Td>
                                         <Td>
                                             {productExecution && productExecution.applicationPhoto ? (
-                                                <Image
-                                                    src={productExecution.applicationPhoto}
-                                                    alt="Appication"
-                                                    width="150px"
-                                                    height="100px"
-                                                    objectFit="contain"
-                                                    onClick={() => handlePhotoClick(productExecution.applicationPhoto || null)}
-                                                    cursor="pointer"
-                                                    title="Appication Photo"
-                                                />
+                                                <ImageWithModal src={productExecution.applicationPhoto} />
                                             ) : (
                                                 <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
                                                     No Photo
@@ -273,16 +248,7 @@ const LotReport: React.FC = () => {
                                 <Td>{orderExecution ? orderExecution.slurryConsumptionPerLotKg : 'N/A'}</Td>
                                 <Td>
                                     {orderExecution && orderExecution.consumptionPhoto ? (
-                                        <Image
-                                            src={orderExecution.consumptionPhoto}
-                                            alt="Consumption"
-                                            width="150px"
-                                            height="100px"
-                                            objectFit="contain"
-                                            onClick={() => handlePhotoClick(orderExecution.consumptionPhoto)}
-                                            cursor="pointer"
-                                            title="Consumption Photo"
-                                        />
+                                        <ImageWithModal src={orderExecution.consumptionPhoto} />
                                     ) : (
                                         <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
                                             No Photo
@@ -311,23 +277,7 @@ const LotReport: React.FC = () => {
                     </ModalBody>
                 </ModalContent>
             </Modal>
-            <Modal isOpen={!!selectedPhoto} onClose={handleClose}>
-                <ModalOverlay />
-                <ModalContent width="800px" height="600px" maxWidth="unset" p="6">
-                    <ModalCloseButton />
-                    <ModalBody>
-                        {selectedPhoto && (
-                            <Image
-                                src={selectedPhoto}
-                                alt="Full Size"
-                                width="full"
-                                height="full"
-                                objectFit="cover"
-                            />
-                        )}
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
         </Box>
     );
 };
