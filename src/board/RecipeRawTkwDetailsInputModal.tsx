@@ -73,76 +73,79 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
         <Modal isOpen={!!selectedOrder} onClose={onClose} size="full">
             <ModalOverlay />
             <ModalContent borderRadius="none" w="full" h="full">
-                <ModalHeader>Recipe Raw TKW Details</ModalHeader>
+                <ModalHeader fontSize={{ base: "sm", md: "lg" }}>Recipe Raw TKW Details</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <Center w="full" h="full">
                         {!isPhotoState ? (
-                            <Grid templateColumns="3fr 2fr" gap={4} w='full'>
-                                <GridItem colSpan={2} mb={8}>
+                            <Grid templateColumns={{ base: "1fr", md: "3fr 2fr" }} gap={4} w='full'>
+                                <GridItem colSpan={2}>
                                     <Badge autoCapitalize='none' w="full" colorScheme="gray">
-                                        <Text fontSize="lg">
+                                        <Text fontSize={{ base: "md", md: "lg" }}>
                                             Counting TKW of UNTREATED seeds
                                         </Text>
                                     </Badge>
                                 </GridItem>
-                                <GridItem h={10} alignContent={'center'}>
-                                    <Text><strong>Lot:</strong></Text>
+                                <GridItem px={1} h={10} alignContent={'center'}>
+                                    <Text fontSize={{ base: "sm", md: "md" }}><strong>Lot:</strong></Text>
                                 </GridItem>
-                                <GridItem h={10} alignContent={'center'}>
-                                    <Text>{selectedOrder.lotNumber}</Text>
+                                <GridItem px={1} h={10} alignContent={'center'}>
+                                    <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.lotNumber}</Text>
                                 </GridItem>
 
-                                <GridItem h={10} alignContent={'center'}>
-                                    <Text><strong>Seeds To Treat:</strong></Text>
+                                <GridItem px={1} h={10} alignContent={'center'}>
+                                    <Text fontSize={{ base: "sm", md: "md" }}><strong>Seeds To Treat:</strong></Text>
                                 </GridItem>
-                                <GridItem h={10} alignContent={'center'}>
-                                    <Text>{selectedOrder.seedsToTreatKg} kg.</Text>
+                                <GridItem px={1} h={10} alignContent={'center'}>
+                                    <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.seedsToTreatKg} kg.</Text>
                                 </GridItem>
 
                                 <GridItem colSpan={2}>
                                     <Divider />
                                 </GridItem>
 
-                                <GridItem h={10} alignContent={'center'}>
-                                    <Text><strong>TKW Probe 1:</strong></Text>
+                                <GridItem px={1} h={10} alignContent={'center'}>
+                                    <Text fontSize={{ base: "sm", md: "md" }}><strong>TKW Probe 1:</strong></Text>
                                 </GridItem>
-                                <GridItem h={10} alignContent={'center'}>
+                                <GridItem px={1} h={10} alignContent={'center'}>
                                     <HStack>
                                         <Input
                                             placeholder="0"
                                             value={tkwRep1 ?? ''}
                                             onChange={(e) => setTkwRep1(Number(e.target.value))}
+                                            size={{ base: "sm", md: "md" }}
                                         />
-                                        <Text>gr.</Text>
+                                        <Text fontSize={{ base: "sm", md: "md" }}>gr.</Text>
                                     </HStack>
                                 </GridItem>
 
-                                <GridItem h={10} alignContent={'center'}>
-                                    <Text><strong>TKW Probe 2:</strong></Text>
+                                <GridItem px={1} h={10} alignContent={'center'}>
+                                    <Text fontSize={{ base: "sm", md: "md" }}><strong>TKW Probe 2:</strong></Text>
                                 </GridItem>
-                                <GridItem h={10} alignContent={'center'}>
+                                <GridItem px={1} h={10} alignContent={'center'}>
                                     <HStack>
                                         <Input
                                             placeholder="0"
                                             value={tkwRep2 ?? ''}
                                             onChange={(e) => setTkwRep2(Number(e.target.value))}
+                                            size={{ base: "sm", md: "md" }}
                                         />
-                                        <Text>gr.</Text>
+                                        <Text fontSize={{ base: "sm", md: "md" }}>gr.</Text>
                                     </HStack>
                                 </GridItem>
 
-                                <GridItem h={10} alignContent={'center'}>
-                                    <Text><strong>TKW Probe 3:</strong></Text>
+                                <GridItem px={1} h={10} alignContent={'center'}>
+                                    <Text fontSize={{ base: "sm", md: "md" }}><strong>TKW Probe 3:</strong></Text>
                                 </GridItem>
-                                <GridItem h={10} alignContent={'center'}>
+                                <GridItem px={1} h={10} alignContent={'center'}>
                                     <HStack>
                                         <Input
                                             placeholder="0"
                                             value={tkwRep3 ?? ''}
                                             onChange={(e) => setTkwRep3(Number(e.target.value))}
+                                            size={{ base: "sm", md: "md" }}
                                         />
-                                        <Text>gr.</Text>
+                                        <Text fontSize={{ base: "sm", md: "md" }}>gr.</Text>
                                     </HStack>
                                 </GridItem>
 
@@ -150,16 +153,16 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     <Divider />
                                 </GridItem>
 
-                                <GridItem h={10} alignContent={'center'}>
-                                    <Text><strong>Average TKW:</strong></Text>
+                                <GridItem px={1} h={10} alignContent={'center'}>
+                                    <Text fontSize={{ base: "sm", md: "md" }}><strong>Average TKW:</strong></Text>
                                 </GridItem>
-                                <GridItem h={10} alignContent={'center'}>
-                                    <Text>{averageTkw !== null ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
+                                <GridItem px={1} h={10} alignContent={'center'}>
+                                    <Text fontSize={{ base: "sm", md: "md" }}>{averageTkw !== null ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
                                 </GridItem>
                             </Grid>
                         ) : (
                             <VStack spacing={8} width="100%">
-                                <Text mb={1} fontSize="md" fontWeight="bold">
+                                <Text mb={1} fontSize={{ base: "sm", md: "md" }} fontWeight="bold">
                                     You are obliged to take a photo of UNTREATED seeds of {selectedOrder.crop.name} {selectedOrder.lotNumber}
                                 </Text>
                                 <Box

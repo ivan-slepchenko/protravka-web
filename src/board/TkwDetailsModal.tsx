@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, VStack, Text, Box, Grid, GridItem, Center, Heading } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, VStack, Text, Box, Grid, GridItem, Center, Heading, Badge } from '@chakra-ui/react';
 import { TkwMeasurement } from '../store/executionSlice';
 import { Order } from '../store/newOrderSlice';
 import useImageModal from '../hooks/useImageModal';
@@ -27,17 +27,21 @@ const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measu
         <Modal isOpen={!!order} onClose={onClose} size="full">
             <ModalOverlay />
             <ModalContent h="full">
-                <ModalHeader>TKW Details</ModalHeader>
+                <ModalHeader fontSize={{ base: "sm", md: "lg" }}>TKW Details</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody h="full">
                     <Center w="full" h="full">
                         <VStack spacing={4} align="start" w="full">
-                            <Heading size={'md'}>Raw Average TKW: {order.tkw.toFixed(2)} gr.</Heading>
+                            <Badge autoCapitalize='none' w="full" colorScheme="gray">
+                                <Text fontSize={{ base: "md", md: "lg" }}>
+                                    Raw Average TKW: {order.tkw.toFixed(2)} gr.
+                                </Text>
+                            </Badge>
                             <Grid templateColumns="repeat(2, 1fr)" gap={4} w="full">
-                                <GridItem>
+                                <GridItem px={1}>
                                     {order.tkwProbesPhoto && <ImageWithModal src={order.tkwProbesPhoto} fullSize />}
                                 </GridItem>
-                                <GridItem>
+                                <GridItem px={1}>
                                     <VStack spacing={4} alignItems={'start'}>
                                         <Text>Probe 1: {order.tkwRep1} gr.</Text>
                                         <Text>Probe 2: {order.tkwRep2} gr.</Text>
