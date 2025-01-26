@@ -44,12 +44,21 @@ const LabBoard: React.FC = () => {
         if (orders) {
             setOrdersToControl(
                 orders.filter((order) =>
-                    [OrderStatus.ForLabToInitiate, OrderStatus.InProgress, OrderStatus.ForLabToControl].includes(order.status)
+                    [OrderStatus.ForLabToInitiate].includes(order.status)
                 )
             );
             setControlledOrders(
                 orders.filter((order) =>
-                    ![OrderStatus.ForLabToInitiate, OrderStatus.ForLabToControl].includes(order.status)
+                    [
+                        OrderStatus.InProgress,
+                        OrderStatus.Completed,
+                        OrderStatus.ByLabInitiated,
+                        OrderStatus.Failed,
+                        OrderStatus.ForLabToControl,
+                        OrderStatus.InProgress,
+                        OrderStatus.ReadyToStart,
+                        OrderStatus.ToAcknowledge
+                    ].includes(order.status)
                 )
             );
         }

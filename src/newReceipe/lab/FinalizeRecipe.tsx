@@ -1,4 +1,4 @@
-import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure, Table, Thead, Tr, Th, Tbody, Td, VStack, Heading, CircularProgress } from "@chakra-ui/react";
+import { Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure, Table, Thead, Tr, Th, Tbody, Td, VStack, Heading, CircularProgress, CloseButton, IconButton } from "@chakra-ui/react";
 import { Role } from '../../operators/Operators';
 import React, { useEffect, useState, useCallback } from "react";
 import * as Yup from "yup";
@@ -25,6 +25,7 @@ import {
     loadOrderData,
     Order,
     updateTkwMeasurementInterval,
+    removeProductDetail,
 } from "../../store/newOrderSlice";
 import { finalizeOrder, fetchOrders, fetchOrderById } from "../../store/ordersSlice";
 import { useNavigate, useParams } from "react-router-dom";
@@ -211,9 +212,9 @@ export const FinalizeRecipe = () => {
     const tkwMeasurementIntervals = [60, 45, 30, 20, 10]; // Define available intervals
 
     return (
-        <Center w='full' h='full' fontSize={'xs'}>
-            <VStack w="full" m={10}>
-                <Heading size="lg">Finalize Receipe</Heading>
+        <VStack w='full' h='full' fontSize={'xs'} p={4} >
+            <HStack w="full"><Heading size="lg">Finalize Receipe</Heading><CloseButton  ml="auto" onClick={() => navigate(-1)}/></HStack>
+            <VStack w="full" h="full" justifyContent={'center'}>
                 <Formik
                     initialValues={{
                         ...formData,
@@ -239,7 +240,7 @@ export const FinalizeRecipe = () => {
 
                         return (
                             <form onSubmit={props.handleSubmit} style={{ width: '100%' }}>
-                                <Box width="full" mx="auto" p="4" pointerEvents={isSaving ? 'none' : 'auto'}>
+                                <Box width="full" mx="auto" pointerEvents={isSaving ? 'none' : 'auto'}>
                                     {/* Recipe Info */}
                                     <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4" width="full">
                                         <Box>
@@ -446,10 +447,10 @@ export const FinalizeRecipe = () => {
 
                                     {/* Product Details */}
                                     <FieldArray name="productDetails">
-                                        {({ push }) => (
+                                        {({ push, remove }) => (
                                             <Box border="1px solid" borderColor="gray.200" p="4" borderRadius="md" mb="4">
                                                 {props.values.productDetails.map((productDetail, index) => (
-                                                    <Grid key={index} w="full" templateColumns="2fr 3fr" gap="4" alignItems="center" mb="4">
+                                                    <Grid key={index} w="full" templateColumns="2fr 4fr" gap="4" alignItems="center" mb="4">
                                                         <Box>
                                                             <Text fontSize="md">Product:</Text>
                                                             <Field
@@ -537,6 +538,18 @@ export const FinalizeRecipe = () => {
                                                                     }}
                                                                     value={props.values.productDetails[index].rate !== 0 ? props.values.productDetails[index].rate : ''}
                                                                     borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
+                                                                    disabled={isSaving}
+                                                                />
+                                                                <IconButton
+                                                                    ml="4"
+                                                                    mt="auto"
+                                                                    aria-label="Delete product"
+                                                                    icon={<CloseButton />}
+                                                                    colorScheme="red"
+                                                                    onClick={() => {
+                                                                        remove(index);
+                                                                        dispatch(removeProductDetail(index));
+                                                                    }}
                                                                     disabled={isSaving}
                                                                 />
                                                             </HStack>
@@ -630,6 +643,6 @@ export const FinalizeRecipe = () => {
                     }}
                 </Formik>
             </VStack>
-        </Center>
+        </VStack>
     );
 };

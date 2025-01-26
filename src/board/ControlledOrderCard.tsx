@@ -1,13 +1,26 @@
 import React from 'react';
 import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
 import { TkwMeasurement } from '../store/executionSlice';
-import { Order } from '../store/newOrderSlice';
+import { Order, OrderStatus } from '../store/newOrderSlice';
 
 interface ControlledOrderCardProps {
     order: Order;
     measurements: TkwMeasurement[];
     onClick: () => void;
 }
+const TREATMENT_LABEL = "In Treatment";
+const TREATED_LABEL = "Treated";
+
+const stateToLabel: Partial<Record<OrderStatus, string>> = {
+    [OrderStatus.InProgress]: TREATMENT_LABEL,
+    [OrderStatus.ReadyToStart]: TREATMENT_LABEL,
+    [OrderStatus.ByLabInitiated]: TREATMENT_LABEL,
+    [OrderStatus.Completed]: TREATED_LABEL,
+    [OrderStatus.Failed]: TREATED_LABEL,
+    [OrderStatus.ForLabToControl]: TREATED_LABEL,
+    [OrderStatus.ToAcknowledge]: TREATED_LABEL,
+};
+
 
 const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measurements, onClick }) => {
     const calculateAverageTkw = (measurements: TkwMeasurement[]) => {
@@ -34,13 +47,16 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
             onClick={onClick}
         >
             <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
-                <Badge colorScheme='blue' gridColumn="span 3">
-                    <HStack w="full" justifyContent='space-between'>
+                <Badge
+                    colorScheme={stateToLabel[order.status] === TREATMENT_LABEL ? 'orange' : 'green'}
+                    gridColumn="span 3"
+                >
+                    <HStack w="full" justifyContent="space-between">
                         <Text isTruncated>
                             {order.crop?.name}, {order.variety?.name}
                         </Text>
                         <Text>
-                            Controlled
+                            {stateToLabel[order.status]}
                         </Text>
                     </HStack>
                 </Badge>

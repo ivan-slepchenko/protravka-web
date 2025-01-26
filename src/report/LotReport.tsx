@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Textarea, Heading, useDisclosure } from "@chakra-ui/react";
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Textarea, Heading, useDisclosure, Center, CloseButton } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
@@ -103,9 +103,9 @@ const LotReport: React.FC = () => {
 
     const unitNumberOfSeeds = order.packaging === Packaging.InKg ? order.bagSize / order.tkw : order.bagSize;
 
-    return (
-        <Box w="full" h="full" overflowY="auto" p={4} ref={componentRef}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+    return (     
+        <VStack w="full" h="full" overflowY="auto" p={4} ref={componentRef}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4} w="full">
                 <HStack spacing={2}>
                     <Heading size="lg">{order.crop.name}, {order.variety.name}</Heading>
                     <Text size="md">{'['}{order.lotNumber}{']'}</Text>
@@ -119,150 +119,153 @@ const LotReport: React.FC = () => {
                         </>
                     )}
                     <Button onClick={() => print()} colorScheme="blue">Print to PDF</Button>
-                    <Button onClick={() => navigate(-1)} colorScheme="gray">Close</Button>
+                    <CloseButton onClick={() => navigate(-1)}/>
                 </HStack>
             </Box>
-            <HStack spacing={4} mb={4}>
-                <Table variant="simple" size="sm">
-                    <Thead bg="orange.100">
-                        <Tr>
-                            <Th>TKW</Th>
-                            <Th>s.u., KS</Th>
-                            <Th>s.u., kg</Th>
-                            <Th>Total amount, s.u.</Th>
-                            <Th>Total amount, kg</Th>
-                            <Th>Packed Seeds, kg</Th>
-                            <Th>Packing Photo</Th>
-                            <Th>Deviation</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        <Tr>
-                            <Td>{order.tkw}</Td>
-                            <Td>{unitNumberOfSeeds.toFixed(2)}</Td>
-                            <Td>{order.orderRecipe ? order.orderRecipe.unitWeight.toFixed(2) : 'N/A'}</Td>
-                            <Td>{order.orderRecipe ? order.orderRecipe.nbSeedsUnits.toFixed(2) : 'N/A'}</Td>
-                            <Td>{order.seedsToTreatKg}</Td>
-                            <Td>{orderExecution && orderExecution.packedseedsToTreatKg || 'N/A'}</Td>
-                            <Td>
-                                {orderExecution && orderExecution.packingPhoto ? (
-                                    <ImageWithModal src={orderExecution.packingPhoto} />
-                                ) : (
-                                    <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
-                                        No Photo
-                                    </Box>
-                                )}
-                            </Td>
-                            <Td fontWeight={orderExecution ? "bold" : "normal"} color={orderExecution ? getDeviationColor(calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg)) : "black"}>
-                                {orderExecution ? calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed() + '%' : 'N/A'}
-                            </Td>
-                        </Tr>
-                    </Tbody>
-                </Table>
-            </HStack>
-            <VStack spacing={4} align="stretch">
-                <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
-                    <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Preparation per Lot</Text>
-                    {order.status !== OrderStatus.ReadyToStart && <StatusKeyLegend />}
-                </Box>
-                <Box w="full">
-                    <Table size="sm" variant="simple">
-                        <Thead bg="orange.100">
-                            <Tr>
-                                <Th>Component</Th>
-                                <Th>Density</Th>
-                                <Th>Target rate kg / slurry</Th>
-                                <Th>Actual rate kg / slurry</Th>
-                                <Th>Application Photo</Th>
-                                <Th>Target rate gr / 100 kg seed</Th>
-                                <Th>Actual rate gr / 100 kg seeds</Th>
-                                <Th>Target rate gr / per s.u.</Th>
-                                <Th>Actual rate gr / per s.u.</Th>
-                                <Th>Deviation</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {order.productDetails.map((detail, index) => {
-                                const productExecution = orderExecution ? orderExecution.productExecutions.find(pe => pe.productId === detail.product?.id) : null;
-                                const productRecipe =  order.orderRecipe ? order.orderRecipe.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === detail.product?.id) : undefined;
-
-                                if (detail.product === undefined) {
-                                    return (
-                                        <Tr key={index} bg="red.100">
-                                            <Td colSpan={10} textAlign="center">
-                                                Error - Product data is not found, please contact support.
-                                            </Td>
-                                        </Tr>
-                                    );
-                                }
-
-                                const actualRateGrTo100Kg: number | undefined = productExecution ? 100 * (productExecution.appliedRateKg ?? 0) / (order.seedsToTreatKg / 1000) : undefined;
-                                const actualRateGrToU_KS: number | undefined = (order.orderRecipe !== null && productExecution) ? (1000 * (productExecution.appliedRateKg ?? 0) / order.orderRecipe.nbSeedsUnits) : undefined;
-                                const deviation: number | undefined = (productRecipe && productExecution) ? calculateDeviation(actualRateGrToU_KS ?? 0, productRecipe.rateGrToU_KS) : undefined;
-
-                                return (
-                                    <Tr key={index}>
-                                        <Td>{detail.product.name}</Td>
-                                        <Td>{detail.product.density}</Td>
-                                        <Td>{productRecipe ? (productRecipe.grSlurryRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
-                                        <Td>{productExecution ? productExecution.appliedRateKg.toFixed(2) : 'N/A'}</Td>
-                                        <Td>
-                                            {productExecution && productExecution.applicationPhoto ? (
-                                                <ImageWithModal src={productExecution.applicationPhoto} />
-                                            ) : (
-                                                <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
-                                                    No Photo
-                                                </Box>
-                                            )}
-                                        </Td>
-                                        <Td>{productRecipe ? productRecipe.rateGrTo100Kg.toFixed(2) : "N/A"}</Td>
-                                        <Td>{actualRateGrTo100Kg !== undefined ? actualRateGrTo100Kg.toFixed(2) : 'N/A'}</Td>
-                                        <Td>{productRecipe ? productRecipe.rateGrToU_KS.toFixed(2) : "N/A"}</Td>
-                                        <Td>{actualRateGrToU_KS !== undefined ? actualRateGrToU_KS.toFixed(2) : 'N/A'}</Td>
-                                        <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(deviation ?? 0)}>
-                                            {deviation !== undefined ? deviation.toFixed() + '%' : 'N/A'}
-                                        </Td>
-                                    </Tr>
-                                );
-                            })}
-                        </Tbody>
-                    </Table>
-                </Box>
-                <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
-                    <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Consumption Per Lot</Text>
-                    {order.status !== OrderStatus.ReadyToStart && <StatusKeyLegend />}
-                </Box>
-                <Box w="50%" overflowX="auto">
+            <VStack w="full" h="full" overflowY="auto" justifyContent={"center"}>
+                <HStack w="full" spacing={4} mb={4}>
                     <Table variant="simple" size="sm">
                         <Thead bg="orange.100">
                             <Tr>
-                                <Th>Target consumption, kg</Th>
-                                <Th>Actual consumption, kg</Th>
-                                <Th>Consumption Photo</Th>
+                                <Th>TKW</Th>
+                                <Th>s.u., KS</Th>
+                                <Th>s.u., kg</Th>
+                                <Th>Total amount, s.u.</Th>
+                                <Th>Total amount, kg</Th>
+                                <Th>Packed Seeds, kg</Th>
+                                <Th>Packing Photo</Th>
                                 <Th>Deviation</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
                             <Tr>
-                                <Td>{order.orderRecipe ? (order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
-                                <Td>{orderExecution ? orderExecution.slurryConsumptionPerLotKg : 'N/A'}</Td>
+                                <Td>{order.tkw}</Td>
+                                <Td>{unitNumberOfSeeds.toFixed(2)}</Td>
+                                <Td>{order.orderRecipe ? order.orderRecipe.unitWeight.toFixed(2) : 'N/A'}</Td>
+                                <Td>{order.orderRecipe ? order.orderRecipe.nbSeedsUnits.toFixed(2) : 'N/A'}</Td>
+                                <Td>{order.seedsToTreatKg}</Td>
+                                <Td>{orderExecution && orderExecution.packedseedsToTreatKg || 'N/A'}</Td>
                                 <Td>
-                                    {orderExecution && orderExecution.consumptionPhoto ? (
-                                        <ImageWithModal src={orderExecution.consumptionPhoto} />
+                                    {orderExecution && orderExecution.packingPhoto ? (
+                                        <ImageWithModal src={orderExecution.packingPhoto} />
                                     ) : (
                                         <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
-                                            No Photo
+                                                No Photo
                                         </Box>
                                     )}
                                 </Td>
-                                <Td fontWeight={(order.orderRecipe && orderExecution)  ? "bold" : "normal"} color={(order.orderRecipe && orderExecution) ? getDeviationColor(calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000)) : "black"}>
-                                    {(order.orderRecipe && orderExecution) ? calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed() + '%' : 'N/A'}
+                                <Td fontWeight={orderExecution ? "bold" : "normal"} color={orderExecution ? getDeviationColor(calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg)) : "black"}>
+                                    {orderExecution ? calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed() + '%' : 'N/A'}
                                 </Td>
                             </Tr>
                         </Tbody>
                     </Table>
-                </Box>
+                </HStack>
+                <VStack spacing={4} align="stretch">
+                    <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
+                        <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Preparation per Lot</Text>
+                        {order.status !== OrderStatus.ReadyToStart && <StatusKeyLegend />}
+                    </Box>
+                    <Box w="full">
+                        <Table size="sm" variant="simple">
+                            <Thead bg="orange.100">
+                                <Tr>
+                                    <Th>Component</Th>
+                                    <Th>Density</Th>
+                                    <Th>Target rate kg / slurry</Th>
+                                    <Th>Actual rate kg / slurry</Th>
+                                    <Th>Application Photo</Th>
+                                    <Th>Target rate gr / 100 kg seed</Th>
+                                    <Th>Actual rate gr / 100 kg seeds</Th>
+                                    <Th>Target rate gr / per s.u.</Th>
+                                    <Th>Actual rate gr / per s.u.</Th>
+                                    <Th>Deviation</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {order.productDetails.map((detail, index) => {
+                                    const productExecution = orderExecution ? orderExecution.productExecutions.find(pe => pe.productId === detail.product?.id) : null;
+                                    const productRecipe =  order.orderRecipe ? order.orderRecipe.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === detail.product?.id) : undefined;
+
+                                    if (detail.product === undefined) {
+                                        return (
+                                            <Tr key={index} bg="red.100">
+                                                <Td colSpan={10} textAlign="center">
+                                                        Error - Product data is not found, please contact support.
+                                                </Td>
+                                            </Tr>
+                                        );
+                                    }
+
+                                    const actualRateGrTo100Kg: number | undefined = productExecution ? 100 * (productExecution.appliedRateKg ?? 0) / (order.seedsToTreatKg / 1000) : undefined;
+                                    const actualRateGrToU_KS: number | undefined = (order.orderRecipe !== null && productExecution) ? (1000 * (productExecution.appliedRateKg ?? 0) / order.orderRecipe.nbSeedsUnits) : undefined;
+                                    const deviation: number | undefined = (productRecipe && productExecution) ? calculateDeviation(actualRateGrToU_KS ?? 0, productRecipe.rateGrToU_KS) : undefined;
+
+                                    return (
+                                        <Tr key={index}>
+                                            <Td>{detail.product.name}</Td>
+                                            <Td>{detail.product.density}</Td>
+                                            <Td>{productRecipe ? (productRecipe.grSlurryRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
+                                            <Td>{productExecution ? productExecution.appliedRateKg.toFixed(2) : 'N/A'}</Td>
+                                            <Td>
+                                                {productExecution && productExecution.applicationPhoto ? (
+                                                    <ImageWithModal src={productExecution.applicationPhoto} />
+                                                ) : (
+                                                    <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
+                                                            No Photo
+                                                    </Box>
+                                                )}
+                                            </Td>
+                                            <Td>{productRecipe ? productRecipe.rateGrTo100Kg.toFixed(2) : "N/A"}</Td>
+                                            <Td>{actualRateGrTo100Kg !== undefined ? actualRateGrTo100Kg.toFixed(2) : 'N/A'}</Td>
+                                            <Td>{productRecipe ? productRecipe.rateGrToU_KS.toFixed(2) : "N/A"}</Td>
+                                            <Td>{actualRateGrToU_KS !== undefined ? actualRateGrToU_KS.toFixed(2) : 'N/A'}</Td>
+                                            <Td fontSize="lg" fontWeight="bold" color={getDeviationColor(deviation ?? 0)}>
+                                                {deviation !== undefined ? deviation.toFixed() + '%' : 'N/A'}
+                                            </Td>
+                                        </Tr>
+                                    );
+                                })}
+                            </Tbody>
+                        </Table>
+                    </Box>
+                    <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
+                        <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Consumption Per Lot</Text>
+                        {order.status !== OrderStatus.ReadyToStart && <StatusKeyLegend />}
+                    </Box>
+                    <Box w="50%" overflowX="auto">
+                        <Table variant="simple" size="sm">
+                            <Thead bg="orange.100">
+                                <Tr>
+                                    <Th>Target consumption, kg</Th>
+                                    <Th>Actual consumption, kg</Th>
+                                    <Th>Consumption Photo</Th>
+                                    <Th>Deviation</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                <Tr>
+                                    <Td>{order.orderRecipe ? (order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
+                                    <Td>{orderExecution ? orderExecution.slurryConsumptionPerLotKg : 'N/A'}</Td>
+                                    <Td>
+                                        {orderExecution && orderExecution.consumptionPhoto ? (
+                                            <ImageWithModal src={orderExecution.consumptionPhoto} />
+                                        ) : (
+                                            <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
+                                                    No Photo
+                                            </Box>
+                                        )}
+                                    </Td>
+                                    <Td fontWeight={(order.orderRecipe && orderExecution)  ? "bold" : "normal"} color={(order.orderRecipe && orderExecution) ? getDeviationColor(calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000)) : "black"}>
+                                        {(order.orderRecipe && orderExecution) ? calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed() + '%' : 'N/A'}
+                                    </Td>
+                                </Tr>
+                            </Tbody>
+                        </Table>
+                    </Box>
+                </VStack>
             </VStack>
+            {/* </Center> */}
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
@@ -278,7 +281,7 @@ const LotReport: React.FC = () => {
                 </ModalContent>
             </Modal>
             <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
-        </Box>
+        </VStack>
     );
 };
 

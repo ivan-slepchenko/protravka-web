@@ -37,12 +37,12 @@ const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick 
             onClick={onClick}
         >
             <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
-                <Badge colorScheme='green' gridColumn="span 3">
+                <Badge colorScheme='orange' gridColumn="span 3">
                     <HStack w="full" justifyContent="space-between">
                         <Text isTruncated>
                             {order ? `${order.crop?.name}, ${order.variety?.name}` : 'Loading...'}
                         </Text>
-                        <Badge colorScheme='green'>In Treatment</Badge>
+                        <Text>In Treatment</Text>
                     </HStack>
                 </Badge>
                 <Text px={1} gridColumn="span 3" color="gray.600">
