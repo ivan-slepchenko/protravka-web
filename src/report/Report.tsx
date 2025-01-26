@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Text, Button, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, Select, Input } from "@chakra-ui/react";
+import { Box, Text, Button, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, Select, Input, CloseButton } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
@@ -233,7 +233,7 @@ const Report: React.FC = () => {
         <Box w="full" h="full" overflowY="auto">
             <Box display="flex" justifyContent="space-between" alignItems="center" p="4" borderBottom="1px solid #ccc">
                 <Text fontSize="2xl" fontWeight="bold">Report</Text>
-                <Button onClick={handleClose}>Close</Button>
+                <CloseButton onClick={handleClose}></CloseButton>
             </Box>
             <Box p="4" px={6}>
                 {/* Filters */}
