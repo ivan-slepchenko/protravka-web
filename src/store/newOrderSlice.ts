@@ -48,7 +48,7 @@ export interface Order {
     productDetails: ProductDetail[];
     recipeDate: string;
     applicationDate: string;
-    operator: Operator;
+    operator: Operator | null;
     crop: Crop;
     variety: Variety;
     lotNumber: string;

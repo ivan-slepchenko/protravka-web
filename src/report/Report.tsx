@@ -57,7 +57,11 @@ const Report: React.FC = () => {
         const filtered = orders.filter(order => {
             const matchesCrop = filters.crop ? order.crop.name.includes(filters.crop) : true;
             const matchesVariety = filters.variety ? order.variety.name.includes(filters.variety) : true;
-            const matchesOperator = filters.operator ? order.operator.name.includes(filters.operator) : true;
+            const matchesOperator = filters.operator
+                ? order.operator
+                    ? order.operator.name.includes(filters.operator)
+                    : false
+                : true;
             const matchesStatus = filters.status ? order.status === filters.status : true;
             const matchesStartDate = filters.startDate ? new Date(order.applicationDate) >= new Date(filters.startDate) : true;
             const matchesEndDate = filters.endDate ? new Date(order.applicationDate) <= new Date(filters.endDate) : true;
@@ -261,7 +265,7 @@ const Report: React.FC = () => {
                     <Box flex="1">
                         <Text fontSize="sm" mb={1}>Operator</Text>
                         <Select placeholder="All Operators" name="operator" onChange={handleFilterChange}>
-                            {Array.from(new Set(orders.map(order => order.operator.name))).map(operator => (
+                            {Array.from(new Set(orders.map(order => order.operator ? order.operator.name : 'N/A'))).map(operator => (
                                 <option key={operator} value={operator}>{operator}</option>
                             ))}
                         </Select>
@@ -302,7 +306,7 @@ const Report: React.FC = () => {
                                         <Td>{order.variety.name}</Td>
                                         <Td>{order.lotNumber}</Td>
                                         <Td>{order.applicationDate}</Td>
-                                        <Td>{order.operator.name}</Td>
+                                        <Td>{order.operator ? order.operator.name : 'N/A'}</Td>
                                         <Td>{order.orderRecipe ? order.orderRecipe.nbSeedsUnits.toFixed(1) : "N/A"}</Td>
                                         <Td>{order.seedsToTreatKg}</Td>
                                         <Td>{getStatusBadge(order.status)}</Td>
@@ -355,28 +359,28 @@ const Report: React.FC = () => {
                                         <Td>{stats.approved.count}</Td>
                                         <Td>{stats.approved.su.toFixed(1)}</Td>
                                         <Td>{stats.approved.kg.toFixed(1)}</Td>
-                                        <Td>{((stats.approved.count / total.count) * 100).toFixed(1)}%</Td>
+                                        <Td>{total.count > 0 ? `${((stats.approved.count / total.count) * 100).toFixed(1)}%` : 'N/A'}</Td>
                                     </Tr>
                                     <Tr bg="yellow.200">
                                         <Td>To be acknowledged</Td>
                                         <Td>{stats.toAcknowledge.count}</Td>
                                         <Td>{stats.toAcknowledge.su.toFixed(1)}</Td>
                                         <Td>{stats.toAcknowledge.kg.toFixed(1)}</Td>
-                                        <Td>{((stats.toAcknowledge.count / total.count) * 100).toFixed(1)}%</Td>
+                                        <Td>{total.count > 0 ? `${((stats.toAcknowledge.count / total.count) * 100).toFixed(1)}%` : 'N/A'}</Td>
                                     </Tr>
                                     <Tr bg="red.300">
                                         <Td>Disapproved by manager</Td>
                                         <Td>{stats.disapproved.count}</Td>
                                         <Td>{stats.disapproved.su.toFixed(1)}</Td>
                                         <Td>{stats.disapproved.kg.toFixed(1)}</Td>
-                                        <Td>{((stats.disapproved.count / total.count) * 100).toFixed(1)}%</Td>
+                                        <Td>{total.count > 0 ? `${((stats.disapproved.count / total.count) * 100).toFixed(1)}%` : 'N/A'}</Td>
                                     </Tr>
                                     <Tr fontWeight="bold">
                                         <Td>Total</Td>
                                         <Td>{total.count}</Td>
                                         <Td>{total.su.toFixed(1)}</Td>
                                         <Td>{total.kg.toFixed(1)}</Td>
-                                        <Td>100%</Td>
+                                        <Td>{total.count > 0 ? '100%' : 'N/A'}</Td>
                                     </Tr>
                                 </Tbody>
                             </Table>
