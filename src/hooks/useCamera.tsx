@@ -14,8 +14,7 @@ const useCamera = () => {
         };
         await navigator.mediaDevices.getUserMedia(constraints);
         const devices = await navigator.mediaDevices.enumerateDevices();
-        console.log('Devices', JSON.stringify(devices));
-        const videoDevices = devices;
+        const videoDevices = devices.filter((device) => device.kind === 'videoinput');
         setDevices(videoDevices);
         if (videoDevices.length > 0) {
             const frontCamera = videoDevices.find((device) =>
