@@ -5,7 +5,7 @@ const useCamera = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-    const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+    const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(localStorage.getItem('selectedDeviceId'));
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
 
@@ -30,7 +30,9 @@ const useCamera = () => {
                     device.label.toLowerCase().includes('rear') ||
                     device.label.toLowerCase().includes('facing')
                 );
-                setSelectedDeviceId(backCamera ? backCamera.deviceId : videoDevices[0].deviceId);
+                if (!selectedDeviceId) {
+                    setSelectedDeviceId(backCamera ? backCamera.deviceId : videoDevices[0].deviceId);
+                }
             }
         } catch (error) {
             console.error("Error accessing camera:", error);
@@ -44,8 +46,8 @@ const useCamera = () => {
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: selectedDeviceId ? {
                         deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
+                        width: { ideal: 800 },
+                        height: { ideal: 600 },
                         facingMode: selectedDeviceId ? undefined : "environment",
                     } : true,
                 });
@@ -111,19 +113,15 @@ const useCamera = () => {
     };
 
     const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedDeviceId(e.target.value);
+        const deviceId = e.target.value;
+        setSelectedDeviceId(deviceId);
+        localStorage.setItem('selectedDeviceId', deviceId);
     };
 
     const handleWarningClose = () => {
         setIsWarningOpen(false);
         initDevices();
     };
-
-    useEffect(() => {
-        return () => {
-            stopCamera();
-        };
-    }, []);
 
     useEffect(() => {
         if (selectedDeviceId) {
