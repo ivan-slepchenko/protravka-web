@@ -9,30 +9,28 @@ const useCamera = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
 
-    const getDevices = async () => {
+    const initDevices = async () => {
         try {
-            // Check if camera permission is denied before even requesting
             const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
             if (permissionStatus.state === 'denied') {
                 setIsWarningOpen(true);
                 return;
             }
 
-            // Try to request permission and enumerate devices
-            const constraints = { video: { facingMode: "user" } };
+            const constraints = { video: { facingMode: "environment" } };
             await navigator.mediaDevices.getUserMedia(constraints);
             const devices = await navigator.mediaDevices.enumerateDevices();
             const videoDevices = devices.filter((device) => device.kind === 'videoinput');
             setDevices(videoDevices);
 
             if (videoDevices.length > 0) {
-                const frontCamera = videoDevices.find((device) =>
-                    device.label.toLowerCase().includes('front') || 
-                    device.label.toLowerCase().includes('user') ||
-                    device.label.toLowerCase().includes('selfie') ||
+                const backCamera = videoDevices.find((device) =>
+                    device.label.toLowerCase().includes('back') || 
+                    device.label.toLowerCase().includes('environment') ||
+                    device.label.toLowerCase().includes('rear') ||
                     device.label.toLowerCase().includes('facing')
                 );
-                setSelectedDeviceId(frontCamera ? frontCamera.deviceId : videoDevices[0].deviceId);
+                setSelectedDeviceId(backCamera ? backCamera.deviceId : videoDevices[0].deviceId);
             }
         } catch (error) {
             console.error("Error accessing camera:", error);
@@ -40,33 +38,26 @@ const useCamera = () => {
         }
     };
 
-    const startCamera = async () => {
+    const attachStream = async () => {
         try {
-            await getDevices();
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices
-                    .getUserMedia({
-                        video: selectedDeviceId ? {
-                            deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
-                            width: { ideal: 1280 }, // Enforce resolution to prevent fullscreen mode
-                            height: { ideal: 720 },
-                            facingMode: selectedDeviceId ? undefined : "user",
-                        } : true,
-                    })
-                    .then((stream) => {
-                        if (videoRef.current) {
-                            videoRef.current.srcObject = stream;
-                            videoRef.current.setAttribute("playsinline", "true"); // Important for iOS!
-                            videoRef.current.setAttribute("muted", "true"); // Avoids issues on iOS
-                            videoRef.current.onloadedmetadata = () => {
-                                videoRef.current?.play();
-                            };
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Camera access denied:", error);
-                        setIsWarningOpen(true);
-                    });
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: selectedDeviceId ? {
+                        deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: selectedDeviceId ? undefined : "environment",
+                    } : true,
+                });
+
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    videoRef.current.setAttribute("playsinline", "true");
+                    videoRef.current.setAttribute("muted", "true");
+                    videoRef.current.onloadedmetadata = () => {
+                        videoRef.current?.play();
+                    };
+                }
             } else {
                 console.error("Media devices not supported");
                 setIsWarningOpen(true);
@@ -75,6 +66,11 @@ const useCamera = () => {
             console.error("Error starting camera:", error);
             setIsWarningOpen(true);
         }
+    };
+
+    const startCamera = async () => {
+        await initDevices();
+        await attachStream();
     };
 
     const stopCamera = () => {
@@ -120,7 +116,7 @@ const useCamera = () => {
 
     const handleWarningClose = () => {
         setIsWarningOpen(false);
-        getDevices();
+        initDevices();
     };
 
     useEffect(() => {
@@ -132,7 +128,7 @@ const useCamera = () => {
     useEffect(() => {
         if (selectedDeviceId) {
             stopCamera();
-            startCamera();
+            attachStream();
         }
     }, [selectedDeviceId]);
 
