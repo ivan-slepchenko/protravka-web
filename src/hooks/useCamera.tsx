@@ -46,11 +46,18 @@ const useCamera = () => {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 navigator.mediaDevices
                     .getUserMedia({
-                        video: selectedDeviceId ? { deviceId: { exact: selectedDeviceId } } : true,
+                        video: selectedDeviceId ? {
+                            deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
+                            width: { ideal: 1280 }, // Enforce resolution to prevent fullscreen mode
+                            height: { ideal: 720 },
+                            facingMode: selectedDeviceId ? undefined : "user",
+                        } : true,
                     })
                     .then((stream) => {
                         if (videoRef.current) {
                             videoRef.current.srcObject = stream;
+                            videoRef.current.setAttribute("playsinline", "true"); // Important for iOS!
+                            videoRef.current.setAttribute("muted", "true"); // Avoids issues on iOS
                             videoRef.current.onloadedmetadata = () => {
                                 videoRef.current?.play();
                             };

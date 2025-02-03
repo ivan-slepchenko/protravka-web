@@ -122,7 +122,6 @@ const MobileMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
                                 isActive={location.pathname === "/info"}
                                 color={location.pathname === "/info" ? "blue.500" : "black"}
                                 onClick={onClose}
-                                leftIcon={<FiInfo />}
                             >
                                 Info
                             </Button>
