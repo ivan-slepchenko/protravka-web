@@ -1,18 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Box, Button, VStack, Image, Heading } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import { Box, Button, VStack, Image, Heading, IconButton } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto, saveOrderExecution } from '../store/executionSlice';
 import { AppDispatch, RootState } from '../store/store';
-import { FaCamera } from 'react-icons/fa';
+import { FaCamera, FaCog } from 'react-icons/fa';
 import { OrderExecutionPage } from './OrderExecutionPage';
-import { ProductDetail } from '../store/newOrderSlice';
-import { Product } from '../store/productsSlice';
+import useCamera from '../hooks/useCamera';
 
 const OrderExecution10ConsumptionProoving = () => {
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<string | null>(null);
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal } = useCamera();
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const applicationMethod = currentOrderExecution?.applicationMethod;
@@ -26,46 +24,33 @@ const OrderExecution10ConsumptionProoving = () => {
 
     useEffect(() => {
         startCamera();
+        return () => {
+            stopCamera();
+        };
     }, []);
 
-    const startCamera = () => {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    videoRef.current.onloadedmetadata = () => {
-                        videoRef.current?.play();
-                    };
+    const handleTakeSnapshot = () => {
+        const photoData = takeSnapshot();
+        if (photoData) {
+            setPhotoState(photoData);
+            if (applicationMethod === 'CDS') {
+                if (currentOrder.productDetails[currentProductIndex] == undefined) {
+                    throw new Error(`Product details not found for the current receipe and product index ${currentOrderExecution?.orderId} ${currentProductIndex}`);
                 }
-            });
-        }
-    };
 
-    const takeSnapshot = () => {
-        if (canvasRef.current && videoRef.current) {
-            const context = canvasRef.current.getContext('2d');
-            if (context) {
-                context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-                const photoData = canvasRef.current.toDataURL('image/png');
-                setPhotoState(photoData);
-                if (applicationMethod === 'CDS') {
-                    if (currentOrder.productDetails[currentProductIndex] == undefined) {
-                        throw new Error(`Product details not found for the current receipe and product index ${currentOrderExecution?.orderId} ${currentProductIndex}`);
-                    }
-
-                    const productDetails: ProductDetail = currentOrder.productDetails[currentProductIndex];
-                    if (productDetails.product !== undefined) {
-                        const product: Product = productDetails.product;
-                        const productId = product.id;
-                        dispatch(setProductConsumptionPhoto({ photo: photoData, productId }));
-                        dispatch(saveOrderExecution());
-                    } else {
-                        throw new Error(`Product not found for the current receipe and product index ${currentOrderExecution?.orderId} ${currentProductIndex}`);
-                    }
-                } else {
-                    dispatch(setConsumptionPhoto(photoData));
+                const productDetails = currentOrder.productDetails[currentProductIndex];
+                if (productDetails.product !== undefined) {
+                    const productId = productDetails.product.id;
+                    dispatch(setProductConsumptionPhoto({ photo: photoData, productId }));
                     dispatch(saveOrderExecution());
+                    stopCamera();
+                } else {
+                    throw new Error(`Product not found for the current receipe and product index ${currentOrderExecution?.orderId} ${currentProductIndex}`);
                 }
+            } else {
+                dispatch(setConsumptionPhoto(photoData));
+                dispatch(saveOrderExecution());
+                stopCamera();
             }
         }
     };
@@ -104,11 +89,24 @@ const OrderExecution10ConsumptionProoving = () => {
                     borderRadius="md"
                     overflow="hidden"
                     style={{ aspectRatio: '4 / 3' }}
+                    position="relative"
                 >
                     {photo ? (
                         <Image src={photo} alt="Machine display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
                     ) : (
-                        <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <>
+                            <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <IconButton
+                                icon={<FaCog />}
+                                isRound
+                                aria-label="Settings"
+                                position="absolute"
+                                bottom="10px"
+                                right="10px"
+                                size='sm'
+                                onClick={handleSettingsClick}
+                            />
+                        </>
                     )}
                 </Box>
                 <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
@@ -118,10 +116,10 @@ const OrderExecution10ConsumptionProoving = () => {
                         borderRadius="full"
                         border="1px solid"
                         borderColor="orange.300"
-                        onClick={photo ? handleRetakeClick : takeSnapshot}
+                        onClick={photo ? handleRetakeClick : handleTakeSnapshot}
                         leftIcon={photo ? undefined : <FaCamera />}
                     >
-                        {photo ? 'Retake the picture' : ''}
+                        {photo ? 'Retake the picture' : 'Take Picture'}
                     </Button>
                     <Button
                         w="200px" 
@@ -133,6 +131,7 @@ const OrderExecution10ConsumptionProoving = () => {
                     </Button>
                 </VStack>
             </VStack>
+            <SettingsModal />
         </Box>
     );
 };

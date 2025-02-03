@@ -19,6 +19,9 @@ import { fetchProducts } from './store/productsSlice';
 import { Role } from './operators/Operators';
 import { fetchCrops } from './store/cropsSlice';
 import { fetchOperators } from './store/operatorsSlice';
+import LogRocket from 'logrocket';
+
+LogRocket.init('protravka/client');
 
 const App = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -37,6 +40,15 @@ const App = () => {
                 dispatch(fetchUserByToken());
             } else {
                 
+                if (!user.name || !user.email || !user.roles) {
+                    throw new Error('User name or email is not set, invalid user data');
+                }
+                LogRocket.identify('THE_USER_ID_IN_YOUR_APP', {
+                    name: user.name + ' ' + user.surname,
+                    email: user.email,
+                    roles: user.roles.join(', '),
+                });
+
                 dispatch(fetchOrders());
 
                 if (user.roles.includes(Role.ADMIN) || user.roles.includes(Role.MANAGER)) {

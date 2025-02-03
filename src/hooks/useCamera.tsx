@@ -9,12 +9,19 @@ const useCamera = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
 
     const getDevices = async () => {
+        const constraints = {
+            video: { facingMode: "user" }
+        };
+        await navigator.mediaDevices.getUserMedia(constraints);
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter((device) => device.kind === 'videoinput');
         setDevices(videoDevices);
         if (videoDevices.length > 0) {
             const frontCamera = videoDevices.find((device) =>
-                device.label.toLowerCase().includes('front'),
+                device.label.toLowerCase().includes('front') || 
+                device.label.toLowerCase().includes('user') ||
+                device.label.toLowerCase().includes('selfie') ||
+                device.label.toLowerCase().includes('facing')
             );
             setSelectedDeviceId(frontCamera ? frontCamera.deviceId : videoDevices[0].deviceId);
         }

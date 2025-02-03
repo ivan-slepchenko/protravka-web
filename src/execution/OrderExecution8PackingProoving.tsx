@@ -1,43 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Box, Text, Button, VStack, Image } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import { Box, Text, Button, VStack, Image, IconButton } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { nextPage, resetCurrentProductIndex, resetPackingPhoto, saveOrderExecution, setPhotoForPacking } from '../store/executionSlice';
-import { FaCamera } from 'react-icons/fa';
+import { FaCamera, FaCog } from 'react-icons/fa';
 import { AppDispatch } from '../store/store';
+import useCamera from '../hooks/useCamera';
 
 const OrderExecution8PackingProoving = () => {
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<string | null>(null);
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal } = useCamera();
 
     useEffect(() => {
         startCamera();
+        return () => {
+            stopCamera();
+        };
     }, []);
 
-    const startCamera = () => {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    videoRef.current.onloadedmetadata = () => {
-                        videoRef.current?.play();
-                    };
-                }
-            });
-        }
-    };
-
-    const takeSnapshot = () => {
-        if (canvasRef.current && videoRef.current) {
-            const context = canvasRef.current.getContext('2d');
-            if (context) {
-                context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-                const photoData = canvasRef.current.toDataURL('image/png');
-                setPhotoState(photoData);
-                dispatch(setPhotoForPacking(photoData));
-                dispatch(saveOrderExecution());
-            }
+    const handleTakeSnapshot = () => {
+        const photoData = takeSnapshot();
+        if (photoData) {
+            setPhotoState(photoData);
+            dispatch(setPhotoForPacking(photoData));
+            dispatch(saveOrderExecution());
+            stopCamera();
         }
     };
 
@@ -70,11 +57,24 @@ const OrderExecution8PackingProoving = () => {
                     borderRadius="md"
                     overflow="hidden"
                     style={{ aspectRatio: '4 / 3' }}
+                    position="relative"
                 >
                     {photo ? (
                         <Image src={photo} alt="Machine display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
                     ) : (
-                        <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <>
+                            <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <IconButton
+                                icon={<FaCog />}
+                                isRound
+                                aria-label="Settings"
+                                position="absolute"
+                                bottom="10px"
+                                right="10px"
+                                size='sm'
+                                onClick={handleSettingsClick}
+                            />
+                        </>
                     )}
                 </Box>
                 <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
@@ -84,10 +84,10 @@ const OrderExecution8PackingProoving = () => {
                         borderRadius="full"
                         border="1px solid"
                         borderColor="orange.300"
-                        onClick={photo ? handleRetakeClick : takeSnapshot}
+                        onClick={photo ? handleRetakeClick : handleTakeSnapshot}
                         leftIcon={photo ? undefined : <FaCamera />}
                     >
-                        {photo ? 'Retake the picture' : ''}
+                        {photo ? 'Retake the picture' : 'Take Picture'}
                     </Button>
                     <Button
                         w="200px" 
@@ -99,6 +99,7 @@ const OrderExecution8PackingProoving = () => {
                     </Button>
                 </VStack>
             </VStack>
+            <SettingsModal />
         </Box>
     );
 };
