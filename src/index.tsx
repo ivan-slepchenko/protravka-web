@@ -23,6 +23,11 @@ import LogRocket from 'logrocket';
 
 LogRocket.init('protravka/client');
 
+const getAppVersion = async () => {
+    const packageJson = await import('../package.json');
+    return packageJson.default.version;
+};
+
 const App = () => {
     const dispatch: AppDispatch = useDispatch();
     const user = useSelector((state: RootState) => state.user);

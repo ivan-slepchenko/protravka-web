@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Box, VStack, Button, Text, HStack, IconButton, Spacer, Divider } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { FiLogOut } from 'react-icons/fi';
+import { FiLogOut, FiInfo } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
 import useRoleLinks from '../hooks/useRoleLinks';
 
@@ -99,6 +99,18 @@ const DesktopMenu: FC<MenuProps> = ({ user, handleLogout }) => {
                         {link.label}
                     </Button>
                 ))}
+                <Button
+                    w="full"
+                    as={RouterLink}
+                    to="/info"
+                    variant="ghost"
+                    justifyContent="flex-start"
+                    isActive={location.pathname === "/info"}
+                    color={location.pathname === "/info" ? "blue.500" : "black"}
+                    leftIcon={<FiInfo />}
+                >
+                    Info
+                </Button>
             </VStack>
         </Box>
     );

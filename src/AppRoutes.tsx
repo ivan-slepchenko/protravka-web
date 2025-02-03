@@ -17,6 +17,7 @@ import { FinalizeRecipe } from './newReceipe/lab/FinalizeRecipe';
 import { Role } from './operators/Operators';
 import { useSelector } from 'react-redux';
 import { RootState } from './store/store';
+import Info from './info/Info';
 
 const AppRoutes = ({ useLab }: { useLab?: boolean }) => (
     <Routes>
@@ -35,6 +36,7 @@ const AppRoutes = ({ useLab }: { useLab?: boolean }) => (
         <Route path="/lot-report/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><LotReport /></RequireAuth>} />
         <Route path="/login" element={<LoginRedirect />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/info" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN, Role.OPERATOR, Role.LABORATORY]}><Info /></RequireAuth>} />
     </Routes>
 );
 

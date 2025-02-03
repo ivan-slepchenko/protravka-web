@@ -9,7 +9,7 @@ import useCamera from '../hooks/useCamera';
 const OrderExecution8PackingProoving = () => {
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<string | null>(null);
-    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal } = useCamera();
+    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
 
     useEffect(() => {
         startCamera();
@@ -100,6 +100,7 @@ const OrderExecution8PackingProoving = () => {
                 </VStack>
             </VStack>
             <SettingsModal />
+            <WarningModal />
         </Box>
     );
 };

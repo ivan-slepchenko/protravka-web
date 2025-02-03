@@ -22,7 +22,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     const [tkwProbesPhoto, setTkwProbesPhoto] = useState<string | null>(null);
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState<boolean>(false);
-    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal } = useCamera();
+    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
 
     useEffect(() => {
         if (tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null) {
@@ -245,6 +245,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                 </ModalFooter>
             </ModalContent>
             <SettingsModal />
+            <WarningModal />
         </Modal>
     );
 };

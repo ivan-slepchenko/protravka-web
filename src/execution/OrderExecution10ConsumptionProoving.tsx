@@ -10,7 +10,7 @@ import useCamera from '../hooks/useCamera';
 const OrderExecution10ConsumptionProoving = () => {
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<string | null>(null);
-    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal } = useCamera();
+    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const applicationMethod = currentOrderExecution?.applicationMethod;
@@ -132,6 +132,7 @@ const OrderExecution10ConsumptionProoving = () => {
                 </VStack>
             </VStack>
             <SettingsModal />
+            <WarningModal />
         </Box>
     );
 };

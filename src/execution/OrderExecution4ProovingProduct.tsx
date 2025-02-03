@@ -13,7 +13,7 @@ const OrderExecution4ProovingProduct = () => {
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const currentProductIndex = currentOrderExecution?.currentProductIndex;
     const [photo, setPhotoState] = useState<string | null>(null);
-    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal } = useCamera();
+    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
 
     if (currentOrder === null || currentProductIndex === undefined || currentProductIndex === null) {
         return null;
@@ -140,6 +140,7 @@ const OrderExecution4ProovingProduct = () => {
                 </VStack>
             </VStack>
             <SettingsModal />
+            <WarningModal />
         </Box>
     );
 };

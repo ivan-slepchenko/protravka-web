@@ -25,7 +25,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     const [tkwProbesPhoto, setTkwProbesPhoto] = useState<string | null>(null);
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState<boolean>(false);
-    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal } = useCamera();
+    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
 
     useEffect(() => {
         const fetchExecution = async () => {
@@ -265,6 +265,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                 </ModalFooter>
             </ModalContent>
             <SettingsModal />
+            <WarningModal />
         </Modal>
     );
 };

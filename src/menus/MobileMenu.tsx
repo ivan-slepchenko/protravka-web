@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, VStack, Button, Text, HStack, IconButton, Spacer, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseButton, Divider } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { FiLogOut, FiMenu } from 'react-icons/fi';
+import { FiLogOut, FiMenu, FiInfo } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
 import useRoleLinks from '../hooks/useRoleLinks';
 
@@ -113,6 +113,19 @@ const MobileMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
                                     {link.label}
                                 </Button>
                             ))}
+                            <Button
+                                w="full"
+                                as={RouterLink}
+                                to="/info"
+                                variant="ghost"
+                                justifyContent="flex-start"
+                                isActive={location.pathname === "/info"}
+                                color={location.pathname === "/info" ? "blue.500" : "black"}
+                                onClick={onClose}
+                                leftIcon={<FiInfo />}
+                            >
+                                Info
+                            </Button>
                         </VStack>
                     </DrawerBody>
                 </DrawerContent>

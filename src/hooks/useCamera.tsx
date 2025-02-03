@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 
 const useCamera = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -7,40 +7,66 @@ const useCamera = () => {
     const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+    const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
 
     const getDevices = async () => {
-        const constraints = {
-            video: { facingMode: "user" }
-        };
-        await navigator.mediaDevices.getUserMedia(constraints);
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter((device) => device.kind === 'videoinput');
-        setDevices(videoDevices);
-        if (videoDevices.length > 0) {
-            const frontCamera = videoDevices.find((device) =>
-                device.label.toLowerCase().includes('front') || 
-                device.label.toLowerCase().includes('user') ||
-                device.label.toLowerCase().includes('selfie') ||
-                device.label.toLowerCase().includes('facing')
-            );
-            setSelectedDeviceId(frontCamera ? frontCamera.deviceId : videoDevices[0].deviceId);
+        try {
+            // Check if camera permission is denied before even requesting
+            const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
+            if (permissionStatus.state === 'denied') {
+                setIsWarningOpen(true);
+                return;
+            }
+
+            // Try to request permission and enumerate devices
+            const constraints = { video: { facingMode: "user" } };
+            await navigator.mediaDevices.getUserMedia(constraints);
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+            setDevices(videoDevices);
+
+            if (videoDevices.length > 0) {
+                const frontCamera = videoDevices.find((device) =>
+                    device.label.toLowerCase().includes('front') || 
+                    device.label.toLowerCase().includes('user') ||
+                    device.label.toLowerCase().includes('selfie') ||
+                    device.label.toLowerCase().includes('facing')
+                );
+                setSelectedDeviceId(frontCamera ? frontCamera.deviceId : videoDevices[0].deviceId);
+            }
+        } catch (error) {
+            console.error("Error accessing camera:", error);
+            setIsWarningOpen(true);
         }
     };
 
-    const startCamera = () => {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices
-                .getUserMedia({
-                    video: { deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined },
-                })
-                .then((stream) => {
-                    if (videoRef.current) {
-                        videoRef.current.srcObject = stream;
-                        videoRef.current.onloadedmetadata = () => {
-                            videoRef.current?.play();
-                        };
-                    }
-                });
+    const startCamera = async () => {
+        try {
+            await getDevices();
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices
+                    .getUserMedia({
+                        video: selectedDeviceId ? { deviceId: { exact: selectedDeviceId } } : true,
+                    })
+                    .then((stream) => {
+                        if (videoRef.current) {
+                            videoRef.current.srcObject = stream;
+                            videoRef.current.onloadedmetadata = () => {
+                                videoRef.current?.play();
+                            };
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Camera access denied:", error);
+                        setIsWarningOpen(true);
+                    });
+            } else {
+                console.error("Media devices not supported");
+                setIsWarningOpen(true);
+            }
+        } catch (error) {
+            console.error("Error starting camera:", error);
+            setIsWarningOpen(true);
         }
     };
 
@@ -85,8 +111,12 @@ const useCamera = () => {
         setSelectedDeviceId(e.target.value);
     };
 
-    useEffect(() => {
+    const handleWarningClose = () => {
+        setIsWarningOpen(false);
         getDevices();
+    };
+
+    useEffect(() => {
         return () => {
             stopCamera();
         };
@@ -121,6 +151,26 @@ const useCamera = () => {
         </Modal>
     );
 
+    const WarningModal = () => (
+        <Modal isOpen={isWarningOpen} onClose={handleWarningClose} isCentered>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalHeader>Camera Access Required</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    <Alert status="warning">
+                        <AlertIcon />
+                        <AlertTitle mr={2}>Camera access denied!</AlertTitle>
+                        <AlertDescription>Please allow camera access to proceed.</AlertDescription>
+                    </Alert>
+                </ModalBody>
+                <ModalFooter>
+                    <Button colorScheme="blue" onClick={handleWarningClose}>Try Again</Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+    );
+
     return {
         videoRef,
         canvasRef,
@@ -132,6 +182,7 @@ const useCamera = () => {
         setSelectedDeviceId,
         handleSettingsClick,
         SettingsModal,
+        WarningModal,
     };
 };
 
