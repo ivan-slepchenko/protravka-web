@@ -114,6 +114,8 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                             value={tkwRep1 ?? ''}
                                             onChange={(e) => setTkwRep1(Number(e.target.value))}
                                             size={{ base: "sm", md: "md" }}
+                                            type="number"
+                                            step="0.01"
                                         />
                                         <Text fontSize={{ base: "sm", md: "md" }}>gr.</Text>
                                     </HStack>
@@ -129,6 +131,8 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                             value={tkwRep2 ?? ''}
                                             onChange={(e) => setTkwRep2(Number(e.target.value))}
                                             size={{ base: "sm", md: "md" }}
+                                            type="number"
+                                            step="0.01"
                                         />
                                         <Text fontSize={{ base: "sm", md: "md" }}>gr.</Text>
                                     </HStack>
@@ -144,6 +148,8 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                             value={tkwRep3 ?? ''}
                                             onChange={(e) => setTkwRep3(Number(e.target.value))}
                                             size={{ base: "sm", md: "md" }}
+                                            type="number"
+                                            step="0.01"
                                         />
                                         <Text fontSize={{ base: "sm", md: "md" }}>gr.</Text>
                                     </HStack>

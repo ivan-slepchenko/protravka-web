@@ -50,7 +50,14 @@ const Products = () => {
             <HStack spacing={4} mb={4} p={4} w="full" flexShrink={0}>
                 <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} borderColor={errors.name ? 'red.500' : 'gray.300'} />
                 <Input placeholder="Active Ingredient" value={activeIngredient} onChange={(e) => setActiveIngredient(e.target.value)} />
-                <Input placeholder="Density" value={density} onChange={(e) => setDensity(e.target.value)} borderColor={errors.density ? 'red.500' : 'gray.300'} />
+                <Input
+                    placeholder="Density"
+                    value={density}
+                    onChange={(e) => setDensity(e.target.value)}
+                    borderColor={errors.density ? 'red.500' : 'gray.300'}
+                    type="number"
+                    step="0.01"
+                />
                 <Button onClick={handleAddProduct} flexShrink={0} size="sm">Add Product</Button>
             </HStack>
             <VStack w="full" overflowY="auto" overflowX="hidden" p={4} flexShrink={1}>
