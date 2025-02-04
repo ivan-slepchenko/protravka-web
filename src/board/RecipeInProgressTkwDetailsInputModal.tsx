@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
-import { fetchOrderById } from '../store/ordersSlice';
+import { fetchOrderById, fetchOrders } from '../store/ordersSlice';
 import { fetchOrderExecution, fetchTkwMeasurements, updateTkwMeasurement, TkwMeasurement } from '../store/executionSlice';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox, Badge, Box, Image, CircularProgress, IconButton } from '@chakra-ui/react';
 import { FaCamera, FaCog } from 'react-icons/fa';
@@ -44,11 +44,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     }, [dispatch, selectedMeasurement]);
 
     useEffect(() => {
-        if (tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null) {
-            setAverageTkw((tkwRep1 + tkwRep2 + tkwRep3) / 3);
-        } else {
-            setAverageTkw(null);
-        }
+        setAverageTkw(((tkwRep1 ?? 0) + (tkwRep2 ?? 0) + (tkwRep3 ?? 0)) / 3);
     }, [tkwRep1, tkwRep2, tkwRep3]);
 
     const handleTakeSnapshot = () => {
@@ -83,7 +79,6 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                 setIsSaving(false);
                 onClose();
             });
-            dispatch(fetchTkwMeasurements());
         } else {
             setIsSaving(false);
         }
@@ -132,7 +127,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                                         <Input
                                             placeholder="0"
                                             value={tkwRep1 ?? ''}
-                                            onChange={(e) => setTkwRep1(Number(e.target.value))}
+                                            onChange={(e) => setTkwRep1(e.target.value === '' ? null : Number(e.target.value))}
                                             size={{ base: "sm", md: "md" }}
                                             type="number"
                                             step="0.01"
@@ -149,7 +144,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                                         <Input
                                             placeholder="0"
                                             value={tkwRep2 ?? ''}
-                                            onChange={(e) => setTkwRep2(Number(e.target.value))}
+                                            onChange={(e) => setTkwRep2(e.target.value === '' ? null : Number(e.target.value))}
                                             size={{ base: "sm", md: "md" }}
                                             type="number"
                                             step="0.01"
@@ -166,7 +161,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                                         <Input
                                             placeholder="0"
                                             value={tkwRep3 ?? ''}
-                                            onChange={(e) => setTkwRep3(Number(e.target.value))}
+                                            onChange={(e) => setTkwRep3(e.target.value === '' ? null : Number(e.target.value))}
                                             size={{ base: "sm", md: "md" }}
                                             type="number"
                                             step="0.01"

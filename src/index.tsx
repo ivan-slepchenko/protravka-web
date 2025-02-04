@@ -8,7 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor, AppDispatch, RootState } from './store/store';
 import { fetchUserByToken, logoutUser } from './store/userSlice';
 import { BrowserRouter } from "react-router-dom";
-import { AlertProvider } from './contexts/AlertContext';
+import { AlertProvider, useAlert } from './contexts/AlertContext';
 import { FeaturesProvider, useFeatures } from './contexts/FeaturesContext';
 import MobileMenu from './menus/MobileMenu';
 import DesktopMenu from './menus/DesktopMenu';
@@ -25,7 +25,13 @@ LogRocket.init('protravka/client');
 
 const App = () => {
     const dispatch: AppDispatch = useDispatch();
+    const {addAlert} = useAlert();
     const user = useSelector((state: RootState) => state.user);
+    const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
+    const orders = useSelector((state: RootState) => state.orders.activeOrders);
+    const oldOrdersRef = React.useRef(orders);
+    const oldMeasurementsRef = React.useRef(tkwMeasurements);
+    const isInitialLoadRef = React.useRef(true);
     const useLab = useFeatures().features.lab;
     const email = user.email;
     const isAuthenticated = !!email;
@@ -33,6 +39,34 @@ const App = () => {
     const handleLogout = () => {
         dispatch(logoutUser());
     };
+
+    useEffect(() => {
+        if (isInitialLoadRef.current) {
+            isInitialLoadRef.current = false;
+        } else {
+            const oldIds = oldMeasurementsRef.current.map((m) => m.id);
+            const newIds = tkwMeasurements.map((m) => m.id);
+            const isNewMeasurementsAdded = newIds.some((id) => !oldIds.includes(id));
+            
+
+            const oldOrderIds = oldOrdersRef.current.map((o) => o.id);
+            const newOrderIds = orders.map((o) => o.id);
+            const isNewOrderAdded = newOrderIds.some((id) => !oldOrderIds.includes(id));
+            if (isNewOrderAdded || isNewMeasurementsAdded) {
+                if (useLab && user.roles.includes(Role.LABORATORY)) {
+                    addAlert('You have measurements to check');
+                }
+            } 
+            if (isNewOrderAdded) {
+                if (user.roles.includes(Role.OPERATOR)) {
+                    addAlert('You have taks to do');
+                }
+            }
+        }
+
+        oldMeasurementsRef.current = tkwMeasurements;
+        oldOrdersRef.current = orders;
+    }, [tkwMeasurements, orders]);
 
     useEffect(() => {
         if (useLab !== undefined) {
@@ -50,6 +84,9 @@ const App = () => {
                 });
 
                 dispatch(fetchOrders());
+                setTimeout(() => {
+                    dispatch(fetchOrders());
+                }, 10000);
 
                 if (user.roles.includes(Role.ADMIN) || user.roles.includes(Role.MANAGER)) {
                     dispatch(fetchCrops());
@@ -57,8 +94,11 @@ const App = () => {
                     dispatch(fetchOperators());
                 }
 
-                if(useLab) {
+                if (useLab && user.roles.includes(Role.LABORATORY)) {
                     dispatch(fetchTkwMeasurements());
+                    setTimeout(() => {
+                        dispatch(fetchTkwMeasurements());
+                    }, 10000);
                 }
             }
         }
@@ -105,19 +145,19 @@ console.log('Rendering root');
 
 root.render(
     <React.StrictMode>
-        <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-                <ChakraProvider>
-                    <AlertProvider>
+        <ChakraProvider>
+            <AlertProvider>
+                <Provider store={store}>
+                    <PersistGate loading={null} persistor={persistor}>
                         <FeaturesProvider>
                             <BrowserRouter>
                                 <App />
                             </BrowserRouter>
                         </FeaturesProvider>
-                    </AlertProvider>
-                </ChakraProvider>
-            </PersistGate>
-        </Provider>
+                    </PersistGate>
+                </Provider>
+            </AlertProvider>
+        </ChakraProvider>
     </React.StrictMode>
 );
 

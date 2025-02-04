@@ -6,6 +6,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 import { Order } from './newOrderSlice';
+import { fetchOrders } from './ordersSlice';
 
 export interface ProductExecution {
     productId: string;
@@ -137,7 +138,7 @@ export const updateTkwMeasurement = createAsyncThunk(
             tkwRep3: number;
             tkwProbesPhoto: string;
         },
-        { rejectWithValue },
+        { dispatch, rejectWithValue },
     ) => {
         try {
             const response = await fetch(`${BACKEND_URL}/api/tkw-measurements/${id}`, {
@@ -156,6 +157,9 @@ export const updateTkwMeasurement = createAsyncThunk(
             });
             if (!response.ok) {
                 throw new Error('Failed to update TKW measurement');
+            } else {
+                dispatch(fetchTkwMeasurements());
+                dispatch(fetchOrders());
             }
             return await response.json();
         } catch (error) {
@@ -168,7 +172,7 @@ const executionSlice = createSlice({
     name: 'execution',
     initialState,
     reducers: {
-        startExecution: (state, action: PayloadAction<Order>) => {
+        setActiveExecutionToEmptyOne: (state, action: PayloadAction<Order>) => {
             state.currentOrder = action.payload;
             const newOrderExecution = {
                 id: null,
@@ -208,7 +212,7 @@ const executionSlice = createSlice({
                 }
             }
         },
-        completeExecution: (state) => {
+        deactivateActiveExecution: (state) => {
             state.currentOrder = null;
             state.currentOrderExecution = null;
         },
@@ -351,10 +355,10 @@ const executionSlice = createSlice({
 });
 
 export const {
-    startExecution,
+    setActiveExecutionToEmptyOne,
     resetCurrentProductIndex,
     nextPage,
-    completeExecution,
+    deactivateActiveExecution,
     setApplicationMethod,
     setAppliedProductRateKg,
     setPhotoForProvingProductApplication,

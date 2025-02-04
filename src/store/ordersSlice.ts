@@ -112,7 +112,7 @@ export const changeOrderStatus = createAsyncThunk(
             credentials: 'include', // Include credentials in the request
         });
         const result = await response.json();
-        await dispatch(fetchOrders()); // We need to refetch orders, to have them in ServiceWorker cache for offline use cases. Probably this should become a pattern.
+        dispatch(fetchOrders()); // We need to refetch orders, to have them in ServiceWorker cache for offline use cases. Probably this should become a pattern.
         return result;
     },
 );

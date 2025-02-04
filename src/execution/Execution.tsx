@@ -16,7 +16,7 @@ import OrderExecution6TreatingConfirmation from './OrderExecution6TreatingConfir
 import { OrderExecutionPage } from './OrderExecutionPage';
 import OrderExecution10ConsumptionProoving from './OrderExecution10ConsumptionProoving';
 import { OrderStatus } from '../store/newOrderSlice';
-import { completeExecution, fetchOrderExecutionAsCurrent, setCurrentOrder } from '../store/executionSlice';
+import { deactivateActiveExecution, fetchOrderExecutionAsCurrent, setCurrentOrder } from '../store/executionSlice';
 
 
 const Execution = () => {
@@ -30,7 +30,7 @@ const Execution = () => {
         const ocurrentOrderByServer = orders.find(order => order.status === OrderStatus.InProgress);
         if (currentOrder) {
             if (!ocurrentOrderByServer) {
-                dispatch(completeExecution());
+                dispatch(deactivateActiveExecution());
             } else if (currentOrder.id !== ocurrentOrderByServer.id) {
                 dispatch(fetchOrderExecutionAsCurrent(ocurrentOrderByServer.id));
                 dispatch(setCurrentOrder(ocurrentOrderByServer));

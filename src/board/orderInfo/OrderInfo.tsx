@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Heading, Textarea, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Heading, Textarea, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, useDisclosure, ModalHeader } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store/store";
@@ -97,7 +97,7 @@ const OrderInfo: React.FC = () => {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalCloseButton />
+                    <ModalHeader>Add Completition Comment<ModalCloseButton /></ModalHeader>
                     <ModalBody>
                         <Textarea
                             value={comment}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Textarea, Heading, useDisclosure, Center, CloseButton } from "@chakra-ui/react";
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Textarea, Heading, useDisclosure, Center, CloseButton, ModalHeader } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
@@ -269,7 +269,7 @@ const LotReport: React.FC = () => {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalCloseButton />
+                    <ModalHeader>Add Completition Comment<ModalCloseButton /></ModalHeader>
                     <ModalBody>
                         <Textarea
                             value={comment}

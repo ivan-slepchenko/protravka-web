@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, Button, useMediaQuery, VStack, HStack, Center, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Spinner } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { completeExecution, nextPage, saveOrderExecution } from '../store/executionSlice';
+import { deactivateActiveExecution, fetchTkwMeasurements, nextPage, saveOrderExecution } from '../store/executionSlice';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import { changeOrderStatus } from '../store/ordersSlice';
 import { OrderStatus } from '../store/newOrderSlice';
@@ -31,7 +31,10 @@ const OrderExecution11Completion = () => {
             } else {
                 dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.ToAcknowledge }));
             }
-            dispatch(completeExecution());
+            dispatch(deactivateActiveExecution());
+            if (useLab) {
+                dispatch(fetchTkwMeasurements());
+            }
         } catch (error) {
             onOpen();
         } finally {

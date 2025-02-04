@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { completeExecution, saveOrderExecution, startExecution } from '../store/executionSlice';
+import { deactivateActiveExecution, saveOrderExecution, setActiveExecutionToEmptyOne } from '../store/executionSlice';
 import { changeOrderStatus, fetchOrders } from '../store/ordersSlice';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 
@@ -30,19 +30,19 @@ const OrdersOverview: React.FC = () => {
 
     const handleConfirm = async () => {
         if (selectedOrder) {
-            dispatch(startExecution(selectedOrder));
+            dispatch(setActiveExecutionToEmptyOne(selectedOrder));
             try {
                 await dispatch(saveOrderExecution()).unwrap(); //if no internet, this fails first. 
                 dispatch(changeOrderStatus({ id: selectedOrder.id, status: OrderStatus.InProgress }));
                 onClose();
             } catch (error) {
-                dispatch(completeExecution());
+                dispatch(deactivateActiveExecution()); //if no internet, because we started execution, we should complete it immediatelly.
                 onAlertOpen();
             }
         }
     };
 
-    const fetchOrdersWithAlert = async () => {
+    const onRefreshClick = async () => {
         dispatch(fetchOrders());
     };
 
@@ -51,7 +51,7 @@ const OrdersOverview: React.FC = () => {
             {fetchError ? (
                 <>
                     <Text py={2} px={2} fontSize="lg" color="red.600">No access to internet available.</Text>
-                    <Button colorScheme="orange" onClick={fetchOrdersWithAlert}>Refresh</Button>
+                    <Button colorScheme="orange" onClick={onRefreshClick}>Refresh</Button>
                 </>
             ) : (
                 <>
