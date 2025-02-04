@@ -94,6 +94,7 @@ const OrderExecution8PackingProoving = () => {
                         borderRadius="full"
                         colorScheme="orange"
                         onClick={handleNextButtonClick}
+                        disabled={!photo}
                     >
                         Next
                     </Button>

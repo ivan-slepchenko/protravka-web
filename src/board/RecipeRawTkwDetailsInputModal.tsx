@@ -25,11 +25,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
 
     useEffect(() => {
-        if (tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null) {
-            setAverageTkw((tkwRep1 + tkwRep2 + tkwRep3) / 3);
-        } else {
-            setAverageTkw(null);
-        }
+        setAverageTkw(((tkwRep1 ?? 0) + (tkwRep2 ?? 0) + (tkwRep3 ?? 0)) / 3);
     }, [tkwRep1, tkwRep2, tkwRep3]);
 
     const handleTakeSnapshot = () => {
@@ -112,7 +108,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         <Input
                                             placeholder="0"
                                             value={tkwRep1 ?? ''}
-                                            onChange={(e) => setTkwRep1(Number(e.target.value))}
+                                            onChange={(e) => setTkwRep1(e.target.value === '' ? null : Number(e.target.value))}
                                             size={{ base: "sm", md: "md" }}
                                             type="number"
                                             step="0.01"
@@ -129,7 +125,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         <Input
                                             placeholder="0"
                                             value={tkwRep2 ?? ''}
-                                            onChange={(e) => setTkwRep2(Number(e.target.value))}
+                                            onChange={(e) => setTkwRep2(e.target.value === '' ? null : Number(e.target.value))}
                                             size={{ base: "sm", md: "md" }}
                                             type="number"
                                             step="0.01"
@@ -146,7 +142,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         <Input
                                             placeholder="0"
                                             value={tkwRep3 ?? ''}
-                                            onChange={(e) => setTkwRep3(Number(e.target.value))}
+                                            onChange={(e) => setTkwRep3(e.target.value === '' ? null : Number(e.target.value))}
                                             size={{ base: "sm", md: "md" }}
                                             type="number"
                                             step="0.01"

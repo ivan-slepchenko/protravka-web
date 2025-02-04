@@ -26,7 +26,7 @@ export default function OrderExecution9ConsumptionDetails() {
         dispatch(saveOrderExecution());
     };
 
-    const handleMakePhotoClick = () => {
+    const handleNext = () => {
         dispatch(nextPage());
         dispatch(saveOrderExecution());
     };
@@ -120,9 +120,9 @@ export default function OrderExecution9ConsumptionDetails() {
                     w="200px"
                     borderRadius="full"
                     _hover={{ backgroundColor: 'orange.200' }}
-                    onClick={handleMakePhotoClick}
+                    onClick={handleNext}
                 >
-                    Make Photo
+                    Next
                 </Button>
             </HStack>
         </VStack>

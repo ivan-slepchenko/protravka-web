@@ -125,6 +125,7 @@ const OrderExecution10ConsumptionProoving = () => {
                         w="200px" 
                         borderRadius="full"
                         colorScheme="orange"
+                        disabled={!photo}
                         onClick={handleNextButtonClick}
                     >
                         Next

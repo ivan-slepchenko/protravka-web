@@ -47,6 +47,7 @@ const Execution = () => {
         if (!currentOrderExecution) {
             return <OrdersOverview />;
         }
+        console.log('Current page:', currentOrderExecution.currentPage);
 
         switch (currentOrderExecution.currentPage) {
             case OrderExecutionPage.InitialOverview:

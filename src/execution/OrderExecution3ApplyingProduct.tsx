@@ -104,6 +104,7 @@ const OrderExecution3ApplyingProduct = () => {
     );
 
     const renderContent = () => {
+        console.log('currentProductExecution', currentProductExecution);
         if (applicationMethod === 'Surry' || applicationMethod === 'CDS') {
             return (
                 <>
