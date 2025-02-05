@@ -12,12 +12,12 @@ const TREATMENT_LABEL = "In Treatment";
 const TREATED_LABEL = "Treated";
 
 const stateToLabel: Partial<Record<OrderStatus, string>> = {
-    [OrderStatus.InProgress]: TREATMENT_LABEL,
-    [OrderStatus.ReadyToStart]: TREATMENT_LABEL,
-    [OrderStatus.ByLabInitiated]: TREATMENT_LABEL,
+    [OrderStatus.TreatmentInProgress]: TREATMENT_LABEL,
+    [OrderStatus.RecipeCreated]: TREATMENT_LABEL,
+    [OrderStatus.TKWConfirmed]: TREATMENT_LABEL,
     [OrderStatus.Completed]: TREATED_LABEL,
     [OrderStatus.Failed]: TREATED_LABEL,
-    [OrderStatus.ForLabToControl]: TREATED_LABEL,
+    [OrderStatus.LabControl]: TREATED_LABEL,
     [OrderStatus.ToAcknowledge]: TREATED_LABEL,
 };
 
@@ -74,4 +74,21 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
     );
 };
 
+const ControlledOrderList: React.FC<{ orders: Order[], measurements: TkwMeasurement[], onClick: (order: Order) => void }> = ({ orders, measurements, onClick }) => {
+    const inTreatmentOrders = orders.filter(order => stateToLabel[order.status] === TREATMENT_LABEL);
+    const treatedOrders = orders.filter(order => stateToLabel[order.status] === TREATED_LABEL);
+
+    return (
+        <>
+            {inTreatmentOrders.map(order => (
+                <ControlledOrderCard key={order.id} order={order} measurements={measurements} onClick={() => onClick(order)} />
+            ))}
+            {treatedOrders.map(order => (
+                <ControlledOrderCard key={order.id} order={order} measurements={measurements} onClick={() => onClick(order)} />
+            ))}
+        </>
+    );
+};
+
 export default ControlledOrderCard;
+export { ControlledOrderList };

@@ -8,7 +8,7 @@ import RecipeRawTkwDetailsInputModal from './RecipeRawTkwDetailsInputModal';
 import TkwMeasurementCard from './TkwMeasurementCard';
 import RawOrderCard from './RawOrderCard';
 import RecipeInProgressTkwDetailsInputModal from './RecipeInProgressTkwDetailsInputModal';
-import ControlledOrderCard from './ControlledOrderCard';
+import ControlledOrderCard, { ControlledOrderList } from './ControlledOrderCard';
 import TkwDetailsModal from './TkwDetailsModal';
 
 const LabBoard: React.FC = () => {
@@ -44,19 +44,19 @@ const LabBoard: React.FC = () => {
         if (orders) {
             setOrdersToControl(
                 orders.filter((order) =>
-                    [OrderStatus.ForLabToInitiate].includes(order.status)
+                    [OrderStatus.LabAssignmentCreated].includes(order.status)
                 )
             );
             setControlledOrders(
                 orders.filter((order) =>
                     [
-                        OrderStatus.InProgress,
+                        OrderStatus.TreatmentInProgress,
                         OrderStatus.Completed,
-                        OrderStatus.ByLabInitiated,
+                        OrderStatus.TKWConfirmed,
                         OrderStatus.Failed,
-                        OrderStatus.ForLabToControl,
-                        OrderStatus.InProgress,
-                        OrderStatus.ReadyToStart,
+                        OrderStatus.LabControl,
+                        OrderStatus.TreatmentInProgress,
+                        OrderStatus.RecipeCreated,
                         OrderStatus.ToAcknowledge
                     ].includes(order.status)
                 )
@@ -105,14 +105,11 @@ const LabBoard: React.FC = () => {
                         <Flex p={1} gap={3} w="full">
                             <Box w="full">
                                 <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={3} w="full">
-                                    {controlledOrders.map((order, index) => (
-                                        <ControlledOrderCard
-                                            key={index}
-                                            order={order}
-                                            measurements={tkwMeasurements.filter(measurement => measurement.orderExecution.orderId === order.id)}
-                                            onClick={() => handleControlledOrderClick(order)}
-                                        />
-                                    ))}
+                                    <ControlledOrderList
+                                        orders={controlledOrders}
+                                        measurements={tkwMeasurements}
+                                        onClick={handleControlledOrderClick}
+                                    />
                                 </Grid>
                             </Box>
                         </Flex>

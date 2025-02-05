@@ -27,7 +27,7 @@ const Execution = () => {
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
     useEffect(() => {
-        const ocurrentOrderByServer = orders.find(order => order.status === OrderStatus.InProgress);
+        const ocurrentOrderByServer = orders.find(order => order.status === OrderStatus.TreatmentInProgress);
         if (currentOrder) {
             if (!ocurrentOrderByServer) {
                 dispatch(deactivateActiveExecution());

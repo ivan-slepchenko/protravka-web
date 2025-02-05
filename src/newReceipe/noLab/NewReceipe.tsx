@@ -107,7 +107,7 @@ export const NewReceipe = () => {
     const addAlert = useAlert().addAlert;
 
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
-        values.status = OrderStatus.ReadyToStart;
+        values.status = OrderStatus.RecipeCreated;
         dispatch(createOrder(values));
         dispatch(fetchOrders());
         dispatch(setOrderState(createNewEmptyOrder()));

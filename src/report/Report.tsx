@@ -27,12 +27,12 @@ const statusColorMap: StatusColorMap = {
     [OrderStatus.Completed]: "#48BB78", // Green color (Chakra UI green.400)
     [OrderStatus.ToAcknowledge]: "#ECC94B", // Yellow color (Chakra UI yellow.400)
     [OrderStatus.Failed]: "#F56565", // Red color (Chakra UI red.400)
-    [OrderStatus.InProgress]: "#ED8936", // Orange color (Chakra UI orange.400)
+    [OrderStatus.TreatmentInProgress]: "#ED8936", // Orange color (Chakra UI orange.400)
     [OrderStatus.Archived]: "#4299E1", // Blue color (Chakra UI blue.400)
-    [OrderStatus.ReadyToStart]: "#A0AEC0", // Gray color (Chakra UI gray.400)
-    [OrderStatus.ForLabToInitiate]: "#A0AEC0", // Gray color (Chakra UI gray.400)
-    [OrderStatus.ForLabToControl]: "#A0AEC0", // Gray color (Chakra UI gray.400)
-    [OrderStatus.ByLabInitiated]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.RecipeCreated]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.LabAssignmentCreated]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.LabControl]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.TKWConfirmed]: "#A0AEC0", // Gray color (Chakra UI gray.400)
 };
 
 const Report: React.FC = () => {
@@ -164,7 +164,7 @@ const Report: React.FC = () => {
             case OrderStatus.Failed:
                 categoryStats.disapproved++;
                 break;
-            case OrderStatus.InProgress: // Add case for In Progress
+            case OrderStatus.TreatmentInProgress: // Add case for In Progress
                 categoryStats.inProgress++;
                 break;
             default:
@@ -194,7 +194,7 @@ const Report: React.FC = () => {
             {
                 label: "In Progress",
                 data: [categoryStats.inProgress],
-                backgroundColor: statusColorMap[OrderStatus.InProgress],
+                backgroundColor: statusColorMap[OrderStatus.TreatmentInProgress],
             },
         ],
     };

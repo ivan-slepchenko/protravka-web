@@ -65,6 +65,11 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
         startCamera();
     };
 
+    const handleBack = () => {
+        setIsPhotoState(false);
+        stopCamera();
+    };
+
     const handleSave = () => {
         setIsSaving(true);
         if (orderExecutionId && tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null && tkwProbesPhoto !== null) {
@@ -183,7 +188,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                     ) : (
                         <VStack spacing={8} width="100%">
                             {selectedOrder && <Text mb={1} fontSize={{ base: "sm", md: "md" }} fontWeight="bold">
-                                    You are obliged to take a photo of UNTREATED seeds of {selectedOrder.crop.name} {selectedOrder.lotNumber}
+                                    You are obliged to take a photo of TREATED seeds of {selectedOrder.crop.name} {selectedOrder.lotNumber}
                             </Text>}
                             <Box
                                 width="100%"
@@ -249,7 +254,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                             </Checkbox>
                         )}
                         <HStack w="full" justify="end">
-                            <Button variant="ghost" mb="3" onClick={onClose} disabled={isSaving}>Cancel</Button>
+                            <Button variant="ghost" mb="3" onClick={handleBack} disabled={isSaving}>Back</Button>
                             {!isPhotoState ? (
                                 <Button colorScheme="blue" mb="3" onClick={handleNext} isDisabled={!isConfirmed || averageTkw === null || isSaving}>
                                     Next

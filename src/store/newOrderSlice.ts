@@ -27,11 +27,11 @@ export interface ProductDetail {
 }
 
 export enum OrderStatus {
-    ForLabToInitiate = 'For Lab To Initiate',
-    ByLabInitiated = 'By Lab Initiated',
-    ReadyToStart = 'Ready To Start',
-    InProgress = 'In Progress',
-    ForLabToControl = 'For Lab To Control',
+    LabAssignmentCreated = 'Lab Assignment Created',
+    TKWConfirmed = 'TKW Confirmed',
+    RecipeCreated = 'Recipe Created',
+    TreatmentInProgress = 'Treatment In Progress',
+    LabControl = 'Lab To Control',
     ToAcknowledge = 'To Acknowledge',
     Archived = 'Archived',
     Completed = 'Completed',
@@ -100,7 +100,7 @@ export const createNewEmptyOrder: () => NewOrderState = () => ({
     seedsToTreatKg: null,
     packaging: Packaging.InSeeds,
     bagSize: null,
-    status: OrderStatus.ReadyToStart,
+    status: OrderStatus.RecipeCreated,
     extraSlurry: null,
     tkwMeasurementInterval: 60,
     slurryTotalMlRecipeToMix: null,

@@ -41,7 +41,7 @@ export const NewReceipe = () => {
 
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
         setIsSaving(true);
-        values.status = OrderStatus.ForLabToInitiate;
+        values.status = OrderStatus.LabAssignmentCreated;
         dispatch(createOrder(values)).then(() => {
             dispatch(fetchOrders());
             dispatch(setOrderState(createNewEmptyOrder()));

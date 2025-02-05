@@ -37,7 +37,7 @@ const LotReport: React.FC = () => {
     const { ImageModal, ImageWithModal, selectedPhoto, handlePhotoClick, handleClose } = useImageModal();
 
     useEffect(() => {
-        if (orderId && order !== null && [OrderStatus.ForLabToInitiate, OrderStatus.ByLabInitiated, OrderStatus.ReadyToStart].indexOf(order.status) === -1) {        
+        if (orderId && order !== null && [OrderStatus.LabAssignmentCreated, OrderStatus.TKWConfirmed, OrderStatus.RecipeCreated].indexOf(order.status) === -1) {        
             fetchOrderExecution(orderId).then((orderExecution) => {
                 setOrderExecution(orderExecution);
             });
@@ -164,7 +164,7 @@ const LotReport: React.FC = () => {
                 <VStack spacing={4} align="stretch">
                     <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
                         <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Preparation per Lot</Text>
-                        {order.status !== OrderStatus.ReadyToStart && <StatusKeyLegend />}
+                        {order.status !== OrderStatus.RecipeCreated && <StatusKeyLegend />}
                     </Box>
                     <Box w="full">
                         <Table size="sm" variant="simple">
@@ -231,7 +231,7 @@ const LotReport: React.FC = () => {
                     </Box>
                     <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
                         <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Consumption Per Lot</Text>
-                        {order.status !== OrderStatus.ReadyToStart && <StatusKeyLegend />}
+                        {order.status !== OrderStatus.RecipeCreated && <StatusKeyLegend />}
                     </Box>
                     <Box w="50%" overflowX="auto">
                         <Table variant="simple" size="sm">

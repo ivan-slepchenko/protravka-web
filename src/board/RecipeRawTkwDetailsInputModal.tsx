@@ -65,6 +65,11 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
         }
     };
 
+    const handleBack = () => {
+        setIsPhotoState(false);
+        stopCamera();
+    };
+
     return (
         <Modal isOpen={!!selectedOrder} onClose={onClose} size="full">
             <ModalOverlay />
@@ -230,7 +235,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </Checkbox>
                         )}
                         <HStack w="full" justify="end">
-                            <Button variant="ghost" mb="3" onClick={onClose} disabled={isSaving}>Cancel</Button>
+                            <Button variant="ghost" mb="3" onClick={handleBack} disabled={isSaving}>Back</Button>
                             {!isPhotoState ? (
                                 <Button colorScheme="blue" mb="3" onClick={handleNext} isDisabled={!isConfirmed || averageTkw === null || isSaving}>
                                     Next

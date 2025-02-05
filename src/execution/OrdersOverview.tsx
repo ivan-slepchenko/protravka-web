@@ -18,7 +18,7 @@ const OrdersOverview: React.FC = () => {
     const orders = useSelector((state: RootState) => 
         state.orders.activeOrders.filter(order => 
             (order.operator === null || order.operator.email === user.email) && 
-            order.status === OrderStatus.ReadyToStart
+            order.status === OrderStatus.RecipeCreated
         )
     );
     const fetchError = useSelector((state: RootState) => state.orders.fetchError);
@@ -33,7 +33,7 @@ const OrdersOverview: React.FC = () => {
             dispatch(setActiveExecutionToEmptyOne(selectedOrder));
             try {
                 await dispatch(saveOrderExecution()).unwrap(); //if no internet, this fails first. 
-                dispatch(changeOrderStatus({ id: selectedOrder.id, status: OrderStatus.InProgress }));
+                dispatch(changeOrderStatus({ id: selectedOrder.id, status: OrderStatus.TreatmentInProgress }));
                 onClose();
             } catch (error) {
                 dispatch(deactivateActiveExecution()); //if no internet, because we started execution, we should complete it immediatelly.
