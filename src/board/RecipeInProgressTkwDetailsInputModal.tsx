@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
-import { fetchOrderById, fetchOrders } from '../store/ordersSlice';
-import { fetchOrderExecution, fetchTkwMeasurements, updateTkwMeasurement, TkwMeasurement } from '../store/executionSlice';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, Center, VStack, Divider, HStack, Text, Checkbox, Badge, Box, Image, CircularProgress, IconButton } from '@chakra-ui/react';
+import { fetchOrderById } from '../store/ordersSlice';
+import { fetchOrderExecution, updateTkwMeasurement, TkwMeasurement } from '../store/executionSlice';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, VStack, Divider, HStack, Text, Checkbox, Badge, Box, Image, CircularProgress, IconButton } from '@chakra-ui/react';
 import { FaCamera, FaCog } from 'react-icons/fa';
 import { Order } from '../store/newOrderSlice';
 import useCamera from '../hooks/useCamera';

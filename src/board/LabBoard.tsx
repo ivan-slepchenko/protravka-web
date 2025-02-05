@@ -8,7 +8,7 @@ import RecipeRawTkwDetailsInputModal from './RecipeRawTkwDetailsInputModal';
 import TkwMeasurementCard from './TkwMeasurementCard';
 import RawOrderCard from './RawOrderCard';
 import RecipeInProgressTkwDetailsInputModal from './RecipeInProgressTkwDetailsInputModal';
-import ControlledOrderCard, { ControlledOrderList } from './ControlledOrderCard';
+import { ControlledOrderList } from './ControlledOrderCard';
 import TkwDetailsModal from './TkwDetailsModal';
 
 const LabBoard: React.FC = () => {
