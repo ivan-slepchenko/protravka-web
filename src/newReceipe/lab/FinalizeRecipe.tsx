@@ -164,10 +164,10 @@ export const FinalizeRecipe = () => {
         dispatch(resetStateToDefaultFinalize());
         resetForm({
             values: {
-                ...formData, // Reset to default values from Redux store
+                ...formData,
                 recipeDate: currentDate,
                 applicationDate: currentDate,
-                productDetails: [], // Clear product details array
+                productDetails: [],
                 bagSize: null,
                 extraSlurry: null,
                 operatorId: null,

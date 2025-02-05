@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
 
 export const NewReceipe = () => {
     const dispatch: AppDispatch = useDispatch();
-    const formData = useSelector((state: RootState) => state.newOrder as NewOrderState);
+    const formData = useSelector((state: RootState) => state.newOrder);
     const crops = useSelector((state: RootState) => state.crops.crops);
     const selectedCropId = useSelector((state: RootState) => state.newOrder.cropId);
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -55,9 +55,18 @@ export const NewReceipe = () => {
         });
     };
 
-    const handleClearAll = (resetForm: () => void) => {
+    const handleClearAll = (resetForm: (nextState?: Partial<FormikProps<NewOrderState>>) => void) => {
         dispatch(setOrderState(createNewEmptyOrder()));
-        resetForm();
+        resetForm({
+            values: {
+                ...formData,
+                cropId: null,
+                varietyId: null,
+                lotNumber: '',
+                bagSize: null,
+                seedsToTreatKg: null
+            },
+        });
     };
 
     const handleSubmit = (values: NewOrderState, { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void, resetForm: () => void }) => {
@@ -160,6 +169,7 @@ export const NewReceipe = () => {
                                             <Field
                                                 as={Input}
                                                 name="lotNumber"
+                                                placeholder="#123"
                                                 size="md"
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
@@ -184,6 +194,7 @@ export const NewReceipe = () => {
                                                 }}
                                                 borderColor={props.errors.seedsToTreatKg && props.touched.seedsToTreatKg ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
+                                                value={props.values.seedsToTreatKg !== null ? props.values.seedsToTreatKg : ''}
                                             />
                                         </Box>
                                     </Grid>
