@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Textarea, Heading, useDisclosure, Center, CloseButton, ModalHeader } from "@chakra-ui/react";
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, VStack, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Textarea, Heading, useDisclosure, CloseButton, ModalHeader } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
@@ -34,7 +34,7 @@ const LotReport: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [status, setStatus] = useState<OrderStatus | null>(null);
     const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
-    const { ImageModal, ImageWithModal, selectedPhoto, handlePhotoClick, handleClose } = useImageModal();
+    const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
 
     useEffect(() => {
         if (orderId && order !== null && [OrderStatus.LabAssignmentCreated, OrderStatus.TKWConfirmed, OrderStatus.RecipeCreated].indexOf(order.status) === -1) {        
@@ -206,7 +206,7 @@ const LotReport: React.FC = () => {
                                             <Td>{detail.product.name}</Td>
                                             <Td>{detail.product.density}</Td>
                                             <Td>{productRecipe ? (productRecipe.grSlurryRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
-                                            <Td>{productExecution ? productExecution.appliedRateKg.toFixed(2) : 'N/A'}</Td>
+                                            <Td>{(productExecution && productExecution.appliedRateKg !== undefined) ? productExecution.appliedRateKg.toFixed(2) : 'N/A'}</Td>
                                             <Td>
                                                 {productExecution && productExecution.applicationPhoto ? (
                                                     <ImageWithModal src={productExecution.applicationPhoto} />

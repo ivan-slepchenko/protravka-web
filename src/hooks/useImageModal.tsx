@@ -56,7 +56,7 @@ const useImageModal = () => {
         fullSize: PropTypes.bool,
     };
 
-    return { ImageModal, ImageWithModal, selectedPhoto, handlePhotoClick, handleClose };
+    return { ImageModal, ImageWithModal, selectedPhoto, handleClose };
 };
 
 export default useImageModal;

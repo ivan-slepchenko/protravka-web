@@ -10,7 +10,7 @@ import { fetchOrders } from './ordersSlice';
 
 export interface ProductExecution {
     productId: string;
-    appliedRateKg: number;
+    appliedRateKg?: number;
     applicationPhoto?: string;
     productConsumptionPerLotKg?: number;
     consumptionPhoto?: string;
@@ -28,6 +28,8 @@ export interface OrderExecution {
     currentPage: OrderExecutionPage | null;
     currentProductIndex: number | null;
     operatorId: string | null;
+    treatmentStartDate: number | null;
+    treatmentFinishDate: number | null;
 }
 
 export interface TkwMeasurement {
@@ -93,6 +95,22 @@ export const saveOrderExecutionTreatmentStartTime = createAsyncThunk(
             return await response.json();
         } catch (error) {
             console.error('Failed to save order execution treatment start time:', error);
+            return rejectWithValue(orderId); // Return the payload for offline handling
+        }
+    },
+);
+
+export const saveOrderExecutionTreatmentFinishTime = createAsyncThunk(
+    'execution/saveOrderExecutionTreatmentFinishTime',
+    async (orderId: string, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}/finish`, {
+                method: 'POST',
+                credentials: 'include', // Include credentials for requests
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Failed to save order execution treatment finish time:', error);
             return rejectWithValue(orderId); // Return the payload for offline handling
         }
     },
@@ -185,6 +203,8 @@ const executionSlice = createSlice({
                 slurryConsumptionPerLotKg: null,
                 currentPage: OrderExecutionPage.InitialOverview,
                 currentProductIndex: 0,
+                treatmentStartDate: null,
+                treatmentFinishDate: null,
                 operatorId: null, // This will be set by the backend
             };
             state.currentOrderExecution = newOrderExecution;
@@ -223,7 +243,11 @@ const executionSlice = createSlice({
         },
         setAppliedProductRateKg: (
             state,
-            action: PayloadAction<{ orderId: string; productId: string; appliedRateKg: number }>,
+            action: PayloadAction<{
+                orderId: string;
+                productId: string;
+                appliedRateKg: number | undefined;
+            }>,
         ) => {
             if (state.currentOrderExecution) {
                 const { productId, appliedRateKg } = action.payload;

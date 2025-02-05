@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, VStack, Text, Box, Grid, GridItem, Center, Heading, Badge } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, VStack, Text, Grid, GridItem, Badge } from '@chakra-ui/react';
 import { TkwMeasurement } from '../store/executionSlice';
 import { Order } from '../store/newOrderSlice';
 import useImageModal from '../hooks/useImageModal';
@@ -11,7 +11,7 @@ interface TkwDetailsModalProps {
 }
 
 const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measurements }) => {
-    const { ImageModal, ImageWithModal, selectedPhoto, handlePhotoClick, handleClose } = useImageModal();
+    const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
 
     const calculateAverageTkw = (measurements: TkwMeasurement[]) => {
         if (measurements.length === 0) return 'N/A';

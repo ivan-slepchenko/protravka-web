@@ -20,7 +20,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
     };
 
     const totalTargetQty = currentOrder.productDetails.reduce((total, product) => total + getTargetQty(product.product?.id), 0) || 0;
-    const totalActualQty = currentOrderExecution.productExecutions.reduce((total, product) => total + product.appliedRateKg, 0) || 0;
+    const totalActualQty = currentOrderExecution.productExecutions.reduce((total, product) => total + (product.appliedRateKg !== undefined ? product.appliedRateKg : 0), 0) || 0;
 
     const handleNextButtonClicked = React.useCallback(() => {
         dispatch(nextPage());

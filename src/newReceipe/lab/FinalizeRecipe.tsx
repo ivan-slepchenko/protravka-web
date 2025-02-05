@@ -8,7 +8,6 @@ import { Formik, Field, FieldArray, FormikErrors, FormikTouched, FormikProps } f
 import {
     resetStateToDefaultFinalize,
     createNewEmptyProduct,
-    updateRecipeDate,
     updateApplicationDate,
     updateOperator,
     updateProductDetail,
@@ -32,7 +31,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
 
 const validationSchema = Yup.object().shape({
-    recipeDate: Yup.date().required("Recipe Date is required"),
     applicationDate: Yup.date().required("Application Date is required"),
     operatorId: Yup.string().nullable(),
     bagSize: Yup.number().moreThan(0, "Bag Size must be greater than 0").required("Bag Size is required"),
@@ -165,7 +163,6 @@ export const FinalizeRecipe = () => {
         resetForm({
             values: {
                 ...formData,
-                recipeDate: currentDate,
                 applicationDate: currentDate,
                 productDetails: [],
                 bagSize: null,
@@ -218,7 +215,6 @@ export const FinalizeRecipe = () => {
                 <Formik
                     initialValues={{
                         ...formData,
-                        recipeDate: formData.recipeDate || currentDate,
                         applicationDate: formData.applicationDate || currentDate,
                     }}
                     onSubmit={handleSubmit}
@@ -243,21 +239,6 @@ export const FinalizeRecipe = () => {
                                 <Box width="full" mx="auto" pointerEvents={isSaving ? 'none' : 'auto'}>
                                     {/* Recipe Info */}
                                     <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4" width="full">
-                                        <Box>
-                                            <Text fontSize="md">Recipe creation date:</Text>
-                                            <Field
-                                                as={Input}
-                                                type="date"
-                                                name="recipeDate"
-                                                size="md"
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                    props.handleChange(e);
-                                                    dispatch(updateRecipeDate(e.target.value));
-                                                }}
-                                                borderColor={props.errors.recipeDate && props.touched.recipeDate ? "red.500" : "gray.300"}
-                                                disabled={isSaving}
-                                            />
-                                        </Box>
                                         <Box>
                                             <Text fontSize="md">Application date:</Text>
                                             <Field

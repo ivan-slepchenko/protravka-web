@@ -104,7 +104,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                     <Tr key={index}>
                                         <Td>{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
                                         <Td>
-                                            <Text>{productExecution?.appliedRateKg.toFixed(2)} kg</Text>
+                                            <Text>{productExecution?.appliedRateKg !== undefined ? productExecution?.appliedRateKg.toFixed(2) : 0} kg</Text>
                                         </Td>
                                         <Td>
                                             {productExecution?.applicationPhoto ? (

@@ -9,7 +9,6 @@ import {
     setOrderState,
     createNewEmptyOrder,
     createNewEmptyProduct,
-    updateRecipeDate,
     updateApplicationDate,
     updateOperator,
     updateCrop,
@@ -165,7 +164,6 @@ export const NewReceipe = () => {
                 <Formik
                     initialValues={{
                         ...formData,
-                        recipeDate: formData.recipeDate || currentDate,
                         applicationDate: formData.applicationDate || currentDate,
                     }}
                     onSubmit={handleSubmit}
@@ -190,20 +188,6 @@ export const NewReceipe = () => {
                                 <Box width="full" mx="auto" p="4">
                                     {/* Recipe Info */}
                                     <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4">
-                                        <Box>
-                                            <Text fontSize="md">Recipe creation date:</Text>
-                                            <Field
-                                                as={Input}
-                                                type="date"
-                                                name="recipeDate"
-                                                size="md"
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                    props.handleChange(e);
-                                                    dispatch(updateRecipeDate(e.target.value));
-                                                }}
-                                                borderColor={props.errors.recipeDate && props.touched.recipeDate ? "red.500" : "gray.300"}
-                                            />
-                                        </Box>
                                         <Box>
                                             <Text fontSize="md">Application date:</Text>
                                             <Field

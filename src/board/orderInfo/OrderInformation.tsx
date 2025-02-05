@@ -8,7 +8,7 @@ const OrderInformation: React.FC<{ order: Order }> = ({ order }) => (
         <Grid templateColumns="repeat(4, 1fr)" gap="1" borderColor="gray.200">
             <Box>
                 <Text fontSize="xs">Recipe Creation Date:</Text>
-                <Text>{order.recipeDate}</Text>
+                <Text>{order.creationDate}</Text>
             </Box>
             <Box>
                 <Text fontSize="xs">Application Date:</Text>

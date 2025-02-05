@@ -31,9 +31,9 @@ const OrderExecution3ApplyingProduct = () => {
 
     const productRecipe = currentOrder?.orderRecipe?.productRecipes.find(productRecipe => productRecipe.productDetail.product?.id === currentProductId);
 
-    const handleValueChange = (productId: string, value: number) => {
+    const handleValueChange = (productId: string, value: number | undefined) => {
         if (currentOrder.id) {
-            dispatch(setAppliedProductRateKg({ orderId: currentOrder.id, productId, appliedRateKg: isNaN(value) ? 0 : value }));
+            dispatch(setAppliedProductRateKg({ orderId: currentOrder.id, productId, appliedRateKg: value }));
             dispatch(saveOrderExecution());
             setInputError(false);
             setInputValue(value);
@@ -74,8 +74,8 @@ const OrderExecution3ApplyingProduct = () => {
                 <Td>
                     <Input
                         placeholder="Enter value"
-                        value={currentProductExecution ? currentProductExecution.appliedRateKg : ''}
-                        onChange={(e) => handleValueChange(currentProductId, parseFloat(e.target.value))}
+                        value={(currentProductExecution && currentProductExecution.appliedRateKg !== undefined) ? currentProductExecution.appliedRateKg : ''}
+                        onChange={(e) => handleValueChange(currentProductId, e.target.value === undefined ? undefined : parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
@@ -92,8 +92,8 @@ const OrderExecution3ApplyingProduct = () => {
                 <Td>
                     <Input
                         placeholder="Enter value"
-                        value={currentProductExecution ? currentProductExecution.appliedRateKg : ''}
-                        onChange={(e) => handleValueChange(currentProductId, parseFloat(e.target.value))}
+                        value={(currentProductExecution && currentProductExecution.appliedRateKg !== undefined) ? currentProductExecution.appliedRateKg : ''}
+                        onChange={(e) => handleValueChange(currentProductId, e.target.value === undefined ? undefined : parseFloat(e.target.value))}
                         type="number"
                         step="0.01"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
