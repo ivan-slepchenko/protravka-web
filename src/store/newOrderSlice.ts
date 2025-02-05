@@ -46,8 +46,8 @@ export enum Packaging {
 export interface Order {
     id: string;
     productDetails: ProductDetail[];
-    creationDate: string; // Renamed from recipeDate
-    applicationDate: string;
+    creationDate: number;
+    applicationDate: number;
     operator: Operator | null;
     crop: Crop;
     variety: Variety;
@@ -69,8 +69,7 @@ export interface Order {
 export interface NewOrderState {
     id: string;
     productDetails: ProductDetail[];
-    creationDate: string; // Renamed from recipeDate
-    applicationDate: string;
+    applicationDate: number;
     operatorId: string | null;
     cropId: string | null;
     varietyId: string | null;
@@ -90,8 +89,7 @@ export interface NewOrderState {
 export const createNewEmptyOrder: () => NewOrderState = () => ({
     id: new Date().toISOString(),
     productDetails: [],
-    creationDate: new Date().toISOString().split('T')[0], // Renamed from recipeDate
-    applicationDate: new Date().toISOString().split('T')[0],
+    applicationDate: Date.now(),
     operatorId: null,
     cropId: null,
     varietyId: null,
@@ -159,11 +157,7 @@ const newOrderSlice = createSlice({
             state.productDetails = state.productDetails.filter((pd) => pd.index !== action.payload);
             state.productDetails.forEach((pd, idx) => (pd.index = idx)); // Reassign indexes
         },
-        updateCreationDate: (state, action: PayloadAction<string>) => {
-            // Renamed from updateRecipeDate
-            state.creationDate = action.payload;
-        },
-        updateApplicationDate: (state, action: PayloadAction<string>) => {
+        updateApplicationDate: (state, action: PayloadAction<number>) => {
             state.applicationDate = action.payload;
         },
         updateOperator: (state, action: PayloadAction<string>) => {
@@ -224,8 +218,7 @@ const newOrderSlice = createSlice({
             return {
                 ...state,
                 productDetails: [],
-                creationDate: new Date().toISOString().split('T')[0], // Renamed from recipeDate
-                applicationDate: new Date().toISOString().split('T')[0],
+                applicationDate: Date.now(),
                 packaging: Packaging.InSeeds,
                 bagSize: null,
                 extraSlurry: null,
@@ -247,7 +240,6 @@ export const {
     addProductDetail,
     updateProductDetail,
     removeProductDetail,
-    updateCreationDate, // Renamed from updateRecipeDate
     updateApplicationDate,
     updateOperator,
     updateCrop,

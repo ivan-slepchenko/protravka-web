@@ -45,7 +45,7 @@ const validationSchema = Yup.object().shape({
     ).min(1, "At least one product is required")
 });
 
-const currentDate = new Date().toISOString().split('T')[0];
+const currentDate = Date.now();
 
 const hasProductDetailError = (errors: FormikErrors<NewOrderState>, touched: FormikTouched<NewOrderState>, index: number, field: keyof ProductDetail): boolean => {
     if(!touched.productDetails?.[index]?.rateType) return false; 
@@ -91,7 +91,7 @@ export const FinalizeRecipe = () => {
     const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
     const navigate = useNavigate();
     const [showPopup, setShowPopup] = useState(false);
-    const [orderDate, setOrderDate] = useState('');
+    const [orderDate, setOrderDate] = useState(Date.now());
     const [doNotShowAgain, setDoNotShowAgain] = useState(() => {
         return localStorage.getItem('doNotShowAgain') === 'true';
     });
@@ -248,7 +248,7 @@ export const FinalizeRecipe = () => {
                                                 size="md"
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
-                                                    dispatch(updateApplicationDate(e.target.value));
+                                                    dispatch(updateApplicationDate(new Date(e.target.value).getTime()));
                                                 }}
                                                 borderColor={props.errors.applicationDate && props.touched.applicationDate ? "red.500" : "gray.300"}
                                                 disabled={isSaving}

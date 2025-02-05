@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
-import { TkwMeasurement } from '../store/executionSlice';
+import { OrderExecution, TkwMeasurement, fetchOrderExecution } from '../store/executionSlice';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 
 interface ControlledOrderCardProps {
@@ -21,8 +21,19 @@ const stateToLabel: Partial<Record<OrderStatus, string>> = {
     [OrderStatus.ToAcknowledge]: TREATED_LABEL,
 };
 
-
 const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measurements, onClick }) => {
+    const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
+
+    useEffect(() => {
+        if (order.id) {
+            fetchOrderExecution(order.id).then((execution) => {
+                setOrderExecution(execution);
+            }).catch((error) => {
+                console.error('Failed to fetch order execution:', error);
+            });
+        }
+    }, [order.id]);
+
     const calculateAverageTkw = (measurements: TkwMeasurement[]) => {
         if (measurements.length === 0) return 'N/A';
         const totalTkw = measurements.reduce((sum, measurement) => {
@@ -34,6 +45,9 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
     };
 
     const treatedAverageTkw = calculateAverageTkw(measurements);
+    const treatmentStartDate = orderExecution?.treatmentStartDate ? new Date(orderExecution.treatmentStartDate).toLocaleString() : 'N/A';
+    const treatmentFinishDate = orderExecution?.treatmentFinishDate ? new Date(orderExecution.treatmentFinishDate).toLocaleString() : 'N/A';
+    const numberOfTkwMeasurements = measurements.length;
 
     return (
         <Box
@@ -69,6 +83,16 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
                 <Text px={1} isTruncated>{order.tkw.toFixed(2)}</Text>
                 <Text px={1} gridColumn="span 2">Treated Average TKW:</Text>
                 <Text px={1} isTruncated>{treatedAverageTkw}</Text>
+                <Text px={1} gridColumn="span 2">Treatment Started:</Text>
+                <Text px={1} isTruncated>{treatmentStartDate}</Text>
+                <Text px={1} gridColumn="span 2">Tests Performed:</Text>
+                <Text px={1} isTruncated>{numberOfTkwMeasurements}</Text>
+                {(order.status === OrderStatus.Completed || order.status === OrderStatus.Failed || order.status === OrderStatus.ToAcknowledge) && (
+                    <>
+                        <Text px={1} gridColumn="span 2">Treatment Finished:</Text>
+                        <Text px={1} isTruncated>{treatmentFinishDate}</Text>
+                    </>
+                )}
             </Grid>
         </Box>
     );

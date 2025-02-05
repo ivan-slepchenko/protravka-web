@@ -34,6 +34,9 @@ const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
                 <Text px={1} gridColumn="span 3" color="gray.600">
                     Lot: {order.lotNumber}
                 </Text>
+                <Text px={1} gridColumn="span 3">
+                    Assignment Date: {new Date(order.creationDate).toISOString().split('T')[0]}
+                </Text>
                 <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
                 <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
             </Grid>

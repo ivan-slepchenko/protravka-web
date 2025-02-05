@@ -24,6 +24,11 @@ const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick 
         });
     }, [dispatch, measurement.orderExecution.orderId]);
 
+    if (measurement.orderExecution.treatmentStartDate === null) {
+        console.error('Measurement has no treatment start date, invalid card is displayed:', measurement);
+        return null;
+    }
+
     return (
         <Box
             borderColor={'gray.200'}
@@ -48,6 +53,10 @@ const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick 
                 <Text px={1} gridColumn="span 3" color="gray.600">
                     Lot: {order ? order.lotNumber : 'Loading...'}
                 </Text>
+                <Text px={1} gridColumn="span 3">Treatment Started:</Text>
+
+                <Text px={1} isTruncated>{new Date(measurement.orderExecution.treatmentStartDate).toLocaleString()}</Text>
+                
                 <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
                 <Text px={1} textAlign='right'>{order ? `${order.seedsToTreatKg} kg` : 'Loading...'}</Text>
                 <Text px={1} gridColumn="span 2">Measurement Date:</Text>
