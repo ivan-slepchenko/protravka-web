@@ -186,6 +186,57 @@ export const updateTkwMeasurement = createAsyncThunk(
     },
 );
 
+export const fetchOrderExecutionStartDate = createAsyncThunk(
+    'execution/fetchOrderExecutionStartDate',
+    async (orderId: string, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}/start-date`, {
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch order execution start date');
+            }
+            return await response.json();
+        } catch (error) {
+            return rejectWithValue((error as Error).message);
+        }
+    },
+);
+
+export const fetchOrderExecutionFinishDate = createAsyncThunk(
+    'execution/fetchOrderExecutionFinishDate',
+    async (orderId: string, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}/finish-date`, {
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch order execution finish date');
+            }
+            return await response.json();
+        } catch (error) {
+            return rejectWithValue((error as Error).message);
+        }
+    },
+);
+
+export const fetchLatestTkwMeasurementDate = createAsyncThunk(
+    'execution/fetchLatestTkwMeasurementDate',
+    async (orderId: string, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}/latest-tkw`, {
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch latest TKW measurement date');
+            }
+            return await response.json();
+        } catch (error) {
+            return rejectWithValue((error as Error).message);
+        }
+    },
+);
+
 const executionSlice = createSlice({
     name: 'execution',
     initialState,

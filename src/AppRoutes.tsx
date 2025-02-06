@@ -12,7 +12,7 @@ import Signup from './auth/Signup';
 import { NewReceipe as NewReceipeNoLab } from './newReceipe/noLab/NewReceipe';
 import { NewReceipe as NewReceipeLab } from './newReceipe/lab/NewReceipe';
 import LotReport from './report/LotReport';
-import LabBoard from './board/LabBoard';
+import LabBoard from './labBoard/LabBoard';
 import { FinalizeRecipe } from './newReceipe/lab/FinalizeRecipe';
 import { Role } from './operators/Operators';
 import { useSelector } from 'react-redux';

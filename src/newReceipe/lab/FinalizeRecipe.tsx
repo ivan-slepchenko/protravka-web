@@ -31,7 +31,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
 
 const validationSchema = Yup.object().shape({
-    applicationDate: Yup.date().required("Application Date is required"),
+    applicationDate: Yup.number().required("Application Date is required"),
     operatorId: Yup.string().nullable(),
     bagSize: Yup.number().moreThan(0, "Bag Size must be greater than 0").required("Bag Size is required"),
     packaging: Yup.string().required("Packaging is required"),
@@ -246,6 +246,7 @@ export const FinalizeRecipe = () => {
                                                 type="date"
                                                 name="applicationDate"
                                                 size="md"
+                                                value={new Date(props.values.applicationDate).toISOString().split('T')[0]}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
                                                     dispatch(updateApplicationDate(new Date(e.target.value).getTime()));

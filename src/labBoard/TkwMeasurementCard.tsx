@@ -52,15 +52,17 @@ const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick 
                 </Badge>
                 <Text px={1} gridColumn="span 3" color="gray.600">
                     Lot: {order ? order.lotNumber : 'Loading...'}
-                </Text>
-                <Text px={1} gridColumn="span 3">Treatment Started:</Text>
-
-                <Text px={1} isTruncated>{new Date(measurement.orderExecution.treatmentStartDate).toLocaleString()}</Text>
-                
+                </Text>                
                 <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
                 <Text px={1} textAlign='right'>{order ? `${order.seedsToTreatKg} kg` : 'Loading...'}</Text>
-                <Text px={1} gridColumn="span 2">Measurement Date:</Text>
-                <Text px={1} isTruncated>{new Date(measurement.creationDate).toLocaleString()}</Text>
+                <Box gridColumn="span 3">
+                    <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Treatment Started At:</Text>
+                    <Text isTruncated>{new Date(measurement.orderExecution.treatmentStartDate).toLocaleString()}</Text>
+                </Box>
+                <Box gridColumn="span 3">
+                    <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Measurement Assigned At:</Text>
+                    <Text isTruncated>{new Date(measurement.creationDate).toLocaleString()}</Text>
+                </Box>
             </Grid>
         </Box>
     );

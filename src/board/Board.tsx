@@ -2,26 +2,19 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { OrderStatus } from '../store/newOrderSlice';
-import { Box, Flex, Heading, Text, VStack, Badge } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Flex, Heading, VStack } from '@chakra-ui/react';
 import { useFeatures } from '../contexts/FeaturesContext';
+import Card from './Card';
 
 const Board: React.FC = () => {
-    const navigate = useNavigate();
     const features = useFeatures();
     const COMMPLETED_COLUMN = 'Completed';
     const columns = features.features.lab
-        ? [OrderStatus.LabAssignmentCreated, OrderStatus.TKWConfirmed, OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.LabControl, OrderStatus.ToAcknowledge, 'Done']
+        ? [OrderStatus.LabAssignmentCreated, OrderStatus.TKWConfirmed, OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.LabControl, OrderStatus.ToAcknowledge, COMMPLETED_COLUMN]
         : [OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.ToAcknowledge, COMMPLETED_COLUMN];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
-    const handleRecipeClick = (orderId: string, status: OrderStatus) => {
-        if (status === OrderStatus.TKWConfirmed) {
-            navigate(`/finalize/${orderId}`);
-        } else {
-            navigate(`/lot-report/${orderId}`);
-        }
-    };
+    console.log('Orders:', orders);
 
     return (
         <Flex w="full" justifyContent={'center'} h="100vh">
@@ -32,49 +25,16 @@ const Board: React.FC = () => {
                         <Box key={column} w="full" border="gray.100" borderRadius="md" p={2} bg={bgColor}>
                             <Heading size="sm" m={1} mb={2}>{column}</Heading>
                             <VStack spacing={3} w="full">
-                                {orders.filter(order => column === COMMPLETED_COLUMN ? [OrderStatus.Completed, OrderStatus.Failed].includes(order.status) : order.status === column).map((order, index) => {
-                                    let cardColor = "white";
-                                    let statusLabel = null;
-                                    if (order.status === OrderStatus.Completed) {
-                                        cardColor = "green.50";
-                                        statusLabel = <Badge colorScheme="green" ml="auto">Success</Badge>;
-                                    } else if (order.status === OrderStatus.Failed) {
-                                        cardColor = "red.50";
-                                        statusLabel = <Badge colorScheme="red" ml="auto">Failed</Badge>;
+                                {orders.filter(order => {
+                                    if (column === COMMPLETED_COLUMN) {
+                                        console.log('Order:', order);
+                                        return order.status === OrderStatus.Completed || order.status === OrderStatus.Failed;
+                                    } else {
+                                        return order.status === column
                                     }
-                                    return (
-                                        <Box
-                                            key={index}
-                                            borderColor={'gray.200'}
-                                            borderWidth={1}
-                                            borderStyle={'solid'}
-                                            borderRadius="md"
-                                            p={2}
-                                            w="full"
-                                            cursor="pointer"
-                                            onClick={() => handleRecipeClick(order.id, order.status)}
-                                            bg={cardColor}
-                                            boxShadow="sm"
-                                        >
-                                            <Box display="grid" gridTemplateColumns="1fr 3fr" gap={2} fontSize="sm">
-                                                <Badge gridColumn="span 3" colorScheme="gray">
-                                                    {order.crop?.name}, {order.variety?.name}
-                                                </Badge>
-                                                {statusLabel}
-                                                <Text px={1} gridColumn="span 3" color="gray.600">
-                                                    Lot: {order.lotNumber}
-                                                </Text>
-                                                <Text px={1} gridColumn="span 3">
-                                                    {'for '}{order.operator?.name} {order.operator?.surname}
-                                                </Text>
-                                                <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
-                                                <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
-                                                <Text px={1} gridColumn="span 2">Application:</Text>
-                                                <Text px={1} isTruncated>{order.applicationDate}</Text>
-                                            </Box>
-                                        </Box>
-                                    );
-                                })}
+                                }).map((order, index) => (
+                                    <Card key={index} order={order} />
+                                ))}
                             </VStack>
                         </Box>
                     );

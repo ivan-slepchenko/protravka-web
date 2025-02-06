@@ -46,8 +46,6 @@ export enum Packaging {
 export interface Order {
     id: string;
     productDetails: ProductDetail[];
-    creationDate: number;
-    applicationDate: number;
     operator: Operator | null;
     crop: Crop;
     variety: Variety;
@@ -64,6 +62,11 @@ export interface Order {
     orderRecipe: OrderRecipe | null;
     extraSlurry: number;
     tkwMeasurementInterval: number;
+    tkwMeasurementDate: number;
+    creationDate: number;
+    finalizationDate: number;
+    applicationDate: number;
+    completionDate: number;
 }
 
 export interface NewOrderState {
@@ -89,7 +92,6 @@ export interface NewOrderState {
 export const createNewEmptyOrder: () => NewOrderState = () => ({
     id: new Date().toISOString(),
     productDetails: [],
-    applicationDate: Date.now(),
     operatorId: null,
     cropId: null,
     varietyId: null,
@@ -104,6 +106,7 @@ export const createNewEmptyOrder: () => NewOrderState = () => ({
     slurryTotalMlRecipeToMix: null,
     slurryTotalGrRecipeToMix: null,
     totalCompoundsDensity: null,
+    applicationDate: Date.now(),
 });
 
 export const createNewEmptyProduct: () => ProductDetail = () => ({

@@ -43,24 +43,28 @@ const App = () => {
     useEffect(() => {
         if (isInitialLoadRef.current) {
             isInitialLoadRef.current = false;
-        } else {
-            const oldIds = oldMeasurementsRef.current.map((m) => m.id);
-            const newIds = tkwMeasurements.map((m) => m.id);
-            const isNewMeasurementsAdded = newIds.some((id) => !oldIds.includes(id));
+        } else if (oldMeasurementsRef.current !== null) {
+            try {
+                const oldIds = oldMeasurementsRef.current.map((m) => m.id);
+                const newIds = tkwMeasurements.map((m) => m.id);
+                const isNewMeasurementsAdded = newIds.some((id) => !oldIds.includes(id));
             
 
-            const oldOrderIds = oldOrdersRef.current.map((o) => o.id);
-            const newOrderIds = orders.map((o) => o.id);
-            const isNewOrderAdded = newOrderIds.some((id) => !oldOrderIds.includes(id));
-            if (isNewOrderAdded || isNewMeasurementsAdded) {
-                if (useLab && user.roles.includes(Role.LABORATORY)) {
-                    addAlert('You have measurements to check');
+                const oldOrderIds = oldOrdersRef.current.map((o) => o.id);
+                const newOrderIds = orders.map((o) => o.id);
+                const isNewOrderAdded = newOrderIds.some((id) => !oldOrderIds.includes(id));
+                if (isNewOrderAdded || isNewMeasurementsAdded) {
+                    if (useLab && user.roles.includes(Role.LABORATORY)) {
+                        addAlert('You have measurements to check');
+                    }
+                } 
+                if (isNewOrderAdded) {
+                    if (user.roles.includes(Role.OPERATOR)) {
+                        addAlert('You have taks to do');
+                    }
                 }
-            } 
-            if (isNewOrderAdded) {
-                if (user.roles.includes(Role.OPERATOR)) {
-                    addAlert('You have taks to do');
-                }
+            } catch (error) {
+                console.error('Failed to check new measurements:', error);
             }
         }
 
@@ -84,7 +88,7 @@ const App = () => {
                 });
 
                 dispatch(fetchOrders());
-                setTimeout(() => {
+                setInterval(() => {
                     dispatch(fetchOrders());
                 }, 10000);
 
@@ -96,7 +100,7 @@ const App = () => {
 
                 if (useLab && user.roles.includes(Role.LABORATORY)) {
                     dispatch(fetchTkwMeasurements());
-                    setTimeout(() => {
+                    setInterval(() => {
                         dispatch(fetchTkwMeasurements());
                     }, 10000);
                 }

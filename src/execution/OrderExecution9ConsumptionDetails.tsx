@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack, Center } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
@@ -9,6 +9,7 @@ export default function OrderExecution9ConsumptionDetails() {
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const applicationMethod = currentOrderExecution?.applicationMethod;
+    const [inputValue, setInputValue] = useState<number | null>(null);
     
     const currentProductIndex = useSelector((state: RootState) => state.execution.currentOrderExecution?.currentProductIndex);
     const currentProductId = (currentProductIndex !== undefined && currentProductIndex !== null) ? currentOrder?.productDetails[currentProductIndex].product?.id : undefined;
@@ -18,6 +19,7 @@ export default function OrderExecution9ConsumptionDetails() {
     }
     
     const handleInputChange = (value: number) => {
+        setInputValue(value);
         if (applicationMethod === 'Surry') {
             dispatch(setExecutedSlurryConsumptionPerLotKg({ orderId: currentOrder.id, slurryConsumptionPerLotKg: value }));
         } else {
@@ -86,7 +88,7 @@ export default function OrderExecution9ConsumptionDetails() {
                     <VStack>
                         <Heading size="md" mb={2}>
                             {applicationMethod === 'Surry'
-                                ? `Total Slurry Consumption / ${currentOrder?.seedsToTreatKg ?? 0} kg`
+                                ? `Total Slurry Consumption ${currentOrder?.seedsToTreatKg ?? 0} kg`
                                 : <span>
                                     {'Product # '}
                                     {currentProductIndex + 1}
@@ -121,6 +123,7 @@ export default function OrderExecution9ConsumptionDetails() {
                     borderRadius="full"
                     _hover={{ backgroundColor: 'orange.200' }}
                     onClick={handleNext}
+                    disabled={inputValue === null}
                 >
                     Next
                 </Button>
