@@ -140,6 +140,8 @@ const OrderExecution3ApplyingProduct = () => {
         return null;
     };
 
+    console.log('productRecipe', productRecipe);
+
     return (
         <VStack p={4} w="full" h="full">
             {renderContent()}

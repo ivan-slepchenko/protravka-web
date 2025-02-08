@@ -6,22 +6,16 @@ type Features = {
     lab: boolean | undefined;
 };
 
-const FeaturesContext = createContext<{ features: Features; setFeaturesConfig: (features: Features) => void }>({
+const FeaturesContext = createContext<{ features: Features }>({
     features: {
         lab: false,
-    },
-    setFeaturesConfig: () => {
-        return;
-    },
+    }
 });
 
 let rendering = 0;
 
 export const FeaturesProvider = ({ children }: { children: React.ReactNode }) => {
-    const [features, setFeatures] = useState<Features>(() => {
-        const storedFeatures = localStorage.getItem('features');
-        return storedFeatures ? JSON.parse(storedFeatures) : { lab: undefined };
-    });
+    const [features, setFeatures] = useState<Features>({ lab: undefined });
 
     useEffect(() => {
         if (features.lab === undefined) {
@@ -30,6 +24,7 @@ export const FeaturesProvider = ({ children }: { children: React.ReactNode }) =>
                     const response = await fetch(`${BACKEND_URL}/features`);
                     const data = await response.json();
                     setFeatures(data);
+                    console.log('Features:', data);
                 } catch (error) {
                     console.error('Failed to fetch features:', error);
                 }
@@ -39,18 +34,13 @@ export const FeaturesProvider = ({ children }: { children: React.ReactNode }) =>
         }
     }, [features.lab]);
 
-    const setFeaturesConfig = (newFeatures: Features) => {
-        setFeatures(newFeatures);
-        localStorage.setItem('features', JSON.stringify(newFeatures));
-    };
-
     if (features.lab !== undefined) {
         console.log('Rendering features provider children', rendering);
         rendering++;
     }
 
     return (
-        <FeaturesContext.Provider value={{ features, setFeaturesConfig }}>
+        <FeaturesContext.Provider value={{ features }}>
             {features.lab === undefined ? null : children}
         </FeaturesContext.Provider>
     );

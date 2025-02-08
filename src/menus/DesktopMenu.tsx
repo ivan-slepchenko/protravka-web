@@ -4,6 +4,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FiLogOut, FiInfo } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
 import useRoleLinks from '../hooks/useRoleLinks';
+import { useFeatures } from '../contexts/FeaturesContext';
 
 interface MenuProps {
     user: {
@@ -17,6 +18,7 @@ interface MenuProps {
 
 const DesktopMenu: FC<MenuProps> = ({ user, handleLogout }) => {
     const location = useLocation();
+    const features = useFeatures();
     const { managerLinks, adminLinks, operatorLinks, laboratoryLinks } = useRoleLinks(user.roles);
 
     return (
@@ -52,7 +54,7 @@ const DesktopMenu: FC<MenuProps> = ({ user, handleLogout }) => {
                         {link.label}
                     </Button>
                 ))}
-                {laboratoryLinks.map(link => (
+                {features.features.lab && laboratoryLinks.map(link => (
                     <Button
                         w="full"
                         as={RouterLink}

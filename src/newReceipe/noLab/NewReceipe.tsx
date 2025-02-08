@@ -1,4 +1,4 @@
-import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure, Table, Thead, Tr, Th, Tbody, Td, VStack, Heading } from "@chakra-ui/react";
+import { Center, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Box, Button, HStack, Text, Grid, Input, Select, InputGroup, useDisclosure, Table, Thead, Tr, Th, Tbody, Td, VStack, Heading, CloseButton, CircularProgress, IconButton } from "@chakra-ui/react";
 import { Role } from '../../operators/Operators';
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
@@ -34,8 +34,7 @@ import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
 
 const validationSchema = Yup.object().shape({
-    recipeDate: Yup.date().required("Recipe Date is required"),
-    applicationDate: Yup.date().required("Application Date is required"),
+    applicationDate: Yup.number().required("Application Date is required"),
     operatorId: Yup.string().optional(),
     cropId: Yup.string().required("Crop is required"),
     varietyId: Yup.string().required("Variety is required"),
@@ -93,7 +92,6 @@ export const NewReceipe = () => {
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder as NewOrderState);
     const crops = useSelector((state: RootState) => state.crops.crops);
-    const selectedCropId = useSelector((state: RootState) => state.newOrder.cropId);
     const products = useSelector((state: RootState) => state.products.products);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
@@ -104,19 +102,23 @@ export const NewReceipe = () => {
         return localStorage.getItem('doNotShowAgain') === 'true';
     });
     const addAlert = useAlert().addAlert;
+    const [isSaving, setIsSaving] = useState<boolean>(false);
 
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
+        setIsSaving(true);
         values.status = OrderStatus.RecipeCreated;
-        dispatch(createOrder(values));
-        dispatch(fetchOrders());
-        dispatch(setOrderState(createNewEmptyOrder()));
-        resetForm();
-        setOrderDate(values.applicationDate);
-        if (!doNotShowAgain) {
-            setShowPopup(true);
-        } else {
-            addAlert('Recipe successfully created.');
-        }
+        dispatch(createOrder(values)).then(() => {
+            dispatch(fetchOrders());
+            dispatch(setOrderState(createNewEmptyOrder()));
+            resetForm();
+            setOrderDate(values.applicationDate);
+            setIsSaving(false);
+            if (!doNotShowAgain) {
+                setShowPopup(true);
+            } else {
+                addAlert('Recipe successfully created.');
+            }
+        });
     };
 
     const handleClearAll = (resetForm: () => void) => {
@@ -158,9 +160,12 @@ export const NewReceipe = () => {
     const filteredOperators = operators.filter(operator => operator.roles.includes(operatorRole));
 
     return (
-        <Center w='full' h='full' fontSize={'xs'}>
-            <VStack>
+        <VStack w="full" h='full' fontSize={'xs'} p={4}>
+            <HStack w="full">
                 <Heading size="lg">New Receipe</Heading>
+                <CloseButton ml="auto" onClick={() => navigate(-1)} />
+            </HStack>
+            <VStack w="full" h="full" justifyContent={'center'}>
                 <Formik
                     initialValues={{
                         ...formData,
@@ -183,9 +188,11 @@ export const NewReceipe = () => {
                             }
                         }, [props.values, props.isValid, dispatch]);
 
+                        const selectedCropId = props.values.cropId;
+
                         return (
                             <form onSubmit={props.handleSubmit} style={{ width: '100%' }}>
-                                <Box width="full" mx="auto" p="4">
+                                <Box width="full" mx="auto"  pointerEvents={isSaving ? 'none' : 'auto'}>
                                     {/* Recipe Info */}
                                     <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4">
                                         <Box>
@@ -195,11 +202,13 @@ export const NewReceipe = () => {
                                                 type="date"
                                                 name="applicationDate"
                                                 size="md"
+                                                value={new Date(props.values.applicationDate).toISOString().split('T')[0]}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
                                                     dispatch(updateApplicationDate(new Date(e.target.value).getTime()));
                                                 }}
                                                 borderColor={props.errors.applicationDate && props.touched.applicationDate ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             />
                                         </Box>
                                         <Box>
@@ -211,10 +220,13 @@ export const NewReceipe = () => {
                                                 size="md"
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
-                                                    dispatch(updateOperator(e.target.value));
+                                                    dispatch(updateOperator(e.target.value || null));
                                                 }}
+                                                value={props.values.operatorId || ''}
                                                 borderColor={props.errors.operatorId && props.touched.operatorId ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             >
+                                                <option value="">Any operator</option>
                                                 {filteredOperators.map((operator) => (
                                                     <option key={operator.id} value={operator.id}>
                                                         {operator.name} {operator.surname}
@@ -231,9 +243,11 @@ export const NewReceipe = () => {
                                                 size="md"
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
-                                                    dispatch(updateCrop(e.target.value));
+                                                    dispatch(updateCrop(e.target.value || null));
                                                 }}
+                                                value={props.values.cropId || ''}
                                                 borderColor={props.errors.cropId && props.touched.cropId ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             >
                                                 {crops.map((crop) => (
                                                     <option key={crop.id} value={crop.id}>
@@ -247,16 +261,17 @@ export const NewReceipe = () => {
                                             <Field
                                                 as={Select}
                                                 name="varietyId"
-                                                placeholder={selectedCropId === undefined ? "Select crop first" : "Select variety"}
+                                                placeholder={selectedCropId === null ? "Select crop first" : "Select variety"}
                                                 size="md"
-                                                disabled={selectedCropId === undefined}
+                                                disabled={selectedCropId === null || isSaving}
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
-                                                    if (selectedCropId === undefined) {
+                                                    if (selectedCropId === null) {
                                                         throw new Error("Crop is not selected");
                                                     }
-                                                    dispatch(updateVariety(e.target.value));
+                                                    dispatch(updateVariety(e.target.value || null));
                                                 }}
+                                                value={props.values.varietyId || ''}
                                                 borderColor={props.errors.varietyId && props.touched.varietyId ? "red.500" : "gray.300"}
                                             >
                                                 {crops.find(crop => crop.id === selectedCropId)?.varieties.map((variety) => (
@@ -276,7 +291,9 @@ export const NewReceipe = () => {
                                                     props.handleChange(e);
                                                     dispatch(updateLotNumber(e.target.value));
                                                 }}
+                                                value={props.values.lotNumber}
                                                 borderColor={props.errors.lotNumber && props.touched.lotNumber ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             />
                                         </Box>
                                         <Box>
@@ -290,9 +307,11 @@ export const NewReceipe = () => {
                                                 placeholder="0"
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
-                                                    dispatch(updateTkw(parseFloat(e.target.value) || 0));
+                                                    dispatch(updateTkw(parseFloat(e.target.value) || null));
                                                 }}
+                                                value={props.values.tkw !== null ? props.values.tkw : ''}
                                                 borderColor={props.errors.tkw && props.touched.tkw ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             />
                                         </Box>
                                         <Box>
@@ -306,9 +325,11 @@ export const NewReceipe = () => {
                                                 step="0.01"
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
-                                                    dispatch(updateseedsToTreatKg(parseFloat(e.target.value) || 0));
+                                                    dispatch(updateseedsToTreatKg(parseFloat(e.target.value) || null));
                                                 }}
+                                                value={props.values.seedsToTreatKg !== null ? props.values.seedsToTreatKg : ''}
                                                 borderColor={props.errors.seedsToTreatKg && props.touched.seedsToTreatKg ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             />
                                         </Box>
                                         <Box>
@@ -321,14 +342,16 @@ export const NewReceipe = () => {
                                                     props.handleChange(e);
                                                     dispatch(updatePackaging(e.target.value as Packaging));
                                                 }}
+                                                value={props.values.packaging}
                                                 borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
+                                                disabled={isSaving}
                                             >
                                                 <option value={Packaging.InSeeds}>s/units</option>
                                                 <option value={Packaging.InKg}>kg</option>
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md" mb="2">Bag Size ({formData.packaging === Packaging.InSeeds ? 's/units' : 'kg'}):</Text>
+                                            <Text fontSize="md">Bag Size ({props.values.packaging === Packaging.InSeeds ? 's/units' : 'kg'}):</Text>
                                             <InputGroup size="md">
                                                 <Field
                                                     as={Input}
@@ -338,9 +361,11 @@ export const NewReceipe = () => {
                                                     step="0.01"
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                         props.handleChange(e);
-                                                        dispatch(updateBagSize(parseFloat(e.target.value) || 0));
+                                                        dispatch(updateBagSize(parseFloat(e.target.value) || null));
                                                     }}
+                                                    value={props.values.bagSize !== null ? props.values.bagSize : ''}
                                                     borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
+                                                    disabled={isSaving}
                                                 />
                                             </InputGroup>
                                         </Box>
@@ -357,9 +382,11 @@ export const NewReceipe = () => {
                                                     step="0.01"
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                         props.handleChange(e);
-                                                        dispatch(updateExtraSlurry(parseFloat(e.target.value)));
+                                                        dispatch(updateExtraSlurry(parseFloat(e.target.value) || null));
                                                     }}
+                                                    value={props.values.extraSlurry !== null ? props.values.extraSlurry : ''}
                                                     borderColor={props.errors.extraSlurry && props.touched.extraSlurry ? "red.500" : "gray.300"}
+                                                    disabled={isSaving}
                                                 />
                                             </InputGroup>
                                         </Box>
@@ -386,7 +413,9 @@ export const NewReceipe = () => {
                                                                         dispatch(updateProductDetail({ ...props.values.productDetails[index], productId: selectedProduct.id }));
                                                                     }
                                                                 }}
+                                                                value={props.values.productDetails[index].productId || ''}
                                                                 borderColor={hasProductDetailError(props.errors, props.touched, index, 'productId') ? "red.500" : "gray.300"}
+                                                                disabled={isSaving}
                                                             >
                                                                 {products.map((product) => (
                                                                     <option key={product.id} value={product.id}>
@@ -414,8 +443,10 @@ export const NewReceipe = () => {
                                                                         props.setFieldValue(`productDetails.${index}.rateType`, rateType);
                                                                         dispatch(updateProductDetail({ ...props.values.productDetails[index], rateType }));
                                                                     }}
+                                                                    value={props.values.productDetails[index].rateType || ''}
                                                                     borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateType') ? "red.500" : "gray.300"}
                                                                     borderRightRadius="0"
+                                                                    disabled={isSaving}
                                                                 >
                                                                     <option value={RateType.Unit}>{getRateTypeLabel(RateType.Unit)}</option>
                                                                     <option value={RateType.Per100Kg}>{getRateTypeLabel(RateType.Per100Kg)}</option>
@@ -434,8 +465,10 @@ export const NewReceipe = () => {
                                                                         props.setFieldValue(`productDetails.${index}.rateUnit`, rateUnit);
                                                                         dispatch(updateProductDetail({ ...props.values.productDetails[index], rateUnit }));
                                                                     }}
+                                                                    value={props.values.productDetails[index].rateUnit || ''}
                                                                     borderColor={hasProductDetailError(props.errors, props.touched, index, 'rateUnit') && props.touched.productDetails?.[index]?.rateUnit ? "red.500" : "gray.300"}
                                                                     borderRadius="0"
+                                                                    disabled={isSaving}
                                                                 >
                                                                     <option value={RateUnit.ML}>{getRateUnitLabel(RateUnit.ML)}</option>
                                                                     <option value={RateUnit.G}>{getRateUnitLabel(RateUnit.G)}</option>
@@ -453,8 +486,9 @@ export const NewReceipe = () => {
                                                                         props.setFieldValue(`productDetails.${index}.rate`, rate);
                                                                         dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
                                                                     }}
-                                                                    value={props.values.productDetails[index].rate === 0 ? "" : props.values.productDetails[index].rate}
+                                                                    value={props.values.productDetails[index].rate !== 0 ? props.values.productDetails[index].rate : ''}
                                                                     borderColor={hasProductDetailError(props.errors, props.touched, index, 'rate') ? "red.500" : "gray.300"}
+                                                                    disabled={isSaving}
                                                                 />
                                                             </HStack>
                                                         </Box>
@@ -465,7 +499,7 @@ export const NewReceipe = () => {
                                                         const newEmptyProduct = createNewEmptyProduct();
                                                         push(newEmptyProduct);
                                                         dispatch(addProductDetail(createNewEmptyProduct()));
-                                                    }} ml="auto" mb={4}>+ Add Product</Button>
+                                                    }} ml="auto" mb={4} disabled={isSaving}>+ Add Product</Button>
                                                 </HStack>
                                             </Box>
                                         )}
@@ -500,8 +534,8 @@ export const NewReceipe = () => {
                                             </Table>
                                         )}
                                         
-                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)}>Clear All</Button>
-                                        <Button colorScheme="green" size="md" type="submit">Done</Button>
+                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>Clear All</Button>
+                                        <Button colorScheme="green" size="md" type="submit" isLoading={isSaving} spinner={<CircularProgress isIndeterminate size="24px" color="green.500" />}>Done</Button>
                                     </HStack>
                                 </Box>
 
@@ -547,6 +581,6 @@ export const NewReceipe = () => {
                     }}
                 </Formik>
             </VStack>
-        </Center>
+        </VStack>
     );
 };

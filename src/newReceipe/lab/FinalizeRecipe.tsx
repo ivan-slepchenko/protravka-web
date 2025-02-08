@@ -210,7 +210,10 @@ export const FinalizeRecipe = () => {
 
     return (
         <VStack w='full' h='full' fontSize={'xs'} p={4} >
-            <HStack w="full"><Heading size="lg">Finalize Receipe</Heading><CloseButton  ml="auto" onClick={() => navigate(-1)}/></HStack>
+            <HStack w="full">
+                <Heading size="lg">Finalize Receipe</Heading>
+                <CloseButton ml="auto" onClick={() => navigate(-1)} />
+            </HStack>
             <VStack w="full" h="full" justifyContent={'center'}>
                 <Formik
                     initialValues={{

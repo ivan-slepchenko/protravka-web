@@ -163,34 +163,34 @@ const newOrderSlice = createSlice({
         updateApplicationDate: (state, action: PayloadAction<number>) => {
             state.applicationDate = action.payload;
         },
-        updateOperator: (state, action: PayloadAction<string>) => {
+        updateOperator: (state, action: PayloadAction<string | null>) => {
             state.operatorId = action.payload;
         },
-        updateCrop: (state, action: PayloadAction<string>) => {
+        updateCrop: (state, action: PayloadAction<string | null>) => {
             state.cropId = action.payload;
         },
-        updateVariety: (state, action: PayloadAction<string>) => {
+        updateVariety: (state, action: PayloadAction<string | null>) => {
             state.varietyId = action.payload;
         },
         updateLotNumber: (state, action: PayloadAction<string>) => {
             state.lotNumber = action.payload;
         },
-        updateTkw: (state, action: PayloadAction<number>) => {
+        updateTkw: (state, action: PayloadAction<number | null>) => {
             state.tkw = action.payload;
         },
-        updateseedsToTreatKg: (state, action: PayloadAction<number>) => {
+        updateseedsToTreatKg: (state, action: PayloadAction<number | null>) => {
             state.seedsToTreatKg = action.payload;
         },
         updatePackaging: (state, action: PayloadAction<Packaging>) => {
             state.packaging = action.payload;
         },
-        updateBagSize: (state, action: PayloadAction<number>) => {
+        updateBagSize: (state, action: PayloadAction<number | null>) => {
             state.bagSize = action.payload;
         },
         updateStatus: (state, action: PayloadAction<OrderStatus>) => {
             state.status = action.payload;
         },
-        updateExtraSlurry: (state, action: PayloadAction<number>) => {
+        updateExtraSlurry: (state, action: PayloadAction<number | null>) => {
             state.extraSlurry = action.payload;
         },
         updateTkwMeasurementInterval: (state, action: PayloadAction<number>) => {
