@@ -77,16 +77,16 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                 <Text px={1} isTruncated>{order.lotNumber}</Text>
                 <Text px={1} gridColumn="span 2" color="gray.600">To Treat:</Text>
                 <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
-                {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TKWConfirmed &&<Box gridColumn="span 3">
-                    <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Application:</Text>
-                    <Text isTruncated >{new Date(order.applicationDate).toLocaleString()}</Text>
-                </Box>}
                 {order.status === OrderStatus.LabAssignmentCreated && (
                     <Box gridColumn="span 3">
                         <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{features.features.lab ? 'Assigned At:' : 'Created At:'}</Text>
                         <Text isTruncated>{new Date(order.creationDate).toLocaleString()}</Text>
                     </Box>
                 )}
+                {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TKWConfirmed && <Box gridColumn="span 3">
+                    <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Application:</Text>
+                    <Text isTruncated >{new Date(order.applicationDate).toLocaleString()}</Text>
+                </Box>}
                 {order.status === OrderStatus.TKWConfirmed && (
                     <Box gridColumn="span 3">
                         <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Raw TKW Measured At:</Text>
