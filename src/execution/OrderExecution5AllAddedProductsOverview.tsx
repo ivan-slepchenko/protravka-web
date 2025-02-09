@@ -24,7 +24,6 @@ const OrderExecution5AllAddedProductsOverview = () => {
 
     const handleNextButtonClicked = React.useCallback(() => {
         dispatch(nextPage());
-        dispatch(saveOrderExecutionTreatmentStartTime(currentOrder.id));
     }, [dispatch, currentOrder.id]);
 
     return (

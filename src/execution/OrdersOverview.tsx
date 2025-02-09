@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Box } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { deactivateActiveExecution, saveOrderExecution, setActiveExecutionToEmptyOne } from '../store/executionSlice';
+import { deactivateActiveExecution, saveOrderExecution, saveOrderExecutionTreatmentStartTime, setActiveExecutionToEmptyOne } from '../store/executionSlice';
 import { changeOrderStatus, fetchOrders } from '../store/ordersSlice';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 
@@ -34,6 +34,7 @@ const OrdersOverview: React.FC = () => {
             try {
                 await dispatch(saveOrderExecution()).unwrap(); //if no internet, this fails first. 
                 dispatch(changeOrderStatus({ id: selectedOrder.id, status: OrderStatus.TreatmentInProgress }));
+                dispatch(saveOrderExecutionTreatmentStartTime(selectedOrder.id));
                 onClose();
             } catch (error) {
                 dispatch(deactivateActiveExecution()); //if no internet, because we started execution, we should complete it immediatelly.
