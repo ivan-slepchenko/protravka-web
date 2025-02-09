@@ -75,7 +75,7 @@ const OrderExecution10ConsumptionProoving = () => {
     };
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center">
+        <Box display="flex" justifyContent="center" h='full' alignItems="center">
             <VStack spacing={8} width="100%" maxWidth="400px" h="full" p={4} overflow={'auto'}>
                 <Heading size="md" mb={2}>Make a consumption photo proof.</Heading>
                 <Box

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Box } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { deactivateActiveExecution, saveOrderExecution, setActiveExecutionToEmptyOne } from '../store/executionSlice';
@@ -47,50 +47,52 @@ const OrdersOverview: React.FC = () => {
     };
 
     return (
-        <VStack>
-            {fetchError ? (
-                <>
-                    <Text py={2} px={2} fontSize="lg" color="red.600">No access to internet available.</Text>
-                    <Button colorScheme="orange" onClick={onRefreshClick}>Refresh</Button>
-                </>
-            ) : (
-                <>
-                    <Text py={2} px={2} fontSize="lg">You have the following lots to treat today, {currentDate}</Text>
-                    <Text py={2} px={2} fontSize="md" color="gray.600">Choose the lot to start treatment</Text>
-              
-                    <TableContainer mt={4} w="full">
-                        <Table variant="simple" size="sm" w="full">
-                            <Thead bg="orange.100">
-                                <Tr>
-                                    <Th>Crop</Th>
-                                    <Th>Lot</Th>
-                                    <Th>Products</Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                {orders.map(order => (
-                                    <Tr key={order.id} onClick={() => handleOrderClick(order)} cursor="pointer" _hover={{ bg: "gray.100" }} height={"50px"}>
-                                        <Td>
-                                            <HStack>
-                                                <Text>{order.crop.name}</Text>
-                                                <Text fontSize="sm" color="gray.600">{order.variety.name}</Text>
-                                            </HStack>
-                                        </Td>
-                                        <Td>{order.lotNumber}</Td>
-                                        <Td>
-                                            <VStack gap={2} alignItems={"left"}>
-                                                {order.productDetails.map(productDetail => (
-                                                    <Text key={productDetail.id} fontSize="sm">{productDetail.product?.name}</Text>
-                                                ))}
-                                            </VStack>
-                                        </Td>
+        <Box w='full' h='full'>
+            <VStack w='full' h='full' p={4} overflow='auto'>
+                {fetchError ? (
+                    <>
+                        <Text py={2} px={2} fontSize="lg" color="red.600">No access to internet available.</Text>
+                        <Button colorScheme="orange" onClick={onRefreshClick}>Refresh</Button>
+                    </>
+                ) : (
+                    <>
+                        <Text py={2} px={2} fontSize="lg">You have the following lots to treat today, {currentDate}</Text>
+                        <Text py={2} px={2} fontSize="md" color="gray.600">Choose the lot to start treatment</Text>
+                
+                        <TableContainer mt={4} w="full" overflowY='visible'>
+                            <Table variant="simple" size="sm" w="full">
+                                <Thead bg="orange.100">
+                                    <Tr>
+                                        <Th>Crop</Th>
+                                        <Th>Lot</Th>
+                                        <Th>Products</Th>
                                     </Tr>
-                                ))}
-                            </Tbody>
-                        </Table>
-                    </TableContainer>
-                </>
-            )}
+                                </Thead>
+                                <Tbody>
+                                    {orders.map(order => (
+                                        <Tr key={order.id} onClick={() => handleOrderClick(order)} cursor="pointer" _hover={{ bg: "gray.100" }} height={"50px"}>
+                                            <Td>
+                                                <HStack>
+                                                    <Text>{order.crop.name}</Text>
+                                                    <Text fontSize="sm" color="gray.600">{order.variety.name}</Text>
+                                                </HStack>
+                                            </Td>
+                                            <Td>{order.lotNumber}</Td>
+                                            <Td>
+                                                <VStack gap={2} alignItems={"left"}>
+                                                    {order.productDetails.map(productDetail => (
+                                                        <Text key={productDetail.id} fontSize="sm">{productDetail.product?.name}</Text>
+                                                    ))}
+                                                </VStack>
+                                            </Td>
+                                        </Tr>
+                                    ))}
+                                </Tbody>
+                            </Table>
+                        </TableContainer>
+                    </>
+                )}
+            </VStack>
             <AlertDialog
                 isOpen={isOpen}
                 leastDestructiveRef={cancelRef}
@@ -138,7 +140,7 @@ const OrdersOverview: React.FC = () => {
                     </AlertDialogContent>
                 </AlertDialogOverlay>
             </AlertDialog>
-        </VStack>
+        </Box>
     );
 };
 
