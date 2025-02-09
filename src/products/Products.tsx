@@ -1,4 +1,3 @@
-
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { createProduct, deleteProduct } from '../store/productsSlice';
@@ -53,7 +52,7 @@ const Products = () => {
                 <Input
                     placeholder="Density"
                     value={density}
-                    onChange={(e) => setDensity(e.target.value)}
+                    onChange={(e) => setDensity(e.target.value === '' ? '' : e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value)}
                     borderColor={errors.density ? 'red.500' : 'gray.300'}
                     type="number"
                     step="0.01"

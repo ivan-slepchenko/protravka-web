@@ -190,7 +190,7 @@ export const NewReceipe = () => {
                                                 step="0.01"
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
-                                                    dispatch(updateseedsToTreatKg(parseFloat(e.target.value) || 0));
+                                                    dispatch(updateseedsToTreatKg(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value) || 0));
                                                 }}
                                                 borderColor={props.errors.seedsToTreatKg && props.touched.seedsToTreatKg ? "red.500" : "gray.300"}
                                                 disabled={isSaving}

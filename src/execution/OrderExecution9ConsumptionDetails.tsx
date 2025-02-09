@@ -73,7 +73,7 @@ export default function OrderExecution9ConsumptionDetails() {
                             placeholder="Enter value"
                             type="number"
                             step="0.01"
-                            onChange={(e) => handleInputChange(parseFloat(e.target.value))}
+                            onChange={(e) => handleInputChange(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
                         />
                     </Td>
                 </Tr>

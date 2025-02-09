@@ -306,7 +306,7 @@ export const NewReceipe = () => {
                                                 placeholder="0"
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
-                                                    dispatch(updateTkw(parseFloat(e.target.value) || null));
+                                                    dispatch(updateTkw(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value) || null));
                                                 }}
                                                 value={props.values.tkw !== null ? props.values.tkw : ''}
                                                 borderColor={props.errors.tkw && props.touched.tkw ? "red.500" : "gray.300"}
@@ -324,7 +324,7 @@ export const NewReceipe = () => {
                                                 step="0.01"
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
-                                                    dispatch(updateseedsToTreatKg(parseFloat(e.target.value) || null));
+                                                    dispatch(updateseedsToTreatKg(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value) || null));
                                                 }}
                                                 value={props.values.seedsToTreatKg !== null ? props.values.seedsToTreatKg : ''}
                                                 borderColor={props.errors.seedsToTreatKg && props.touched.seedsToTreatKg ? "red.500" : "gray.300"}
@@ -360,7 +360,7 @@ export const NewReceipe = () => {
                                                     step="0.01"
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                         props.handleChange(e);
-                                                        dispatch(updateBagSize(parseFloat(e.target.value) || null));
+                                                        dispatch(updateBagSize(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value) || null));
                                                     }}
                                                     value={props.values.bagSize !== null ? props.values.bagSize : ''}
                                                     borderColor={props.errors.bagSize && props.touched.bagSize ? "red.500" : "gray.300"}
@@ -381,7 +381,7 @@ export const NewReceipe = () => {
                                                     step="0.01"
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                         props.handleChange(e);
-                                                        dispatch(updateExtraSlurry(parseFloat(e.target.value) || null));
+                                                        dispatch(updateExtraSlurry(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value) || null));
                                                     }}
                                                     value={props.values.extraSlurry !== null ? props.values.extraSlurry : ''}
                                                     borderColor={props.errors.extraSlurry && props.touched.extraSlurry ? "red.500" : "gray.300"}
@@ -481,7 +481,7 @@ export const NewReceipe = () => {
                                                                     borderLeftRadius="0"
                                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                                         const value = e.target.value;
-                                                                        const rate = value === "" ? 0 : parseFloat(value);
+                                                                        const rate = value === "" ? 0 : parseFloat(value.endsWith('.') ? value.slice(0, -1) : value);
                                                                         props.setFieldValue(`productDetails.${index}.rate`, rate);
                                                                         dispatch(updateProductDetail({ ...props.values.productDetails[index], rate }));
                                                                     }}
