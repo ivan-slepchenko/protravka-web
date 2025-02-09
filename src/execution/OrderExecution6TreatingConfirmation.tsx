@@ -22,7 +22,7 @@ const OrderExecution6TreatingConfirmation = () => {
     const lotNumber = currentOrder.lotNumber;
 
     return (
-        <VStack p={4} w="full" h="full" gap={6}>
+        <VStack p={4} w="full" h="full" gap={6} overflow={'auto'}>
             <Center w="full" h="full">
                 <VStack>
                     <Text textAlign="center">

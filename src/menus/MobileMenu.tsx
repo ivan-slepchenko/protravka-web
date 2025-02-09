@@ -24,7 +24,7 @@ const MobileMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
 
     return (
         <>
-            <HStack display={{ base: 'flex', md: 'none' }} w="full" py={2} pl={2} pr={4} justifyContent="space-between" alignItems="center">
+            <HStack display={{ base: 'flex', md: 'none' }} w="full" py={2} pl={2} pr={4} justifyContent="space-between" alignItems="center" flexShrink={0}>
                 <IconButton
                     aria-label="Menu"
                     icon={<FiMenu />}

@@ -117,10 +117,10 @@ const App = () => {
                     {isAuthenticated && (
                         <MobileMenu
                             user={user}
-                            handleLogout={handleLogout}
+                            handleLogout={handleLogout} 
                         />
                     )}
-                    <Box w="full" h="full" position={'relative'}>
+                    <Box w="full" h="calc(100% - 56px)" flexShrink={1} position={'relative'}>
                         <AppRoutes useLab={useLab} />
                     </Box>
                 </VStack>

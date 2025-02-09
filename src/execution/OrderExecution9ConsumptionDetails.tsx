@@ -84,31 +84,29 @@ export default function OrderExecution9ConsumptionDetails() {
     const renderContent = () => {
         return (
             <>
-                <Center w="full" h="full">
-                    <VStack>
-                        <Heading size="md" mb={2}>
-                            {applicationMethod === 'Surry'
-                                ? `Total Slurry Consumption ${currentOrder?.seedsToTreatKg ?? 0} kg`
-                                : <span>
-                                    {'Product # '}
-                                    {currentProductIndex + 1}
-                                    {' of '}
-                                    {currentOrder?.productDetails.length}
-                                    {': '}
-                                    {currentOrder?.productDetails[currentProductIndex].product?.name}
-                                    {` Per ${currentOrder?.seedsToTreatKg ?? 0} kg seeds`}
-                                </span>
-                            }
-                        </Heading>
-                        <Table variant="simple" size="sm" mb={4}>
-                            {renderTableHeaders()}
-                            {renderTableBody()}
-                        </Table>
-                    </VStack>
-                </Center>
-                <Text mb={4}  mt='auto'>
-                    You are obliged to make a photo of scales display on the next page!
-                </Text>
+                <VStack w="full" h="full" overflow={'auto'}>
+                    <Heading size="md" mb={2}>
+                        {applicationMethod === 'Surry'
+                            ? `Total Slurry Consumption ${currentOrder?.seedsToTreatKg ?? 0} kg`
+                            : <span>
+                                {'Product # '}
+                                {currentProductIndex + 1}
+                                {' of '}
+                                {currentOrder?.productDetails.length}
+                                {': '}
+                                {currentOrder?.productDetails[currentProductIndex].product?.name}
+                                {` Per ${currentOrder?.seedsToTreatKg ?? 0} kg seeds`}
+                            </span>
+                        }
+                    </Heading>
+                    <Table variant="simple" size="sm" mb={4}>
+                        {renderTableHeaders()}
+                        {renderTableBody()}
+                    </Table>
+                    <Text mb={4}  mt='auto'>
+                        You are obliged to make a photo of scales display on the next page!
+                    </Text>
+                </VStack>
             </>
         );
     };

@@ -31,77 +31,75 @@ const OrderExecution1InitialOverview = () => {
     };
 
     return (
-        <VStack p={4} w="full" h="full">
-            <Center h='full' w='full'>
-                <VStack w='full'>
-                    <Text fontSize="2xl" fontWeight="bold">Receipe Execution</Text>
-                    <Text>{currentOrder.crop.name} {currentOrder.variety.name}</Text>    
-                    
-                    <Grid templateColumns="3fr 1fr" gap={4} mt={4} >
-                        <GridItem borderBottom="1px dotted">
-                            <Text><strong>Lot:</strong></Text>
-                        </GridItem>
-                        <GridItem borderBottom="1px dotted">
-                            <Text>{currentOrder.lotNumber}</Text>
-                        </GridItem>
+        <VStack p={4} w="full" h="full" flexShrink={1}>
+            <VStack w='full' flexShrink={1} overflow={'auto'}>
+                <Text fontSize="2xl" fontWeight="bold">Receipe Execution</Text>
+                <Text>{currentOrder.crop.name} {currentOrder.variety.name}</Text>    
+                
+                <Grid templateColumns="3fr 1fr" gap={4} mt={4} >
+                    <GridItem borderBottom="1px dotted">
+                        <Text><strong>Lot:</strong></Text>
+                    </GridItem>
+                    <GridItem borderBottom="1px dotted">
+                        <Text>{currentOrder.lotNumber}</Text>
+                    </GridItem>
 
-                        <GridItem borderBottom="1px dotted">
-                            <Text><strong>Seeds To Treat:</strong></Text>
-                        </GridItem>
-                        <GridItem borderBottom="1px dotted">
-                            <Text>{currentOrder.seedsToTreatKg} kg</Text>
-                        </GridItem>
+                    <GridItem borderBottom="1px dotted">
+                        <Text><strong>Seeds To Treat:</strong></Text>
+                    </GridItem>
+                    <GridItem borderBottom="1px dotted">
+                        <Text>{currentOrder.seedsToTreatKg} kg</Text>
+                    </GridItem>
 
-                        <GridItem borderBottom="1px dotted">
-                            <Text><strong>TKW:</strong></Text>
-                        </GridItem>
-                        <GridItem borderBottom="1px dotted">
-                            <Text>{currentOrder.tkw} gr</Text>
-                        </GridItem>
+                    <GridItem borderBottom="1px dotted">
+                        <Text><strong>TKW:</strong></Text>
+                    </GridItem>
+                    <GridItem borderBottom="1px dotted">
+                        <Text>{currentOrder.tkw} gr</Text>
+                    </GridItem>
 
-                        <GridItem borderBottom="1px dotted">
-                            <Text><strong>Bag Size:</strong></Text>
-                        </GridItem>
-                        <GridItem borderBottom="1px dotted">
-                            <Text>{currentOrder.bagSize} {bagSizeUnit}</Text>
-                        </GridItem>
+                    <GridItem borderBottom="1px dotted">
+                        <Text><strong>Bag Size:</strong></Text>
+                    </GridItem>
+                    <GridItem borderBottom="1px dotted">
+                        <Text>{currentOrder.bagSize} {bagSizeUnit}</Text>
+                    </GridItem>
 
-                        <GridItem borderBottom="1px dotted">
-                            <Text><strong>Expected Amount Of Bags:</strong></Text>
-                        </GridItem>
-                        <GridItem borderBottom="1px dotted">
-                            <Text>{currentOrder.orderRecipe ? currentOrder.orderRecipe.nbSeedsUnits.toFixed() : "N/A"}</Text>
-                        </GridItem>
-                    </Grid>
-                    <Table variant="simple" size="sm" mt={4}>
-                        <Thead bg="orange.100">
-                            <Tr>
-                                <Th>Product</Th>
-                                <Th>Litres/Lot</Th>
-                                <Th>Kg/Lot</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {currentOrder.orderRecipe && currentOrder.orderRecipe.productRecipes.map(productRecipe => {
-                                return (
-                                    <Tr key={productRecipe.id}>
-                                        <Td>{productRecipe.productDetail.product?.name}</Td>
-                                        <Td>{(productRecipe.mlSlurryRecipeToMix / 1000).toFixed(2)}</Td>
-                                        <Td>{(productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
-                                    </Tr>
-                                )
-                            })}
-                        </Tbody>
-                        <Tfoot>
-                            <Tr>
-                                <Th>Total</Th>
-                                <Th>{totalLitres ? totalLitres.toFixed(2) : "N/A"}</Th>
-                                <Th>{totalKg ? totalKg.toFixed(2) : "N/A"}</Th>
-                            </Tr>
-                        </Tfoot>
-                    </Table>
-                </VStack>
-            </Center>
+                    <GridItem borderBottom="1px dotted">
+                        <Text><strong>Expected Amount Of Bags:</strong></Text>
+                    </GridItem>
+                    <GridItem borderBottom="1px dotted">
+                        <Text>{currentOrder.orderRecipe ? currentOrder.orderRecipe.nbSeedsUnits.toFixed() : "N/A"}</Text>
+                    </GridItem>
+                </Grid>
+                <Table variant="simple" size="sm" mt={4}>
+                    <Thead bg="orange.100">
+                        <Tr>
+                            <Th>Product</Th>
+                            <Th>Litres/Lot</Th>
+                            <Th>Kg/Lot</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {currentOrder.orderRecipe && currentOrder.orderRecipe.productRecipes.map(productRecipe => {
+                            return (
+                                <Tr key={productRecipe.id}>
+                                    <Td>{productRecipe.productDetail.product?.name}</Td>
+                                    <Td>{(productRecipe.mlSlurryRecipeToMix / 1000).toFixed(2)}</Td>
+                                    <Td>{(productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
+                                </Tr>
+                            )
+                        })}
+                    </Tbody>
+                    <Tfoot>
+                        <Tr>
+                            <Th>Total</Th>
+                            <Th>{totalLitres ? totalLitres.toFixed(2) : "N/A"}</Th>
+                            <Th>{totalKg ? totalKg.toFixed(2) : "N/A"}</Th>
+                        </Tr>
+                    </Tfoot>
+                </Table>
+            </VStack>
             <Checkbox mt='auto' isChecked={isChecked} onChange={(e) => setIsChecked(e.target.checked)}>
                 {'I understand the amount I need to use'}
             </Checkbox>

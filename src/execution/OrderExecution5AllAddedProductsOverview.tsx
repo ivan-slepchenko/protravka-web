@@ -28,7 +28,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
     }, [dispatch, currentOrder.id]);
 
     return (
-        <VStack p={4} w="full" h="full">
+        <VStack p={4} w="full" h="full" overflow={'auto'}>
             <Center w='full' h='full'>
                 <VStack>
                     <Text fontSize="2xl" fontWeight="bold" textAlign="center">You added all products.</Text>

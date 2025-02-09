@@ -143,7 +143,7 @@ const OrderExecution3ApplyingProduct = () => {
     console.log('productRecipe', productRecipe);
 
     return (
-        <VStack p={4} w="full" h="full">
+        <VStack p={4} w="full" h="full" overflow={'auto'}>
             {renderContent()}
         </VStack>
     );

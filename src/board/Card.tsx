@@ -26,7 +26,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                 .unwrap()
                 .then((data) => setTreatmentFinishDate(data.treatmentFinishDate))
                 .catch((error) => console.error('Failed to fetch treatment finish date:', error));
-        } else if (order.status === OrderStatus.ToAcknowledge) {
+        } else if (order.status === OrderStatus.ToAcknowledge && features.features.lab) {
             dispatch(fetchLatestTkwMeasurementDate(order.id))
                 .unwrap()
                 .then((data) => setLatestTkwDate(data.creationDate))
@@ -46,10 +46,10 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
     let statusLabel = null;
     if (order.status === OrderStatus.Completed) {
         cardColor = "green.50";
-        statusLabel = <Badge colorScheme="green" ml="auto">Success</Badge>;
+        statusLabel = <Badge colorScheme="green" gridColumn="span 3" ml="auto">Success</Badge>;
     } else if (order.status === OrderStatus.Failed) {
         cardColor = "red.50";
-        statusLabel = <Badge colorScheme="red" ml="auto">Failed</Badge>;
+        statusLabel = <Badge colorScheme="red" gridColumn="span 3"ml="auto">Failed</Badge>;
     }
 
     return (
@@ -83,20 +83,20 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                         <Text isTruncated>{new Date(order.creationDate).toLocaleString()}</Text>
                     </Box>
                 )}
+                {order.status === OrderStatus.RecipeCreated && (
+                    <Box gridColumn="span 3">
+                        <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Created At:</Text>
+                        <Text isTruncated>{new Date(order.finalizationDate).toLocaleString()}</Text>
+                    </Box>
+                )}
                 {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TKWConfirmed && <Box gridColumn="span 3">
                     <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Application:</Text>
-                    <Text isTruncated >{new Date(order.applicationDate).toLocaleDateString()}</Text>
+                    <Text isTruncated >{new Date(order.applicationDate).toLocaleString()}</Text>
                 </Box>}
                 {order.status === OrderStatus.TKWConfirmed && (
                     <Box gridColumn="span 3">
                         <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Raw TKW Measured At:</Text>
                         <Text isTruncated>{new Date(order.tkwMeasurementDate).toLocaleString()}</Text>
-                    </Box>
-                )}
-                {order.status === OrderStatus.RecipeCreated && (
-                    <Box gridColumn="span 3">
-                        <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Created At:</Text>
-                        <Text isTruncated>{new Date(order.finalizationDate).toLocaleString()}</Text>
                     </Box>
                 )}
                 {order.status === OrderStatus.TreatmentInProgress && treatmentStartDate && (

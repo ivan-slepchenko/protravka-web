@@ -24,57 +24,56 @@ const OrderExecution7PackingDetails = () => {
     }
 
     return (
-        <Center w="full" h="full">
-            <VStack p={4}>
-                <Text fontSize="xl" fontWeight="bold" textAlign="center"><span>How many seeds (kg)</span><br/><span>did you pack out of?</span></Text>
-                <Box
-                    mt={4}
-                    p={8}
-                    bg="orange.500"
-                    color="white"
-                    fontSize="4xl"
-                    fontWeight="bold"
-                    borderRadius="md"
+        
+        <VStack p={4} h='full' overflow={'auto'}>
+            <Text fontSize="xl" fontWeight="bold" textAlign="center"><span>How many seeds (kg)</span><br/><span>did you pack out of?</span></Text>
+            <Box
+                mt={4}
+                p={8}
+                bg="orange.500"
+                color="white"
+                fontSize="4xl"
+                fontWeight="bold"
+                borderRadius="md"
+            >
+                <NumberInput
+                    value={packedseedsToTreatKg}
+                    onChange={(valueString) => setPackedseedsToTreatKgState(valueString === "" ? 0 : Number(valueString))}
+                    min={0}
+                    width="100%"
                 >
-                    <NumberInput
-                        value={packedseedsToTreatKg}
-                        onChange={(valueString) => setPackedseedsToTreatKgState(valueString === "" ? 0 : Number(valueString))}
-                        min={0}
-                        width="100%"
-                    >
-                        <NumberInputField
-                            textAlign="center"
-                            fontSize="inherit"
-                            fontWeight="inherit"
-                            background="inherit"
-                            color="inherit"
-                            border="none"
-                        />
-                    </NumberInput>
-                </Box>
-                <Text p={2} mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
-                <Box p={2} mt={4} w="full">
-                    {currentOrder.seedsToTreatKg > packedseedsToTreatKg ? (
-                        <Text><b><span style={{ color: "red" }}>{(currentOrder.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} kg is missing!</span></b> Please inform your line manager if you cannot find it</Text>
-                    ) : (
-                        <Text>This corresponds to the weight of the lot.</Text>
-                    )}
-                </Box>
-                <HStack justifyContent={"center"} mt='auto'>
-                    <Button
-                        mt={8}
-                        w="100px" 
-                        colorScheme="orange"
-                        borderRadius="full"
-                        _hover={{ bg: "orange.600" }}
-                        size={isMobile ? "md" : "lg"}
-                        onClick={handleNextButtonClick}
-                    >
+                    <NumberInputField
+                        textAlign="center"
+                        fontSize="inherit"
+                        fontWeight="inherit"
+                        background="inherit"
+                        color="inherit"
+                        border="none"
+                    />
+                </NumberInput>
+            </Box>
+            <Text p={2} mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
+            <Box p={2} mt={4} w="full">
+                {currentOrder.seedsToTreatKg > packedseedsToTreatKg ? (
+                    <Text><b><span style={{ color: "red" }}>{(currentOrder.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} kg is missing!</span></b> Please inform your line manager if you cannot find it</Text>
+                ) : (
+                    <Text>This corresponds to the weight of the lot.</Text>
+                )}
+            </Box>
+            <HStack justifyContent={"center"} mt='auto'>
+                <Button
+                    mt={8}
+                    w="100px" 
+                    colorScheme="orange"
+                    borderRadius="full"
+                    _hover={{ bg: "orange.600" }}
+                    size={isMobile ? "md" : "lg"}
+                    onClick={handleNextButtonClick}
+                >
                         Next
-                    </Button>
-                </HStack>
-            </VStack>
-        </Center>
+                </Button>
+            </HStack>
+        </VStack>
     );
 };
 

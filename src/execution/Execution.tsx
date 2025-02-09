@@ -78,7 +78,7 @@ const Execution = () => {
     };
 
     return (
-        <Box p={2} h="full">
+        <Box p={2} h="full" flexShrink={1}>
             {renderCurrentPage()}
         </Box>
     );
