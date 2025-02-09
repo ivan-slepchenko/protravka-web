@@ -76,7 +76,6 @@ const OrderExecution3ApplyingProduct = () => {
                         placeholder="Enter value"
                         value={(currentProductExecution && currentProductExecution.appliedRateKg !== undefined) ? currentProductExecution.appliedRateKg : ''}
                         onChange={(e) => handleValueChange(currentProductId, e.target.value === undefined ? undefined : parseFloat(e.target.value))}
-                        type="number"
                         borderColor={inputError ? 'red.500' : 'gray.200'}
                     />
                 </Td>
