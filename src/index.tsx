@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -110,7 +110,7 @@ const App = () => {
 
     console.log('Rendering App');
 
-    return (
+    const memoizedContent = useMemo(() => (
         <>
             <Box display={{ base: 'block', md: 'none' }} w="full" h="full" position="relative">
                 <VStack w="full" h="full" position="relative">
@@ -138,7 +138,9 @@ const App = () => {
                 </HStack>
             </HStack>
         </>
-    );
+    ), [useLab, user, isAuthenticated]);
+
+    return memoizedContent;
 };
 
 const root = ReactDOM.createRoot(

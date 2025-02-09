@@ -85,7 +85,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                 )}
                 {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TKWConfirmed && <Box gridColumn="span 3">
                     <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Application:</Text>
-                    <Text isTruncated >{new Date(order.applicationDate).toLocaleString()}</Text>
+                    <Text isTruncated >{new Date(order.applicationDate).toLocaleDateString()}</Text>
                 </Box>}
                 {order.status === OrderStatus.TKWConfirmed && (
                     <Box gridColumn="span 3">

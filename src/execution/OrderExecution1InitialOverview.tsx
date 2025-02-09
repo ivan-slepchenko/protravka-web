@@ -35,7 +35,7 @@ const OrderExecution1InitialOverview = () => {
             <Center h='full' w='full'>
                 <VStack w='full'>
                     <Text fontSize="2xl" fontWeight="bold">Receipe Execution</Text>
-                    <Text>{currentOrder.crop.name}{currentOrder.variety.name}</Text>    
+                    <Text>{currentOrder.crop.name} {currentOrder.variety.name}</Text>    
                     
                     <Grid templateColumns="3fr 1fr" gap={4} mt={4} >
                         <GridItem borderBottom="1px dotted">

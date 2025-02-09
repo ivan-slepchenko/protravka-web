@@ -305,7 +305,7 @@ const Report: React.FC = () => {
                                         <Td>{order.crop.name}</Td>
                                         <Td>{order.variety.name}</Td>
                                         <Td>{order.lotNumber}</Td>
-                                        <Td>{order.applicationDate}</Td>
+                                        <Td>{new Date(order.applicationDate).toLocaleDateString()}</Td>
                                         <Td>{order.operator ? order.operator.name : 'N/A'}</Td>
                                         <Td>{order.orderRecipe ? order.orderRecipe.nbSeedsUnits.toFixed(1) : "N/A"}</Td>
                                         <Td>{order.seedsToTreatKg}</Td>
