@@ -610,7 +610,7 @@ export const FinalizeRecipe = () => {
                                         <ModalCloseButton />
                                         <ModalBody>
                                             <Text>
-                                                <span>Recipe successfully created for processing on {orderDate}.</span>
+                                                <span>Recipe successfully created for processing on {new Date(orderDate).toLocaleString()}.</span>
                                                 <br />
                                                 <span>You can view this Recipe in the <strong>Board</strong>, by clicking on your <strong>Receipe</strong> and opening <strong>Recipe Tab</strong>.</span>
                                             </Text>
