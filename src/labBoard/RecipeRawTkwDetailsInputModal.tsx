@@ -74,18 +74,21 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
         <Modal isOpen={!!selectedOrder} onClose={onClose} size="full">
             <ModalOverlay />
             <ModalContent borderRadius="none" w="full" h="full">
-                <ModalHeader fontSize={{ base: "sm", md: "lg" }}>Recipe Raw TKW Details</ModalHeader>
+                <ModalHeader>
+                    {selectedOrder.crop?.name}, {selectedOrder.variety?.name}
+                </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody h="full" overflow='auto'>
                     {!isPhotoState ? (
-                        <Grid templateColumns={{ base: "1fr", md: "3fr 2fr" }} gap={4} w='full'>
+                        <Grid templateColumns="3fr 2fr" gap={4} w='full'>
                             <GridItem colSpan={2}>
                                 <Badge autoCapitalize='none' w="full" colorScheme="gray">
-                                    <Text fontSize={{ base: "md", md: "lg" }}>
-                                            Counting TKW of UNTREATED seeds
+                                    <Text fontSize={{ base: "xs", md: "sm" }}>
+                                        Counting TKW of UNTREATED seeds
                                     </Text>
                                 </Badge>
                             </GridItem>
+                            
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <Text fontSize={{ base: "sm", md: "md" }}><strong>Lot:</strong></Text>
                             </GridItem>
@@ -98,6 +101,14 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.seedsToTreatKg} kg.</Text>
+                            </GridItem>
+
+                            <GridItem px={1} h={10} alignContent={'center'}>
+                                <Text fontSize={{ base: "sm", md: "md" }}><strong>Assignment Created At:</strong></Text>
+                            </GridItem>
+                             
+                            <GridItem px={1} h={10} alignContent={'center'}>
+                                <Text fontSize={{ base: "sm", md: "md" }}>{new Date(selectedOrder.creationDate).toLocaleString()}</Text>
                             </GridItem>
 
                             <GridItem colSpan={2}>

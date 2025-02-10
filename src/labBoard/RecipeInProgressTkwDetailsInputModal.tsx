@@ -101,7 +101,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                             <GridItem colSpan={2} mb={8}>
                                 <Badge autoCapitalize='none' w="full" colorScheme="gray">
                                     <Text fontSize={{ base: "md", md: "lg" }}>
-                                            Counting TKW of UNTREATED seeds
+                                            Counting TKW of TREATED seeds
                                     </Text>
                                 </Badge>
                             </GridItem>

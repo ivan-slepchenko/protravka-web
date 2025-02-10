@@ -22,12 +22,15 @@ import { deactivateActiveExecution, fetchOrderExecutionAsCurrent, setCurrentOrde
 const Execution = () => {
     const dispatch: AppDispatch = useDispatch();
 
+    const user = useSelector((state: RootState) => state.user);
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
     useEffect(() => {
-        const ocurrentOrderByServer = orders.find(order => order.status === OrderStatus.TreatmentInProgress);
+        const ocurrentOrderByServer = orders.find(
+            order => order.status === OrderStatus.TreatmentInProgress && order.operator?.email === user.email
+        );
         if (currentOrder) {
             if (!ocurrentOrderByServer) {
                 dispatch(deactivateActiveExecution());
