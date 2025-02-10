@@ -74,24 +74,25 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
                         </Text>
                     </HStack>
                 </Badge>
-                <Text px={1} gridColumn="span 3" color="gray.600">
-                    Lot: {order.lotNumber}
-                </Text>
-                <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
+                <Text px={1} gridColumn="span 2" color="gray.600">Lot:</Text>
+                <Text px={1} isTruncated>{order.lotNumber}</Text>
+                <Text px={1} color="gray.600" gridColumn="span 2">Seeds To Treat:</Text>
                 <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
-                <Text px={1} gridColumn="span 2">Raw Average TKW:</Text>
+                <Text px={1} color="gray.600" gridColumn="span 2">Raw Average TKW:</Text>
                 <Text px={1} isTruncated>{order.tkw.toFixed(2)}</Text>
-                <Text px={1} gridColumn="span 2">Treated Average TKW:</Text>
+                <Text px={1} color="gray.600" gridColumn="span 2">Treated Average TKW:</Text>
                 <Text px={1} isTruncated>{treatedAverageTkw}</Text>
-                <Text px={1} gridColumn="span 2">Treatment Started:</Text>
-                <Text px={1} isTruncated>{treatmentStartDate}</Text>
-                <Text px={1} gridColumn="span 2">Tests Performed:</Text>
+                <Text px={1} color="gray.600" gridColumn="span 2">Tests Performed:</Text>
                 <Text px={1} isTruncated>{numberOfTkwMeasurements}</Text>
+                <Box gridColumn="span 3">
+                    <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Treatment Started:</Text>
+                    <Text px={1} isTruncated>{treatmentStartDate}</Text>
+                </Box>
                 {(order.status === OrderStatus.Completed || order.status === OrderStatus.Failed || order.status === OrderStatus.ToAcknowledge) && (
-                    <>
-                        <Text px={1} gridColumn="span 2">Treatment Finished:</Text>
+                    <Box gridColumn="span 3">
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Treatment Finished:</Text>
                         <Text px={1} isTruncated>{treatmentFinishDate}</Text>
-                    </>
+                    </Box>
                 )}
             </Grid>
         </Box>
