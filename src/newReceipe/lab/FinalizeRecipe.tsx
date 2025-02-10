@@ -249,11 +249,13 @@ export const FinalizeRecipe = () => {
                                                 type="date"
                                                 name="applicationDate"
                                                 size="md"
-                                                value={new Date(props.values.applicationDate).toISOString().split('T')[0]}
+                                                value={props.values.applicationDate ? new Date(props.values.applicationDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                    const date = e.target.value ? new Date(e.target.value) : new Date();
                                                     props.handleChange(e);
-                                                    dispatch(updateApplicationDate(new Date(e.target.value).getTime()));
+                                                    dispatch(updateApplicationDate(date.getTime()));
                                                 }}
+                                                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.preventDefault()}
                                                 borderColor={props.errors.applicationDate && props.touched.applicationDate ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
                                             />

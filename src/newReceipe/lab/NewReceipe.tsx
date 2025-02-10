@@ -21,7 +21,9 @@ import { useAlert } from "../../contexts/AlertContext";
 const validationSchema = Yup.object().shape({
     cropId: Yup.string().required("Crop is required"),
     varietyId: Yup.string().required("Variety is required"),
-    lotNumber: Yup.string().required("Lot Number is required")
+    lotNumber: Yup.string()
+        .required("Lot Number is required")
+        .notOneOf([""], "Lot Number cannot be empty"),
 });
 
 export const NewReceipe = () => {
@@ -175,6 +177,7 @@ export const NewReceipe = () => {
                                                 name="lotNumber"
                                                 placeholder="#123"
                                                 size="md"
+                                                value={props.values.lotNumber === "" ? undefined : props.values.lotNumber}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
                                                     dispatch(updateLotNumber(e.target.value));

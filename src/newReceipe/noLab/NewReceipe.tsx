@@ -38,7 +38,9 @@ const validationSchema = Yup.object().shape({
     operatorId: Yup.string().optional(),
     cropId: Yup.string().required("Crop is required"),
     varietyId: Yup.string().required("Variety is required"),
-    lotNumber: Yup.string().required("Lot Number is required"),
+    lotNumber: Yup.string()
+        .required("Lot Number is required")
+        .notOneOf([""], "Lot Number cannot be empty"),
     tkw: Yup.number().moreThan(0, "TKW must be greater than 0").required("TKW is required"),
     seedsToTreatKg: Yup.number().moreThan(0, "Seeds To Treat must be greater than 0").required("Seeds To Treat is required"),
     bagSize: Yup.number().moreThan(0, "Bag Size must be greater than 0").required("Bag Size is required"),
@@ -202,11 +204,13 @@ export const NewReceipe = () => {
                                                 type="date"
                                                 name="applicationDate"
                                                 size="md"
-                                                value={new Date(props.values.applicationDate).toISOString().split('T')[0]}
+                                                value={props.values.applicationDate ? new Date(props.values.applicationDate).toISOString().split("T")[0] : new Date().toISOString().split("T")[0]}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                    const date = e.target.value ? new Date(e.target.value) : new Date();
                                                     props.handleChange(e);
-                                                    dispatch(updateApplicationDate(new Date(e.target.value).getTime()));
+                                                    dispatch(updateApplicationDate(date.getTime()));
                                                 }}
+                                                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.preventDefault()}
                                                 borderColor={props.errors.applicationDate && props.touched.applicationDate ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
                                             />
@@ -278,6 +282,7 @@ export const NewReceipe = () => {
                                                         {variety.name}
                                                     </option>
                                                 ))}
+
                                             </Field>
                                         </Box>
                                         <Box>
@@ -285,12 +290,13 @@ export const NewReceipe = () => {
                                             <Field
                                                 as={Input}
                                                 name="lotNumber"
+                                                placeholder="#123"
                                                 size="md"
+                                                value={props.values.lotNumber === "" ? undefined : props.values.lotNumber}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
                                                     dispatch(updateLotNumber(e.target.value));
                                                 }}
-                                                value={props.values.lotNumber}
                                                 borderColor={props.errors.lotNumber && props.touched.lotNumber ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
                                             />
