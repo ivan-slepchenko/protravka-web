@@ -28,6 +28,7 @@ export interface OrderExecution {
     currentPage: OrderExecutionPage | null;
     currentProductIndex: number | null;
     operatorId: string | null;
+    preparationStartDate: number | null;
     treatmentStartDate: number | null;
     treatmentFinishDate: number | null;
 }
@@ -95,6 +96,28 @@ export const saveOrderExecutionTreatmentStartTime = createAsyncThunk(
             return await response.json();
         } catch (error) {
             console.error('Failed to save order execution treatment start time:', error);
+            return rejectWithValue(orderId); // Return the payload for offline handling
+        }
+    },
+);
+
+export const saveOrderExecutionPreparationStartTime = createAsyncThunk(
+    'execution/saveOrderExecutionPreparationStartTime',
+    async (orderId: string, { rejectWithValue }) => {
+        try {
+            const response = await fetch(
+                `${BACKEND_URL}/api/executions/${orderId}/praparation-start`,
+                {
+                    method: 'POST',
+                    credentials: 'include', // Include credentials for requests
+                },
+            );
+            return await response.json();
+        } catch (error) {
+            console.error(
+                'Failed to save order execution treatment preparation start time:',
+                error,
+            );
             return rejectWithValue(orderId); // Return the payload for offline handling
         }
     },
@@ -203,6 +226,26 @@ export const fetchOrderExecutionStartDate = createAsyncThunk(
     },
 );
 
+export const fetchOrderPreparationStartDate = createAsyncThunk(
+    'execution/fetchOrderPreparationStartDate',
+    async (orderId: string, { rejectWithValue }) => {
+        try {
+            const response = await fetch(
+                `${BACKEND_URL}/api/executions/${orderId}/preparation-start-date`,
+                {
+                    credentials: 'include',
+                },
+            );
+            if (!response.ok) {
+                throw new Error('Failed to fetch order execution start date');
+            }
+            return await response.json();
+        } catch (error) {
+            return rejectWithValue((error as Error).message);
+        }
+    },
+);
+
 export const fetchOrderExecutionFinishDate = createAsyncThunk(
     'execution/fetchOrderExecutionFinishDate',
     async (orderId: string, { rejectWithValue }) => {
@@ -246,6 +289,7 @@ const executionSlice = createSlice({
             const newOrderExecution = {
                 id: null,
                 orderId: action.payload.id,
+                operatorId: null, // This will be set by the backend
                 productExecutions: [],
                 applicationMethod: null,
                 packingPhoto: null,
@@ -256,7 +300,7 @@ const executionSlice = createSlice({
                 currentProductIndex: 0,
                 treatmentStartDate: null,
                 treatmentFinishDate: null,
-                operatorId: null, // This will be set by the backend
+                preparationStartDate: null,
             };
             state.currentOrderExecution = newOrderExecution;
         },

@@ -23,6 +23,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
     const totalActualQty = currentOrderExecution.productExecutions.reduce((total, product) => total + (product.appliedRateKg !== undefined ? product.appliedRateKg : 0), 0) || 0;
 
     const handleNextButtonClicked = React.useCallback(() => {
+        dispatch(saveOrderExecutionTreatmentStartTime(currentOrder.id));
         dispatch(nextPage());
     }, [dispatch, currentOrder.id]);
 

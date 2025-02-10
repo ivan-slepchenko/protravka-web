@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Badge, Text } from '@chakra-ui/react';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { useDispatch } from 'react-redux';
-import { fetchOrderExecutionStartDate, fetchOrderExecutionFinishDate, fetchLatestTkwMeasurementDate } from '../store/executionSlice';
+import { fetchOrderExecutionStartDate, fetchOrderExecutionFinishDate, fetchLatestTkwMeasurementDate, fetchOrderPreparationStartDate } from '../store/executionSlice';
 import { AppDispatch } from '../store/store';
 import { useFeatures } from '../contexts/FeaturesContext';
 
@@ -12,6 +12,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
     const dispatch: AppDispatch = useDispatch();
     const features = useFeatures();
     const [treatmentStartDate, setTreatmentStartDate] = useState<number | null>(null);
+    const [preparationStartDate, setPreparationStartDate] = useState<number | null>(null);
     const [treatmentFinishDate, setTreatmentFinishDate] = useState<number | null>(null);
     const [latestTkwDate, setLatestTkwDate] = useState<number | null>(null);
 
@@ -20,6 +21,10 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
             dispatch(fetchOrderExecutionStartDate(order.id))
                 .unwrap()
                 .then((data) => setTreatmentStartDate(data.treatmentStartDate))
+                .catch((error) => console.error('Failed to fetch treatment start date:', error));
+            dispatch(fetchOrderPreparationStartDate(order.id))
+                .unwrap()
+                .then((data) => setPreparationStartDate(data.preparationStartDate))
                 .catch((error) => console.error('Failed to fetch treatment start date:', error));
         } else if (order.status === OrderStatus.LabControl) {
             dispatch(fetchOrderExecutionFinishDate(order.id))
@@ -90,13 +95,19 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                     </Box>
                 )}
                 {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TKWConfirmed && <Box gridColumn="span 3">
-                    <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Application:</Text>
+                    <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Expected Start At:</Text>
                     <Text px={1} isTruncated >{new Date(order.applicationDate).toLocaleString()}</Text>
                 </Box>}
                 {order.status === OrderStatus.TKWConfirmed && (
                     <Box gridColumn="span 3">
                         <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Raw TKW Measured At:</Text>
                         <Text px={1} isTruncated>{new Date(order.tkwMeasurementDate).toLocaleString()}</Text>
+                    </Box>
+                )}
+                {order.status === OrderStatus.TreatmentInProgress && preparationStartDate && (
+                    <Box gridColumn="span 3">
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Preparation Started At:</Text>
+                        <Text px={1} isTruncated>{new Date(preparationStartDate).toLocaleString()}</Text>
                     </Box>
                 )}
                 {order.status === OrderStatus.TreatmentInProgress && treatmentStartDate && (
