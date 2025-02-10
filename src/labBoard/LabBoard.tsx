@@ -75,39 +75,31 @@ const LabBoard: React.FC = () => {
     const Controlled = 'Controlled';
 
     return (
-        <Flex w="full" justifyContent={'center'} h="100vh">
-            <Tabs w="full" size='sm' variant='line' isFitted>
+        <Flex w="full" justifyContent={'center'} h="full">
+            <Tabs w="full" size='sm' variant='line' isFitted display="flex" flexDirection="column" flex="1" p={1}>
                 <TabList>
                     <Tab key={ToControl}>{ToControl}</Tab>
                     <Tab key={Controlled}>{Controlled}</Tab>
                 </TabList>
-                <TabPanels>
-                    <TabPanel key={ToControl}>
-                        <Flex p={1} gap={3} w="full">
-                            <Box w="full">
-                                <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={3} w="full">
-                                    {ordersToControl.map((order, index) => (
-                                        <RawOrderCard key={index} order={order} onClick={() => handleRecipeClick(order)} />
-                                    ))}
-                                    {measurementsToControl.map((measurement, index) => (
-                                        <TkwMeasurementCard key={index} measurement={measurement} onClick={() => handleMeasurementClick(measurement)} />
-                                    ))}
-                                </Grid>
-                            </Box>
-                        </Flex>
+                <TabPanels h="full" px={1} py={2} flex="1" overflow={'auto'}>
+                    <TabPanel key={ToControl} p={0}>
+                        <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={3} w="full" px={1}>
+                            {ordersToControl.map((order, index) => (
+                                <RawOrderCard key={index} order={order} onClick={() => handleRecipeClick(order)} />
+                            ))}
+                            {measurementsToControl.map((measurement, index) => (
+                                <TkwMeasurementCard key={index} measurement={measurement} onClick={() => handleMeasurementClick(measurement)} />
+                            ))}
+                        </Grid>
                     </TabPanel>
-                    <TabPanel key={Controlled}>
-                        <Flex p={1} gap={3} w="full">
-                            <Box w="full">
-                                <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={3} w="full">
-                                    <ControlledOrderList
-                                        orders={controlledOrders}
-                                        measurements={tkwMeasurements}
-                                        onClick={handleControlledOrderClick}
-                                    />
-                                </Grid>
-                            </Box>
-                        </Flex>
+                    <TabPanel key={Controlled} p={0}>
+                        <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={3} w="full" px={1}>
+                            <ControlledOrderList
+                                orders={controlledOrders}
+                                measurements={tkwMeasurements}
+                                onClick={handleControlledOrderClick}
+                            />
+                        </Grid>
                     </TabPanel>
                 </TabPanels>
             </Tabs>
