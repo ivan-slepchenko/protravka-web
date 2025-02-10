@@ -28,7 +28,6 @@ export const NewReceipe = () => {
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder);
     const crops = useSelector((state: RootState) => state.crops.crops);
-    const selectedCropId = useSelector((state: RootState) => state.newOrder.cropId);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
     const navigate = useNavigate();
@@ -114,6 +113,9 @@ export const NewReceipe = () => {
                     validateOnBlur={true}
                 >
                     {(props: FormikProps<NewOrderState>) => {
+
+                        const selectedCropId = props.values.cropId;
+
                         return (
                             <form onSubmit={props.handleSubmit} style={{ width: '100%' }}>
                                 <Box width="full" mx="auto" p="4" pointerEvents={isSaving ? 'none' : 'auto'}>
@@ -128,8 +130,9 @@ export const NewReceipe = () => {
                                                 size="md"
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
-                                                    dispatch(updateCrop(e.target.value));
+                                                    dispatch(updateCrop(e.target.value || null));
                                                 }}
+                                                value={props.values.cropId || ''}
                                                 borderColor={props.errors.cropId && props.touched.cropId ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
                                             >
@@ -145,16 +148,17 @@ export const NewReceipe = () => {
                                             <Field
                                                 as={Select}
                                                 name="varietyId"
-                                                placeholder={selectedCropId === undefined ? "Select crop first" : "Select variety"}
+                                                placeholder={selectedCropId === null ? "Select crop first" : "Select variety"}
                                                 size="md"
-                                                disabled={selectedCropId === undefined || isSaving}
+                                                disabled={selectedCropId === null || isSaving}
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
-                                                    if (selectedCropId === undefined) {
+                                                    if (selectedCropId === null) {
                                                         throw new Error("Crop is not selected");
                                                     }
-                                                    dispatch(updateVariety(e.target.value));
+                                                    dispatch(updateVariety(e.target.value || null));
                                                 }}
+                                                value={props.values.varietyId || ''}
                                                 borderColor={props.errors.varietyId && props.touched.varietyId ? "red.500" : "gray.300"}
                                             >
                                                 {crops.find(crop => crop.id === selectedCropId)?.varieties.map((variety) => (

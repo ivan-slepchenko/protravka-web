@@ -37,9 +37,6 @@ const LabBoard: React.FC = () => {
         setSelectedControlledOrder(null);
     };
 
-    console.log('Orders:', orders);
-    console.log('TKW Measurements:', tkwMeasurements);
-
     useEffect(() => {
         if (orders) {
             setOrdersToControl(
@@ -55,7 +52,6 @@ const LabBoard: React.FC = () => {
                         OrderStatus.TKWConfirmed,
                         OrderStatus.Failed,
                         OrderStatus.LabControl,
-                        OrderStatus.TreatmentInProgress,
                         OrderStatus.RecipeCreated,
                         OrderStatus.ToAcknowledge
                     ].includes(order.status)
@@ -66,7 +62,6 @@ const LabBoard: React.FC = () => {
 
     useEffect(() => {
         if (Array.isArray(tkwMeasurements)) {
-            console.log('tkwMeasurements is array');
             setMeasurementsToControl(
                 tkwMeasurements.filter((measurement) => measurement.probeDate === null)
             );
