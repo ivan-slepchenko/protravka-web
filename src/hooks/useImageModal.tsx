@@ -14,7 +14,7 @@ const useImageModal = () => {
     };
 
     const ImageModal: React.FC<{ selectedPhoto: string | null, handleClose: () => void }> = ({ selectedPhoto, handleClose }) => (
-        <Modal isOpen={!!selectedPhoto} onClose={handleClose}>
+        <Modal isOpen={!!selectedPhoto} onClose={handleClose} size={{base: "full", md: "unset"}}>
             <ModalOverlay />
             <ModalContent width="800px" height="600px" maxWidth="unset" p="6">
                 <ModalCloseButton />

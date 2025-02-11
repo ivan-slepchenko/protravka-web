@@ -90,18 +90,18 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     };
 
     return (
-        <Modal isOpen={!!selectedMeasurement} onClose={onClose} size="full">
+        <Modal isOpen={!!selectedOrder} onClose={onClose} size="full">
             <ModalOverlay />
-            <ModalContent borderRadius="none" w="full" h="full">
-                <ModalHeader>Recipe In Progress TKW Details</ModalHeader>
+            {selectedMeasurement && selectedOrder && <ModalContent borderRadius="none" h="full">
+                <ModalHeader>Count TKW of TREATED seeds</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody w="full" h="full" overflow='auto'>
                     {!isPhotoState ? (
-                        <Grid templateColumns={{ base: "1fr", md: "3fr 2fr" }} gap={4} w='full'>
+                        <Grid templateColumns={"3fr 2fr"} gap={4} w='full'>
                             <GridItem colSpan={2} mb={8}>
                                 <Badge autoCapitalize='none' w="full" colorScheme="gray">
                                     <Text fontSize={{ base: "md", md: "lg" }}>
-                                            Counting TKW of TREATED seeds
+                                        {selectedOrder.crop?.name} / {selectedOrder.variety?.name}
                                     </Text>
                                 </Badge>
                             </GridItem>
@@ -109,14 +109,21 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                                 <Text fontSize={{ base: "sm", md: "md" }}><strong>Lot:</strong></Text>
                             </GridItem>
                             <GridItem h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder ? selectedOrder.lotNumber : 'N/A'}</Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.lotNumber}</Text>
                             </GridItem>
 
                             <GridItem h={10} alignContent={'center'}>
                                 <Text fontSize={{ base: "sm", md: "md" }}><strong>Seeds To Treat:</strong></Text>
                             </GridItem>
                             <GridItem h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder ? `${selectedOrder.seedsToTreatKg} kg.` : `N/A`}</Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.seedsToTreatKg} kg.</Text>
+                            </GridItem>
+
+                            <GridItem h={10} alignContent={'center'}>
+                                <Text fontSize={{ base: "sm", md: "md" }}><strong>Assignment Created At:</strong></Text>
+                            </GridItem>
+                            <GridItem h={10} alignContent={'center'}>
+                                <Text fontSize={{ base: "sm", md: "md" }}>{new Date(selectedMeasurement.creationDate).toLocaleString()}</Text>
                             </GridItem>
 
                             <GridItem colSpan={2}>
@@ -187,9 +194,9 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                         </Grid>
                     ) : (
                         <VStack spacing={8} width="100%">
-                            {selectedOrder && <Text mb={1} fontSize={{ base: "sm", md: "md" }} fontWeight="bold">
-                                    You are obliged to take a photo of TREATED seeds of {selectedOrder.crop.name} {selectedOrder.lotNumber}
-                            </Text>}
+                            <Text mb={1} fontSize={{ base: "sm", md: "md" }} fontWeight="bold">
+                                You are obliged to take a photo of TREATED seeds of {selectedOrder.crop.name} {selectedOrder.lotNumber}
+                            </Text>
                             <Box
                                 width="100%"
                                 maxWidth="400px"
@@ -267,7 +274,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                         </HStack>
                     </VStack>
                 </ModalFooter>
-            </ModalContent>
+            </ModalContent>}
             <SettingsModal />
             <WarningModal />
         </Modal>

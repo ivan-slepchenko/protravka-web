@@ -73,9 +73,9 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     return (
         <Modal isOpen={!!selectedOrder} onClose={onClose} size="full">
             <ModalOverlay />
-            <ModalContent borderRadius="none" w="full" h="full">
+            <ModalContent borderRadius="none" h="full">
                 <ModalHeader>
-                    {selectedOrder.crop?.name}, {selectedOrder.variety?.name}
+                    Count TKW of UNTREATED seeds
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody h="full" overflow='auto'>
@@ -83,8 +83,8 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                         <Grid templateColumns="3fr 2fr" gap={4} w='full'>
                             <GridItem colSpan={2}>
                                 <Badge autoCapitalize='none' w="full" colorScheme="gray">
-                                    <Text fontSize={{ base: "xs", md: "sm" }}>
-                                        Counting TKW of UNTREATED seeds
+                                    <Text fontSize={{ base: "md", md: "lg" }}>
+                                        {selectedOrder.crop?.name}, {selectedOrder.variety?.name}
                                     </Text>
                                 </Badge>
                             </GridItem>
