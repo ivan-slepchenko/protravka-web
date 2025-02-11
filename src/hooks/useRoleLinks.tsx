@@ -5,27 +5,31 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { AtSignIcon, AddIcon } from '@chakra-ui/icons';
 import { BiSolidComponent } from "react-icons/bi";
 import { FaSeedling, FaTasks, FaFlask } from "react-icons/fa";
-
-const roleToLinks = {
-    [Role.MANAGER]: [
-        { to: "/board", label: "Board", icon: <FiTrello /> },
-        { to: "/new", label: "New Receipe", icon: <AddIcon /> },
-        { to: "/report", label: "Report", icon: <TbReportAnalytics /> },
-    ],
-    [Role.ADMIN]: [
-        { to: "/operators", label: "Operators", icon: <AtSignIcon /> },
-        { to: "/crops", label: "Crops", icon: <FaSeedling /> },
-        { to: "/products", label: "Products", icon: <BiSolidComponent /> },
-    ],
-    [Role.OPERATOR]: [
-        { to: "/execution", label: "Execution", icon: <FaTasks /> },
-    ],
-    [Role.LABORATORY]: [
-        { to: "/lab", label: "Lab", icon: <FaFlask /> },
-    ],
-};
+import { useFeatures } from '../contexts/FeaturesContext';
 
 const useRoleLinks = (roles: Role[]) => {
+
+    const features = useFeatures();
+
+    const roleToLinks = {
+        [Role.MANAGER]: [
+            { to: "/board", label: "Board", icon: <FiTrello /> },
+            { to: "/new", label: features.features.lab ? "New Assignment" : "New Receipe", icon: <AddIcon /> },
+            { to: "/report", label: "Report", icon: <TbReportAnalytics /> },
+        ],
+        [Role.ADMIN]: [
+            { to: "/operators", label: "Operators", icon: <AtSignIcon /> },
+            { to: "/crops", label: "Crops", icon: <FaSeedling /> },
+            { to: "/products", label: "Products", icon: <BiSolidComponent /> },
+        ],
+        [Role.OPERATOR]: [
+            { to: "/execution", label: "Execution", icon: <FaTasks /> },
+        ],
+        [Role.LABORATORY]: [
+            { to: "/lab", label: "Lab", icon: <FaFlask /> },
+        ],
+    };
+
     const userRoles = roles || [];
     const managerLinks = userRoles.includes(Role.MANAGER) ? roleToLinks[Role.MANAGER] : [];
     const adminLinks = userRoles.includes(Role.ADMIN) ? roleToLinks[Role.ADMIN] : [];
