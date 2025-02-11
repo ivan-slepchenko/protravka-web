@@ -25,7 +25,7 @@ const OrderExecution7PackingDetails = () => {
 
     return (
         
-        <VStack p={4} h='full' overflow={'auto'}>
+        <VStack h='full' overflow={'auto'}>
             <Text fontSize="xl" fontWeight="bold" textAlign="center"><span>How many seeds (kg)</span><br/><span>did you pack out of?</span></Text>
             <Box
                 mt={4}

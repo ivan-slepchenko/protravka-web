@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Button, VStack, Image, IconButton } from '@chakra-ui/react';
+import { Box, Text, Button, VStack, Image, IconButton, AspectRatio } from '@chakra-ui/react';
 import { FaCamera, FaCog } from 'react-icons/fa';
 import { incrementProductIndex, nextPage, resetPhotoForProvingProductApplication, saveOrderExecution, setPhotoForProvingProductApplication } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -75,49 +75,52 @@ const OrderExecution4ProovingProduct = () => {
     };
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" height="full" p={4} overflow={'auto'}>
-            <VStack spacing={8} width="100%" maxWidth="400px">
-                <Text mb={2}>
-                    {'Product # '}
-                    {currentProductIndex + 1}
-                    {' of '}
-                    {currentOrder.productDetails.length}
-                    {': '}
-                    {currentOrder.productDetails[currentProductIndex].product?.name}
-                </Text>
-                <Box
+        <VStack justifyContent="center" h='full' position='relative'>
+            <VStack spacing={6} width="100%" maxWidth="400px" h='full'>
+                <VStack gap={0}>
+                    <Text>
+                        {'Product '}
+                        {currentProductIndex + 1}
+                        {' out of '}
+                        {currentOrder.productDetails.length}
+                    </Text>
+                    <Text fontSize="xl" fontWeight="bold">{currentOrder.productDetails[currentProductIndex].product?.name}</Text>
+                </VStack>
+                <AspectRatio
+                    ratio={4 / 3} 
                     width="100%"
-                    height="300px"
-                    border="1px solid"
-                    borderColor="gray.300"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    borderRadius="md"
-                    overflow="hidden"
-                    style={{ aspectRatio: '4 / 3' }}
-                    position="relative"
                 >
-                    {photo ? (
-                        <Image src={photo} alt="Scales display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
-                    ) : (
-                        <>
-                            <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            <IconButton
-                                icon={<FaCog />}
-                                isRound
-                                aria-label="Settings"
-                                position="absolute"
-                                bottom="10px"
-                                right="10px"
-                                size='sm'
-                                onClick={handleSettingsClick}
-                            />
-                        </>
-                    )}
-                </Box>
+                    <Box
+                        width="100%"
+                        height="100%"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        overflow="hidden"
+                        style={{ aspectRatio: '4 / 3' }}
+                        position="relative"
+                    >
+                        {photo ? (
+                            <Image src={photo} alt="Scales display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
+                        ) : (
+                            <>
+                                <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <IconButton
+                                    icon={<FaCog />}
+                                    isRound
+                                    aria-label="Settings"
+                                    position="absolute"
+                                    bottom="10px"
+                                    right="10px"
+                                    size='sm'
+                                    onClick={handleSettingsClick}
+                                />
+                            </>
+                        )}
+                    </Box>
+                </AspectRatio>
                 <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
-                <VStack spacing={4} width="100%">
+                <VStack spacing={4} width="100%" mt='auto'>
                     <Button
                         w="200px" 
                         borderRadius="full"
@@ -141,7 +144,7 @@ const OrderExecution4ProovingProduct = () => {
             </VStack>
             <SettingsModal />
             <WarningModal />
-        </Box>
+        </VStack>
     );
 };
 

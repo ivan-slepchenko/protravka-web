@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, VStack, Image, Heading, IconButton } from '@chakra-ui/react';
+import { Box, Button, VStack, Image, Text, IconButton, AspectRatio } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto, saveOrderExecution } from '../store/executionSlice';
 import { AppDispatch, RootState } from '../store/store';
@@ -75,42 +75,49 @@ const OrderExecution10ConsumptionProoving = () => {
     };
 
     return (
-        <Box display="flex" justifyContent="center" h='full' alignItems="center">
-            <VStack spacing={8} width="100%" maxWidth="400px" h="full" p={4} overflow={'auto'}>
-                <Heading size="md" mb={2}>Make a consumption photo proof.</Heading>
-                <Box
+        <VStack justifyContent="center" h='full' position='relative'>
+            <VStack spacing={6} width="100%" maxWidth="400px" h="full">
+                <Text fontSize="xl" fontWeight="bold">
+                    Make a consumption photo proof.
+                </Text>
+                <AspectRatio
+                    ratio={4 / 3} 
                     width="100%"
-                    height="300px"
-                    border="1px solid"
-                    borderColor="gray.300"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    borderRadius="md"
-                    overflow="hidden"
-                    style={{ aspectRatio: '4 / 3' }}
-                    position="relative"
                 >
-                    {photo ? (
-                        <Image src={photo} alt="Machine display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
-                    ) : (
-                        <>
-                            <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            <IconButton
-                                icon={<FaCog />}
-                                isRound
-                                aria-label="Settings"
-                                position="absolute"
-                                bottom="10px"
-                                right="10px"
-                                size='sm'
-                                onClick={handleSettingsClick}
-                            />
-                        </>
-                    )}
-                </Box>
+                    <Box
+                        width="100%"
+                        height="300px"
+                        border="1px solid"
+                        borderColor="gray.300"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRadius="md"
+                        overflow="hidden"
+                        style={{ aspectRatio: '4 / 3' }}
+                        position="relative"
+                    >
+                        {photo ? (
+                            <Image src={photo} alt="Machine display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
+                        ) : (
+                            <>
+                                <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <IconButton
+                                    icon={<FaCog />}
+                                    isRound
+                                    aria-label="Settings"
+                                    position="absolute"
+                                    bottom="10px"
+                                    right="10px"
+                                    size='sm'
+                                    onClick={handleSettingsClick}
+                                />
+                            </>
+                        )}
+                    </Box>
+                </AspectRatio>
                 <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
-                <VStack spacing={4} width="100%">
+                <VStack spacing={4} width="100%" mt='auto'>
                     <Button
                         w="200px" 
                         borderRadius="full"
@@ -134,7 +141,7 @@ const OrderExecution10ConsumptionProoving = () => {
             </VStack>
             <SettingsModal />
             <WarningModal />
-        </Box>
+        </VStack>
     );
 };
 

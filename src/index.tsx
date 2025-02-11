@@ -134,7 +134,7 @@ const App = () => {
                 )}
                 <HStack h="full" w="full" overflowX="auto">
                     <Box h="full" w="4px" bg="gray.100" />
-                    <AppRoutes useLab={useLab} />
+                    <AppRoutes useLab={useLab}/>
                 </HStack>
             </HStack>
         </>

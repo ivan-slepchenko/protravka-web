@@ -28,37 +28,35 @@ const OrderExecution5AllAddedProductsOverview = () => {
     }, [dispatch, currentOrder.id]);
 
     return (
-        <VStack p={4} w="full" h="full" overflow={'auto'}>
-            <Center w='full' h='full'>
-                <VStack>
-                    <Text fontSize="2xl" fontWeight="bold" textAlign="center">You added all products.</Text>
-                    <Table variant="simple" size="sm" mt={4}>
-                        <Thead bg="orange.100">
-                            <Tr>
-                                <Th>Product name</Th>
-                                <Th>Target Qty, kg</Th>
-                                <Th>Actual Qty, kg</Th>
+        <VStack justifyContent="center" w="full" h="full" position={"relative"}>
+            <VStack spacing={6} width="100%" h='full'>
+                <Text fontSize="2xl" fontWeight="bold" textAlign="center">You added all products.</Text>
+                <Table variant="simple" size="sm">
+                    <Thead bg="orange.100">
+                        <Tr>
+                            <Th>Product name</Th>
+                            <Th>Target Qty, kg</Th>
+                            <Th>Actual Qty, kg</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {currentOrderExecution.productExecutions.map((product, index) => (
+                            <Tr key={index}>
+                                <Td>{currentOrder.productDetails[index].product?.name}</Td>
+                                <Td>{getTargetQty(currentOrder.productDetails[index].product?.id).toFixed(2)}</Td>
+                                <Td>{product.appliedRateKg}</Td>
                             </Tr>
-                        </Thead>
-                        <Tbody>
-                            {currentOrderExecution.productExecutions.map((product, index) => (
-                                <Tr key={index}>
-                                    <Td>{currentOrder.productDetails[index].product?.name}</Td>
-                                    <Td>{getTargetQty(currentOrder.productDetails[index].product?.id).toFixed(2)}</Td>
-                                    <Td>{product.appliedRateKg}</Td>
-                                </Tr>
-                            ))}
-                        </Tbody>
-                        <Tfoot>
-                            <Tr>
-                                <Th>Total</Th>
-                                <Th>{totalTargetQty.toFixed(2)}</Th>
-                                <Th>{totalActualQty.toFixed(2)}</Th>
-                            </Tr>
-                        </Tfoot>
-                    </Table>
-                </VStack>
-            </Center>
+                        ))}
+                    </Tbody>
+                    <Tfoot>
+                        <Tr>
+                            <Th>Total</Th>
+                            <Th>{totalTargetQty.toFixed(2)}</Th>
+                            <Th>{totalActualQty.toFixed(2)}</Th>
+                        </Tr>
+                    </Tfoot>
+                </Table>
+            </VStack>
             <Text mt='auto' fontSize="lg" textAlign="center">Push to start treatment.</Text>
             <HStack justifyContent={"center"}>
                 <Button width="100px" colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }} onClick={handleNextButtonClicked}>

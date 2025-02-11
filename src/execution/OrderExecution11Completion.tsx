@@ -44,25 +44,23 @@ const OrderExecution11Completion = () => {
     };
 
     return (
-        <VStack p={4} w="full" h="full">
+        <VStack w="full" h="full">
             <Center h="full">
                 <VStack>
-                    <Text mt={4} textAlign="center">
-                        <span><strong>{'You finished treating lot '}{currentOrder.lotNumber}.</strong></span>
-                        <br />
-                        <br />
-                        <span>{'Please check your further tasks for today or contact your Manager.'}</span>
+                    <Text fontSize="xl" fontWeight="bold" textAlign="center">
+                        {'You finished treating lot '}{currentOrder.lotNumber}.
+                    </Text>
+                    <Text>
+                        {'Please check your further tasks for today or contact your Manager.'}
                     </Text>
                     <Box
                         mt={4}
-                        p={8}
-                        bg="orange.500"
-                        color="white"
+                        color="orange.500"
                         fontSize="4xl"
                         fontWeight="bold"
                         borderRadius="md"
                     >
-                        {'Thank you'}
+                        {'Thank you!'}
                     </Box>
                 </VStack>
             </Center>

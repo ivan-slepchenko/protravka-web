@@ -81,8 +81,10 @@ const Execution = () => {
     };
 
     return (
-        <Box p={2} h="full" position={'relative'}>
-            {renderCurrentPage()}
+        <Box p={6} h="full">
+            <Box h='full' overflow={'auto'} position={'relative'} >
+                {renderCurrentPage()}
+            </Box>
         </Box>
     );
 };
