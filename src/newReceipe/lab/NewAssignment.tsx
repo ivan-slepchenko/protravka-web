@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
         .notOneOf([""], "Lot Number cannot be empty"),
 });
 
-export const NewReceipe = () => {
+export const NewAssignment = () => {
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder);
     const crops = useSelector((state: RootState) => state.crops.crops);
@@ -51,7 +51,7 @@ export const NewReceipe = () => {
             if (!doNotShowAgain) {
                 setShowPopup(true);
             } else {
-                addAlert('Recipe successfully created.');
+                addAlert('Assignment successfully created.');
             }
         });
     };
@@ -103,7 +103,7 @@ export const NewReceipe = () => {
     return (
         <Center w='full' h='full' fontSize={'xs'}>
             <VStack>
-                <Heading size="lg">New Receipe</Heading>
+                <Heading size="lg">New Assignment</Heading>
                 <Formik
                     initialValues={{
                         ...formData,
@@ -235,13 +235,13 @@ export const NewReceipe = () => {
                                 <Modal isOpen={showPopup} onClose={handleClosePopup} isCentered>
                                     <ModalOverlay />
                                     <ModalContent>
-                                        <ModalHeader>Receipe Created</ModalHeader>
+                                        <ModalHeader>Assignment Created</ModalHeader>
                                         <ModalCloseButton />
                                         <ModalBody>
                                             <Text>
-                                                <span>Recipe successfully created and sent to the lab for processing.</span>
+                                                <span>Assignment successfully created and sent to the lab for processing.</span>
                                                 <br />
-                                                <span>You can view this Recipe in the <strong>Board</strong>, by clicking on your <strong>Receipe</strong> and opening <strong>Recipe Tab</strong>.</span>
+                                                <span>You can view this Assignment in the <strong>Board</strong>.</span>
                                             </Text>
                                             <Checkbox mt={4} isChecked={doNotShowAgain} onChange={handleCheckboxChange}>
                                                 Do not show this message again.

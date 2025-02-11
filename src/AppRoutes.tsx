@@ -10,7 +10,7 @@ import Report from './report/Report';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
 import { NewReceipe as NewReceipeNoLab } from './newReceipe/noLab/NewReceipe';
-import { NewReceipe as NewReceipeLab } from './newReceipe/lab/NewReceipe';
+import { NewAssignment as NewReceipeLab } from './newReceipe/lab/NewAssignment';
 import LotReport from './report/LotReport';
 import LabBoard from './labBoard/LabBoard';
 import { FinalizeRecipe } from './newReceipe/lab/FinalizeRecipe';
