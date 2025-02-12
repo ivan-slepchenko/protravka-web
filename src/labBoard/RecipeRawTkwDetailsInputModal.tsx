@@ -3,9 +3,10 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { Order } from '../store/newOrderSlice';
 import { fetchOrders, updateOrderTKW } from '../store/ordersSlice';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, VStack, Divider, HStack, Text, Checkbox, Badge, Box, Image, CircularProgress, IconButton } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, VStack, Divider, HStack, Text, Checkbox, Badge, Box, CircularProgress, IconButton } from '@chakra-ui/react';
 import { FaCamera, FaCog } from 'react-icons/fa';
 import useCamera from '../hooks/useCamera';
+import useImageModal from '../hooks/useImageModal';
 
 interface RecipeRawTkwDetailsInputModalProps {
     selectedOrder: Order;
@@ -19,21 +20,23 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     const [tkwRep3, setTkwRep3] = useState<number | null>(null);
     const [averageTkw, setAverageTkw] = useState<number | null>(null);
     const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
-    const [tkwProbesPhoto, setTkwProbesPhoto] = useState<string | null>(null);
+    const [tkwProbesPhoto, setTkwProbesPhoto] = useState<Blob | null>(null);
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
 
     useEffect(() => {
         setAverageTkw(((tkwRep1 ?? 0) + (tkwRep2 ?? 0) + (tkwRep3 ?? 0)) / 3);
     }, [tkwRep1, tkwRep2, tkwRep3]);
 
     const handleTakeSnapshot = () => {
-        const photoData = takeSnapshot();
-        if (photoData) {
-            setTkwProbesPhoto(photoData);
-            stopCamera();
-        }
+        takeSnapshot().then((photoData) => {
+            if (photoData) {
+                setTkwProbesPhoto(photoData);
+                stopCamera();
+            }
+        });
     };
 
     const handleRetakeClick = () => {
@@ -197,7 +200,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                 position="relative"
                             >
                                 {tkwProbesPhoto ? (
-                                    <Image src={tkwProbesPhoto} alt="Machine display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
+                                    <ImageWithModal src={tkwProbesPhoto} fullSize/>
                                 ) : (
                                     <>
                                         <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -262,6 +265,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
             </ModalContent>
             <SettingsModal />
             <WarningModal />
+            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
         </Modal>
     );
 };

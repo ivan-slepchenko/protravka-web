@@ -21,7 +21,7 @@ export const FeaturesProvider = ({ children }: { children: React.ReactNode }) =>
         if (features.lab === undefined) {
             const fetchFeatures = async () => {
                 try {
-                    const response = await fetch(`${BACKEND_URL}/features`);
+                    const response = await fetch(`${BACKEND_URL}/api/features`);
                     const data = await response.json();
                     setFeatures(data);
                     console.log('Features:', data);

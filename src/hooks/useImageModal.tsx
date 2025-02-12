@@ -38,21 +38,24 @@ const useImageModal = () => {
         handleClose: PropTypes.func.isRequired,
     };
 
-    const ImageWithModal: React.FC<{ src: string, fullSize?: boolean }> = ({ src, fullSize = false }) => (
-        <Image
-            src={src}
-            alt="Thumbnail"
-            width={fullSize ? "100%" : "150px"}
-            height={fullSize ? "100%" : "100px"}
-            objectFit={fullSize ? "contain" : "cover"}
-            onClick={() => handlePhotoClick(src)}
-            cursor="pointer"
-            title="Click to view full size"
-        />
-    );
+    const ImageWithModal: React.FC<{ src: Blob; fullSize?: boolean }> = ({ src, fullSize = false }) => {
+        const imageUrl = URL.createObjectURL(src);
+        return (
+            <Image
+                src={imageUrl}
+                alt="Thumbnail"
+                width={fullSize ? "100%" : "150px"}
+                height={fullSize ? "100%" : "100px"}
+                objectFit={fullSize ? "contain" : "cover"}
+                onClick={() => handlePhotoClick(imageUrl)}
+                cursor="pointer"
+                title="Click to view full size"
+            />
+        );
+    };
 
     ImageWithModal.propTypes = {
-        src: PropTypes.string.isRequired,
+        src: PropTypes.any.isRequired,
         fullSize: PropTypes.bool,
     };
 

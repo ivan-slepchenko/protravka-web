@@ -11,9 +11,9 @@ import { fetchOrders } from './ordersSlice';
 export interface ProductExecution {
     productId: string;
     appliedRateKg?: number;
-    applicationPhoto?: string;
+    applicationPhoto?: Blob;
     productConsumptionPerLotKg?: number;
-    consumptionPhoto?: string;
+    consumptionPhoto?: Blob;
 }
 
 export interface OrderExecution {
@@ -21,8 +21,8 @@ export interface OrderExecution {
     orderId: string;
     productExecutions: ProductExecution[];
     applicationMethod: string | null;
-    packingPhoto: string | null;
-    consumptionPhoto: string | null;
+    packingPhoto: Blob | null;
+    consumptionPhoto: Blob | null;
     packedseedsToTreatKg: number | null;
     slurryConsumptionPerLotKg: number | null;
     currentPage: OrderExecutionPage | null;
@@ -41,7 +41,7 @@ export interface TkwMeasurement {
     tkwProbe1?: number;
     tkwProbe2?: number;
     tkwProbe3?: number;
-    tkwProbesPhoto?: string;
+    tkwProbesPhoto?: Blob;
 }
 
 export interface ExecutionState {
@@ -155,7 +155,7 @@ export const fetchOrderExecutionAsCurrent = createAsyncThunk(
 );
 
 export const fetchTkwMeasurements = createAsyncThunk('execution/fetchTkwMeasurements', async () => {
-    const response = await fetch(`${BACKEND_URL}/api/tkw-measurements`, {
+    const response = await fetch(`${BACKEND_URL}/api/executions/tkw-measurements`, {
         credentials: 'include',
     });
     return await response.json();
@@ -177,12 +177,12 @@ export const updateTkwMeasurement = createAsyncThunk(
             tkwRep1: number;
             tkwRep2: number;
             tkwRep3: number;
-            tkwProbesPhoto: string;
+            tkwProbesPhoto: Blob;
         },
         { dispatch, rejectWithValue },
     ) => {
         try {
-            const response = await fetch(`${BACKEND_URL}/api/tkw-measurements/${id}`, {
+            const response = await fetch(`${BACKEND_URL}/api/executions/tkw-measurements/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -393,7 +393,7 @@ const executionSlice = createSlice({
         },
         setPhotoForProvingProductApplication: (
             state,
-            action: PayloadAction<{ photo: string; productId: string }>,
+            action: PayloadAction<{ photo: Blob; productId: string }>,
         ) => {
             if (state.currentOrderExecution) {
                 const { photo, productId } = action.payload;
@@ -421,7 +421,7 @@ const executionSlice = createSlice({
         },
         setProductConsumptionPhoto: (
             state,
-            action: PayloadAction<{ photo: string; productId: string }>,
+            action: PayloadAction<{ photo: Blob; productId: string }>,
         ) => {
             if (state.currentOrderExecution) {
                 const { photo, productId } = action.payload;
@@ -433,12 +433,12 @@ const executionSlice = createSlice({
                 }
             }
         },
-        setConsumptionPhoto: (state, action: PayloadAction<string>) => {
+        setConsumptionPhoto: (state, action: PayloadAction<Blob>) => {
             if (state.currentOrderExecution) {
                 state.currentOrderExecution.consumptionPhoto = action.payload;
             }
         },
-        setPhotoForPacking: (state, action: PayloadAction<string>) => {
+        setPhotoForPacking: (state, action: PayloadAction<Blob>) => {
             if (state.currentOrderExecution) {
                 state.currentOrderExecution.packingPhoto = action.payload;
             }

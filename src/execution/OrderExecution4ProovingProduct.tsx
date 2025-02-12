@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Button, VStack, Image, IconButton, AspectRatio } from '@chakra-ui/react';
+import { Box, Text, Button, VStack, IconButton, AspectRatio } from '@chakra-ui/react';
 import { FaCamera, FaCog } from 'react-icons/fa';
 import { incrementProductIndex, nextPage, resetPhotoForProvingProductApplication, saveOrderExecution, setPhotoForProvingProductApplication } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import useCamera from '../hooks/useCamera';
+import useImageModal from '../hooks/useImageModal';
 
 const OrderExecution4ProovingProduct = () => {
     const dispatch: AppDispatch = useDispatch();
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const currentProductIndex = currentOrderExecution?.currentProductIndex;
-    const [photo, setPhotoState] = useState<string | null>(null);
+    const [photo, setPhotoState] = useState<Blob | null>(null);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { ImageWithModal, ImageModal, selectedPhoto, handleClose } = useImageModal();
 
     if (currentOrder === null || currentProductIndex === undefined || currentProductIndex === null) {
         return null;
@@ -26,8 +28,8 @@ const OrderExecution4ProovingProduct = () => {
         };
     }, []);
 
-    const handleTakeSnapshot = () => {
-        const photoData = takeSnapshot();
+    const handleTakeSnapshot = async () => {
+        const photoData = await takeSnapshot();
         if (photoData) {
             setPhotoState(photoData);
             if (currentOrder.productDetails[currentProductIndex] === undefined) {
@@ -101,7 +103,7 @@ const OrderExecution4ProovingProduct = () => {
                         position="relative"
                     >
                         {photo ? (
-                            <Image src={photo} alt="Scales display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
+                            <ImageWithModal src={photo} fullSize />
                         ) : (
                             <>
                                 <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -144,6 +146,7 @@ const OrderExecution4ProovingProduct = () => {
             </VStack>
             <SettingsModal />
             <WarningModal />
+            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
         </VStack>
     );
 };

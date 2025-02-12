@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { TkwMeasurement } from '../store/executionSlice';
-import { Box, Flex, Tabs, TabList, TabPanels, Tab, TabPanel, Grid } from '@chakra-ui/react';
+import { Flex, Tabs, TabList, TabPanels, Tab, TabPanel, Grid } from '@chakra-ui/react';
 import RecipeRawTkwDetailsInputModal from './RecipeRawTkwDetailsInputModal';
 import TkwMeasurementCard from './TkwMeasurementCard';
 import RawOrderCard from './RawOrderCard';

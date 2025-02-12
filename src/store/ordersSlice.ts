@@ -131,17 +131,20 @@ export const updateOrderTKW = createAsyncThunk(
             tkwRep1: number;
             tkwRep2: number;
             tkwRep3: number;
-            tkwProbesPhoto: string;
+            tkwProbesPhoto: Blob;
         },
         { rejectWithValue },
     ) => {
         try {
+            const formData = new FormData();
+            formData.append('tkwRep1', tkwRep1.toString());
+            formData.append('tkwRep2', tkwRep2.toString());
+            formData.append('tkwRep3', tkwRep3.toString());
+            formData.append('tkwProbesPhoto', tkwProbesPhoto, 'tkwProbesPhoto.png'); // Provide a filename
+
             const response = await fetch(`${BACKEND_URL}/api/orders/${id}/tkw`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ tkwRep1, tkwRep2, tkwRep3, tkwProbesPhoto }),
+                body: formData,
                 credentials: 'include',
             });
             if (!response.ok) {

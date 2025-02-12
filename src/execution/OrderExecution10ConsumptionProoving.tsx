@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, VStack, Image, Text, IconButton, AspectRatio } from '@chakra-ui/react';
+import { Box, Button, VStack, Text, IconButton, AspectRatio } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto, saveOrderExecution } from '../store/executionSlice';
 import { AppDispatch, RootState } from '../store/store';
 import { FaCamera, FaCog } from 'react-icons/fa';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import useCamera from '../hooks/useCamera';
+import useImageModal from '../hooks/useImageModal';
 
 const OrderExecution10ConsumptionProoving = () => {
     const dispatch: AppDispatch = useDispatch();
-    const [photo, setPhotoState] = useState<string | null>(null);
+    const [photo, setPhotoState] = useState<Blob | null>(null);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { ImageWithModal, ImageModal, selectedPhoto, handleClose } = useImageModal();
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const applicationMethod = currentOrderExecution?.applicationMethod;
@@ -29,8 +31,8 @@ const OrderExecution10ConsumptionProoving = () => {
         };
     }, []);
 
-    const handleTakeSnapshot = () => {
-        const photoData = takeSnapshot();
+    const handleTakeSnapshot = async () => {
+        const photoData = await takeSnapshot();
         if (photoData) {
             setPhotoState(photoData);
             if (applicationMethod === 'CDS') {
@@ -98,7 +100,7 @@ const OrderExecution10ConsumptionProoving = () => {
                         position="relative"
                     >
                         {photo ? (
-                            <Image src={photo} alt="Machine display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
+                            <ImageWithModal src={photo} fullSize />
                         ) : (
                             <>
                                 <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -141,6 +143,7 @@ const OrderExecution10ConsumptionProoving = () => {
             </VStack>
             <SettingsModal />
             <WarningModal />
+            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
         </VStack>
     );
 };

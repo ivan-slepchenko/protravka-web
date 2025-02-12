@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Button, VStack, Image, IconButton } from '@chakra-ui/react';
+import { Box, Text, Button, VStack, IconButton } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { nextPage, resetCurrentProductIndex, resetPackingPhoto, saveOrderExecution, setPhotoForPacking } from '../store/executionSlice';
 import { FaCamera, FaCog } from 'react-icons/fa';
 import { AppDispatch } from '../store/store';
 import useCamera from '../hooks/useCamera';
+import useImageModal from '../hooks/useImageModal';
 
 const OrderExecution8PackingProoving = () => {
     const dispatch: AppDispatch = useDispatch();
-    const [photo, setPhotoState] = useState<string | null>(null);
+    const [photo, setPhotoState] = useState<Blob | null>(null);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { ImageWithModal, ImageModal, selectedPhoto, handleClose } = useImageModal();
 
     useEffect(() => {
         startCamera();
@@ -18,8 +20,8 @@ const OrderExecution8PackingProoving = () => {
         };
     }, []);
 
-    const handleTakeSnapshot = () => {
-        const photoData = takeSnapshot();
+    const handleTakeSnapshot = async () => {
+        const photoData = await takeSnapshot();
         if (photoData) {
             setPhotoState(photoData);
             dispatch(setPhotoForPacking(photoData));
@@ -61,7 +63,7 @@ const OrderExecution8PackingProoving = () => {
                     position="relative"
                 >
                     {photo ? (
-                        <Image src={photo} alt="Machine display" objectFit="cover" style={{ width: '100%', height: '100%' }} />
+                        <ImageWithModal src={photo} fullSize />
                     ) : (
                         <>
                             <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -103,6 +105,7 @@ const OrderExecution8PackingProoving = () => {
             </VStack>
             <SettingsModal />
             <WarningModal />
+            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
         </Box>
     );
 };

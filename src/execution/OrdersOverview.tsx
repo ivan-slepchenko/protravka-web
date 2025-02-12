@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Box } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { deactivateActiveExecution, saveOrderExecution, saveOrderExecutionPreparationStartTime, saveOrderExecutionTreatmentStartTime, setActiveExecutionToEmptyOne } from '../store/executionSlice';
+import { deactivateActiveExecution, saveOrderExecution, saveOrderExecutionPreparationStartTime, setActiveExecutionToEmptyOne } from '../store/executionSlice';
 import { changeOrderStatus, fetchOrders } from '../store/ordersSlice';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 

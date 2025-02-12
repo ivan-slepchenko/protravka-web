@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Button, useMediaQuery, VStack, HStack, NumberInput, NumberInputField, Center } from '@chakra-ui/react';
+import { Box, Text, Button, useMediaQuery, VStack, HStack, NumberInput, NumberInputField } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { nextPage, saveOrderExecution, setPackedseedsToTreatKg } from '../store/executionSlice';

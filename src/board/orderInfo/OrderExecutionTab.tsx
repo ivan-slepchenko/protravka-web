@@ -1,20 +1,12 @@
-import React, { useState } from "react";
-import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Image, Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody } from "@chakra-ui/react";
+import React from "react";
+import { Box, Text, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 
 import { Order } from "../../store/newOrderSlice";
 import { OrderExecution } from "../../store/executionSlice";
+import useImageModal from '../../hooks/useImageModal';
 
 const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution }> = ({ order, orderExecution }) => {
-    const [selectedPhoto, setSelectedPhoto] = useState<string | null | undefined>(null);
-    
-    const handlePhotoClick = (photoUrl: string | null | undefined) => {
-        setSelectedPhoto(photoUrl);
-    };
-
-    const handleClose = () => {
-        setSelectedPhoto(null);
-    };
-
+    const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
 
     const applicationMethod = orderExecution?.applicationMethod;
 
@@ -42,15 +34,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                             </Td>
                             <Td>
                                 {orderExecution?.packingPhoto ? (
-                                    <Image
+                                    <ImageWithModal
                                         src={orderExecution.packingPhoto}
-                                        alt="Packing"
-                                        width="150px"
-                                        height="100px"
-                                        objectFit="cover"
-                                        onClick={() => handlePhotoClick(orderExecution.packingPhoto)}
-                                        cursor="pointer"
-                                        title="Expected Packing Photo"
                                     />
                                 ) : 'No Photo'}
                             </Td>
@@ -61,15 +46,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                     </Td>
                                     <Td>
                                         {orderExecution?.consumptionPhoto ? (
-                                            <Image
+                                            <ImageWithModal
                                                 src={orderExecution.consumptionPhoto}
-                                                alt="Consumption"
-                                                width="150px"
-                                                height="100px"
-                                                objectFit="cover"
-                                                onClick={() => handlePhotoClick(orderExecution.consumptionPhoto)}
-                                                cursor="pointer"
-                                                title="Expected Consumption Photo"
                                             />
                                         ) : 'No Photo'}
                                     </Td>
@@ -108,15 +86,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                         </Td>
                                         <Td>
                                             {productExecution?.applicationPhoto ? (
-                                                <Image
+                                                <ImageWithModal
                                                     src={productExecution.applicationPhoto}
-                                                    alt="Application"
-                                                    width="150px"
-                                                    height="100px"
-                                                    objectFit="cover"
-                                                    onClick={() => handlePhotoClick(productExecution.applicationPhoto)}
-                                                    cursor="pointer"
-                                                    title="Expected Application Photo"
                                                 />
                                             ) : 'No Photo'}
                                         </Td>
@@ -127,15 +98,8 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                 </Td>
                                                 <Td>
                                                     {productExecution.consumptionPhoto ? (
-                                                        <Image
+                                                        <ImageWithModal
                                                             src={productExecution.consumptionPhoto}
-                                                            alt="Consumption"
-                                                            width="150px"
-                                                            height="100px"
-                                                            objectFit="cover"
-                                                            onClick={() => handlePhotoClick(productExecution.consumptionPhoto)}
-                                                            cursor="pointer"
-                                                            title="Expected Consumption Photo"
                                                         />
                                                     ) : 'No Photo'}
                                                 </Td>
@@ -147,23 +111,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     </Tbody>
                 </Table>
             </Box>
-            <Modal isOpen={!!selectedPhoto} onClose={handleClose}>
-                <ModalOverlay />
-                <ModalContent width="800px" height="600px" maxWidth="unset" p="6">
-                    <ModalCloseButton />
-                    <ModalBody>
-                        {selectedPhoto && (
-                            <Image
-                                src={selectedPhoto}
-                                alt="Full Size"
-                                width="full"
-                                height="full"
-                                objectFit="cover"
-                            />
-                        )}
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
         </Box>
     );
 };

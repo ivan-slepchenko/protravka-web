@@ -56,7 +56,7 @@ export interface Order {
     tkwRep1: number | null;
     tkwRep2: number | null;
     tkwRep3: number | null;
-    tkwProbesPhoto: string | null;
+    tkwProbesPhoto: Blob | null;
     seedsToTreatKg: number | null;
     packaging: Packaging | null;
     bagSize: number | null;
@@ -124,7 +124,7 @@ export const fetchCalculatedValues = createAsyncThunk(
     'newOrder/fetchCalculatedValues',
     async (order: NewOrderState, { rejectWithValue }) => {
         try {
-            const response = await fetch(`${BACKEND_URL}/api/calculate-order`, {
+            const response = await fetch(`${BACKEND_URL}/api/orders/calculate-order`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

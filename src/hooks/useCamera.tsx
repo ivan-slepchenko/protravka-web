@@ -87,21 +87,28 @@ const useCamera = () => {
         }
     };
 
-    const takeSnapshot = () => {
-        if (canvasRef.current && videoRef.current) {
-            const context = canvasRef.current.getContext('2d');
-            if (context) {
-                context.drawImage(
-                    videoRef.current,
-                    0,
-                    0,
-                    canvasRef.current.width,
-                    canvasRef.current.height,
-                );
-                return canvasRef.current.toDataURL('image/png');
+    const takeSnapshot = (): Promise<Blob | null> => {
+        return new Promise((resolve) => {
+            if (canvasRef.current && videoRef.current) {
+                const context = canvasRef.current.getContext('2d');
+                if (context) {
+                    context.drawImage(
+                        videoRef.current,
+                        0,
+                        0,
+                        canvasRef.current.width,
+                        canvasRef.current.height,
+                    );
+                    canvasRef.current.toBlob((blob) => {
+                        resolve(blob);
+                    }, 'image/png');
+                } else {
+                    resolve(null);
+                }
+            } else {
+                resolve(null);
             }
-        }
-        return null;
+        });
     };
 
     const handleSettingsClick = () => {

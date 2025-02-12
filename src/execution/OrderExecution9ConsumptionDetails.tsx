@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack, Center } from "@chakra-ui/react";
+import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { setExecutedProductConsumptionPerLotKg, nextPage, setExecutedSlurryConsumptionPerLotKg, saveOrderExecution } from '../store/executionSlice';
