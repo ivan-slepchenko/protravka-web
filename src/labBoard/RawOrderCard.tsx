@@ -37,7 +37,7 @@ const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
                 <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
                 <Box gridColumn="span 3">
                     <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Assignment Date:</Text>
-                    <Text px={1} isTruncated>{new Date(order.creationDate).toLocaleString()}</Text>
+                    <Text px={1} isTruncated>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleString()}</Text>
                 </Box>
             </Grid>
         </Box>

@@ -79,7 +79,7 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
                 <Text px={1} color="gray.600" gridColumn="span 2">Seeds To Treat:</Text>
                 <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
                 <Text px={1} color="gray.600" gridColumn="span 2">Raw Average TKW:</Text>
-                <Text px={1} isTruncated>{order.tkw.toFixed(2)}</Text>
+                <Text px={1} isTruncated>{order.tkw === null ? 'N/A' : order.tkw.toFixed(2)}</Text>
                 <Text px={1} color="gray.600" gridColumn="span 2">Treated Average TKW:</Text>
                 <Text px={1} isTruncated>{treatedAverageTkw}</Text>
                 <Text px={1} color="gray.600" gridColumn="span 2">Tests Performed:</Text>

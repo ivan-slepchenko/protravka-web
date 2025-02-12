@@ -4,6 +4,11 @@ import { Order } from "../../store/newOrderSlice";
 import { getRateTypeLabel, getRateUnitLabel } from "../../newReceipe/noLab/NewReceipe";
 
 const ProductDetails: React.FC<{ order: Order }> = ({ order }) => {
+
+    if (order.extraSlurry === null) {
+        return <Text>Extra Slurry is not defined</Text>;
+    }
+
     const extraSlurryPercentage = order.extraSlurry > 0 ? `Including Extra Slurry ${order.extraSlurry}%` : '';
 
     return (

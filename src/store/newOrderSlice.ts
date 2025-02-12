@@ -50,23 +50,23 @@ export interface Order {
     crop: Crop;
     variety: Variety;
     lotNumber: string;
-    tkw: number;
-    tkwRep1: number;
-    tkwRep2: number;
-    tkwRep3: number;
-    tkwProbesPhoto: string;
-    seedsToTreatKg: number;
-    packaging: Packaging;
-    bagSize: number;
     status: OrderStatus;
-    orderRecipe: OrderRecipe | null;
-    extraSlurry: number;
     tkwMeasurementInterval: number;
-    tkwMeasurementDate: number;
-    creationDate: number;
-    finalizationDate: number;
-    applicationDate: number;
-    completionDate: number;
+    tkw: number | null;
+    tkwRep1: number | null;
+    tkwRep2: number | null;
+    tkwRep3: number | null;
+    tkwProbesPhoto: string | null;
+    seedsToTreatKg: number | null;
+    packaging: Packaging | null;
+    bagSize: number | null;
+    orderRecipe: OrderRecipe | null;
+    extraSlurry: number | null;
+    tkwMeasurementDate: number | null;
+    creationDate: number | null;
+    finalizationDate: number | null;
+    applicationDate: number | null;
+    completionDate: number | null;
 }
 
 export interface NewOrderState {

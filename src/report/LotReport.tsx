@@ -101,7 +101,7 @@ const LotReport: React.FC = () => {
         return <Text>Loading...</Text>;
     }
 
-    const unitNumberOfSeeds = order.packaging === Packaging.InKg ? order.bagSize / order.tkw : order.bagSize;
+    const unitNumberOfSeeds = (order.bagSize !== null && order.tkw !== null) ? (order.packaging === Packaging.InKg ? order.bagSize / order.tkw : order.bagSize).toFixed(2) : 'N/A';
 
     return (     
         <VStack w="full" h="full" overflowY="auto" p={4} ref={componentRef}>
@@ -140,7 +140,7 @@ const LotReport: React.FC = () => {
                         <Tbody>
                             <Tr>
                                 <Td>{order.tkw}</Td>
-                                <Td>{unitNumberOfSeeds.toFixed(2)}</Td>
+                                <Td>{unitNumberOfSeeds}</Td>
                                 <Td>{order.orderRecipe ? order.orderRecipe.unitWeight.toFixed(2) : 'N/A'}</Td>
                                 <Td>{order.orderRecipe ? order.orderRecipe.nbSeedsUnits.toFixed(2) : 'N/A'}</Td>
                                 <Td>{order.seedsToTreatKg}</Td>
@@ -154,8 +154,8 @@ const LotReport: React.FC = () => {
                                         </Box>
                                     )}
                                 </Td>
-                                <Td fontWeight={orderExecution ? "bold" : "normal"} color={orderExecution ? getDeviationColor(calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg)) : "black"}>
-                                    {orderExecution ? calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed() + '%' : 'N/A'}
+                                <Td fontWeight={orderExecution ? "bold" : "normal"} color={(orderExecution && order.seedsToTreatKg !== null) ? getDeviationColor(calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg)) : "black"}>
+                                    {(orderExecution && order.seedsToTreatKg !== null) ? calculateDeviation(orderExecution.packedseedsToTreatKg, order.seedsToTreatKg).toFixed() + '%' : 'N/A'}
                                 </Td>
                             </Tr>
                         </Tbody>
@@ -197,7 +197,7 @@ const LotReport: React.FC = () => {
                                         );
                                     }
 
-                                    const actualRateGrTo100Kg: number | undefined = productExecution ? 100 * (productExecution.appliedRateKg ?? 0) / (order.seedsToTreatKg / 1000) : undefined;
+                                    const actualRateGrTo100Kg: number | undefined = (productExecution && order.seedsToTreatKg !== null) ? 100 * (productExecution.appliedRateKg ?? 0) / (order.seedsToTreatKg / 1000) : undefined;
                                     const actualRateGrToU_KS: number | undefined = (order.orderRecipe !== null && productExecution) ? (1000 * (productExecution.appliedRateKg ?? 0) / order.orderRecipe.nbSeedsUnits) : undefined;
                                     const deviation: number | undefined = (productRecipe && productExecution) ? calculateDeviation(actualRateGrToU_KS ?? 0, productRecipe.rateGrToU_KS) : undefined;
 

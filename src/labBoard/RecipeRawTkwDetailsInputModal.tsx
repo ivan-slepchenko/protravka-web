@@ -108,7 +108,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
                              
                             <GridItem px={1} h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}>{new Date(selectedOrder.creationDate).toLocaleString()}</Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.creationDate === null ? 'N/A' : new Date(selectedOrder.creationDate).toLocaleString()}</Text>
                             </GridItem>
 
                             <GridItem colSpan={2}>

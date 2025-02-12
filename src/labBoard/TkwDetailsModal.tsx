@@ -13,12 +13,14 @@ interface TkwDetailsModalProps {
 const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measurements }) => {
     const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
 
-    const calculateAverageTkw = (tkwValues: (number | undefined)[]): number | undefined => {
+    const calculateAverageTkw = (tkwValues: (number | null | undefined)[]): number | undefined => {
         const validValues = tkwValues.filter((value) => value !== undefined && value !== null) as number[];
         if (validValues.length === 0) return undefined;
         const total = validValues.reduce((sum, value) => sum + value, 0);
         return total / validValues.length;
     };
+
+    const averageTkw = calculateAverageTkw([order.tkwRep1, order.tkwRep2, order.tkwRep3]);
 
     return (
         <Modal isOpen={!!order} onClose={onClose} size="full">
@@ -73,13 +75,13 @@ const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measu
                                     <Text fontWeight="bold">Probe 3:</Text>
                                     <Text>{order.tkwRep3 ? `${order.tkwRep3} gr.` : 'N/A'}</Text>
                                     <Text fontWeight="bold">Av.:</Text>
-                                    <Text>{calculateAverageTkw([order.tkwRep1, order.tkwRep2, order.tkwRep3]) !== undefined ? `${calculateAverageTkw([order.tkwRep1, order.tkwRep2, order.tkwRep3])!.toFixed(2)} gr.` : 'N/A'}</Text>
+                                    <Text>{averageTkw !== undefined ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
                                 </Grid>
                             </GridItem>
 
                             <GridItem colSpan={2}>
                                 <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Creation Date:</Text>
-                                <Text>{new Date(order.creationDate).toLocaleString()}</Text>
+                                <Text>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleString()}</Text>
                             </GridItem>
 
                             {order.completionDate && (
@@ -91,7 +93,7 @@ const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measu
 
                             <GridItem colSpan={2}>
                                 <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Measurement Date:</Text>
-                                <Text>{new Date(order.tkwMeasurementDate).toLocaleString()}</Text>
+                                <Text>{order.tkwMeasurementDate === null ? 'N/A' :  new Date(order.tkwMeasurementDate).toLocaleString()}</Text>
                             </GridItem>
                         </Grid>
 
@@ -103,60 +105,63 @@ const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measu
                         {measurements.length > 0 && 
                             <>
                                 <Text fontWeight="bold">Treated TKW Measurements:</Text>
-                                {measurements.map((measurement, index) => (
-                                    <Grid templateColumns="1fr 1fr" gap={2} w="full" key={index} borderWidth={1} p={2}>
-                                        <GridItem colSpan={2}>
-                                            <Text>#{index + 1}</Text>
-                                        </GridItem>
-                                        <GridItem>
-                                            {measurement.tkwProbesPhoto ? (
-                                                <ImageWithModal src={measurement.tkwProbesPhoto} fullSize />
-                                            ) : (
-                                                <AspectRatio ratio={4 / 3} width="100%">
-                                                    <Box
-                                                        width="full"
-                                                        height="full"
-                                                        border="1px solid"
-                                                        borderColor="gray.300"
-                                                        display="flex"
-                                                        justifyContent="center"
-                                                        alignItems="center"
-                                                        bg="gray.100"
-                                                    >
-                                                        <Text color="gray.500">N/A</Text>
-                                                    </Box>
-                                                </AspectRatio>
-                                            )}
-                                        </GridItem>
-                                        <GridItem>
-                                            <Grid templateColumns="1fr 1fr" gap={1}>
-                                                <Text fontWeight="bold">Probe 1:</Text>
-                                                <Text>{measurement.tkwProbe1 ? `${measurement.tkwProbe1} gr.` : 'N/A'}</Text>
+                                {measurements.map((measurement, index) => {
+                                    const averageTkw = calculateAverageTkw([measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3]);
+                                    return (
+                                        <Grid templateColumns="1fr 1fr" gap={2} w="full" key={index} borderWidth={1} p={2}>
+                                            <GridItem colSpan={2}>
+                                                <Text>#{index + 1}</Text>
+                                            </GridItem>
+                                            <GridItem>
+                                                {measurement.tkwProbesPhoto ? (
+                                                    <ImageWithModal src={measurement.tkwProbesPhoto} fullSize />
+                                                ) : (
+                                                    <AspectRatio ratio={4 / 3} width="100%">
+                                                        <Box
+                                                            width="full"
+                                                            height="full"
+                                                            border="1px solid"
+                                                            borderColor="gray.300"
+                                                            display="flex"
+                                                            justifyContent="center"
+                                                            alignItems="center"
+                                                            bg="gray.100"
+                                                        >
+                                                            <Text color="gray.500">N/A</Text>
+                                                        </Box>
+                                                    </AspectRatio>
+                                                )}
+                                            </GridItem>
+                                            <GridItem>
+                                                <Grid templateColumns="1fr 1fr" gap={1}>
+                                                    <Text fontWeight="bold">Probe 1:</Text>
+                                                    <Text>{measurement.tkwProbe1 ? `${measurement.tkwProbe1} gr.` : 'N/A'}</Text>
 
-                                                <Text fontWeight="bold">Probe 2:</Text>
-                                                <Text>{measurement.tkwProbe2 ? `${measurement.tkwProbe2} gr.` : 'N/A'}</Text>
+                                                    <Text fontWeight="bold">Probe 2:</Text>
+                                                    <Text>{measurement.tkwProbe2 ? `${measurement.tkwProbe2} gr.` : 'N/A'}</Text>
 
-                                                <Text fontWeight="bold">Probe 3:</Text>
-                                                <Text>{measurement.tkwProbe3 ? `${measurement.tkwProbe3} gr.` : 'N/A'}</Text>
+                                                    <Text fontWeight="bold">Probe 3:</Text>
+                                                    <Text>{measurement.tkwProbe3 ? `${measurement.tkwProbe3} gr.` : 'N/A'}</Text>
 
-                                                <Text fontWeight="bold">Av.:</Text>
-                                                <Text>{calculateAverageTkw([measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3]) !== undefined ? `${calculateAverageTkw([measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3])!.toFixed(2)} gr.` : 'N/A'}</Text>
-                                            </Grid>
-                                        </GridItem>
-                                        <GridItem colSpan={2}>
-                                            <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Creation Date:</Text>
-                                            <Text>{new Date(measurement.creationDate).toLocaleString()}</Text>
-                                        </GridItem>
-                                        <GridItem colSpan={2}>
-                                            {measurement.probeDate && (
-                                                <>
-                                                    <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Probe Date:</Text>
-                                                    <Text>{new Date(measurement.probeDate).toLocaleString()}</Text>
-                                                </>
-                                            )}
-                                        </GridItem>
-                                    </Grid>
-                                ))}
+                                                    <Text fontWeight="bold">Av.:</Text>
+                                                    <Text>{averageTkw !== undefined ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
+                                                </Grid>
+                                            </GridItem>
+                                            <GridItem colSpan={2}>
+                                                <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Creation Date:</Text>
+                                                <Text>{new Date(measurement.creationDate).toLocaleString()}</Text>
+                                            </GridItem>
+                                            <GridItem colSpan={2}>
+                                                {measurement.probeDate && (
+                                                    <>
+                                                        <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Probe Date:</Text>
+                                                        <Text>{new Date(measurement.probeDate).toLocaleString()}</Text>
+                                                    </>
+                                                )}
+                                            </GridItem>
+                                        </Grid>
+                                    )
+                                })}
                             </>
                         }  
                     </VStack>

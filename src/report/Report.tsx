@@ -63,8 +63,16 @@ const Report: React.FC = () => {
                     : false
                 : true;
             const matchesStatus = filters.status ? order.status === filters.status : true;
-            const matchesStartDate = filters.startDate ? new Date(order.applicationDate) >= new Date(filters.startDate) : true;
-            const matchesEndDate = filters.endDate ? new Date(order.applicationDate) <= new Date(filters.endDate) : true;
+            const matchesStartDate = filters.startDate
+                ? order.applicationDate === null
+                    ? false 
+                    : new Date(order.applicationDate) >= new Date(filters.startDate)
+                : true;
+            const matchesEndDate = filters.endDate
+                ? order.applicationDate === null 
+                    ? false
+                    : new Date(order.applicationDate) <= new Date(filters.endDate)
+                : true;
             return matchesCrop && matchesVariety && matchesOperator && matchesStatus && matchesStartDate && matchesEndDate;
         });
         setFilteredOrders(filtered);
@@ -93,12 +101,12 @@ const Report: React.FC = () => {
         const cropStat = acc.find(stat => stat.crop === order.crop.name);
         if (cropStat) {
             cropStat.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
-            cropStat.kg += order.seedsToTreatKg;
+            cropStat.kg += order.seedsToTreatKg === null ? 0 : order.seedsToTreatKg;
         } else {
             acc.push({
                 crop: order.crop.name,
                 su: order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0,
-                kg: order.seedsToTreatKg,
+                kg: order.seedsToTreatKg === null ? 0 : order.seedsToTreatKg,
             });
         }
         return acc;
@@ -117,17 +125,17 @@ const Report: React.FC = () => {
                 case OrderStatus.Completed:
                     stats.approved.count++;
                     stats.approved.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
-                    stats.approved.kg += order.seedsToTreatKg;
+                    stats.approved.kg += order.seedsToTreatKg === null ? 0 : order.seedsToTreatKg;
                     break;
                 case OrderStatus.ToAcknowledge:
                     stats.toAcknowledge.count++;
                     stats.toAcknowledge.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
-                    stats.toAcknowledge.kg += order.seedsToTreatKg;
+                    stats.toAcknowledge.kg += order.seedsToTreatKg === null ? 0 : order.seedsToTreatKg;
                     break;
                 case OrderStatus.Failed:
                     stats.disapproved.count++;
                     stats.disapproved.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
-                    stats.disapproved.kg += order.seedsToTreatKg;
+                    stats.disapproved.kg += order.seedsToTreatKg === null ? 0 : order.seedsToTreatKg;
                     break;
                 default:
                     break;
@@ -305,7 +313,7 @@ const Report: React.FC = () => {
                                         <Td>{order.crop.name}</Td>
                                         <Td>{order.variety.name}</Td>
                                         <Td>{order.lotNumber}</Td>
-                                        <Td>{new Date(order.applicationDate).toLocaleDateString()}</Td>
+                                        <Td>{order.applicationDate === null ? 'N/A' : new Date(order.applicationDate).toLocaleDateString()}</Td>
                                         <Td>{order.operator ? order.operator.name : 'N/A'}</Td>
                                         <Td>{order.orderRecipe ? order.orderRecipe.nbSeedsUnits.toFixed(1) : "N/A"}</Td>
                                         <Td>{order.seedsToTreatKg}</Td>

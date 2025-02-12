@@ -20,6 +20,10 @@ const OrderExecution1InitialOverview = () => {
         return <Text>{'Receipe not found '}</Text>;
     }
 
+    if (currentOrder.packaging === null) {
+        return <Text>{'Packaging not found '}</Text>;
+    }
+
     const totalLitres = currentOrder.orderRecipe ? currentOrder.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0) / 1000 : undefined;
     const totalKg = currentOrder.orderRecipe ? currentOrder.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.grSlurryRecipeToMix, 0) / 1000 : undefined;
     const bagSizeUnit = packagingMap[currentOrder.packaging];

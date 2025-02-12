@@ -19,7 +19,7 @@ const OrderExecution7PackingDetails = () => {
         }
     };
 
-    if (currentOrder === undefined || currentOrder?.seedsToTreatKg === undefined) {
+    if (currentOrder === undefined || currentOrder?.seedsToTreatKg === undefined || currentOrder.seedsToTreatKg === null) {
         return <Text>Invalid data, order is not found</Text>;
     }
 
