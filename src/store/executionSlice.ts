@@ -21,8 +21,8 @@ export interface OrderExecution {
     orderId: string;
     productExecutions: ProductExecution[];
     applicationMethod: string | null;
-    packingPhoto: Blob | null;
-    consumptionPhoto: Blob | null;
+    packingPhoto: Blob | string | null;
+    consumptionPhoto: Blob | string | null;
     packedseedsToTreatKg: number | null;
     slurryConsumptionPerLotKg: number | null;
     currentPage: OrderExecutionPage | null;
@@ -69,15 +69,73 @@ export const saveOrderExecution = createAsyncThunk(
             throw new Error('No current order execution to save');
         }
         try {
-            const response = await fetch(`${BACKEND_URL}/api/executions`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderExecution),
-                credentials: 'include', // Include credentials for requests
-            });
-            return await response.json();
+            // Save order execution
+            const formData = new FormData();
+            formData.append('orderId', orderExecution.orderId);
+            if (orderExecution.applicationMethod !== null)
+                formData.append('applicationMethod', orderExecution.applicationMethod);
+            if (orderExecution.packedseedsToTreatKg !== null)
+                formData.append(
+                    'packedseedsToTreatKg',
+                    orderExecution.packedseedsToTreatKg.toString(),
+                );
+            if (orderExecution.slurryConsumptionPerLotKg !== null)
+                formData.append(
+                    'slurryConsumptionPerLotKg',
+                    orderExecution.slurryConsumptionPerLotKg.toString(),
+                );
+            if (orderExecution.currentPage !== null)
+                formData.append('currentPage', orderExecution.currentPage.toString());
+            if (orderExecution.currentProductIndex !== null)
+                formData.append(
+                    'currentProductIndex',
+                    orderExecution.currentProductIndex.toString(),
+                );
+
+            if (orderExecution.packingPhoto !== null) {
+                formData.append('packingPhoto', orderExecution.packingPhoto);
+            }
+            if (orderExecution.consumptionPhoto !== null) {
+                formData.append('consumptionPhoto', orderExecution.consumptionPhoto);
+            }
+
+            const orderExecutionId = (
+                (await (
+                    await fetch(`${BACKEND_URL}/api/executions`, {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'include', // Include credentials for requests
+                    })
+                ).json()) as OrderExecution
+            ).id;
+
+            // Save product executions one by one
+            for (const productExecution of orderExecution.productExecutions) {
+                const formData = new FormData();
+                formData.append('productExecution', JSON.stringify([productExecution]));
+
+                if (productExecution.applicationPhoto !== undefined) {
+                    formData.append('applicationPhoto', productExecution.applicationPhoto);
+                }
+                if (productExecution.consumptionPhoto !== undefined) {
+                    formData.append('consumptionPhoto', productExecution.consumptionPhoto);
+                }
+
+                const response = await fetch(
+                    `${BACKEND_URL}/api/executions/${orderExecutionId}/product-execution`,
+                    {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'include', // Include credentials for requests
+                    },
+                );
+
+                if (!response.ok) {
+                    throw new Error('Failed to save product execution');
+                }
+            }
+
+            return await state.execution.currentOrderExecution;
         } catch (error) {
             console.error('Failed to save order execution:', error);
             return rejectWithValue(orderExecution); // Return the payload for offline handling
@@ -166,14 +224,12 @@ export const updateTkwMeasurement = createAsyncThunk(
     async (
         {
             id,
-            orderExecutionId,
             tkwRep1,
             tkwRep2,
             tkwRep3,
             tkwProbesPhoto,
         }: {
             id: string;
-            orderExecutionId: string;
             tkwRep1: number;
             tkwRep2: number;
             tkwRep3: number;
@@ -182,18 +238,15 @@ export const updateTkwMeasurement = createAsyncThunk(
         { dispatch, rejectWithValue },
     ) => {
         try {
+            const formData = new FormData();
+            formData.append('tkwRep1', tkwRep1.toString());
+            formData.append('tkwRep2', tkwRep2.toString());
+            formData.append('tkwRep3', tkwRep3.toString());
+            formData.append('tkwProbesPhoto', tkwProbesPhoto);
+
             const response = await fetch(`${BACKEND_URL}/api/executions/tkw-measurements/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    orderExecutionId,
-                    tkwRep1,
-                    tkwRep2,
-                    tkwRep3,
-                    tkwProbesPhoto,
-                }),
+                body: formData,
                 credentials: 'include',
             });
             if (!response.ok) {

@@ -78,7 +78,6 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
         if (orderExecutionId && tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null && tkwProbesPhoto !== null) {
             dispatch(updateTkwMeasurement({
                 id: selectedMeasurement.id,
-                orderExecutionId,
                 tkwRep1,
                 tkwRep2,
                 tkwRep3,
