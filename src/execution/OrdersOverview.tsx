@@ -5,10 +5,12 @@ import { AppDispatch, RootState } from '../store/store';
 import { deactivateActiveExecution, saveOrderExecution, saveOrderExecutionPreparationStartTime, setActiveExecutionToEmptyOne } from '../store/executionSlice';
 import { changeOrderStatus, fetchOrders } from '../store/ordersSlice';
 import { Order, OrderStatus } from '../store/newOrderSlice';
+import { useTranslation } from 'react-i18next';
 
 const currentDate = new Date().toLocaleDateString();
 
 const OrdersOverview: React.FC = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { isOpen: isAlertOpen, onOpen: onAlertOpen, onClose: onAlertClose } = useDisclosure();
@@ -52,21 +54,21 @@ const OrdersOverview: React.FC = () => {
             <VStack w='full' h='full' p={4} overflow='auto'>
                 {fetchError ? (
                     <>
-                        <Text py={2} px={2} fontSize="lg" color="red.600">No access to internet available.</Text>
-                        <Button colorScheme="orange" onClick={onRefreshClick}>Refresh</Button>
+                        <Text py={2} px={2} fontSize="lg" color="red.600">{t('orders_overview.no_internet_access')}</Text>
+                        <Button colorScheme="orange" onClick={onRefreshClick}>{t('orders_overview.refresh')}</Button>
                     </>
                 ) : (
                     <>
-                        <Text py={2} px={2} fontSize="lg">You have the following lots to treat today, {currentDate}</Text>
-                        <Text py={2} px={2} fontSize="md" color="gray.600">Choose the lot to start treatment</Text>
+                        <Text py={2} px={2} fontSize="lg">{t('orders_overview.lots_to_treat_today', { date: currentDate })}</Text>
+                        <Text py={2} px={2} fontSize="md" color="gray.600">{t('orders_overview.choose_lot_to_start')}</Text>
                 
                         <TableContainer mt={4} w="full" overflowY='visible'>
                             <Table variant="simple" size="sm" w="full">
                                 <Thead bg="orange.100">
                                     <Tr>
-                                        <Th>Crop</Th>
-                                        <Th>Lot</Th>
-                                        <Th>Products</Th>
+                                        <Th>{t('orders_overview.crop')}</Th>
+                                        <Th>{t('orders_overview.lot')}</Th>
+                                        <Th>{t('orders_overview.products')}</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
@@ -103,17 +105,17 @@ const OrdersOverview: React.FC = () => {
                 <AlertDialogOverlay>
                     <AlertDialogContent margin={4}>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            Confirm Start Processing
+                            {t('orders_overview.confirm_start_processing')}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            {'Confirm you want to start processing this receipe. You cannot cancel this process later.'}
+                            {t('orders_overview.confirm_start_processing_message')}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
+                                {t('orders_overview.cancel')}
                             </Button>
                             <Button colorScheme="red" onClick={handleConfirm} ml={3}>
-                                Confirm
+                                {t('orders_overview.confirm')}
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>
@@ -128,14 +130,14 @@ const OrdersOverview: React.FC = () => {
                 <AlertDialogOverlay>
                     <AlertDialogContent margin={4}>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            Internet Connection Required
+                            {t('orders_overview.internet_connection_required')}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            {'You may start execution only when internet access is available. Please find better internet connection.'}
+                            {t('orders_overview.internet_connection_required_message')}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onAlertClose}>
-                                Close
+                                {t('orders_overview.close')}
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>

@@ -1,7 +1,9 @@
 import { useRef, useEffect, useState } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 
 const useCamera = () => {
+    const { t } = useTranslation();
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
@@ -141,7 +143,7 @@ const useCamera = () => {
         <Modal isOpen={isSettingsOpen} onClose={handleSettingsClose} isCentered>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Select Camera</ModalHeader>
+                <ModalHeader>{t('use_camera.select_camera')}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <Select onChange={handleDeviceChange} value={selectedDeviceId || ''}>
@@ -153,7 +155,7 @@ const useCamera = () => {
                     </Select>
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={handleSettingsClose}>Close</Button>
+                    <Button onClick={handleSettingsClose}>{t('use_camera.close')}</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>
@@ -163,17 +165,17 @@ const useCamera = () => {
         <Modal isOpen={isWarningOpen} onClose={handleWarningClose} isCentered>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Camera Access Required</ModalHeader>
+                <ModalHeader>{t('use_camera.camera_access_required')}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <Alert status="warning">
                         <AlertIcon />
-                        <AlertTitle mr={2}>Camera access denied!</AlertTitle>
-                        <AlertDescription>Please allow camera access to proceed.</AlertDescription>
+                        <AlertTitle mr={2}>{t('use_camera.camera_access_denied')}</AlertTitle>
+                        <AlertDescription>{t('use_camera.allow_camera_access')}</AlertDescription>
                     </Alert>
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme="blue" onClick={handleWarningClose}>Try Again</Button>
+                    <Button colorScheme="blue" onClick={handleWarningClose}>{t('use_camera.try_again')}</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>

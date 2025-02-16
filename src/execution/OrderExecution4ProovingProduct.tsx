@@ -7,8 +7,10 @@ import { AppDispatch, RootState } from '../store/store';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import useCamera from '../hooks/useCamera';
 import useImageModal from '../hooks/useImageModal';
+import { useTranslation } from 'react-i18next';
 
 const OrderExecution4ProovingProduct = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
@@ -33,7 +35,7 @@ const OrderExecution4ProovingProduct = () => {
         if (photoData) {
             setPhotoState(photoData);
             if (currentOrder.productDetails[currentProductIndex] === undefined) {
-                throw new Error(`Product details not found for the current receipe and product index ${currentOrder.id} ${currentProductIndex}`);
+                throw new Error(t('order_execution.product_details_not_found', { id: currentOrder.id, index: currentProductIndex }));
             }
 
             const productDetails = currentOrder.productDetails[currentProductIndex];
@@ -43,7 +45,7 @@ const OrderExecution4ProovingProduct = () => {
                 dispatch(saveOrderExecution());
                 stopCamera();
             } else {
-                throw new Error(`Product not found for the current receipe and product index ${currentOrder.id} ${currentProductIndex}`);
+                throw new Error(t('order_execution.product_not_found', { id: currentOrder.id, index: currentProductIndex }));
             }
         }
     };
@@ -51,12 +53,12 @@ const OrderExecution4ProovingProduct = () => {
     const handleRetakePhoto = () => {
         const productDetails = currentOrder.productDetails[currentProductIndex];
         if (productDetails === undefined) {
-            throw new Error(`Product details not found for the current order and product index ${currentOrder.id} ${currentProductIndex}`);
+            throw new Error(t('order_execution.product_details_not_found', { id: currentOrder.id, index: currentProductIndex }));
         }
 
         const product = productDetails.product;
         if (product === undefined) {
-            throw new Error(`Product not found for the current order and product index ${currentOrder.id} ${currentProductIndex}`);
+            throw new Error(t('order_execution.product_not_found', { id: currentOrder.id, index: currentProductIndex }));
         }
 
         dispatch(resetPhotoForProvingProductApplication({ productId: product.id }));
@@ -81,10 +83,7 @@ const OrderExecution4ProovingProduct = () => {
             <VStack spacing={6} width="100%" maxWidth="400px" h='full'>
                 <VStack gap={0}>
                     <Text>
-                        {'Product '}
-                        {currentProductIndex + 1}
-                        {' out of '}
-                        {currentOrder.productDetails.length}
+                        {t('order_execution.product')} {currentProductIndex + 1} {t('order_execution.out_of')} {currentOrder.productDetails.length}
                     </Text>
                     <Text fontSize="xl" fontWeight="bold">{currentOrder.productDetails[currentProductIndex].product?.name}</Text>
                 </VStack>
@@ -131,7 +130,7 @@ const OrderExecution4ProovingProduct = () => {
                         onClick={photo ? handleRetakePhoto : handleTakeSnapshot}
                         leftIcon={photo ? undefined : <FaCamera />}
                     >
-                        {photo ? 'Retake the picture' : 'Take Picture'}
+                        {photo ? t('order_execution.retake_picture') : t('order_execution.take_picture')}
                     </Button>
                     <Button
                         w="200px" 
@@ -140,7 +139,7 @@ const OrderExecution4ProovingProduct = () => {
                         onClick={handleNextButtonClick}
                         disabled={!photo}
                     >
-                        Next
+                        {t('order_execution.next')}
                     </Button>
                 </VStack>
             </VStack>

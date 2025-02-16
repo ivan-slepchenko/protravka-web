@@ -4,25 +4,27 @@ import { Box, Text, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { Order } from "../../store/newOrderSlice";
 import { OrderExecution } from "../../store/executionSlice";
 import useImageModal from '../../hooks/useImageModal';
+import { useTranslation } from 'react-i18next';
 
 const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution }> = ({ order, orderExecution }) => {
+    const { t } = useTranslation();
     const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
 
     const applicationMethod = orderExecution?.applicationMethod;
 
     return (
         <Box w="full">
-            <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Receipe Execution Photos:</Text>
+            <Text fontSize="md" fontWeight="bold" mt="4" mb="2">{t('order_execution.recipe_execution_photos')}:</Text>
             <Box overflowY="auto" bg="gray.50" borderRadius="md" w={applicationMethod !== 'Surry' ? "50%" : "full"}>
                 <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th whiteSpace="nowrap">Expected Seeds To Pack</Th>
-                            <Th whiteSpace="nowrap">Packing Photo</Th>                      
+                            <Th whiteSpace="nowrap">{t('order_execution.expected_seeds_to_pack')}</Th>
+                            <Th whiteSpace="nowrap">{t('order_execution.packing_photo')}</Th>                      
                             {applicationMethod === 'Surry' && (
                                 <>
-                                    <Th whiteSpace="nowrap">Consumption Info</Th>
-                                    <Th whiteSpace="nowrap">Consumption Photo</Th>
+                                    <Th whiteSpace="nowrap">{t('order_execution.consumption_info')}</Th>
+                                    <Th whiteSpace="nowrap">{t('order_execution.consumption_photo')}</Th>
                                 </>
                             )}
                         </Tr>
@@ -37,7 +39,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                     <ImageWithModal
                                         src={orderExecution.packingPhoto}
                                     />
-                                ) : 'No Photo'}
+                                ) : t('order_execution.no_photo')}
                             </Td>
                             {applicationMethod === 'Surry' && (
                                 <>
@@ -49,7 +51,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                             <ImageWithModal
                                                 src={orderExecution.consumptionPhoto}
                                             />
-                                        ) : 'No Photo'}
+                                        ) : t('order_execution.no_photo')}
                                     </Td>
                                 </>
                             )}
@@ -57,18 +59,18 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     </Tbody>
                 </Table>
             </Box>
-            <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Execution Details</Text>
+            <Text fontSize="md" fontWeight="bold" mt="4" mb="2">{t('order_execution.product_execution_details')}</Text>
             <Box overflowY="auto" bg="gray.50" borderRadius="md">
                 <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th whiteSpace="nowrap">Product Name</Th>
-                            <Th whiteSpace="nowrap">Expected Application</Th>
-                            <Th whiteSpace="nowrap">Application Photo</Th>
+                            <Th whiteSpace="nowrap">{t('order_execution.product_name')}</Th>
+                            <Th whiteSpace="nowrap">{t('order_execution.expected_application')}</Th>
+                            <Th whiteSpace="nowrap">{t('order_execution.application_photo')}</Th>
                             {applicationMethod !== 'Surry' && (
                                 <>
-                                    <Th whiteSpace="nowrap">Expected Consumption</Th>
-                                    <Th whiteSpace="nowrap">Consumption Photo</Th>
+                                    <Th whiteSpace="nowrap">{t('order_execution.expected_consumption')}</Th>
+                                    <Th whiteSpace="nowrap">{t('order_execution.consumption_photo')}</Th>
                                 </>
                             )}
                         </Tr>
@@ -80,7 +82,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                 const productExecution = orderExecution?.productExecutions.find(pe => pe.productId === productDetail.product?.id);
                                 return (
                                     <Tr key={index}>
-                                        <Td>{productDetail.product ? productDetail.product.name : 'undefined'}</Td>
+                                        <Td>{productDetail.product ? productDetail.product.name : t('order_execution.undefined')}</Td>
                                         <Td>
                                             <Text>{productExecution?.appliedRateKg !== undefined ? productExecution?.appliedRateKg.toFixed(2) : 0} kg</Text>
                                         </Td>
@@ -89,7 +91,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                 <ImageWithModal
                                                     src={productExecution.applicationPhoto}
                                                 />
-                                            ) : 'No Photo'}
+                                            ) : t('order_execution.no_photo')}
                                         </Td>
                                         {applicationMethod !== 'Surry' && productExecution && productExecution.productConsumptionPerLotKg !== undefined && (
                                             <>
@@ -101,7 +103,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                         <ImageWithModal
                                                             src={productExecution.consumptionPhoto}
                                                         />
-                                                    ) : 'No Photo'}
+                                                    ) : t('order_execution.no_photo')}
                                                 </Td>
                                             </>
                                         )}

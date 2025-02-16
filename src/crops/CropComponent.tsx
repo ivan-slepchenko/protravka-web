@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Input, VStack, HStack, Text, Tag, TagLabel, TagCloseButton } from '@chakra-ui/react';
 import { Crop } from '../store/cropsSlice';
+import { useTranslation } from 'react-i18next';
 
 interface CropComponentProps {
   crop: Crop;
@@ -21,6 +22,7 @@ const CropComponent: React.FC<CropComponentProps> = ({
     newVarietyName,
     setNewVarietyName,
 }) => {
+    const { t } = useTranslation();
     const [isFolded, setIsFolded] = useState(true);
 
     return (
@@ -29,16 +31,16 @@ const CropComponent: React.FC<CropComponentProps> = ({
                 <Text as="h3" fontSize="lg">{crop.name}</Text>
                 <HStack>
                     <Button size="sm" onClick={() => setIsFolded(!isFolded)}>
-                        {isFolded ? 'Show Varieties' : 'Hide Varieties'}
+                        {isFolded ? t('crop.show_varieties') : t('crop.hide_varieties')}
                     </Button>
-                    <Button size="sm" colorScheme="red" onClick={onDeleteCrop}>Delete</Button>
+                    <Button size="sm" colorScheme="red" onClick={onDeleteCrop}>{t('crop.delete')}</Button>
                 </HStack>
             </HStack>
             {!isFolded && (
                 <VStack spacing={2} mt={2} align="stretch">
                     {crop.varieties.length > 0 && (
                         <>
-                            <Text fontWeight="bold">Varieties:</Text>
+                            <Text fontWeight="bold">{t('crop.varieties')}:</Text>
                             <HStack p={2} borderWidth={1} borderRadius="md" w="full" wrap="wrap">
                                 {crop.varieties.map((variety) => (
                                     <Tag key={variety.id} size="lg" borderRadius="full" variant="solid" colorScheme="teal" m={1}>
@@ -51,12 +53,12 @@ const CropComponent: React.FC<CropComponentProps> = ({
                     )}
                     <HStack>
                         <Input
-                            placeholder="New Variety Name"
+                            placeholder={t('crop.new_variety_name')}
                             value={newVarietyName}
                             onChange={(e) => setNewVarietyName(e.target.value)}
                             onFocus={() => setSelectedCropId(crop.id)}
                         />
-                        <Button onClick={onAddVariety}>Add Variety</Button>
+                        <Button onClick={onAddVariety}>{t('crop.add_variety')}</Button>
                     </HStack>
                 </VStack>
             )}

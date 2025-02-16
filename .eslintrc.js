@@ -7,6 +7,7 @@ module.exports = {
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended",
+        "plugin:i18next/recommended",
         "prettier",
     ],
     "overrides": [
@@ -27,11 +28,12 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "i18next",
     ],
     "rules": {
         "indent": ["error", 4, { "SwitchCase": 1 }],
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
     },
     "settings": {
         "react": {

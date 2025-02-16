@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { Box, Button, Checkbox, CheckboxGroup, Stack, Text, Grid, GridItem } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 
 export enum Role {
     OPERATOR = 'operator',
@@ -13,16 +14,15 @@ export enum Role {
     MANAGER = 'manager',
     LABORATORY = 'laboratory',
 }
-  
 
 const Operators = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const operators = useSelector((state: RootState) => state.operators.operators);
     const currentUserEmail = useSelector((state: RootState) => state.user.email);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedOperatorId, setSelectedOperatorId] = useState<string | null>(null);
     const cancelRef = React.useRef<HTMLButtonElement>(null);
-    
 
     useEffect(() => {
         dispatch(fetchOperators());
@@ -52,11 +52,11 @@ const Operators = () => {
     return (
         <Box p={4}>
             <Grid templateColumns="repeat(5, 1fr)" borderWidth="1px" borderRadius="lg" overflow="hidden">
-                <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Name</GridItem>
-                <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Email</GridItem>
-                <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Phone</GridItem>
-                <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Roles</GridItem>
-                <GridItem bg="gray.100" p={2} fontWeight="bold">Actions</GridItem>
+                <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">{t('operators.name')}</GridItem>
+                <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">{t('operators.email')}</GridItem>
+                <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">{t('operators.phone')}</GridItem>
+                <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">{t('operators.roles')}</GridItem>
+                <GridItem bg="gray.100" p={2} fontWeight="bold">{t('operators.actions')}</GridItem>
                 {operators && operators
                     .filter(operator => operator.email !== currentUserEmail)
                     .slice()
@@ -80,14 +80,14 @@ const Operators = () => {
                                     <Stack direction="row">
                                         {Object.values(Role).map(role => (
                                             <Checkbox key={role} value={role}>
-                                                {role}
+                                                {t(`operators.${role}`)}
                                             </Checkbox>
                                         ))}
                                     </Stack>
                                 </CheckboxGroup>
                             </GridItem>
                             <GridItem p={2} borderBottom="1px solid" borderColor="gray.200">
-                                <Button onClick={() => handleDeleteOperator(operator.id)} size={"xs"}>Delete</Button>
+                                <Button onClick={() => handleDeleteOperator(operator.id)} size={"xs"}>{t('operators.delete')}</Button>
                             </GridItem>
                         </React.Fragment>
                     ))}
@@ -100,17 +100,17 @@ const Operators = () => {
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            Delete Operator
+                            {t('operators.delete_operator')}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            Are you sure you want to delete this operator? This action cannot be undone.
+                            {t('operators.confirm_delete')}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
+                                {t('operators.cancel')}
                             </Button>
                             <Button colorScheme="red" onClick={confirmDeleteOperator} ml={3}>
-                                Delete
+                                {t('operators.delete')}
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>

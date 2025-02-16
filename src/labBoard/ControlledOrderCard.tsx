@@ -2,26 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
 import { OrderExecution, TkwMeasurement, fetchOrderExecution } from '../store/executionSlice';
 import { Order, OrderStatus } from '../store/newOrderSlice';
+import { useTranslation } from 'react-i18next';
 
 interface ControlledOrderCardProps {
     order: Order;
     measurements: TkwMeasurement[];
     onClick: () => void;
 }
-const TREATMENT_LABEL = "In Treatment";
-const TREATED_LABEL = "Treated";
 
-const stateToLabel: Partial<Record<OrderStatus, string>> = {
-    [OrderStatus.TreatmentInProgress]: TREATMENT_LABEL,
-    [OrderStatus.RecipeCreated]: TREATMENT_LABEL,
-    [OrderStatus.TKWConfirmed]: TREATMENT_LABEL,
-    [OrderStatus.Completed]: TREATED_LABEL,
-    [OrderStatus.Failed]: TREATED_LABEL,
-    [OrderStatus.LabControl]: TREATED_LABEL,
-    [OrderStatus.ToAcknowledge]: TREATED_LABEL,
+enum LabColumn {
+    TREATMENT = 'in_treatment',
+    TREATED = 'treated',
+}
+
+const stateToLabColumn: Partial<Record<OrderStatus, string>> = {
+    [OrderStatus.TreatmentInProgress]: LabColumn.TREATMENT,
+    [OrderStatus.RecipeCreated]: LabColumn.TREATMENT,
+    [OrderStatus.TkwConfirmed]: LabColumn.TREATMENT,
+    [OrderStatus.Completed]: LabColumn.TREATED,
+    [OrderStatus.Failed]: LabColumn.TREATED,
+    [OrderStatus.LabControl]: LabColumn.TREATED,
+    [OrderStatus.ToAcknowledge]: LabColumn.TREATED,
 };
 
 const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measurements, onClick }) => {
+    const { t } = useTranslation();
     const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
 
     useEffect(() => {
@@ -62,7 +67,7 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
         >
             <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
                 <Badge
-                    colorScheme={stateToLabel[order.status] === TREATMENT_LABEL ? 'orange' : 'green'}
+                    colorScheme={stateToLabColumn[order.status] === LabColumn.TREATMENT ? 'orange' : 'green'}
                     gridColumn="span 3"
                 >
                     <HStack w="full" justifyContent="space-between">
@@ -70,27 +75,27 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
                             {order.crop?.name}, {order.variety?.name}
                         </Text>
                         <Text>
-                            {stateToLabel[order.status]}
+                            {t(`controlled_order_card.${order.status.toLowerCase()}`)}
                         </Text>
                     </HStack>
                 </Badge>
-                <Text px={1} gridColumn="span 2" color="gray.600">Lot:</Text>
+                <Text px={1} gridColumn="span 2" color="gray.600">{t('controlled_order_card.lot')}:</Text>
                 <Text px={1} isTruncated>{order.lotNumber}</Text>
-                <Text px={1} color="gray.600" gridColumn="span 2">Seeds To Treat:</Text>
+                <Text px={1} color="gray.600" gridColumn="span 2">{t('controlled_order_card.seeds_to_treat')}:</Text>
                 <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
-                <Text px={1} color="gray.600" gridColumn="span 2">Raw Average TKW:</Text>
+                <Text px={1} color="gray.600" gridColumn="span 2">{t('controlled_order_card.raw_average_tkw')}:</Text>
                 <Text px={1} isTruncated>{order.tkw === null ? 'N/A' : order.tkw.toFixed(2)}</Text>
-                <Text px={1} color="gray.600" gridColumn="span 2">Treated Average TKW:</Text>
+                <Text px={1} color="gray.600" gridColumn="span 2">{t('controlled_order_card.treated_average_tkw')}:</Text>
                 <Text px={1} isTruncated>{treatedAverageTkw}</Text>
-                <Text px={1} color="gray.600" gridColumn="span 2">Tests Performed:</Text>
+                <Text px={1} color="gray.600" gridColumn="span 2">{t('controlled_order_card.tests_performed')}:</Text>
                 <Text px={1} isTruncated>{numberOfTkwMeasurements}</Text>
                 <Box gridColumn="span 3">
-                    <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Treatment Started:</Text>
+                    <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('controlled_order_card.treatment_started')}:</Text>
                     <Text px={1} isTruncated>{treatmentStartDate}</Text>
                 </Box>
                 {(order.status === OrderStatus.Completed || order.status === OrderStatus.Failed || order.status === OrderStatus.ToAcknowledge) && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Treatment Finished:</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('controlled_order_card.treatment_finished')}:</Text>
                         <Text px={1} isTruncated>{treatmentFinishDate}</Text>
                     </Box>
                 )}
@@ -100,8 +105,9 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
 };
 
 const ControlledOrderList: React.FC<{ orders: Order[], measurements: TkwMeasurement[], onClick: (order: Order) => void }> = ({ orders, measurements, onClick }) => {
-    const inTreatmentOrders = orders.filter(order => stateToLabel[order.status] === TREATMENT_LABEL);
-    const treatedOrders = orders.filter(order => stateToLabel[order.status] === TREATED_LABEL);
+   
+    const inTreatmentOrders = orders.filter(order => stateToLabColumn[order.status] === LabColumn.TREATMENT);
+    const treatedOrders = orders.filter(order => stateToLabColumn[order.status] === LabColumn.TREATED);
 
     return (
         <>

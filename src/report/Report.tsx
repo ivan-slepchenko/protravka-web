@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
 import { OrderStatus } from "../store/newOrderSlice";
 import { Bar } from "react-chartjs-2"; // Import Bar chart
+import { useTranslation } from 'react-i18next';
 
 import {
     Chart as ChartJS,
@@ -32,10 +33,11 @@ const statusColorMap: StatusColorMap = {
     [OrderStatus.RecipeCreated]: "#A0AEC0", // Gray color (Chakra UI gray.400)
     [OrderStatus.LabAssignmentCreated]: "#A0AEC0", // Gray color (Chakra UI gray.400)
     [OrderStatus.LabControl]: "#A0AEC0", // Gray color (Chakra UI gray.400)
-    [OrderStatus.TKWConfirmed]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.TkwConfirmed]: "#A0AEC0", // Gray color (Chakra UI gray.400)
 };
 
 const Report: React.FC = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
@@ -116,7 +118,7 @@ const Report: React.FC = () => {
     const getCategoryStats = () => {
         const stats = {
             approved: { count: 0, su: 0, kg: 0 },
-            toAcknowledge: { count: 0, su: 0, kg: 0 },
+            to_acknowledge: { count: 0, su: 0, kg: 0 },
             disapproved: { count: 0, su: 0, kg: 0 },
         };
 
@@ -128,9 +130,9 @@ const Report: React.FC = () => {
                     stats.approved.kg += order.seedsToTreatKg === null ? 0 : order.seedsToTreatKg;
                     break;
                 case OrderStatus.ToAcknowledge:
-                    stats.toAcknowledge.count++;
-                    stats.toAcknowledge.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
-                    stats.toAcknowledge.kg += order.seedsToTreatKg === null ? 0 : order.seedsToTreatKg;
+                    stats.to_acknowledge.count++;
+                    stats.to_acknowledge.su += order.orderRecipe ? order.orderRecipe.nbSeedsUnits : 0;
+                    stats.to_acknowledge.kg += order.seedsToTreatKg === null ? 0 : order.seedsToTreatKg;
                     break;
                 case OrderStatus.Failed:
                     stats.disapproved.count++;
@@ -143,9 +145,9 @@ const Report: React.FC = () => {
         });
 
         const total = {
-            count: stats.approved.count + stats.toAcknowledge.count + stats.disapproved.count,
-            su: stats.approved.su + stats.toAcknowledge.su + stats.disapproved.su,
-            kg: stats.approved.kg + stats.toAcknowledge.kg + stats.disapproved.kg,
+            count: stats.approved.count + stats.to_acknowledge.count + stats.disapproved.count,
+            su: stats.approved.su + stats.to_acknowledge.su + stats.disapproved.su,
+            kg: stats.approved.kg + stats.to_acknowledge.kg + stats.disapproved.kg,
         };
 
         return { stats, total };
@@ -156,7 +158,7 @@ const Report: React.FC = () => {
     // Calculate category stats for the chart
     const categoryStats = {
         approved: 0,
-        toAcknowledge: 0,
+        to_acknowledge: 0,
         disapproved: 0,
         inProgress: 0, // Add inProgress category
     };
@@ -167,7 +169,7 @@ const Report: React.FC = () => {
                 categoryStats.approved++;
                 break;
             case OrderStatus.ToAcknowledge:
-                categoryStats.toAcknowledge++;
+                categoryStats.to_acknowledge++;
                 break;
             case OrderStatus.Failed:
                 categoryStats.disapproved++;
@@ -182,25 +184,25 @@ const Report: React.FC = () => {
 
     // Chart Data
     const chartData = {
-        labels: ["Orders"],
+        labels: [t('report.orders')],
         datasets: [
             {
-                label: "Approved",
+                label: t('report.approved'),
                 data: [categoryStats.approved],
                 backgroundColor: statusColorMap[OrderStatus.Completed],
             },
             {
-                label: "To Acknowledge",
-                data: [categoryStats.toAcknowledge],
+                label: t('report.to_acknowledge'),
+                data: [categoryStats.to_acknowledge],
                 backgroundColor: statusColorMap[OrderStatus.ToAcknowledge],
             },
             {
-                label: "Disapproved",
+                label: t('report.disapproved'),
                 data: [categoryStats.disapproved],
                 backgroundColor: statusColorMap[OrderStatus.Failed],
             },
             {
-                label: "In Progress",
+                label: t('report.in_progress'),
                 data: [categoryStats.inProgress],
                 backgroundColor: statusColorMap[OrderStatus.TreatmentInProgress],
             },
@@ -240,47 +242,47 @@ const Report: React.FC = () => {
     return (
         <Box w="full" h="full" overflowY="auto">
             <Box display="flex" justifyContent="space-between" alignItems="center" p="4" borderBottom="1px solid #ccc">
-                <Text fontSize="2xl" fontWeight="bold">Report</Text>
+                <Text fontSize="2xl" fontWeight="bold">{t('report.report')}</Text>
                 <CloseButton onClick={handleClose}></CloseButton>
             </Box>
             <Box p="4" px={6}>
                 {/* Filters */}
                 <HStack spacing={4} mb={4} w="full">
                     <Box flex="1">
-                        <Text fontSize="sm" mb={1}>Crop</Text>
-                        <Select placeholder="All Crops" name="crop" onChange={handleFilterChange}>
+                        <Text fontSize="sm" mb={1}>{t('report.crop')}</Text>
+                        <Select placeholder={t('report.all_crops')} name="crop" onChange={handleFilterChange}>
                             {Array.from(new Set(orders.map(order => order.crop.name))).map(crop => (
                                 <option key={crop} value={crop}>{crop}</option>
                             ))}
                         </Select>
                     </Box>
                     <Box flex="1">
-                        <Text fontSize="sm" mb={1}>Variety</Text>
-                        <Select placeholder="All Varieties" name="variety" onChange={handleFilterChange}>
+                        <Text fontSize="sm" mb={1}>{t('report.variety')}</Text>
+                        <Select placeholder={t('report.all_varieties')} name="variety" onChange={handleFilterChange}>
                             {getVarieties().map(variety => (
                                 <option key={variety} value={variety}>{variety}</option>
                             ))}
                         </Select>
                     </Box>
                     <Box flex="1">
-                        <Text fontSize="sm" mb={1}>Start Date</Text>
-                        <Input type="date" placeholder="Start Date" name="startDate" onChange={handleFilterChange} />
+                        <Text fontSize="sm" mb={1}>{t('report.start_date')}</Text>
+                        <Input type="date" placeholder={t('report.start_date')} name="startDate" onChange={handleFilterChange} />
                     </Box>
                     <Box flex="1">
-                        <Text fontSize="sm" mb={1}>End Date</Text>
-                        <Input type="date" placeholder="End Date" name="endDate" onChange={handleFilterChange} />
+                        <Text fontSize="sm" mb={1}>{t('report.end_date')}</Text>
+                        <Input type="date" placeholder={t('report.end_date')} name="endDate" onChange={handleFilterChange} />
                     </Box>
                     <Box flex="1">
-                        <Text fontSize="sm" mb={1}>Operator</Text>
-                        <Select placeholder="All Operators" name="operator" onChange={handleFilterChange}>
+                        <Text fontSize="sm" mb={1}>{t('report.operator')}</Text>
+                        <Select placeholder={t('report.all_operators')} name="operator" onChange={handleFilterChange}>
                             {Array.from(new Set(orders.map(order => order.operator ? order.operator.name : 'N/A'))).map(operator => (
                                 <option key={operator} value={operator}>{operator}</option>
                             ))}
                         </Select>
                     </Box>
                     <Box flex="1">
-                        <Text fontSize="sm" mb={1}>Status</Text>
-                        <Select placeholder="All Statuses" name="status" onChange={handleFilterChange}>
+                        <Text fontSize="sm" mb={1}>{t('report.status')}</Text>
+                        <Select placeholder={t('report.all_statuses')} name="status" onChange={handleFilterChange}>
                             {Object.values(OrderStatus).map(status => (
                                 <option key={status} value={status}>{status}</option>
                             ))}
@@ -291,19 +293,19 @@ const Report: React.FC = () => {
                 <Box display="grid" gridTemplateColumns="70% 30%" gridTemplateRows="auto auto" gap={4}>
                     {/* Seed Processing Report */}
                     <Box gridColumn="1 / 2" gridRow="1 / 2">
-                        <Text fontSize="lg" fontWeight="bold" mb={4} textAlign="center">Seed Processing Report</Text>
+                        <Text fontSize="lg" fontWeight="bold" mb={4} textAlign="center">{t('report.seed_processing_report')}</Text>
                         <Table variant="simple" size="sm">
                             <Thead bg="orange.100">
                                 <Tr>
                                     <Th>#</Th>
-                                    <Th>Crop</Th>
-                                    <Th>Variety</Th>
-                                    <Th>Lot</Th>
-                                    <Th>Treatment Date</Th>
-                                    <Th>Operator</Th>
-                                    <Th>Lot Size (s.u.)</Th>
-                                    <Th>Lot Size (kg)</Th>
-                                    <Th>Status</Th>
+                                    <Th>{t('report.crop')}</Th>
+                                    <Th>{t('report.variety')}</Th>
+                                    <Th>{t('report.lot')}</Th>
+                                    <Th>{t('report.treatment_date')}</Th>
+                                    <Th>{t('report.operator')}</Th>
+                                    <Th>{t('report.lot_size_su')}</Th>
+                                    <Th>{t('report.lot_size_kg')}</Th>
+                                    <Th>{t('report.status')}</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -326,13 +328,13 @@ const Report: React.FC = () => {
 
                     {/* Total */}
                     <Box gridColumn="2 / 3" gridRow="1 / 2">
-                        <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={4}>Total</Text>
+                        <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={4}>{t('report.total')}</Text>
                         <Table variant="simple" size="sm">
                             <Thead bg="orange.100">
                                 <Tr>
-                                    <Th>Crop</Th>
-                                    <Th>s.u.</Th>
-                                    <Th>kg</Th>
+                                    <Th>{t('report.crop')}</Th>
+                                    <Th>{t('report.su')}</Th>
+                                    <Th>{t('report.kg')}</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -350,41 +352,41 @@ const Report: React.FC = () => {
                     {/* Summary */}
                     {filters.status === "" && (
                         <Box gridColumn="1 / 2" gridRow="2 / 3">
-                            <Text fontSize="lg" fontWeight="bold" mt={8} mb={4} textAlign="center">Summary</Text>
+                            <Text fontSize="lg" fontWeight="bold" mt={8} mb={4} textAlign="center">{t('report.summary')}</Text>
                             <Table variant="simple" size="sm">
                                 <Thead bg="orange.100">
                                     <Tr>
-                                        <Th>Category</Th>
-                                        <Th>Number of Lots</Th>
-                                        <Th>s.u.</Th>
-                                        <Th>kg</Th>
-                                        <Th>%</Th>
+                                        <Th>{t('report.category')}</Th>
+                                        <Th>{t('report.number_of_lots')}</Th>
+                                        <Th>{t('report.su')}</Th>
+                                        <Th>{t('report.kg')}</Th>
+                                        <Th>{t('report.percentage')}</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
                                     <Tr bg="green.200">
-                                        <Td>Approved by manager</Td>
+                                        <Td>{t('report.approved_by_manager')}</Td>
                                         <Td>{stats.approved.count}</Td>
                                         <Td>{stats.approved.su.toFixed(1)}</Td>
                                         <Td>{stats.approved.kg.toFixed(1)}</Td>
                                         <Td>{total.count > 0 ? `${((stats.approved.count / total.count) * 100).toFixed(1)}%` : 'N/A'}</Td>
                                     </Tr>
                                     <Tr bg="yellow.200">
-                                        <Td>To be acknowledged</Td>
-                                        <Td>{stats.toAcknowledge.count}</Td>
-                                        <Td>{stats.toAcknowledge.su.toFixed(1)}</Td>
-                                        <Td>{stats.toAcknowledge.kg.toFixed(1)}</Td>
-                                        <Td>{total.count > 0 ? `${((stats.toAcknowledge.count / total.count) * 100).toFixed(1)}%` : 'N/A'}</Td>
+                                        <Td>{t('report.to_be_acknowledged')}</Td>
+                                        <Td>{stats.to_acknowledge.count}</Td>
+                                        <Td>{stats.to_acknowledge.su.toFixed(1)}</Td>
+                                        <Td>{stats.to_acknowledge.kg.toFixed(1)}</Td>
+                                        <Td>{total.count > 0 ? `${((stats.to_acknowledge.count / total.count) * 100).toFixed(1)}%` : 'N/A'}</Td>
                                     </Tr>
                                     <Tr bg="red.300">
-                                        <Td>Disapproved by manager</Td>
+                                        <Td>{t('report.disapproved_by_manager')}</Td>
                                         <Td>{stats.disapproved.count}</Td>
                                         <Td>{stats.disapproved.su.toFixed(1)}</Td>
                                         <Td>{stats.disapproved.kg.toFixed(1)}</Td>
                                         <Td>{total.count > 0 ? `${((stats.disapproved.count / total.count) * 100).toFixed(1)}%` : 'N/A'}</Td>
                                     </Tr>
                                     <Tr fontWeight="bold">
-                                        <Td>Total</Td>
+                                        <Td>{t('report.total')}</Td>
                                         <Td>{total.count}</Td>
                                         <Td>{total.su.toFixed(1)}</Td>
                                         <Td>{total.kg.toFixed(1)}</Td>
@@ -398,7 +400,7 @@ const Report: React.FC = () => {
                     {/* Treatment Overview Chart */}
                     {filters.status === "" && (
                         <Box gridColumn="2 / 3" gridRow="2 / 3" mt={10} height="300px">
-                            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>Treatment Overview</Text>
+                            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>{t('report.treatment_overview')}</Text>
                             <Bar data={chartData} options={chartOptions} />
                         </Box>
                     )}

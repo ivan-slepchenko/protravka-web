@@ -7,8 +7,10 @@ import { FaCamera, FaCog } from 'react-icons/fa';
 import { OrderExecutionPage } from './OrderExecutionPage';
 import useCamera from '../hooks/useCamera';
 import useImageModal from '../hooks/useImageModal';
+import { useTranslation } from 'react-i18next';
 
 const OrderExecution10ConsumptionProoving = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<Blob | null>(null);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
@@ -80,7 +82,7 @@ const OrderExecution10ConsumptionProoving = () => {
         <VStack justifyContent="center" h='full' position='relative'>
             <VStack spacing={6} width="100%" maxWidth="400px" h="full">
                 <Text fontSize="xl" fontWeight="bold">
-                    Make a consumption photo proof.
+                    {t('order_execution.make_consumption_photo_proof')}
                 </Text>
                 <AspectRatio
                     ratio={4 / 3} 
@@ -128,7 +130,7 @@ const OrderExecution10ConsumptionProoving = () => {
                         onClick={photo ? handleRetakeClick : handleTakeSnapshot}
                         leftIcon={photo ? undefined : <FaCamera />}
                     >
-                        {photo ? 'Retake the picture' : 'Take Picture'}
+                        {photo ? t('order_execution.retake_picture') : t('order_execution.take_picture')}
                     </Button>
                     <Button
                         w="200px" 
@@ -137,7 +139,7 @@ const OrderExecution10ConsumptionProoving = () => {
                         disabled={!photo}
                         onClick={handleNextButtonClick}
                     >
-                        Next
+                        {t('order_execution.next')}
                     </Button>
                 </VStack>
             </VStack>

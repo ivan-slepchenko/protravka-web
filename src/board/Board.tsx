@@ -4,15 +4,17 @@ import { RootState } from '../store/store';
 import { OrderStatus } from '../store/newOrderSlice';
 import { Box, Flex, Heading, VStack } from '@chakra-ui/react';
 import Card from './Card';
+import { useTranslation } from 'react-i18next';
 
 const Board: React.FC = () => {
+    const { t } = useTranslation();
     const user = useSelector((state: RootState) => state.user);
     const useLab = user.company?.featureFlags.useLab;
 
-    const COMMPLETED_COLUMN = 'Completed';
+    const COMPLETED_COLUMN = 'Completed';
     const columns = useLab
-        ? [OrderStatus.LabAssignmentCreated, OrderStatus.TKWConfirmed, OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.LabControl, OrderStatus.ToAcknowledge, COMMPLETED_COLUMN]
-        : [OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.ToAcknowledge, COMMPLETED_COLUMN];
+        ? [OrderStatus.LabAssignmentCreated, OrderStatus.TkwConfirmed, OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.LabControl, OrderStatus.ToAcknowledge, COMPLETED_COLUMN]
+        : [OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.ToAcknowledge, COMPLETED_COLUMN];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 
     console.log('Orders:', orders);
@@ -24,10 +26,10 @@ const Board: React.FC = () => {
                     const bgColor = "gray.50";
                     return (
                         <Box key={column} w="full" border="gray.100" borderRadius="md" p={2} bg={bgColor}>
-                            <Heading size="sm" m={1} mb={2}>{column}</Heading>
+                            <Heading size="sm" m={1} mb={2}>{t(`board.${column.toLowerCase()}`)}</Heading>
                             <VStack spacing={3} w="full">
                                 {orders.filter(order => {
-                                    if (column === COMMPLETED_COLUMN) {
+                                    if (column === COMPLETED_COLUMN) {
                                         console.log('Order:', order);
                                         return order.status === OrderStatus.Completed || order.status === OrderStatus.Failed;
                                     } else {

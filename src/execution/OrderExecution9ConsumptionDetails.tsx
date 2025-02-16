@@ -3,8 +3,10 @@ import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { setExecutedProductConsumptionPerLotKg, nextPage, setExecutedSlurryConsumptionPerLotKg, saveOrderExecution } from '../store/executionSlice';
+import { useTranslation } from 'react-i18next';
 
 export default function OrderExecution9ConsumptionDetails() {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
@@ -38,8 +40,8 @@ export default function OrderExecution9ConsumptionDetails() {
             return (
                 <Thead bg="orange.100">
                     <Tr>
-                        <Th>Target consumption, kg</Th>
-                        <Th>Actual consumption, kg</Th>
+                        <Th>{t('order_execution.target_consumption_kg')}</Th>
+                        <Th>{t('order_execution.actual_consumption_kg')}</Th>
                     </Tr>
                 </Thead>
             );
@@ -47,8 +49,8 @@ export default function OrderExecution9ConsumptionDetails() {
             return (
                 <Thead bg="orange.100">
                     <Tr>
-                        <Th>Target consumption, kg</Th>
-                        <Th>Machine Setting, kg</Th>
+                        <Th>{t('order_execution.target_consumption_kg')}</Th>
+                        <Th>{t('order_execution.machine_setting_kg')}</Th>
                     </Tr>
                 </Thead>
             );
@@ -70,7 +72,7 @@ export default function OrderExecution9ConsumptionDetails() {
                     </Td>
                     <Td>
                         <Input
-                            placeholder="Enter value"
+                            placeholder={t('order_execution.enter_value')}
                             type="number"
                             step="0.01"
                             onChange={(e) => handleInputChange(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
@@ -87,15 +89,9 @@ export default function OrderExecution9ConsumptionDetails() {
                 <VStack w="full" h="full" overflow={'auto'}>
                     <Heading size="md" mb={2}>
                         {applicationMethod === 'Surry'
-                            ? `Total Slurry Consumption ${currentOrder?.seedsToTreatKg ?? 0} kg`
+                            ? t('order_execution.total_slurry_consumption', { kg: currentOrder?.seedsToTreatKg ?? 0 })
                             : <span>
-                                {'Product # '}
-                                {currentProductIndex + 1}
-                                {' of '}
-                                {currentOrder?.productDetails.length}
-                                {': '}
-                                {currentOrder?.productDetails[currentProductIndex].product?.name}
-                                {` Per ${currentOrder?.seedsToTreatKg ?? 0} kg seeds`}
+                                {t('order_execution.product')} {currentProductIndex + 1} {t('order_execution.of')} {currentOrder?.productDetails.length}: {currentOrder?.productDetails[currentProductIndex].product?.name} {t('order_execution.per_seeds', { kg: currentOrder?.seedsToTreatKg ?? 0 })}
                             </span>
                         }
                     </Heading>
@@ -104,7 +100,7 @@ export default function OrderExecution9ConsumptionDetails() {
                         {renderTableBody()}
                     </Table>
                     <Text mb={4}  mt='auto'>
-                        You are obliged to make a photo of scales display on the next page!
+                        {t('order_execution.obliged_to_make_photo')}
                     </Text>
                 </VStack>
             </>
@@ -123,7 +119,7 @@ export default function OrderExecution9ConsumptionDetails() {
                     onClick={handleNext}
                     disabled={inputValue === null}
                 >
-                    Next
+                    {t('order_execution.next')}
                 </Button>
             </HStack>
         </VStack>

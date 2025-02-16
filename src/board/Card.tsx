@@ -40,7 +40,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
     }, [order.status, order.id, dispatch]);
 
     const handleRecipeClick = (orderId: string, status: OrderStatus) => {
-        if (status === OrderStatus.TKWConfirmed) {
+        if (status === OrderStatus.TkwConfirmed) {
             navigate(`/finalize/${orderId}`);
         } else {
             navigate(`/lot-report/${orderId}`);
@@ -94,11 +94,11 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                         <Text px={1} isTruncated>{order.finalizationDate === null ? 'N/A' : new Date(order.finalizationDate).toLocaleString()}</Text>
                     </Box>
                 )}
-                {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TKWConfirmed && <Box gridColumn="span 3">
+                {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TkwConfirmed && <Box gridColumn="span 3">
                     <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Expected Start At:</Text>
                     <Text px={1} isTruncated >{order.applicationDate === null ? 'N/A' : new Date(order.applicationDate).toLocaleString()}</Text>
                 </Box>}
-                {order.status === OrderStatus.TKWConfirmed && (
+                {order.status === OrderStatus.TkwConfirmed && (
                     <Box gridColumn="span 3">
                         <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Raw TKW Measured At:</Text>
                         <Text px={1} isTruncated>{order.tkwMeasurementDate === null ? 'N/A' : new Date(order.tkwMeasurementDate).toLocaleString()}</Text>

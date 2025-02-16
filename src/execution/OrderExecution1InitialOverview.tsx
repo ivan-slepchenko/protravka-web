@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { nextPage, saveOrderExecution } from '../store/executionSlice';
 import { Packaging } from '../store/newOrderSlice';
+import { useTranslation } from 'react-i18next';
 
 const packagingMap = {
     [Packaging.InSeeds]: "ks",
@@ -11,17 +12,18 @@ const packagingMap = {
 };
 
 const OrderExecution1InitialOverview = () => {
+    const { t } = useTranslation();
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
 
     const [isChecked, setIsChecked] = useState(false);
     const dispatch: AppDispatch = useDispatch();
 
     if (!currentOrder) {
-        return <Text>{'Receipe not found '}</Text>;
+        return <Text>{t('order_execution.recipe_not_found')}</Text>;
     }
 
     if (currentOrder.packaging === null) {
-        return <Text>{'Packaging not found '}</Text>;
+        return <Text>{t('order_execution.packaging_not_found')}</Text>;
     }
 
     const totalLitres = currentOrder.orderRecipe ? currentOrder.orderRecipe.productRecipes.reduce((total, productRecipe) => total + productRecipe.mlSlurryRecipeToMix, 0) / 1000 : undefined;
@@ -37,40 +39,40 @@ const OrderExecution1InitialOverview = () => {
     return (
         <VStack p={4} w="full" h="full" flexShrink={1}>
             <VStack w='full' flexShrink={1} overflow={'auto'}>
-                <Text fontSize="2xl" fontWeight="bold">Receipe Execution</Text>
+                <Text fontSize="2xl" fontWeight="bold">{t('order_execution.recipe_execution')}</Text>
                 <Text>{currentOrder.crop.name} {currentOrder.variety.name}</Text>    
                 
                 <Grid templateColumns="3fr 1fr" gap={4} mt={4} >
                     <GridItem borderBottom="1px dotted">
-                        <Text><strong>Lot:</strong></Text>
+                        <Text><strong>{t('order_execution.lot')}:</strong></Text>
                     </GridItem>
                     <GridItem borderBottom="1px dotted">
                         <Text>{currentOrder.lotNumber}</Text>
                     </GridItem>
 
                     <GridItem borderBottom="1px dotted">
-                        <Text><strong>Seeds To Treat:</strong></Text>
+                        <Text><strong>{t('order_execution.seeds_to_treat')}:</strong></Text>
                     </GridItem>
                     <GridItem borderBottom="1px dotted">
                         <Text>{currentOrder.seedsToTreatKg} kg</Text>
                     </GridItem>
 
                     <GridItem borderBottom="1px dotted">
-                        <Text><strong>TKW:</strong></Text>
+                        <Text><strong>{t('order_execution.tkw')}:</strong></Text>
                     </GridItem>
                     <GridItem borderBottom="1px dotted">
                         <Text>{currentOrder.tkw} gr</Text>
                     </GridItem>
 
                     <GridItem borderBottom="1px dotted">
-                        <Text><strong>Bag Size:</strong></Text>
+                        <Text><strong>{t('order_execution.bag_size')}:</strong></Text>
                     </GridItem>
                     <GridItem borderBottom="1px dotted">
                         <Text>{currentOrder.bagSize} {bagSizeUnit}</Text>
                     </GridItem>
 
                     <GridItem borderBottom="1px dotted">
-                        <Text><strong>Expected Amount Of Bags:</strong></Text>
+                        <Text><strong>{t('order_execution.expected_amount_of_bags')}:</strong></Text>
                     </GridItem>
                     <GridItem borderBottom="1px dotted">
                         <Text>{currentOrder.orderRecipe ? currentOrder.orderRecipe.nbSeedsUnits.toFixed() : "N/A"}</Text>
@@ -79,9 +81,9 @@ const OrderExecution1InitialOverview = () => {
                 <Table variant="simple" size="sm" mt={4}>
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th>Product</Th>
-                            <Th>Litres/Lot</Th>
-                            <Th>Kg/Lot</Th>
+                            <Th>{t('order_execution.product')}</Th>
+                            <Th>{t('order_execution.litres_lot')}</Th>
+                            <Th>{t('order_execution.kg_lot')}</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -97,7 +99,7 @@ const OrderExecution1InitialOverview = () => {
                     </Tbody>
                     <Tfoot>
                         <Tr>
-                            <Th>Total</Th>
+                            <Th>{t('order_execution.total')}</Th>
                             <Th>{totalLitres ? totalLitres.toFixed(2) : "N/A"}</Th>
                             <Th>{totalKg ? totalKg.toFixed(2) : "N/A"}</Th>
                         </Tr>
@@ -105,11 +107,11 @@ const OrderExecution1InitialOverview = () => {
                 </Table>
             </VStack>
             <Checkbox mt='auto' isChecked={isChecked} onChange={(e) => setIsChecked(e.target.checked)}>
-                {'I understand the amount I need to use'}
+                {t('order_execution.understand_amount_to_use')}
             </Checkbox>
             <HStack justifyContent={"center"}>
                 <Button mt={4} w="100px" colorScheme="orange" borderRadius="full" isDisabled={!isChecked} onClick={handleNextClick}>
-                    {'Next'}
+                    {t('order_execution.next')}
                 </Button>
             </HStack>
         </VStack>

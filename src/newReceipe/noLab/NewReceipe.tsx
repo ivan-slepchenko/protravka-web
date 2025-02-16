@@ -32,28 +32,7 @@ import {
 import { createOrder, fetchOrders } from "../../store/ordersSlice";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
-
-const validationSchema = Yup.object().shape({
-    applicationDate: Yup.number().required("Application Date is required"),
-    operatorId: Yup.string().optional(),
-    cropId: Yup.string().required("Crop is required"),
-    varietyId: Yup.string().required("Variety is required"),
-    lotNumber: Yup.string()
-        .required("Lot Number is required")
-        .notOneOf([""], "Lot Number cannot be empty"),
-    tkw: Yup.number().moreThan(0, "TKW must be greater than 0").required("TKW is required"),
-    seedsToTreatKg: Yup.number().moreThan(0, "Seeds To Treat must be greater than 0").required("Seeds To Treat is required"),
-    bagSize: Yup.number().moreThan(0, "Bag Size must be greater than 0").required("Bag Size is required"),
-    packaging: Yup.string().required("Packaging is required"),
-    productDetails: Yup.array().of(
-        Yup.object().shape({
-            productId: Yup.string().required("Product is required"),
-            rate: Yup.number().moreThan(0, "Rate must be greater than 0").required("Rate is required"),
-            rateType: Yup.mixed<RateType>().oneOf(Object.values(RateType)).required("Rate Type is required"),
-            rateUnit: Yup.mixed<RateUnit>().oneOf(Object.values(RateUnit)).required("Rate Unit is required"),
-        })
-    ).min(1, "At least one product is required")
-});
+import { useTranslation } from 'react-i18next';
 
 const currentDate = Date.now();
 
@@ -91,6 +70,7 @@ export const getRateTypeLabel = (type: RateType): string => {
 };
 
 export const NewReceipe = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder as NewOrderState);
     const crops = useSelector((state: RootState) => state.crops.crops);
@@ -106,6 +86,28 @@ export const NewReceipe = () => {
     const addAlert = useAlert().addAlert;
     const [isSaving, setIsSaving] = useState<boolean>(false);
 
+    const validationSchema = Yup.object().shape({
+        applicationDate: Yup.number().required(t('new_receipe.application_date_required')),
+        operatorId: Yup.string().optional(),
+        cropId: Yup.string().required(t('new_receipe.crop_required')),
+        varietyId: Yup.string().required(t('new_receipe.variety_required')),
+        lotNumber: Yup.string()
+            .required(t('new_receipe.lot_number_required'))
+            .notOneOf([""], t('new_receipe.lot_number_not_empty')),
+        tkw: Yup.number().moreThan(0, t('new_receipe.tkw_more_than_zero')).required(t('new_receipe.tkw_required')),
+        seedsToTreatKg: Yup.number().moreThan(0, t('new_receipe.seeds_to_treat_more_than_zero')).required(t('new_receipe.seeds_to_treat_required')),
+        bagSize: Yup.number().moreThan(0, t('new_receipe.bag_size_more_than_zero')).required(t('new_receipe.bag_size_required')),
+        packaging: Yup.string().required(t('new_receipe.packaging_required')),
+        productDetails: Yup.array().of(
+            Yup.object().shape({
+                productId: Yup.string().required(t('new_receipe.product_required')),
+                rate: Yup.number().moreThan(0, t('new_receipe.rate_more_than_zero')).required(t('new_receipe.rate_required')),
+                rateType: Yup.mixed<RateType>().oneOf(Object.values(RateType)).required(t('new_receipe.rate_type_required')),
+                rateUnit: Yup.mixed<RateUnit>().oneOf(Object.values(RateUnit)).required(t('new_receipe.rate_unit_required')),
+            })
+        ).min(1, t('new_receipe.at_least_one_product'))
+    });
+
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
         setIsSaving(true);
         values.status = OrderStatus.RecipeCreated;
@@ -118,7 +120,7 @@ export const NewReceipe = () => {
             if (!doNotShowAgain) {
                 setShowPopup(true);
             } else {
-                addAlert('Recipe successfully created.');
+                addAlert(t('new_receipe.recipe_created'));
             }
         });
     };
@@ -164,7 +166,7 @@ export const NewReceipe = () => {
     return (
         <VStack w="full" h='full' fontSize={'xs'} p={4}>
             <HStack w="full">
-                <Heading size="lg">New Receipe</Heading>
+                <Heading size="lg">{t('new_receipe.new_receipe')}</Heading>
                 <CloseButton ml="auto" onClick={() => navigate(-1)} />
             </HStack>
             <VStack w="full" h="full" justifyContent={'center'}>
@@ -198,7 +200,7 @@ export const NewReceipe = () => {
                                     {/* Recipe Info */}
                                     <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4">
                                         <Box>
-                                            <Text fontSize="md">Application date:</Text>
+                                            <Text fontSize="md">{t('new_receipe.application_date')}:</Text>
                                             <Field
                                                 as={Input}
                                                 type="date"
@@ -216,7 +218,7 @@ export const NewReceipe = () => {
                                             />
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Operator:</Text>
+                                            <Text fontSize="md">{t('new_receipe.operator')}:</Text>
                                             <Field
                                                 as={Select}
                                                 name="operatorId"
@@ -229,7 +231,7 @@ export const NewReceipe = () => {
                                                 borderColor={props.errors.operatorId && props.touched.operatorId ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
                                             >
-                                                <option value="">Any operator</option>
+                                                <option value="">{t('new_receipe.any_operator')}</option>
                                                 {filteredOperators.map((operator) => (
                                                     <option key={operator.id} value={operator.id}>
                                                         {operator.name} {operator.surname}
@@ -238,11 +240,11 @@ export const NewReceipe = () => {
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Crop:</Text>
+                                            <Text fontSize="md">{t('new_receipe.crop')}:</Text>
                                             <Field
                                                 as={Select}
                                                 name="cropId"
-                                                placeholder="Select crop"
+                                                placeholder={t('new_receipe.select_crop')}
                                                 size="md"
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
@@ -260,11 +262,11 @@ export const NewReceipe = () => {
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Variety:</Text>
+                                            <Text fontSize="md">{t('new_receipe.variety')}:</Text>
                                             <Field
                                                 as={Select}
                                                 name="varietyId"
-                                                placeholder={selectedCropId === null ? "Select crop first" : "Select variety"}
+                                                placeholder={selectedCropId === null ? t('new_receipe.select_crop_first') : t('new_receipe.select_variety')}
                                                 size="md"
                                                 disabled={selectedCropId === null || isSaving}
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -286,7 +288,7 @@ export const NewReceipe = () => {
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Lot Number:</Text>
+                                            <Text fontSize="md">{t('new_receipe.lot_number')}:</Text>
                                             <Field
                                                 as={Input}
                                                 name="lotNumber"
@@ -302,7 +304,7 @@ export const NewReceipe = () => {
                                             />
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">TKW (g):</Text>
+                                            <Text fontSize="md">{t('new_receipe.tkw')}:</Text>
                                             <Field
                                                 as={Input}
                                                 name="tkw"
@@ -320,7 +322,7 @@ export const NewReceipe = () => {
                                             />
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Seeds To Treat (kg):</Text>
+                                            <Text fontSize="md">{t('new_receipe.seeds_to_treat')}:</Text>
                                             <Field
                                                 as={Input}
                                                 name="seedsToTreatKg"
@@ -338,7 +340,7 @@ export const NewReceipe = () => {
                                             />
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">How do you want to pack?</Text>
+                                            <Text fontSize="md">{t('new_receipe.how_to_pack')}</Text>
                                             <Field
                                                 as={Select}
                                                 name="packaging"
@@ -351,12 +353,12 @@ export const NewReceipe = () => {
                                                 borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
                                             >
-                                                <option value={Packaging.InSeeds}>s/units</option>
-                                                <option value={Packaging.InKg}>kg</option>
+                                                <option value={Packaging.InSeeds}>{t('new_receipe.in_seeds')}</option>
+                                                <option value={Packaging.InKg}>{t('new_receipe.in_kg')}</option>
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Bag Size ({props.values.packaging === Packaging.InSeeds ? 's/units' : 'kg'}):</Text>
+                                            <Text fontSize="md">{t('new_receipe.bag_size', { unit: props.values.packaging === Packaging.InSeeds ? t('new_receipe.units') : t('new_receipe.kg') })}:</Text>
                                             <InputGroup size="md">
                                                 <Field
                                                     as={Input}
@@ -375,7 +377,7 @@ export const NewReceipe = () => {
                                             </InputGroup>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md" mb="2">Extra Slurry (%):</Text>
+                                            <Text fontSize="md" mb="2">{t('new_receipe.extra_slurry')}:</Text>
                                             <InputGroup size="md">
                                                 <Field
                                                     as={Input}
@@ -404,11 +406,11 @@ export const NewReceipe = () => {
                                                 {props.values.productDetails.map((productDetail, index) => (
                                                     <Grid key={index} w="full" templateColumns="2fr 3fr" gap="4" alignItems="center" mb="4">
                                                         <Box>
-                                                            <Text fontSize="md">Product:</Text>
+                                                            <Text fontSize="md">{t('new_receipe.product')}:</Text>
                                                             <Field
                                                                 as={Select}
                                                                 name={`productDetails.${index}.productId`}
-                                                                placeholder="Select product"
+                                                                placeholder={t('new_receipe.select_product')}
                                                                 size="md"
                                                                 focusBorderColor="transparent"
                                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -431,7 +433,7 @@ export const NewReceipe = () => {
                                                         </Box>
                                                         <Box>
                                                             <Text fontSize="md">
-                                                                {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
+                                                                {productDetail.rateType === RateType.Unit ? t('new_receipe.rate_per_unit', { unit: getRateUnitLabel(productDetail.rateUnit) }) : t('new_receipe.rate_per_100kg', { unit: getRateUnitLabel(productDetail.rateUnit) })}
                                                             </Text>
                                                             <HStack spacing="0">
                                                                 <Field
@@ -504,7 +506,7 @@ export const NewReceipe = () => {
                                                         const newEmptyProduct = createNewEmptyProduct();
                                                         push(newEmptyProduct);
                                                         dispatch(addProductDetail(createNewEmptyProduct()));
-                                                    }} ml="auto" mb={4} disabled={isSaving}>+ Add Product</Button>
+                                                    }} ml="auto" mb={4} disabled={isSaving}>{t('new_receipe.add_product')}</Button>
                                                 </HStack>
                                             </Box>
                                         )}
@@ -516,15 +518,15 @@ export const NewReceipe = () => {
                                             <Table variant="simple" size="sm" w="50%">
                                                 <Thead bg="orange.100">
                                                     <Tr>
-                                                        <Th rowSpan={2}>Slurry Density</Th>
-                                                        <Th colSpan={2}>Slurry / 100 kg</Th>
-                                                        <Th colSpan={2}>Slurry / Lot</Th>
+                                                        <Th rowSpan={2}>{t('new_receipe.slurry_density')}</Th>
+                                                        <Th colSpan={2}>{t('new_receipe.slurry_per_100kg')}</Th>
+                                                        <Th colSpan={2}>{t('new_receipe.slurry_per_lot')}</Th>
                                                     </Tr>
                                                     <Tr>
-                                                        <Th>ml</Th>
-                                                        <Th>gr</Th>
-                                                        <Th>l</Th>
-                                                        <Th>kg</Th>
+                                                        <Th>{t('new_receipe.ml')}</Th>
+                                                        <Th>{t('new_receipe.gr')}</Th>
+                                                        <Th>{t('new_receipe.l')}</Th>
+                                                        <Th>{t('new_receipe.kg')}</Th>
                                                     </Tr>
                                                 </Thead>
                                                 <Tbody>
@@ -539,8 +541,8 @@ export const NewReceipe = () => {
                                             </Table>
                                         )}
                                         
-                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>Clear All</Button>
-                                        <Button colorScheme="green" size="md" type="submit" isLoading={isSaving} spinner={<CircularProgress isIndeterminate size="24px" color="green.500" />}>Done</Button>
+                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>{t('new_receipe.clear_all')}</Button>
+                                        <Button colorScheme="green" size="md" type="submit" isLoading={isSaving} spinner={<CircularProgress isIndeterminate size="24px" color="green.500" />}>{t('new_receipe.done')}</Button>
                                     </HStack>
                                 </Box>
 
@@ -548,7 +550,7 @@ export const NewReceipe = () => {
                                 <Modal isOpen={isOpen} onClose={onClose}>
                                     <ModalOverlay />
                                     <ModalContent>
-                                        <ModalHeader>Form Errors</ModalHeader>
+                                        <ModalHeader>{t('new_receipe.form_errors')}</ModalHeader>
                                         <ModalCloseButton />
                                         <ModalBody>
                                             {formErrors.map((error, index) => (
@@ -564,20 +566,20 @@ export const NewReceipe = () => {
                                 <Modal isOpen={showPopup} onClose={handleClosePopup} isCentered>
                                     <ModalOverlay />
                                     <ModalContent>
-                                        <ModalHeader>Receipe Created</ModalHeader>
+                                        <ModalHeader>{t('new_receipe.recipe_created')}</ModalHeader>
                                         <ModalCloseButton />
                                         <ModalBody>
                                             <Text>
-                                                <span>Recipe successfully created for processing on {new Date(orderDate).toLocaleString()}.</span>
+                                                <span>{t('new_receipe.recipe_created_for_processing', { date: new Date(orderDate).toLocaleString() })}</span>
                                                 <br />
-                                                <span>You can view this Recipe in the <strong>Board</strong>, by clicking on your <strong>Receipe</strong> and opening <strong>Recipe Tab</strong>.</span>
+                                                <span>{t('new_receipe.view_recipe_in_board')}</span>
                                             </Text>
                                             <Checkbox mt={4} isChecked={doNotShowAgain} onChange={handleCheckboxChange}>
-                                                Do not show this message again.
+                                                {t('new_receipe.do_not_show_again')}
                                             </Checkbox>
                                         </ModalBody>
                                         <Box textAlign="center" mb="4">
-                                            <Button onClick={handleClosePopup}>Close</Button>
+                                            <Button onClick={handleClosePopup}>{t('new_receipe.close')}</Button>
                                         </Box>
                                     </ModalContent>
                                 </Modal>

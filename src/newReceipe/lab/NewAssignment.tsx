@@ -17,16 +17,10 @@ import {
 import { createOrder, fetchOrders } from "../../store/ordersSlice";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
+import { useTranslation } from 'react-i18next';
 
-const validationSchema = Yup.object().shape({
-    cropId: Yup.string().required("Crop is required"),
-    varietyId: Yup.string().required("Variety is required"),
-    lotNumber: Yup.string()
-        .required("Lot Number is required")
-        .notOneOf([""], "Lot Number cannot be empty"),
-});
-
-export const NewAssignment = () => {
+const NewAssignment = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder);
     const crops = useSelector((state: RootState) => state.crops.crops);
@@ -40,6 +34,14 @@ export const NewAssignment = () => {
     const addAlert = useAlert().addAlert;
     const [isSaving, setIsSaving] = useState(false);
 
+    const validationSchema = Yup.object().shape({
+        cropId: Yup.string().required(t('new_assignment.crop_required')),
+        varietyId: Yup.string().required(t('new_assignment.variety_required')),
+        lotNumber: Yup.string()
+            .required(t('new_assignment.lot_number_required'))
+            .notOneOf([""], t('new_assignment.lot_number_not_empty')),
+    });
+
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
         setIsSaving(true);
         values.status = OrderStatus.LabAssignmentCreated;
@@ -51,7 +53,7 @@ export const NewAssignment = () => {
             if (!doNotShowAgain) {
                 setShowPopup(true);
             } else {
-                addAlert('Assignment successfully created.');
+                addAlert(t('new_assignment.assignment_created'));
             }
         });
     };
@@ -99,11 +101,10 @@ export const NewAssignment = () => {
         localStorage.setItem('doNotShowAgain', checked.toString());
     };
 
-
     return (
         <Center w='full' h='full' fontSize={'xs'}>
             <VStack>
-                <Heading size="lg">New Assignment</Heading>
+                <Heading size="lg">{t('new_assignment.new_assignment')}</Heading>
                 <Formik
                     initialValues={{
                         ...formData,
@@ -124,11 +125,11 @@ export const NewAssignment = () => {
                                     {/* Recipe Info */}
                                     <Grid templateColumns="repeat(4, 1fr)" gap="4" mb="4">
                                         <Box>
-                                            <Text fontSize="md">Crop:</Text>
+                                            <Text fontSize="md">{t('new_assignment.crop')}:</Text>
                                             <Field
                                                 as={Select}
                                                 name="cropId"
-                                                placeholder="Select crop"
+                                                placeholder={t('new_assignment.select_crop')}
                                                 size="md"
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
@@ -146,11 +147,11 @@ export const NewAssignment = () => {
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Variety:</Text>
+                                            <Text fontSize="md">{t('new_assignment.variety')}:</Text>
                                             <Field
                                                 as={Select}
                                                 name="varietyId"
-                                                placeholder={selectedCropId === null ? "Select crop first" : "Select variety"}
+                                                placeholder={selectedCropId === null ? t('new_assignment.select_crop_first') : t('new_assignment.select_variety')}
                                                 size="md"
                                                 disabled={selectedCropId === null || isSaving}
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -171,7 +172,7 @@ export const NewAssignment = () => {
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Lot Number:</Text>
+                                            <Text fontSize="md">{t('new_assignment.lot_number')}:</Text>
                                             <Field
                                                 as={Input}
                                                 name="lotNumber"
@@ -187,7 +188,7 @@ export const NewAssignment = () => {
                                             />
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Seeds To Treat (kg):</Text>
+                                            <Text fontSize="md">{t('new_assignment.seeds_to_treat')}:</Text>
                                             <Field
                                                 as={Input}
                                                 name="seedsToTreatKg"
@@ -208,9 +209,9 @@ export const NewAssignment = () => {
 
                                     {/* Action Buttons */}
                                     <HStack justifyContent="space-between" alignItems={"end"}>
-                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>Clear All</Button>
+                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>{t('new_assignment.clear_all')}</Button>
                                         <Button colorScheme="green" size="md" type="submit" disabled={isSaving}>
-                                            {isSaving ? <CircularProgress isIndeterminate size="24px" color='green.300' /> : 'Save'}
+                                            {isSaving ? <CircularProgress isIndeterminate size="24px" color='green.300' /> : t('new_assignment.save')}
                                         </Button>
                                     </HStack>
                                 </Box>
@@ -219,7 +220,7 @@ export const NewAssignment = () => {
                                 <Modal isOpen={isOpen} onClose={onClose}>
                                     <ModalOverlay />
                                     <ModalContent>
-                                        <ModalHeader>Form Errors</ModalHeader>
+                                        <ModalHeader>{t('new_assignment.form_errors')}</ModalHeader>
                                         <ModalCloseButton />
                                         <ModalBody>
                                             {formErrors.map((error, index) => (
@@ -235,20 +236,20 @@ export const NewAssignment = () => {
                                 <Modal isOpen={showPopup} onClose={handleClosePopup} isCentered>
                                     <ModalOverlay />
                                     <ModalContent>
-                                        <ModalHeader>Assignment Created</ModalHeader>
+                                        <ModalHeader>{t('new_assignment.assignment_created')}</ModalHeader>
                                         <ModalCloseButton />
                                         <ModalBody>
                                             <Text>
-                                                <span>Assignment successfully created and sent to the lab for processing.</span>
+                                                <span>{t('new_assignment.assignment_created_message')}</span>
                                                 <br />
-                                                <span>You can view this Assignment in the <strong>Board</strong>.</span>
+                                                <span>{t('new_assignment.view_in_board')}</span>
                                             </Text>
                                             <Checkbox mt={4} isChecked={doNotShowAgain} onChange={handleCheckboxChange}>
-                                                Do not show this message again.
+                                                {t('new_assignment.do_not_show_again')}
                                             </Checkbox>
                                         </ModalBody>
                                         <Box textAlign="center" mb="4">
-                                            <Button onClick={handleClosePopup}>Close</Button>
+                                            <Button onClick={handleClosePopup}>{t('new_assignment.close')}</Button>
                                         </Box>
                                     </ModalContent>
                                 </Modal>
@@ -260,3 +261,5 @@ export const NewAssignment = () => {
         </Center>
     );
 };
+
+export default NewAssignment;

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppDispatch, RootState } from '../store/store';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 const SignupSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email format').required('Email is required'),
@@ -22,6 +23,7 @@ const SignupSchema = Yup.object().shape({
 });
 
 const Signup = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
     const { error, message } = useSelector((state: RootState) => state.user);
@@ -52,7 +54,7 @@ const Signup = () => {
         <Center w="full" h="full" p={8}>
             <VStack spacing={4}>
                 <Image src="/protravka_logo.png" alt="Logo" width="200px" objectFit='contain'/>
-                <Heading>Signup</Heading>
+                <Heading>{t('signup.signup')}</Heading>
                 {error && (
                     <Alert status="error">
                         <AlertIcon />
@@ -74,41 +76,41 @@ const Signup = () => {
                         <Form>
                             <Grid templateColumns="repeat(2, 1fr)" gap={4}>
                                 <GridItem colSpan={2}>
-                                    <Field name="email" as={Input} placeholder="Email" borderColor={getFieldError("email")} />
+                                    <Field name="email" as={Input} placeholder={t('signup.email')} borderColor={getFieldError("email")} />
                                 </GridItem>
                                 <GridItem colSpan={2}>
-                                    <Field name="password" as={Input} placeholder="Password" type="password" borderColor={getFieldError("password")} />
+                                    <Field name="password" as={Input} placeholder={t('signup.password')} type="password" borderColor={getFieldError("password")} />
                                 </GridItem>
                                 <GridItem colSpan={2}>
-                                    <Field name="repeatPassword" as={Input} placeholder="Repeat Password" type="password" borderColor={getFieldError("repeatPassword")} />
+                                    <Field name="repeatPassword" as={Input} placeholder={t('signup.repeat_password')} type="password" borderColor={getFieldError("repeatPassword")} />
                                 </GridItem>
                                 <GridItem colSpan={1}>
-                                    <Field name="name" as={Input} placeholder="Name" borderColor={getFieldError("name")} />
+                                    <Field name="name" as={Input} placeholder={t('signup.name')} borderColor={getFieldError("name")} />
                                 </GridItem>
                                 <GridItem colSpan={1}>
-                                    <Field name="surname" as={Input} placeholder="Surname" borderColor={getFieldError("surname")} />
+                                    <Field name="surname" as={Input} placeholder={t('signup.surname')} borderColor={getFieldError("surname")} />
                                 </GridItem>
                                 <GridItem colSpan={1}>
-                                    <Field name="birthday" as={Input} placeholder="Birthday" type="date" borderColor={getFieldError("birthday")} />
+                                    <Field name="birthday" as={Input} placeholder={t('signup.birthday')} type="date" borderColor={getFieldError("birthday")} />
                                 </GridItem>
                                 <GridItem colSpan={1}>
-                                    <Field name="phone" as={Input} placeholder="Phone Number" borderColor={getFieldError("phone")} />
+                                    <Field name="phone" as={Input} placeholder={t('signup.phone_number')} borderColor={getFieldError("phone")} />
                                 </GridItem>
                                 <GridItem colSpan={2} display="flex">
-                                    <Button ml="auto" type="submit">Signup</Button>
+                                    <Button ml="auto" type="submit">{t('signup.signup')}</Button>
                                 </GridItem>
                             </Grid>
                         </Form>
                     )}
                 </Formik>
-                <Button variant="link" onClick={() => navigate('/login')}>Already have an account? Login</Button>
+                <Button variant="link" onClick={() => navigate('/login')}>{t('signup.already_have_account')}</Button>
             </VStack>
 
             {/* Error Modal */}
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Form Errors</ModalHeader>
+                    <ModalHeader>{t('signup.form_errors')}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         {formErrors.map((error, index) => (

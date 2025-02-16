@@ -29,23 +29,7 @@ import {
 import { finalizeOrder, fetchOrders, fetchOrderById } from "../../store/ordersSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
-
-const validationSchema = Yup.object().shape({
-    applicationDate: Yup.number().required("Application Date is required"),
-    operatorId: Yup.string().nullable(),
-    bagSize: Yup.number().moreThan(0, "Bag Size must be greater than 0").required("Bag Size is required"),
-    packaging: Yup.string().required("Packaging is required"),
-    productDetails: Yup.array().of(
-        Yup.object().shape({
-            productId: Yup.string().required("Product is required"),
-            rate: Yup.number().moreThan(0, "Rate must be greater than 0").required("Rate is required"),
-            rateType: Yup.mixed<RateType>().oneOf(Object.values(RateType)).required("Rate Type is required"),
-            rateUnit: Yup.mixed<RateUnit>().oneOf(Object.values(RateUnit)).required("Rate Unit is required"),
-        })
-    ).min(1, "At least one product is required")
-});
-
-const currentDate = Date.now();
+import { useTranslation } from 'react-i18next';
 
 const hasProductDetailError = (errors: FormikErrors<NewOrderState>, touched: FormikTouched<NewOrderState>, index: number, field: keyof ProductDetail): boolean => {
     if(!touched.productDetails?.[index]?.rateType) return false; 
@@ -80,7 +64,10 @@ export const getRateTypeLabel = (type: RateType): string => {
     }
 };
 
+const currentDate = new Date().getTime();
+
 export const FinalizeRecipe = () => {
+    const { t } = useTranslation();
     const { orderId } = useParams<{ orderId: string }>();
     const dispatch: AppDispatch = useDispatch();
     const formData = useSelector((state: RootState) => state.newOrder);
@@ -118,6 +105,21 @@ export const FinalizeRecipe = () => {
         }
     }, [orderId, dispatch]);
 
+    const validationSchema = Yup.object().shape({
+        applicationDate: Yup.number().required(t('finalize_recipe.application_date_required')),
+        operatorId: Yup.string().nullable(),
+        bagSize: Yup.number().moreThan(0, t('finalize_recipe.bag_size_more_than_zero')).required(t('finalize_recipe.bag_size_required')),
+        packaging: Yup.string().required(t('finalize_recipe.packaging_required')),
+        productDetails: Yup.array().of(
+            Yup.object().shape({
+                productId: Yup.string().required(t('finalize_recipe.product_required')),
+                rate: Yup.number().moreThan(0, t('finalize_recipe.rate_more_than_zero')).required(t('finalize_recipe.rate_required')),
+                rateType: Yup.mixed<RateType>().oneOf(Object.values(RateType)).required(t('finalize_recipe.rate_type_required')),
+                rateUnit: Yup.mixed<RateUnit>().oneOf(Object.values(RateUnit)).required(t('finalize_recipe.rate_unit_required')),
+            })
+        ).min(1, t('finalize_recipe.at_least_one_product'))
+    });
+
     const handleSave = useCallback((values: NewOrderState) => {
         if (!orderId || !order) return;
 
@@ -152,7 +154,7 @@ export const FinalizeRecipe = () => {
             if (!doNotShowAgain) {
                 setShowPopup(true);
             } else {
-                addAlert('Recipe successfully updated.');
+                addAlert(t('finalize_recipe.recipe_created'));
                 navigate('/board');
             }
         });
@@ -211,7 +213,7 @@ export const FinalizeRecipe = () => {
     return (
         <VStack w='full' h='full' fontSize={'xs'} p={4} >
             <HStack w="full">
-                <Heading size="lg">Finalize Receipe</Heading>
+                <Heading size="lg">{t('finalize_recipe.finalize_recipe')}</Heading>
                 <CloseButton ml="auto" onClick={() => navigate(-1)} />
             </HStack>
             <VStack w="full" h="full" justifyContent={'center'}>
@@ -243,7 +245,7 @@ export const FinalizeRecipe = () => {
                                     {/* Recipe Info */}
                                     <Grid templateColumns="repeat(3, 1fr)" gap="4" mb="4" width="full">
                                         <Box>
-                                            <Text fontSize="md">Application date:</Text>
+                                            <Text fontSize="md">{t('finalize_recipe.application_date')}:</Text>
                                             <Field
                                                 as={Input}
                                                 type="date"
@@ -261,11 +263,11 @@ export const FinalizeRecipe = () => {
                                             />
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Operator:</Text>
+                                            <Text fontSize="md">{t('finalize_recipe.operator')}:</Text>
                                             <Field
                                                 as={Select}
                                                 name="operatorId"
-                                                placeholder="Any operator"
+                                                placeholder={t('finalize_recipe.any_operator')}
                                                 size="md"
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     props.handleChange(e);
@@ -275,7 +277,7 @@ export const FinalizeRecipe = () => {
                                                 borderColor={props.errors.operatorId && props.touched.operatorId ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
                                             >
-                                                <option value="">Any operator</option>
+                                                <option value="">{t('finalize_recipe.any_operator')}</option>
                                                 {filteredOperators.map((operator) => (
                                                     <option key={operator.id} value={operator.id}>
                                                         {operator.name} {operator.surname}
@@ -284,7 +286,7 @@ export const FinalizeRecipe = () => {
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Crop:</Text>
+                                            <Text fontSize="md">{t('finalize_recipe.crop')}:</Text>
                                             <Box
                                                 p="2"
                                                 border="1px solid"
@@ -298,7 +300,7 @@ export const FinalizeRecipe = () => {
                                             </Box>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Variety:</Text>
+                                            <Text fontSize="md">{t('finalize_recipe.variety')}:</Text>
                                             <Box
                                                 p="2"
                                                 border="1px solid"
@@ -312,7 +314,7 @@ export const FinalizeRecipe = () => {
                                             </Box>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Lot Number:</Text>
+                                            <Text fontSize="md">{t('finalize_recipe.lot_number')}:</Text>
                                             <Box
                                                 p="2"
                                                 border="1px solid"
@@ -326,7 +328,7 @@ export const FinalizeRecipe = () => {
                                             </Box>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">TKW (g):</Text>
+                                            <Text fontSize="md">{t('finalize_recipe.tkw')}:</Text>
                                             <Box
                                                 p="2"
                                                 border="1px solid"
@@ -340,7 +342,7 @@ export const FinalizeRecipe = () => {
                                             </Box>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">Seeds To Treat (kg):</Text>
+                                            <Text fontSize="md">{t('finalize_recipe.seeds_to_treat')}:</Text>
                                             <Box
                                                 p="2"
                                                 border="1px solid"
@@ -354,7 +356,7 @@ export const FinalizeRecipe = () => {
                                             </Box>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">How do you want to pack?</Text>
+                                            <Text fontSize="md">{t('finalize_recipe.how_to_pack')}</Text>
                                             <Field
                                                 as={Select}
                                                 name="packaging"
@@ -366,12 +368,12 @@ export const FinalizeRecipe = () => {
                                                 borderColor={props.errors.packaging && props.touched.packaging ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
                                             >
-                                                <option value={Packaging.InSeeds}>s/units</option>
-                                                <option value={Packaging.InKg}>kg</option>
+                                                <option value={Packaging.InSeeds}>{t('finalize_recipe.in_seeds')}</option>
+                                                <option value={Packaging.InKg}>{t('finalize_recipe.in_kg')}</option>
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md" mb="2">Bag Size ({formData.packaging === Packaging.InSeeds ? 's/units' : 'kg'}):</Text>
+                                            <Text fontSize="md" mb="2">{t('finalize_recipe.bag_size', { unit: formData.packaging === Packaging.InSeeds ? t('finalize_recipe.units') : t('finalize_recipe.kg') })}:</Text>
                                             <InputGroup size="md">
                                                 <Field
                                                     as={Input}
@@ -390,7 +392,7 @@ export const FinalizeRecipe = () => {
                                             </InputGroup>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md" mb="2">Extra Slurry (%):</Text>
+                                            <Text fontSize="md" mb="2">{t('finalize_recipe.extra_slurry')}:</Text>
                                             <InputGroup size="md">
                                                 <Field
                                                     as={Input}
@@ -411,7 +413,7 @@ export const FinalizeRecipe = () => {
                                             </InputGroup>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md" mb="2">TKW Measurement Interval (minutes):</Text>
+                                            <Text fontSize="md" mb="2">{t('finalize_recipe.tkw_measurement_interval')}:</Text>
                                             <Field
                                                 as={Select}
                                                 name="tkwMeasurementInterval"
@@ -425,7 +427,7 @@ export const FinalizeRecipe = () => {
                                             >
                                                 {tkwMeasurementIntervals.map((interval) => (
                                                     <option key={interval} value={interval}>
-                                                        {interval} minutes
+                                                        {interval} {t('finalize_recipe.minutes')}
                                                     </option>
                                                 ))}
                                             </Field>
@@ -439,11 +441,11 @@ export const FinalizeRecipe = () => {
                                                 {props.values.productDetails.map((productDetail, index) => (
                                                     <Grid key={index} w="full" templateColumns="2fr 4fr" gap="4" alignItems="center" mb="4">
                                                         <Box>
-                                                            <Text fontSize="md">Product:</Text>
+                                                            <Text fontSize="md">{t('finalize_recipe.product')}:</Text>
                                                             <Field
                                                                 as={Select}
                                                                 name={`productDetails.${index}.productId`}
-                                                                placeholder="Select product"
+                                                                placeholder={t('finalize_recipe.select_product')}
                                                                 size="md"
                                                                 focusBorderColor="transparent"
                                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -465,7 +467,7 @@ export const FinalizeRecipe = () => {
                                                         </Box>
                                                         <Box>
                                                             <Text fontSize="md">
-                                                                {productDetail.rateType === RateType.Unit ? `Rate per unit (${getRateUnitLabel(productDetail.rateUnit)}):` : `Rate per 100kg (${getRateUnitLabel(productDetail.rateUnit)}):`}
+                                                                {productDetail.rateType === RateType.Unit ? `${t('finalize_recipe.rate_per_unit', { unit: getRateUnitLabel(productDetail.rateUnit) })}:` : `${t('finalize_recipe.rate_per_100kg', { unit: getRateUnitLabel(productDetail.rateUnit) })}:`}
                                                             </Text>
                                                             <HStack spacing="0">
                                                                 <Field
@@ -548,7 +550,7 @@ export const FinalizeRecipe = () => {
                                                         const newEmptyProduct = createNewEmptyProduct();
                                                         push(newEmptyProduct);
                                                         dispatch(addProductDetail(createNewEmptyProduct()));
-                                                    }} ml="auto" mb={4} disabled={isSaving}>Add Product</Button>
+                                                    }} ml="auto" mb={4} disabled={isSaving}>{t('finalize_recipe.add_product')}</Button>
                                                 </HStack>
                                             </Box>
                                         )}
@@ -560,15 +562,15 @@ export const FinalizeRecipe = () => {
                                             <Table variant="simple" size="sm" w="50%">
                                                 <Thead bg="orange.100">
                                                     <Tr>
-                                                        <Th rowSpan={2}>Slurry Density</Th>
-                                                        <Th colSpan={2}>Slurry / 100 kg</Th>
-                                                        <Th colSpan={2}>Slurry / Lot</Th>
+                                                        <Th rowSpan={2}>{t('finalize_recipe.slurry_density')}</Th>
+                                                        <Th colSpan={2}>{t('finalize_recipe.slurry_per_100kg')}</Th>
+                                                        <Th colSpan={2}>{t('finalize_recipe.slurry_per_lot')}</Th>
                                                     </Tr>
                                                     <Tr>
-                                                        <Th>ml</Th>
-                                                        <Th>gr</Th>
-                                                        <Th>l</Th>
-                                                        <Th>kg</Th>
+                                                        <Th>{t('finalize_recipe.ml')}</Th>
+                                                        <Th>{t('finalize_recipe.gr')}</Th>
+                                                        <Th>{t('finalize_recipe.l')}</Th>
+                                                        <Th>{t('finalize_recipe.kg')}</Th>
                                                     </Tr>
                                                 </Thead>
                                                 <Tbody>
@@ -583,8 +585,8 @@ export const FinalizeRecipe = () => {
                                             </Table>
                                         )}
                                         
-                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>Clear All</Button>
-                                        <Button colorScheme="green" size="md" type="submit" isLoading={isSaving} spinner={<CircularProgress isIndeterminate size="24px" color="green.500" />}>Save</Button>
+                                        <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>{t('finalize_recipe.clear_all')}</Button>
+                                        <Button colorScheme="green" size="md" type="submit" isLoading={isSaving} spinner={<CircularProgress isIndeterminate size="24px" color="green.500" />}>{t('finalize_recipe.save')}</Button>
                                     </HStack>
                                 </Box>
 
@@ -592,7 +594,7 @@ export const FinalizeRecipe = () => {
                                 <Modal isOpen={isOpen} onClose={onClose}>
                                     <ModalOverlay />
                                     <ModalContent>
-                                        <ModalHeader>Form Errors</ModalHeader>
+                                        <ModalHeader>{t('finalize_recipe.form_errors')}</ModalHeader>
                                         <ModalCloseButton />
                                         <ModalBody>
                                             {formErrors.map((error, index) => (
@@ -608,20 +610,20 @@ export const FinalizeRecipe = () => {
                                 <Modal isOpen={showPopup} onClose={handleClosePopup} isCentered>
                                     <ModalOverlay />
                                     <ModalContent>
-                                        <ModalHeader>Receipe Created</ModalHeader>
+                                        <ModalHeader>{t('finalize_recipe.recipe_created')}</ModalHeader>
                                         <ModalCloseButton />
                                         <ModalBody>
                                             <Text>
-                                                <span>Recipe successfully created for processing at {new Date(orderDate).toLocaleString()}.</span>
+                                                <span>{t('finalize_recipe.recipe_created_message', { date: new Date(orderDate).toLocaleString() })}</span>
                                                 <br />
-                                                <span>You can view this Recipe in the <strong>Board</strong>.</span>
+                                                <span>{t('finalize_recipe.view_in_board')}</span>
                                             </Text>
                                             <Checkbox mt={4} isChecked={doNotShowAgain} onChange={handleCheckboxChange}>
-                                                Do not show this message again.
+                                                {t('finalize_recipe.do_not_show_again')}
                                             </Checkbox>
                                         </ModalBody>
                                         <Box textAlign="center" mb="4">
-                                            <Button onClick={handleClosePopup}>Close</Button>
+                                            <Button onClick={handleClosePopup}>{t('finalize_recipe.close')}</Button>
                                         </Box>
                                     </ModalContent>
                                 </Modal>

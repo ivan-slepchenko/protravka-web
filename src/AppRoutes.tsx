@@ -10,7 +10,6 @@ import Report from './report/Report';
 import Login from './auth/Login';
 import Signup from './auth/Signup';
 import { NewReceipe as NewReceipeNoLab } from './newReceipe/noLab/NewReceipe';
-import { NewAssignment as NewReceipeLab } from './newReceipe/lab/NewAssignment';
 import LotReport from './report/LotReport';
 import LabBoard from './labBoard/LabBoard';
 import { FinalizeRecipe } from './newReceipe/lab/FinalizeRecipe';
@@ -18,12 +17,13 @@ import { Role } from './operators/Operators';
 import { useSelector } from 'react-redux';
 import { RootState } from './store/store';
 import Info from './info/Info';
+import NewAssignment from './newReceipe/lab/NewAssignment';
 
 const AppRoutes = ({ useLab }: { useLab?: boolean }) => (
     <Routes>
         <Route path="/" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><Board /></RequireAuth>} />
         <Route path="/new" element={<RequireAuth roles={[Role.MANAGER]}>
-            {useLab === undefined ? <div>Loading...</div> : useLab ? <NewReceipeLab /> : <NewReceipeNoLab />}
+            {useLab === undefined ? <div>Loading...</div> : useLab ? <NewAssignment /> : <NewReceipeNoLab />}
         </RequireAuth>} />
         <Route path="/finalize/:orderId" element={<RequireAuth roles={[Role.MANAGER]}><FinalizeRecipe /></RequireAuth>} />
         <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><LabBoard /></RequireAuth>} />

@@ -2,38 +2,40 @@ import React from "react";
 import { Box, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Text, VStack } from "@chakra-ui/react";
 import { Order } from "../../store/newOrderSlice";
 import { getRateTypeLabel, getRateUnitLabel } from "../../newReceipe/noLab/NewReceipe";
+import { useTranslation } from 'react-i18next';
 
 const ProductDetails: React.FC<{ order: Order }> = ({ order }) => {
+    const { t } = useTranslation();
 
     if (order.extraSlurry === null) {
-        return <Text>Extra Slurry is not defined</Text>;
+        return <Text>{t('product_details.extra_slurry_not_defined')}</Text>;
     }
 
-    const extraSlurryPercentage = order.extraSlurry > 0 ? `Including Extra Slurry ${order.extraSlurry}%` : '';
+    const extraSlurryPercentage = order.extraSlurry > 0 ? `${t('product_details.including_extra_slurry')} ${order.extraSlurry}%` : '';
 
     return (
         <VStack alignItems="start" w="full">
-            <Text fontSize="md" fontWeight="bold" mt="4" mb="2">Product Details</Text>
+            <Text fontSize="md" fontWeight="bold" mt="4" mb="2">{t('product_details.product_details')}</Text>
             <Box overflowY="auto" borderRadius="md" w="full">
                 <Table variant="simple" size="sm" w="full">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th rowSpan={2} whiteSpace="nowrap">Product Name</Th>
-                            <Th rowSpan={1} whiteSpace="nowrap">Density</Th>
-                            <Th rowSpan={2} whiteSpace="nowrap">Rate</Th>
-                            <Th rowSpan={2} whiteSpace="nowrap">Rate Unit</Th>
-                            <Th colSpan={2} whiteSpace="nowrap">Slurry Total {order.extraSlurry > 0 && <span style={{color: 'orangered'}}>*</span>}</Th>
-                            <Th colSpan={2} whiteSpace="nowrap">Rate</Th>
-                            <Th colSpan={2} whiteSpace="nowrap">Rate</Th>
+                            <Th rowSpan={2} whiteSpace="nowrap">{t('product_details.product_name')}</Th>
+                            <Th rowSpan={1} whiteSpace="nowrap">{t('product_details.density')}</Th>
+                            <Th rowSpan={2} whiteSpace="nowrap">{t('product_details.rate')}</Th>
+                            <Th rowSpan={2} whiteSpace="nowrap">{t('product_details.rate_unit')}</Th>
+                            <Th colSpan={2} whiteSpace="nowrap">{t('product_details.slurry_total')} {order.extraSlurry > 0 && <span style={{color: 'orangered'}}>*</span>}</Th>
+                            <Th colSpan={2} whiteSpace="nowrap">{t('product_details.rate')}</Th>
+                            <Th colSpan={2} whiteSpace="nowrap">{t('product_details.rate')}</Th>
                         </Tr>
                         <Tr>
-                            <Th whiteSpace="nowrap">g/ml</Th>
-                            <Th whiteSpace="nowrap">l</Th>
-                            <Th whiteSpace="nowrap">kg</Th>
-                            <Th whiteSpace="nowrap">ml/U/KS</Th>
-                            <Th whiteSpace="nowrap">g/U/KS</Th>
-                            <Th whiteSpace="nowrap">ml/100kg</Th>
-                            <Th whiteSpace="nowrap">g/100kg</Th>
+                            <Th whiteSpace="nowrap">{t('product_details.g_ml')}</Th>
+                            <Th whiteSpace="nowrap">{t('product_details.l')}</Th>
+                            <Th whiteSpace="nowrap">{t('product_details.kg')}</Th>
+                            <Th whiteSpace="nowrap">{t('product_details.ml_u_ks')}</Th>
+                            <Th whiteSpace="nowrap">{t('product_details.g_u_ks')}</Th>
+                            <Th whiteSpace="nowrap">{t('product_details.ml_100kg')}</Th>
+                            <Th whiteSpace="nowrap">{t('product_details.g_100kg')}</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -56,7 +58,7 @@ const ProductDetails: React.FC<{ order: Order }> = ({ order }) => {
                     </Tbody>
                     <Tfoot>
                         <Tr>
-                            <Th>Total</Th>
+                            <Th>{t('product_details.total')}</Th>
                             <Th>{order.orderRecipe ? order.orderRecipe.totalCompoundsDensity.toFixed(2) : "N/A"}</Th>
                             <Th>---</Th>
                             <Th>---</Th>

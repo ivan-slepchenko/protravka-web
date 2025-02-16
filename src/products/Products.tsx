@@ -5,8 +5,10 @@ import { Fragment, useRef, useState } from 'react';
 import { Button, Input, HStack, VStack, Grid, GridItem, Text } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 
 const Products = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const products = useSelector((state: RootState) => state.products.products);
     const [name, setName] = useState('');
@@ -47,24 +49,24 @@ const Products = () => {
     return (
         <VStack p={4} w="full" h="full" overflow='hidden'>
             <HStack spacing={4} mb={4} p={4} w="full" flexShrink={0}>
-                <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} borderColor={errors.name ? 'red.500' : 'gray.300'} />
-                <Input placeholder="Active Ingredient" value={activeIngredient} onChange={(e) => setActiveIngredient(e.target.value)} />
+                <Input placeholder={t('products.name')} value={name} onChange={(e) => setName(e.target.value)} borderColor={errors.name ? 'red.500' : 'gray.300'} />
+                <Input placeholder={t('products.active_ingredient')} value={activeIngredient} onChange={(e) => setActiveIngredient(e.target.value)} />
                 <Input
-                    placeholder="Density"
+                    placeholder={t('products.density')}
                     value={density}
                     onChange={(e) => setDensity(e.target.value === '' ? '' : e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value)}
                     borderColor={errors.density ? 'red.500' : 'gray.300'}
                     type="number"
                     step="0.01"
                 />
-                <Button onClick={handleAddProduct} flexShrink={0} size="sm">Add Product</Button>
+                <Button onClick={handleAddProduct} flexShrink={0} size="sm">{t('products.add_product')}</Button>
             </HStack>
             <VStack w="full" overflowY="auto" overflowX="hidden" p={4} flexShrink={1}>
                 <Grid templateColumns="repeat(4, 1fr)" borderWidth="1px" borderRadius="lg" w="full">
-                    <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Name</GridItem>
-                    <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Active Ingredient</GridItem>
-                    <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Density</GridItem>
-                    <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">Actions</GridItem>
+                    <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">{t('products.name')}</GridItem>
+                    <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">{t('products.active_ingredient')}</GridItem>
+                    <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">{t('products.density')}</GridItem>
+                    <GridItem bg="gray.100" p={2} fontWeight="bold" borderRight="1px solid" borderColor="gray.200">{t('products.actions')}</GridItem>
                     {products && products
                         .slice()
                         .sort((a, b) => a.name.localeCompare(b.name))
@@ -74,7 +76,7 @@ const Products = () => {
                                 <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200"><Text>{product.activeIngredient}</Text></GridItem>
                                 <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200"><Text>{product.density}</Text></GridItem>
                                 <GridItem p={2} borderBottom="1px solid" borderRight="1px solid" borderColor="gray.200">
-                                    <Button onClick={() => handleDeleteProduct(product.id)} size="sm">Delete</Button>
+                                    <Button onClick={() => handleDeleteProduct(product.id)} size="sm">{t('products.delete')}</Button>
                                 </GridItem>
                             </Fragment>
                         ))}
@@ -88,17 +90,17 @@ const Products = () => {
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            Delete Product
+                            {t('products.delete_product')}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            Are you sure you want to delete this product? This action cannot be undone.
+                            {t('products.confirm_delete')}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
+                                {t('products.cancel')}
                             </Button>
                             <Button colorScheme="red" onClick={confirmDeleteProduct} ml={3}>
-                                Delete
+                                {t('products.delete')}
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>

@@ -6,8 +6,10 @@ import { deactivateActiveExecution, fetchTkwMeasurements, nextPage, saveOrderExe
 import { OrderExecutionPage } from './OrderExecutionPage';
 import { changeOrderStatus } from '../store/ordersSlice';
 import { OrderStatus } from '../store/newOrderSlice';
+import { useTranslation } from 'react-i18next';
 
 const OrderExecution11Completion = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const user = useSelector((state: RootState) => state.user);
     const useLab = user.company?.featureFlags.useLab;
@@ -48,10 +50,10 @@ const OrderExecution11Completion = () => {
             <Center h="full">
                 <VStack>
                     <Text fontSize="xl" fontWeight="bold" textAlign="center">
-                        {'You finished treating lot '}{currentOrder.lotNumber}.
+                        {t('order_execution.finished_treating_lot', { lotNumber: currentOrder.lotNumber })}
                     </Text>
                     <Text>
-                        {'Please check your further tasks for today or contact your Manager.'}
+                        {t('order_execution.check_further_tasks')}
                     </Text>
                     <Box
                         mt={4}
@@ -60,7 +62,7 @@ const OrderExecution11Completion = () => {
                         fontWeight="bold"
                         borderRadius="md"
                     >
-                        {'Thank you!'}
+                        {t('order_execution.thank_you')}
                     </Box>
                 </VStack>
             </Center>
@@ -75,7 +77,7 @@ const OrderExecution11Completion = () => {
                     onClick={handleCompleteClick}
                     isDisabled={isSaving}
                 >
-                    {isSaving ? <Spinner size="sm" /> : 'Ok'}
+                    {isSaving ? <Spinner size="sm" /> : t('order_execution.ok')}
                 </Button>
             </HStack>
             <AlertDialog
@@ -87,14 +89,14 @@ const OrderExecution11Completion = () => {
                 <AlertDialogOverlay>
                     <AlertDialogContent margin={4}>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            Internet Connection Required
+                            {t('order_execution.internet_connection_required')}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            {'You may complete execution only when internet access is available. Please find better internet connection.'}
+                            {t('order_execution.internet_connection_required_message')}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onClose}>
-                                Close
+                                {t('order_execution.close')}
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>

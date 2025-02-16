@@ -6,8 +6,10 @@ import { FaCamera, FaCog } from 'react-icons/fa';
 import { AppDispatch } from '../store/store';
 import useCamera from '../hooks/useCamera';
 import useImageModal from '../hooks/useImageModal';
+import { useTranslation } from 'react-i18next';
 
 const OrderExecution8PackingProoving = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<Blob | null>(null);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
@@ -46,7 +48,7 @@ const OrderExecution8PackingProoving = () => {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" w="full" h="full" overflow={'auto'}>
             <VStack spacing={8} width="100%"  h="full" p={4} >
-                <Text mb={1} fontSize="md" fontWeight="bold">You are obliged to make a photo of the display showing the amount of the treated seeds.</Text>
+                <Text mb={1} fontSize="md" fontWeight="bold">{t('order_execution.obliged_to_make_photo_display')}</Text>
                 <Box
                     width="100%"
                     maxWidth="400px"
@@ -90,7 +92,7 @@ const OrderExecution8PackingProoving = () => {
                         onClick={photo ? handleRetakeClick : handleTakeSnapshot}
                         leftIcon={photo ? undefined : <FaCamera />}
                     >
-                        {photo ? 'Retake the picture' : 'Take Picture'}
+                        {photo ? t('order_execution.retake_picture') : t('order_execution.take_picture')}
                     </Button>
                     <Button
                         w="200px" 
@@ -99,7 +101,7 @@ const OrderExecution8PackingProoving = () => {
                         onClick={handleNextButtonClick}
                         disabled={!photo}
                     >
-                        Next
+                        {t('order_execution.next')}
                     </Button>
                 </VStack>
             </VStack>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
 import { Order } from '../store/newOrderSlice';
+import { useTranslation } from 'react-i18next';
 
 interface RawOrderCardProps {
     order: Order;
@@ -8,6 +9,7 @@ interface RawOrderCardProps {
 }
 
 const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
+    const { t } = useTranslation();
 
     return (
         <Box
@@ -27,16 +29,16 @@ const RawOrderCard: React.FC<RawOrderCardProps> = ({ order, onClick }) => {
                             {order.crop?.name}, {order.variety?.name}
                         </Text>
                         <Text>
-                                New Recipe
+                            {t('raw_order_card.new_recipe')}
                         </Text>
                     </HStack>
                 </Badge>
-                <Text px={1} gridColumn="span 2" color="gray.600">Lot:</Text>
+                <Text px={1} gridColumn="span 2" color="gray.600">{t('raw_order_card.lot')}:</Text>
                 <Text px={1} isTruncated>{order.lotNumber}</Text>
-                <Text px={1} gridColumn="span 2" color="gray.600">Seeds To Treat:</Text>
+                <Text px={1} gridColumn="span 2" color="gray.600">{t('raw_order_card.seeds_to_treat')}:</Text>
                 <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
                 <Box gridColumn="span 3">
-                    <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Assignment Date:</Text>
+                    <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('raw_order_card.assignment_date')}:</Text>
                     <Text px={1} isTruncated>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleString()}</Text>
                 </Box>
             </Grid>

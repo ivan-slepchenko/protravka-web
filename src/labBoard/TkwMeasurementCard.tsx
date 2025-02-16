@@ -5,6 +5,7 @@ import { fetchOrderById } from '../store/ordersSlice';
 import { TkwMeasurement } from '../store/executionSlice';
 import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
 import { Order } from '../store/newOrderSlice';
+import { useTranslation } from 'react-i18next';
 
 interface TkwMeasurementCardProps {
     measurement: TkwMeasurement;
@@ -12,6 +13,7 @@ interface TkwMeasurementCardProps {
 }
 
 const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick }) => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const [order, setOrder] = useState<Order | null>(null);
 
@@ -47,20 +49,20 @@ const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick 
                         <Text isTruncated>
                             {order ? `${order.crop?.name}, ${order.variety?.name}` : 'Loading...'}
                         </Text>
-                        <Text>In Treatment</Text>
+                        <Text>{t('tkw_measurement_card.in_treatment')}</Text>
                     </HStack>
                 </Badge>
                 <Text px={1} gridColumn="span 3" color="gray.600">
-                    Lot: {order ? order.lotNumber : 'Loading...'}
+                    {t('tkw_measurement_card.lot')}: {order ? order.lotNumber : 'Loading...'}
                 </Text>                
-                <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
+                <Text px={1} gridColumn="span 2">{t('tkw_measurement_card.seeds_to_treat')}:</Text>
                 <Text px={1} textAlign='right'>{order ? `${order.seedsToTreatKg} kg` : 'Loading...'}</Text>
                 <Box gridColumn="span 3">
-                    <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Treatment Started At:</Text>
+                    <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('tkw_measurement_card.treatment_started_at')}:</Text>
                     <Text isTruncated>{new Date(measurement.orderExecution.treatmentStartDate).toLocaleString()}</Text>
                 </Box>
                 <Box gridColumn="span 3">
-                    <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Measurement Assigned At:</Text>
+                    <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('tkw_measurement_card.measurement_assigned_at')}:</Text>
                     <Text isTruncated>{new Date(measurement.creationDate).toLocaleString()}</Text>
                 </Box>
             </Grid>

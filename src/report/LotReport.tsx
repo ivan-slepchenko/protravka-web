@@ -8,6 +8,7 @@ import { Order, OrderStatus, Packaging } from "../store/newOrderSlice";
 import { useReactToPrint } from "react-to-print";
 import { fetchOrderExecution, OrderExecution } from "../store/executionSlice";
 import useImageModal from "../hooks/useImageModal";
+import { useTranslation } from 'react-i18next';
 
 const statusColorMap = {
     green: "#48BB78", // Green color (Chakra UI green.400)
@@ -15,15 +16,19 @@ const statusColorMap = {
     red: "#F56565", // Red color (Chakra UI red.400)
 };
 
-const StatusKeyLegend: React.FC = () => (
-    <HStack >
-        <Badge bgColor={statusColorMap.green} color="white" borderRadius="full" px={2} py={1}>😊 90-105%</Badge>
-        <Badge bgColor={statusColorMap.yellow} color="white" borderRadius="full" px={2} py={1}>😐 80-90%; 105-115%</Badge>
-        <Badge bgColor={statusColorMap.red} color="white" borderRadius="full" px={2} py={1}>😞 &lt;80%; &gt;115%</Badge>    
-    </HStack>
-);
+const StatusKeyLegend: React.FC = () => {
+    const { t } = useTranslation();
+    return (
+        <HStack>
+            <Badge bgColor={statusColorMap.green} color="white" borderRadius="full" px={2} py={1}>{t('lot_report.90_105')}</Badge>
+            <Badge bgColor={statusColorMap.yellow} color="white" borderRadius="full" px={2} py={1}>{t('lot_report.80_90_105_115')}</Badge>
+            <Badge bgColor={statusColorMap.red} color="white" borderRadius="full" px={2} py={1}>{t('lot_report.lt_80_gt_115')}</Badge>
+        </HStack>
+    );
+};
 
 const LotReport: React.FC = () => {
+    const { t } = useTranslation();
     const { orderId } = useParams<{ orderId: string }>();
     const dispatch: AppDispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
@@ -37,7 +42,7 @@ const LotReport: React.FC = () => {
     const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
 
     useEffect(() => {
-        if (orderId && order !== null && [OrderStatus.LabAssignmentCreated, OrderStatus.TKWConfirmed, OrderStatus.RecipeCreated].indexOf(order.status) === -1) {        
+        if (orderId && order !== null && [OrderStatus.LabAssignmentCreated, OrderStatus.TkwConfirmed, OrderStatus.RecipeCreated].indexOf(order.status) === -1) {        
             fetchOrderExecution(orderId).then((orderExecution) => {
                 setOrderExecution(orderExecution);
             });
@@ -89,16 +94,16 @@ const LotReport: React.FC = () => {
     const getStatusLabel = () => {
         switch (order?.status) {
             case OrderStatus.Completed:
-                return <Badge size="lg" colorScheme="green" mt="3px">Completed</Badge>;
+                return <Badge size="lg" colorScheme="green" mt="3px">{t('lot_report.completed')}</Badge>;
             case OrderStatus.Failed:
-                return <Badge size="lg" colorScheme="red" mt="3px">Failed</Badge>;
+                return <Badge size="lg" colorScheme="red" mt="3px">{t('lot_report.failed')}</Badge>;
             default:
                 return null;
         }
     };
 
     if (!order) {
-        return <Text>Loading...</Text>;
+        return <Text>{t('lot_report.loading')}</Text>;
     }
 
     const unitNumberOfSeeds = (order.bagSize !== null && order.tkw !== null) ? (order.packaging === Packaging.InKg ? order.bagSize / order.tkw : order.bagSize).toFixed(2) : 'N/A';
@@ -114,11 +119,11 @@ const LotReport: React.FC = () => {
                 <HStack spacing={2}>
                     {order.status === OrderStatus.ToAcknowledge && (
                         <>
-                            <Button colorScheme="green" onClick={handleApprove}>Mark as Completed</Button>
-                            <Button colorScheme="red" onClick={handleDisapprove}>Mark as Failed</Button>
+                            <Button colorScheme="green" onClick={handleApprove}>{t('lot_report.mark_as_completed')}</Button>
+                            <Button colorScheme="red" onClick={handleDisapprove}>{t('lot_report.mark_as_failed')}</Button>
                         </>
                     )}
-                    <Button onClick={() => print()} colorScheme="blue">Print to PDF</Button>
+                    <Button onClick={() => print()} colorScheme="blue">{t('lot_report.print_to_pdf')}</Button>
                     <CloseButton onClick={() => navigate(-1)}/>
                 </HStack>
             </Box>
@@ -127,14 +132,14 @@ const LotReport: React.FC = () => {
                     <Table variant="simple" size="sm">
                         <Thead bg="orange.100">
                             <Tr>
-                                <Th>TKW</Th>
-                                <Th>s.u., KS</Th>
-                                <Th>s.u., kg</Th>
-                                <Th>Total amount, s.u.</Th>
-                                <Th>Total amount, kg</Th>
-                                <Th>Packed Seeds, kg</Th>
-                                <Th>Packing Photo</Th>
-                                <Th>Deviation</Th>
+                                <Th>{t('lot_report.tkw')}</Th>
+                                <Th>{t('lot_report.su_ks')}</Th>
+                                <Th>{t('lot_report.su_kg')}</Th>
+                                <Th>{t('lot_report.total_amount_su')}</Th>
+                                <Th>{t('lot_report.total_amount_kg')}</Th>
+                                <Th>{t('lot_report.packed_seeds_kg')}</Th>
+                                <Th>{t('lot_report.packing_photo')}</Th>
+                                <Th>{t('lot_report.deviation')}</Th>
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -150,7 +155,7 @@ const LotReport: React.FC = () => {
                                         <ImageWithModal src={orderExecution.packingPhoto} />
                                     ) : (
                                         <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
-                                                No Photo
+                                            {t('lot_report.no_photo')}
                                         </Box>
                                     )}
                                 </Td>
@@ -163,23 +168,23 @@ const LotReport: React.FC = () => {
                 </HStack>
                 <VStack spacing={4} align="stretch">
                     <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
-                        <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Preparation per Lot</Text>
+                        <Text fontSize="lg" fontWeight="bold" mb={2}>{t('lot_report.slurry_preparation_per_lot')}</Text>
                         {order.status !== OrderStatus.RecipeCreated && <StatusKeyLegend />}
                     </Box>
                     <Box w="full">
                         <Table size="sm" variant="simple">
                             <Thead bg="orange.100">
                                 <Tr>
-                                    <Th>Component</Th>
-                                    <Th>Density</Th>
-                                    <Th>Target rate kg / slurry</Th>
-                                    <Th>Actual rate kg / slurry</Th>
-                                    <Th>Application Photo</Th>
-                                    <Th>Target rate gr / 100 kg seed</Th>
-                                    <Th>Actual rate gr / 100 kg seeds</Th>
-                                    <Th>Target rate gr / per s.u.</Th>
-                                    <Th>Actual rate gr / per s.u.</Th>
-                                    <Th>Deviation</Th>
+                                    <Th>{t('lot_report.component')}</Th>
+                                    <Th>{t('lot_report.density')}</Th>
+                                    <Th>{t('lot_report.target_rate_kg_slurry')}</Th>
+                                    <Th>{t('lot_report.actual_rate_kg_slurry')}</Th>
+                                    <Th>{t('lot_report.application_photo')}</Th>
+                                    <Th>{t('lot_report.target_rate_gr_100kg_seed')}</Th>
+                                    <Th>{t('lot_report.actual_rate_gr_100kg_seeds')}</Th>
+                                    <Th>{t('lot_report.target_rate_gr_per_su')}</Th>
+                                    <Th>{t('lot_report.actual_rate_gr_per_su')}</Th>
+                                    <Th>{t('lot_report.deviation')}</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -191,7 +196,7 @@ const LotReport: React.FC = () => {
                                         return (
                                             <Tr key={index} bg="red.100">
                                                 <Td colSpan={10} textAlign="center">
-                                                        Error - Product data is not found, please contact support.
+                                                    {t('lot_report.error_product_data_not_found')}
                                                 </Td>
                                             </Tr>
                                         );
@@ -212,7 +217,7 @@ const LotReport: React.FC = () => {
                                                     <ImageWithModal src={productExecution.applicationPhoto} />
                                                 ) : (
                                                     <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
-                                                            No Photo
+                                                        {t('lot_report.no_photo')}
                                                     </Box>
                                                 )}
                                             </Td>
@@ -230,17 +235,17 @@ const LotReport: React.FC = () => {
                         </Table>
                     </Box>
                     <Box w="full" display="flex" justifyContent="space-between" alignItems="center">
-                        <Text fontSize="lg" fontWeight="bold" mb={2}>Slurry Consumption Per Lot</Text>
+                        <Text fontSize="lg" fontWeight="bold" mb={2}>{t('lot_report.slurry_consumption_per_lot')}</Text>
                         {order.status !== OrderStatus.RecipeCreated && <StatusKeyLegend />}
                     </Box>
                     <Box w="50%" overflowX="auto">
                         <Table variant="simple" size="sm">
                             <Thead bg="orange.100">
                                 <Tr>
-                                    <Th>Target consumption, kg</Th>
-                                    <Th>Actual consumption, kg</Th>
-                                    <Th>Consumption Photo</Th>
-                                    <Th>Deviation</Th>
+                                    <Th>{t('lot_report.target_consumption_kg')}</Th>
+                                    <Th>{t('lot_report.actual_consumption_kg')}</Th>
+                                    <Th>{t('lot_report.consumption_photo')}</Th>
+                                    <Th>{t('lot_report.deviation')}</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -252,7 +257,7 @@ const LotReport: React.FC = () => {
                                             <ImageWithModal src={orderExecution.consumptionPhoto} />
                                         ) : (
                                             <Box width="150px" height="100px" bg="gray.200" display="flex" alignItems="center" justifyContent="center">
-                                                    No Photo
+                                                {t('lot_report.no_photo')}
                                             </Box>
                                         )}
                                     </Td>
@@ -265,18 +270,17 @@ const LotReport: React.FC = () => {
                     </Box>
                 </VStack>
             </VStack>
-            {/* </Center> */}
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Add Completition Comment<ModalCloseButton /></ModalHeader>
+                    <ModalHeader>{t('lot_report.add_completion_comment')}<ModalCloseButton /></ModalHeader>
                     <ModalBody>
                         <Textarea
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
-                            placeholder="Enter your comment here..."
+                            placeholder={t('lot_report.enter_comment')}
                         />
-                        <Button mt="4" colorScheme="blue" onClick={handleSubmit}>Submit</Button>
+                        <Button mt="4" colorScheme="blue" onClick={handleSubmit}>{t('lot_report.submit')}</Button>
                     </ModalBody>
                 </ModalContent>
             </Modal>

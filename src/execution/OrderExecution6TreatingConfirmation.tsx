@@ -3,8 +3,10 @@ import { Text, Checkbox, Button, VStack, HStack, Center } from '@chakra-ui/react
 import { nextPage, saveOrderExecution } from '../store/executionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
+import { useTranslation } from 'react-i18next';
 
 const OrderExecution6TreatingConfirmation = () => {
+    const { t } = useTranslation();
     const [isChecked, setIsChecked] = useState(false);
     const dispatch: AppDispatch = useDispatch();
 
@@ -26,10 +28,10 @@ const OrderExecution6TreatingConfirmation = () => {
             <Center w="full" h="full">
                 <VStack>
                     <Text textAlign="center">
-                        <span>You are currently treating lot <b>{lotNumber}</b></span>
+                        <span>{t('order_execution.currently_treating_lot')} <b>{lotNumber}</b></span>
                     </Text>
                     <Text fontSize="lg" textAlign="center" fontWeight="bold">
-                        Please confirm when you finish the lot
+                        {t('order_execution.confirm_when_finish')}
                     </Text>
                 </VStack>
             </Center>
@@ -40,7 +42,7 @@ const OrderExecution6TreatingConfirmation = () => {
                 borderColor="green.300"
                 alignSelf="flex-start"
             >
-                <span>I hereby confirm that I finished to treat lot</span> <b>{lotNumber}</b> and ready to give the number of units packed.
+                <span>{t('order_execution.confirm_finished_treating')} <b>{lotNumber}</b> {t('order_execution.ready_to_give_units_packed')}</span>
             </Checkbox>
             <HStack justifyContent={"center"}>
                 <Button
@@ -51,7 +53,7 @@ const OrderExecution6TreatingConfirmation = () => {
                     _hover={{ backgroundColor: 'orange.200' }}
                     onClick={handleNextButtonClick}
                 >
-                    Next
+                    {t('order_execution.next')}
                 </Button>
             </HStack>
         </VStack>

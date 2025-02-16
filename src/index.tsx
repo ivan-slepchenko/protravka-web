@@ -19,10 +19,28 @@ import { Role } from './operators/Operators';
 import { fetchCrops } from './store/cropsSlice';
 import { fetchOperators } from './store/operatorsSlice';
 import LogRocket from 'logrocket';
+import { useTranslation, initReactI18next } from 'react-i18next';
+import i18n from 'i18next';
+import enTranslations from './locales/en.json';
+import esTranslations from './locales/es.json';
 
 LogRocket.init('protravka/client');
 
+// Initialize i18n
+i18n.use(initReactI18next).init({
+    resources: {
+        en: { translation: enTranslations },
+        es: { translation: esTranslations },
+    },
+    lng: 'en', // default language
+    fallbackLng: 'en',
+    interpolation: {
+        escapeValue: false,
+    },
+});
+
 const App = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const {addAlert} = useAlert();
     const user = useSelector((state: RootState) => state.user);
@@ -53,12 +71,12 @@ const App = () => {
                 const isNewOrderAdded = newOrderIds.some((id) => !oldOrderIds.includes(id));
                 if (isNewOrderAdded || isNewMeasurementsAdded) {
                     if (useLab && user.roles.includes(Role.LABORATORY)) {
-                        addAlert('You have measurements to check');
+                        addAlert(t('measurements_check'));
                     }
                 } 
                 if (isNewOrderAdded) {
                     if (user.roles.includes(Role.OPERATOR)) {
-                        addAlert('You have taks to do');
+                        addAlert(t('tasks_to_do'));
                     }
                 }
             } catch (error) {
@@ -142,7 +160,6 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-console.log('Rendering root');
 
 root.render(
     <React.StrictMode>

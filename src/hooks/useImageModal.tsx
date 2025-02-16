@@ -1,8 +1,10 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Image } from "@chakra-ui/react";
+import { useTranslation } from 'react-i18next';
 
 const useImageModal = () => {
+    const { t } = useTranslation();
     const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
     const handlePhotoClick = (photoUrl: string | null) => {
@@ -49,7 +51,7 @@ const useImageModal = () => {
                 objectFit={"cover"}
                 onClick={() => handlePhotoClick(imageUrl)}
                 cursor="pointer"
-                title="Click to view full size"
+                title={t('use_image_modal.click_to_view_full_size')}
             />
         );
     };

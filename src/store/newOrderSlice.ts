@@ -28,7 +28,7 @@ export interface ProductDetail {
 
 export enum OrderStatus {
     LabAssignmentCreated = 'Lab Assignment Created',
-    TKWConfirmed = 'TKW Confirmed',
+    TkwConfirmed = 'TKW Confirmed',
     RecipeCreated = 'Recipe Created',
     TreatmentInProgress = 'Treatment In Progress',
     LabControl = 'Lab To Control',

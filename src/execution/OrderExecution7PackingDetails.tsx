@@ -3,8 +3,10 @@ import { Box, Text, Button, useMediaQuery, VStack, HStack, NumberInput, NumberIn
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { nextPage, saveOrderExecution, setPackedseedsToTreatKg } from '../store/executionSlice';
+import { useTranslation } from 'react-i18next';
 
 const OrderExecution7PackingDetails = () => {
+    const { t } = useTranslation();
     const [isMobile] = useMediaQuery("(max-width: 600px)");
     const [packedseedsToTreatKg, setPackedseedsToTreatKgState] = useState<number>(0);
 
@@ -20,13 +22,13 @@ const OrderExecution7PackingDetails = () => {
     };
 
     if (currentOrder === undefined || currentOrder?.seedsToTreatKg === undefined || currentOrder.seedsToTreatKg === null) {
-        return <Text>Invalid data, order is not found</Text>;
+        return <Text>{t('order_execution.invalid_data_order_not_found')}</Text>;
     }
 
     return (
         
         <VStack h='full' overflow={'auto'}>
-            <Text fontSize="xl" fontWeight="bold" textAlign="center"><span>How many seeds (kg)</span><br/><span>did you pack out of?</span></Text>
+            <Text fontSize="xl" fontWeight="bold" textAlign="center"><span>{t('order_execution.how_many_seeds_kg')}</span><br/><span>{t('order_execution.did_you_pack_out_of')}</span></Text>
             <Box
                 mt={4}
                 p={8}
@@ -52,12 +54,12 @@ const OrderExecution7PackingDetails = () => {
                     />
                 </NumberInput>
             </Box>
-            <Text p={2} mt={4}>You are obliged to make a photo of treater display showing this result on the next page!</Text>
+            <Text p={2} mt={4}>{t('order_execution.obliged_to_make_photo_treater_display')}</Text>
             <Box p={2} mt={4} w="full">
                 {currentOrder.seedsToTreatKg > packedseedsToTreatKg ? (
-                    <Text><b><span style={{ color: "red" }}>{(currentOrder.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} kg is missing!</span></b> Please inform your line manager if you cannot find it</Text>
+                    <Text><b><span style={{ color: "red" }}>{(currentOrder.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} {t('order_execution.kg_is_missing')}</span></b> {t('order_execution.inform_line_manager')}</Text>
                 ) : (
-                    <Text>This corresponds to the weight of the lot.</Text>
+                    <Text>{t('order_execution.corresponds_to_weight')}</Text>
                 )}
             </Box>
             <HStack justifyContent={"center"} mt='auto'>
@@ -70,7 +72,7 @@ const OrderExecution7PackingDetails = () => {
                     size={isMobile ? "md" : "lg"}
                     onClick={handleNextButtonClick}
                 >
-                        Next
+                    {t('order_execution.next')}
                 </Button>
             </HStack>
         </VStack>

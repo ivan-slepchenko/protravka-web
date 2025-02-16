@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { AppDispatch, RootState } from '../store/store';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch: AppDispatch = useDispatch();
@@ -20,7 +22,7 @@ const Login = () => {
         <Center w="full" h="full" p={8}>
             <VStack spacing={4} maxW="400px" w="full">
                 <Image src="/protravka_logo.png" alt="Logo" width="200px" objectFit='contain'/>
-                <Heading>Login</Heading>
+                <Heading>{t('login.login')}</Heading>
                 {error && (
                     <Alert status="error">
                         <AlertIcon />
@@ -28,18 +30,18 @@ const Login = () => {
                     </Alert>
                 )}
                 <Input
-                    placeholder="Email"
+                    placeholder={t('login.email')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <Input
-                    placeholder="Password"
+                    placeholder={t('login.password')}
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button onClick={handleLogin}>Login</Button>
-                <Button variant="link" onClick={() => navigate('/signup')}>{"Don't have an account? Signup"}</Button>
+                <Button onClick={handleLogin}>{t('login.login')}</Button>
+                <Button variant="link" onClick={() => navigate('/signup')}>{t('login.dont_have_account')}</Button>
             </VStack>
         </Center>
     );

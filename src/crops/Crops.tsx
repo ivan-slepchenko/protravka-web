@@ -6,8 +6,10 @@ import { fetchCrops, createCrop, createVariety, deleteCrop, deleteVariety } from
 import CropComponent from './CropComponent';
 import { useDisclosure } from '@chakra-ui/react';
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
 
 const Crops: React.FC = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const crops = useSelector((state: RootState) => state.crops.crops);
     const [newCropName, setNewCropName] = useState('');
@@ -67,11 +69,11 @@ const Crops: React.FC = () => {
             <VStack spacing={4} align="stretch">
                 <HStack>
                     <Input
-                        placeholder="New Crop Name"
+                        placeholder={t('crop.new_crop_name')}
                         value={newCropName}
                         onChange={(e) => setNewCropName(e.target.value)}
                     />
-                    <Button onClick={handleAddCrop}>Add Crop</Button>
+                    <Button onClick={handleAddCrop}>{t('crop.add_crop')}</Button>
                 </HStack>
                 {crops
                     .slice()
@@ -97,17 +99,17 @@ const Crops: React.FC = () => {
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            {selectedItem.type === 'crop' ? 'Delete Crop' : 'Delete Variety'}
+                            {selectedItem.type === 'crop' ? t('crop.delete_crop') : t('crop.delete_variety')}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            Are you sure you want to delete this {selectedItem.type}? This action cannot be undone.
+                            {t('crop.confirm_delete', { type: t(`crop.${selectedItem.type}`) })}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
+                                {t('crop.cancel')}
                             </Button>
                             <Button colorScheme="red" onClick={confirmDelete} ml={3}>
-                                Delete
+                                {t('crop.delete')}
                             </Button>
                         </AlertDialogFooter>
                     </AlertDialogContent>

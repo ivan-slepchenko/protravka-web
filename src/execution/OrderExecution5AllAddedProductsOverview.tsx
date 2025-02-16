@@ -3,8 +3,10 @@ import { Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Button, VStack, HStack } 
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { nextPage, saveOrderExecutionTreatmentStartTime } from '../store/executionSlice';
+import { useTranslation } from 'react-i18next';
 
 const OrderExecution5AllAddedProductsOverview = () => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
@@ -30,13 +32,13 @@ const OrderExecution5AllAddedProductsOverview = () => {
     return (
         <VStack justifyContent="center" w="full" h="full" position={"relative"}>
             <VStack spacing={6} width="100%" h='full'>
-                <Text fontSize="2xl" fontWeight="bold" textAlign="center">You added all products.</Text>
+                <Text fontSize="2xl" fontWeight="bold" textAlign="center">{t('order_execution.all_products_added')}</Text>
                 <Table variant="simple" size="sm">
                     <Thead bg="orange.100">
                         <Tr>
-                            <Th>Product name</Th>
-                            <Th>Target Qty, kg</Th>
-                            <Th>Actual Qty, kg</Th>
+                            <Th>{t('order_execution.product_name')}</Th>
+                            <Th>{t('order_execution.target_qty_kg')}</Th>
+                            <Th>{t('order_execution.actual_qty_kg')}</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
@@ -50,17 +52,17 @@ const OrderExecution5AllAddedProductsOverview = () => {
                     </Tbody>
                     <Tfoot>
                         <Tr>
-                            <Th>Total</Th>
+                            <Th>{t('order_execution.total')}</Th>
                             <Th>{totalTargetQty.toFixed(2)}</Th>
                             <Th>{totalActualQty.toFixed(2)}</Th>
                         </Tr>
                     </Tfoot>
                 </Table>
             </VStack>
-            <Text mt='auto' fontSize="lg" textAlign="center">Push to start treatment.</Text>
+            <Text mt='auto' fontSize="lg" textAlign="center">{t('order_execution.push_to_start_treatment')}</Text>
             <HStack justifyContent={"center"}>
                 <Button width="100px" colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }} onClick={handleNextButtonClicked}>
-                    Next
+                    {t('order_execution.next')}
                 </Button>
             </HStack>
         </VStack>

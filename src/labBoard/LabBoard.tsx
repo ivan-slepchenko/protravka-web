@@ -10,8 +10,10 @@ import RawOrderCard from './RawOrderCard';
 import RecipeInProgressTkwDetailsInputModal from './RecipeInProgressTkwDetailsInputModal';
 import { ControlledOrderList } from './ControlledOrderCard';
 import TkwDetailsModal from './TkwDetailsModal';
+import { useTranslation } from 'react-i18next';
 
 const LabBoard: React.FC = () => {
+    const { t } = useTranslation();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
     const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -49,7 +51,7 @@ const LabBoard: React.FC = () => {
                     [
                         OrderStatus.TreatmentInProgress,
                         OrderStatus.Completed,
-                        OrderStatus.TKWConfirmed,
+                        OrderStatus.TkwConfirmed,
                         OrderStatus.Failed,
                         OrderStatus.LabControl,
                         OrderStatus.RecipeCreated,
@@ -71,8 +73,8 @@ const LabBoard: React.FC = () => {
         }
     }, [tkwMeasurements]);
 
-    const ToControl = 'To Control';
-    const Controlled = 'Controlled';
+    const ToControl = t('lab_board.to_control');
+    const Controlled = t('lab_board.controlled');
 
     return (
         <Flex w="full" justifyContent={'center'} h="full">

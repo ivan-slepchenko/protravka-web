@@ -8,8 +8,10 @@ import OrderRecipeTab from "./OrderRecipeTab";
 import { OrderStatus } from "../../store/newOrderSlice";
 import { changeOrderStatus } from "../../store/ordersSlice";
 import { fetchOrderExecution, OrderExecution } from "../../store/executionSlice";
+import { useTranslation } from 'react-i18next';
 
 const OrderInfo: React.FC = () => {
+    const { t } = useTranslation();
     const { orderId } = useParams<{ orderId: string }>();
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
@@ -55,9 +57,9 @@ const OrderInfo: React.FC = () => {
     const getStatusLabel = () => {
         switch (order.status) {
             case OrderStatus.Completed:
-                return <Heading size="lg" color="green.500" fontWeight="bold">Completed</Heading>;
+                return <Heading size="lg" color="green.500" fontWeight="bold">{t('order_info.completed')}</Heading>;
             case OrderStatus.Failed:
-                return <Heading size="lg" color="red.500" fontWeight="bold">Failed</Heading>;
+                return <Heading size="lg" color="red.500" fontWeight="bold">{t('order_info.failed')}</Heading>;
             default:
                 return null;
         }
@@ -66,15 +68,15 @@ const OrderInfo: React.FC = () => {
     return (
         <Box w="full" h="full" overflowY="auto">
             <HStack alignItems="center" p="4" borderBottom="1px solid #ccc">
-                <Heading size="lg">Receipe: {order.lotNumber}</Heading>
+                <Heading size="lg">{t('order_info.recipe')}: {order.lotNumber}</Heading>
                 {getStatusLabel()}
-                <Button ml="auto" onClick={handleClose}>Close</Button>
+                <Button ml="auto" onClick={handleClose}>{t('order_info.close')}</Button>
             </HStack>
             <Box p="4">
                 <Tabs>
                     <TabList>
-                        <Tab>Recipe</Tab>
-                        {orderExecution && <Tab>Execution</Tab>}
+                        <Tab>{t('order_info.recipe')}</Tab>
+                        {orderExecution && <Tab>{t('order_info.execution')}</Tab>}
                     </TabList>
                     <TabPanels>
                         <TabPanel px={0}>
@@ -90,21 +92,21 @@ const OrderInfo: React.FC = () => {
             </Box>
             {order.status === OrderStatus.ToAcknowledge && (
                 <HStack w="full" mt="4" textAlign="right" position="fixed" bottom="4" right="4">
-                    <Button ml="auto" colorScheme="blue" onClick={handleApprove}>Mark as Completed</Button>
-                    <Button colorScheme="red" onClick={handleDisapprove}>Mark as Failed</Button>
+                    <Button ml="auto" colorScheme="blue" onClick={handleApprove}>{t('order_info.mark_as_completed')}</Button>
+                    <Button colorScheme="red" onClick={handleDisapprove}>{t('order_info.mark_as_failed')}</Button>
                 </HStack>
             )}
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Add Completition Comment<ModalCloseButton /></ModalHeader>
+                    <ModalHeader>{t('order_info.add_completion_comment')}<ModalCloseButton /></ModalHeader>
                     <ModalBody>
                         <Textarea
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
-                            placeholder="Enter your comment here..."
+                            placeholder={t('order_info.enter_comment')}
                         />
-                        <Button mt="4" colorScheme="blue" onClick={handleSubmit}>Submit</Button>
+                        <Button mt="4" colorScheme="blue" onClick={handleSubmit}>{t('order_info.submit')}</Button>
                     </ModalBody>
                 </ModalContent>
             </Modal>

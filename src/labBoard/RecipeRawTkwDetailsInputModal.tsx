@@ -7,6 +7,7 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody,
 import { FaCamera, FaCog } from 'react-icons/fa';
 import useCamera from '../hooks/useCamera';
 import useImageModal from '../hooks/useImageModal';
+import { useTranslation } from 'react-i18next';
 
 interface RecipeRawTkwDetailsInputModalProps {
     selectedOrder: Order;
@@ -14,6 +15,7 @@ interface RecipeRawTkwDetailsInputModalProps {
 }
 
 const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({ selectedOrder, onClose }) => {
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const [tkwRep1, setTkwRep1] = useState<number | null>(null);
     const [tkwRep2, setTkwRep2] = useState<number | null>(null);
@@ -78,7 +80,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
             <ModalOverlay />
             <ModalContent borderRadius="none" h="full">
                 <ModalHeader>
-                    Count TKW of UNTREATED seeds
+                    {t('recipe_raw_tkw_details_input_modal.count_tkw_untreated')}
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody h="full" overflow='auto'>
@@ -93,21 +95,21 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
                             
                             <GridItem px={1} h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}><strong>Lot:</strong></Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}><strong>{t('recipe_raw_tkw_details_input_modal.lot')}:</strong></Text>
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.lotNumber}</Text>
                             </GridItem>
 
                             <GridItem px={1} h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}><strong>Seeds To Treat:</strong></Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}><strong>{t('recipe_raw_tkw_details_input_modal.seeds_to_treat')}:</strong></Text>
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.seedsToTreatKg} kg.</Text>
                             </GridItem>
 
                             <GridItem px={1} h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}><strong>Assignment Created At:</strong></Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}><strong>{t('recipe_raw_tkw_details_input_modal.assignment_created_at')}:</strong></Text>
                             </GridItem>
                              
                             <GridItem px={1} h={10} alignContent={'center'}>
@@ -119,7 +121,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
 
                             <GridItem px={1} h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}><strong>TKW Probe 1:</strong></Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}><strong>{t('recipe_raw_tkw_details_input_modal.tkw_probe_1')}:</strong></Text>
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <HStack>
@@ -136,7 +138,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
 
                             <GridItem px={1} h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}><strong>TKW Probe 2:</strong></Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}><strong>{t('recipe_raw_tkw_details_input_modal.tkw_probe_2')}:</strong></Text>
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <HStack>
@@ -153,7 +155,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
 
                             <GridItem px={1} h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}><strong>TKW Probe 3:</strong></Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}><strong>{t('recipe_raw_tkw_details_input_modal.tkw_probe_3')}:</strong></Text>
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <HStack>
@@ -174,7 +176,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
 
                             <GridItem px={1} h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}><strong>Average TKW:</strong></Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}><strong>{t('recipe_raw_tkw_details_input_modal.average_tkw')}:</strong></Text>
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <Text fontSize={{ base: "sm", md: "md" }}>{averageTkw !== null ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
@@ -183,7 +185,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                     ) : (
                         <VStack spacing={8} width="100%">
                             <Text mb={1} fontSize={{ base: "sm", md: "md" }} fontWeight="bold">
-                                    You are obliged to take a photo of UNTREATED seeds of {selectedOrder.crop.name} {selectedOrder.lotNumber}
+                                {t('recipe_raw_tkw_details_input_modal.take_photo_untreated')} {selectedOrder.crop.name} {selectedOrder.lotNumber}
                             </Text>
                             <Box
                                 width="100%"
@@ -228,7 +230,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     leftIcon={tkwProbesPhoto ? undefined : <FaCamera />}
                                     disabled={isSaving}
                                 >
-                                    {tkwProbesPhoto ? 'Retake the picture' : 'Take Picture'}
+                                    {tkwProbesPhoto ? t('recipe_raw_tkw_details_input_modal.retake_picture') : t('recipe_raw_tkw_details_input_modal.take_picture')}
                                 </Button>
                             </VStack>
                         </VStack>
@@ -245,18 +247,18 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                 onChange={(e) => setIsConfirmed(e.target.checked)}
                                 disabled={isSaving}
                             >
-                                I hereby confirm that the TKW was counted by me fully compliant with the official demands
+                                {t('recipe_raw_tkw_details_input_modal.confirm_tkw_compliance')}
                             </Checkbox>
                         )}
                         <HStack w="full" justify="end">
-                            <Button variant="ghost" mb="3" onClick={handleBack} disabled={isSaving}>Back</Button>
+                            <Button variant="ghost" mb="3" onClick={handleBack} disabled={isSaving}>{t('recipe_raw_tkw_details_input_modal.back')}</Button>
                             {!isPhotoState ? (
                                 <Button colorScheme="blue" mb="3" onClick={handleNext} isDisabled={!isConfirmed || averageTkw === null || isSaving}>
-                                    Next
+                                    {t('recipe_raw_tkw_details_input_modal.next')}
                                 </Button>
                             ) : (
                                 <Button colorScheme="blue" mb="3" onClick={handleSave} isDisabled={!tkwProbesPhoto || isSaving}>
-                                    {isSaving ? <CircularProgress isIndeterminate size="24px" color='blue.300' /> : 'Save'}
+                                    {isSaving ? <CircularProgress isIndeterminate size="24px" color='blue.300' /> : t('recipe_raw_tkw_details_input_modal.save')}
                                 </Button>
                             )}
                         </HStack>
