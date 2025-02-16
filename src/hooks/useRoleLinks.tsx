@@ -5,16 +5,18 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { AtSignIcon, AddIcon } from '@chakra-ui/icons';
 import { BiSolidComponent } from "react-icons/bi";
 import { FaSeedling, FaTasks, FaFlask } from "react-icons/fa";
-import { useFeatures } from '../contexts/FeaturesContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const useRoleLinks = (roles: Role[]) => {
 
-    const features = useFeatures();
+    const user = useSelector((state: RootState) => state.user);
+    const useLab = user.company?.featureFlags.useLab;
 
     const roleToLinks = {
         [Role.MANAGER]: [
             { to: "/board", label: "Board", icon: <FiTrello /> },
-            { to: "/new", label: features.features.lab ? "New Assignment" : "New Receipe", icon: <AddIcon /> },
+            { to: "/new", label: useLab ? "New Assignment" : "New Receipe", icon: <AddIcon /> },
             { to: "/report", label: "Report", icon: <TbReportAnalytics /> },
         ],
         [Role.ADMIN]: [

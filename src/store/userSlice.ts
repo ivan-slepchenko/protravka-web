@@ -1,6 +1,13 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Role } from '../operators/Operators';
 
+interface Company {
+    id: string;
+    name: string;
+    contactEmail: string;
+    featureFlags: { useLab: boolean };
+}
+
 interface UserState {
     email: string | null;
     name: string | null;
@@ -9,6 +16,7 @@ interface UserState {
     roles: Role[];
     error: string | null;
     message: string | null;
+    company: Company | null;
 }
 
 const initialState: UserState = {
@@ -19,6 +27,7 @@ const initialState: UserState = {
     roles: [],
     error: null,
     message: null,
+    company: null,
 };
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -55,6 +64,10 @@ export const registerUser = createAsyncThunk(
     },
 );
 
+type UserResponse = Omit<UserState, 'company'> & {
+    company: Omit<Company, 'featureFlags'> & { featureFlags: string };
+};
+
 export const loginUser = createAsyncThunk(
     'user/loginUser',
     async ({ email, password }: { email: string; password: string }) => {
@@ -69,15 +82,35 @@ export const loginUser = createAsyncThunk(
         if (!response.ok) {
             throw new Error('Failed to login');
         }
-        return response.json();
+
+        const { user } = (await response.json()) as { user: UserResponse };
+
+        if (!user.company) {
+            throw new Error('User has no company');
+        }
+
+        const featureFlags = JSON.parse(user.company.featureFlags);
+        user.company.featureFlags = featureFlags;
+        return user;
     },
 );
 
 export const fetchUserByToken = createAsyncThunk('user/fetchUserByToken', async () => {
-    const response = await fetch(`${BACKEND_URL}/api/auth/user`, {
+    const res = await fetch(`${BACKEND_URL}/api/auth/user`, {
         credentials: 'include',
     });
-    return response.json();
+    if (!res.ok) {
+        throw new Error('Failed to fetch user');
+    }
+    const { user } = (await res.json()) as { user: UserResponse };
+
+    if (!user.company) {
+        throw new Error('User has no company');
+    }
+
+    const featureFlags = JSON.parse(user.company.featureFlags);
+    user.company.featureFlags = featureFlags;
+    return user;
 });
 
 export const logoutUser = createAsyncThunk('user/logoutUser', async () => {
@@ -145,7 +178,7 @@ const userSlice = createSlice({
                 state.error = action.error.message || 'Failed to register user';
             })
             .addCase(loginUser.fulfilled, (state, action) => {
-                const { email, name, surname, phone, roles } = action.payload.user;
+                const { email, name, surname, phone, roles } = action.payload;
                 state.email = email;
                 state.name = name;
                 state.surname = surname;
@@ -157,13 +190,14 @@ const userSlice = createSlice({
                 state.error = action.error.message || 'Failed to login';
             })
             .addCase(fetchUserByToken.fulfilled, (state, action) => {
-                const { email, name, surname, phone, roles } = action.payload;
+                const { email, name, surname, phone, roles, company } = action.payload;
                 state.email = email;
                 state.name = name;
                 state.surname = surname;
                 state.phone = phone;
                 state.error = null;
                 state.roles = roles;
+                state.company = company;
             })
             .addCase(fetchUserByToken.rejected, (state, action) => {
                 state.error = action.error.message || 'Failed to fetch user';

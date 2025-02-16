@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Badge, Text } from '@chakra-ui/react';
 import { Order, OrderStatus } from '../store/newOrderSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderExecutionStartDate, fetchOrderExecutionFinishDate, fetchLatestTkwMeasurementDate, fetchOrderPreparationStartDate } from '../store/executionSlice';
-import { AppDispatch } from '../store/store';
-import { useFeatures } from '../contexts/FeaturesContext';
+import { AppDispatch, RootState } from '../store/store';
 
 const Card: React.FC<{ order: Order }> = ({ order }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
-    const features = useFeatures();
+    const user = useSelector((state: RootState) => state.user);
+    const useLab = user.company?.featureFlags.useLab;
     const [treatmentStartDate, setTreatmentStartDate] = useState<number | null>(null);
     const [preparationStartDate, setPreparationStartDate] = useState<number | null>(null);
     const [treatmentFinishDate, setTreatmentFinishDate] = useState<number | null>(null);
@@ -31,7 +31,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                 .unwrap()
                 .then((data) => setTreatmentFinishDate(data.treatmentFinishDate))
                 .catch((error) => console.error('Failed to fetch treatment finish date:', error));
-        } else if (order.status === OrderStatus.ToAcknowledge && features.features.lab) {
+        } else if (order.status === OrderStatus.ToAcknowledge && useLab) {
             dispatch(fetchLatestTkwMeasurementDate(order.id))
                 .unwrap()
                 .then((data) => setLatestTkwDate(data.creationDate))
@@ -84,7 +84,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                 <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
                 {order.status === OrderStatus.LabAssignmentCreated && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{features.features.lab ? 'Assigned At:' : 'Created At:'}</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{useLab ? 'Assigned At:' : 'Created At:'}</Text>
                         <Text px={1} isTruncated>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleString()}</Text>
                     </Box>
                 )}

@@ -4,7 +4,6 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FiLogOut, FiMenu } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
 import useRoleLinks from '../hooks/useRoleLinks';
-import { useFeatures } from '../contexts/FeaturesContext';
 
 interface MenuProps {
     user: {
@@ -12,15 +11,18 @@ interface MenuProps {
         surname: string | null;
         email: string | null;
         roles: Role[];
+        company: {
+            featureFlags: { useLab: boolean };
+        } | null;
     };
     handleLogout: () => void;
 }
 
 const MobileMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
     const location = useLocation();
-    const features = useFeatures();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { managerLinks, adminLinks, operatorLinks, laboratoryLinks } = useRoleLinks(user.roles);
+    const useLab = user.company?.featureFlags.useLab;
 
     return (
         <>
@@ -68,7 +70,7 @@ const MobileMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
                                     {link.label}
                                 </Button>
                             ))}
-                            {features.features.lab && laboratoryLinks.map(link => (
+                            {useLab && laboratoryLinks.map(link => (
                                 <Button
                                     w="full"
                                     as={RouterLink}

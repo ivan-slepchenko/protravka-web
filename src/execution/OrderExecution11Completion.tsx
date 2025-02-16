@@ -6,11 +6,11 @@ import { deactivateActiveExecution, fetchTkwMeasurements, nextPage, saveOrderExe
 import { OrderExecutionPage } from './OrderExecutionPage';
 import { changeOrderStatus } from '../store/ordersSlice';
 import { OrderStatus } from '../store/newOrderSlice';
-import { useFeatures } from '../contexts/FeaturesContext';
 
 const OrderExecution11Completion = () => {
     const dispatch: AppDispatch = useDispatch();
-    const useLab = useFeatures().features.lab;
+    const user = useSelector((state: RootState) => state.user);
+    const useLab = user.company?.featureFlags.useLab;
     const [isMobile] = useMediaQuery("(max-width: 600px)");
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef(null);

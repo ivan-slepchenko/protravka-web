@@ -9,7 +9,6 @@ import store, { persistor, AppDispatch, RootState } from './store/store';
 import { fetchUserByToken, logoutUser } from './store/userSlice';
 import { BrowserRouter } from "react-router-dom";
 import { AlertProvider, useAlert } from './contexts/AlertContext';
-import { FeaturesProvider, useFeatures } from './contexts/FeaturesContext';
 import MobileMenu from './menus/MobileMenu';
 import DesktopMenu from './menus/DesktopMenu';
 import AppRoutes from './AppRoutes';
@@ -32,9 +31,8 @@ const App = () => {
     const oldOrdersRef = React.useRef(orders);
     const oldMeasurementsRef = React.useRef(tkwMeasurements);
     const isInitialLoadRef = React.useRef(true);
-    const useLab = useFeatures().features.lab;
-    const email = user.email;
-    const isAuthenticated = !!email;
+    const useLab = user.company?.featureFlags.useLab;
+    const isAuthenticated = user.email !== null;
 
     const handleLogout = () => {
         dispatch(logoutUser());
@@ -43,7 +41,7 @@ const App = () => {
     useEffect(() => {
         if (isInitialLoadRef.current) {
             isInitialLoadRef.current = false;
-        } else if (oldMeasurementsRef.current !== null) {
+        } else if (oldMeasurementsRef.current !== null && Array.isArray(oldMeasurementsRef.current)) {
             try {
                 const oldIds = oldMeasurementsRef.current.map((m) => m.id);
                 const newIds = tkwMeasurements.map((m) => m.id);
@@ -73,37 +71,34 @@ const App = () => {
     }, [tkwMeasurements, orders]);
 
     useEffect(() => {
-        if (useLab !== undefined) {
-            if (!isAuthenticated) {
-                dispatch(fetchUserByToken());
-            } else {
-                
-                if (!user.name || !user.email || !user.roles) {
-                    throw new Error('User name or email is not set, invalid user data');
-                }
-                LogRocket.identify('THE_USER_ID_IN_YOUR_APP', {
-                    name: user.name + ' ' + user.surname,
-                    email: user.email,
-                    roles: user.roles.join(', '),
-                });
+        if (!isAuthenticated) {
+            dispatch(fetchUserByToken());
+        } else {
+            if (!user.name || !user.email || !user.roles) {
+                throw new Error('User name or email is not set, invalid user data');
+            }
+            LogRocket.identify('THE_USER_ID_IN_YOUR_APP', {
+                name: user.name + ' ' + user.surname,
+                email: user.email,
+                roles: user.roles.join(', '),
+            });
 
+            dispatch(fetchOrders());
+            setInterval(() => {
                 dispatch(fetchOrders());
+            }, 10000);
+
+            if (user.roles.includes(Role.ADMIN) || user.roles.includes(Role.MANAGER)) {
+                dispatch(fetchCrops());
+                dispatch(fetchProducts());
+                dispatch(fetchOperators());
+            }
+
+            if (useLab && user.roles.includes(Role.LABORATORY)) {
+                dispatch(fetchTkwMeasurements());
                 setInterval(() => {
-                    dispatch(fetchOrders());
-                }, 10000);
-
-                if (user.roles.includes(Role.ADMIN) || user.roles.includes(Role.MANAGER)) {
-                    dispatch(fetchCrops());
-                    dispatch(fetchProducts());
-                    dispatch(fetchOperators());
-                }
-
-                if (useLab && user.roles.includes(Role.LABORATORY)) {
                     dispatch(fetchTkwMeasurements());
-                    setInterval(() => {
-                        dispatch(fetchTkwMeasurements());
-                    }, 10000);
-                }
+                }, 10000);
             }
         }
     }, [dispatch, user, useLab, isAuthenticated]);
@@ -155,11 +150,9 @@ root.render(
             <AlertProvider>
                 <Provider store={store}>
                     <PersistGate loading={null} persistor={persistor}>
-                        <FeaturesProvider>
-                            <BrowserRouter>
-                                <App />
-                            </BrowserRouter>
-                        </FeaturesProvider>
+                        <BrowserRouter>
+                            <App />
+                        </BrowserRouter>
                     </PersistGate>
                 </Provider>
             </AlertProvider>

@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { OrderStatus } from '../store/newOrderSlice';
 import { Box, Flex, Heading, VStack } from '@chakra-ui/react';
-import { useFeatures } from '../contexts/FeaturesContext';
 import Card from './Card';
 
 const Board: React.FC = () => {
-    const features = useFeatures();
+    const user = useSelector((state: RootState) => state.user);
+    const useLab = user.company?.featureFlags.useLab;
+
     const COMMPLETED_COLUMN = 'Completed';
-    const columns = features.features.lab
+    const columns = useLab
         ? [OrderStatus.LabAssignmentCreated, OrderStatus.TKWConfirmed, OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.LabControl, OrderStatus.ToAcknowledge, COMMPLETED_COLUMN]
         : [OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.ToAcknowledge, COMMPLETED_COLUMN];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
