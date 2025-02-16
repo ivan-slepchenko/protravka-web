@@ -64,10 +64,6 @@ export const registerUser = createAsyncThunk(
     },
 );
 
-type UserResponse = Omit<UserState, 'company'> & {
-    company: Omit<Company, 'featureFlags'> & { featureFlags: string };
-};
-
 export const loginUser = createAsyncThunk(
     'user/loginUser',
     async ({ email, password }: { email: string; password: string }) => {
@@ -83,14 +79,12 @@ export const loginUser = createAsyncThunk(
             throw new Error('Failed to login');
         }
 
-        const { user } = (await response.json()) as { user: UserResponse };
+        const { user } = (await response.json()) as { user: UserState };
 
         if (!user.company) {
             throw new Error('User has no company');
         }
 
-        const featureFlags = JSON.parse(user.company.featureFlags);
-        user.company.featureFlags = featureFlags;
         return user;
     },
 );
@@ -102,14 +96,13 @@ export const fetchUserByToken = createAsyncThunk('user/fetchUserByToken', async 
     if (!res.ok) {
         throw new Error('Failed to fetch user');
     }
-    const { user } = (await res.json()) as { user: UserResponse };
+
+    const user = (await res.json()) as UserState;
 
     if (!user.company) {
         throw new Error('User has no company');
     }
 
-    const featureFlags = JSON.parse(user.company.featureFlags);
-    user.company.featureFlags = featureFlags;
     return user;
 });
 
@@ -178,13 +171,14 @@ const userSlice = createSlice({
                 state.error = action.error.message || 'Failed to register user';
             })
             .addCase(loginUser.fulfilled, (state, action) => {
-                const { email, name, surname, phone, roles } = action.payload;
+                const { email, name, surname, phone, roles, company } = action.payload;
                 state.email = email;
                 state.name = name;
                 state.surname = surname;
                 state.phone = phone;
                 state.roles = roles;
                 state.error = null;
+                state.company = company;
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.error = action.error.message || 'Failed to login';
