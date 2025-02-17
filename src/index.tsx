@@ -21,8 +21,8 @@ import { fetchOperators } from './store/operatorsSlice';
 import LogRocket from 'logrocket';
 import { useTranslation, initReactI18next } from 'react-i18next';
 import i18next from 'i18next';
-import fr from './locales/fr';
-import enUS from './locales/enUS';
+import enUSTranslations from './locales/enUS.json';
+import frTranslations from './locales/fr.json';
 
 LogRocket.init('protravka/client');
 
@@ -31,12 +31,12 @@ i18next.use(initReactI18next).init({
     lng: 'enUS', // default language
     debug: true,
     resources: {
-        enUS: { translation: enUS },
-        fr: { translation: fr },
+        enUS: { translation: enUSTranslations },
+        fr: { translation: frTranslations },
     },
-    // interpolation: {
-    //     escapeValue: false,
-    // },
+    interpolation: {
+        escapeValue: false,
+    },
 });
 
 const App = () => {
@@ -71,12 +71,12 @@ const App = () => {
                 const isNewOrderAdded = newOrderIds.some((id) => !oldOrderIds.includes(id));
                 if (isNewOrderAdded || isNewMeasurementsAdded) {
                     if (useLab && user.roles.includes(Role.LABORATORY)) {
-                        addAlert(t('measurements_check'));
+                        addAlert(t('index.measurements_check'));
                     }
                 } 
                 if (isNewOrderAdded) {
                     if (user.roles.includes(Role.OPERATOR)) {
-                        addAlert(t('tasks_to_do'));
+                        addAlert(t('index.tasks_to_do'));
                     }
                 }
             } catch (error) {

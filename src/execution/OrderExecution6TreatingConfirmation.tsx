@@ -11,7 +11,7 @@ const OrderExecution6TreatingConfirmation = () => {
     const dispatch: AppDispatch = useDispatch();
 
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
-
+    
     if (currentOrder === null) {
         return null;
     }

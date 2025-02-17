@@ -3,12 +3,14 @@ module.exports = {
         browser: true,
         es2021: true
     },
+    plugins: [
+        "react",
+        "@typescript-eslint",
+        "@m6web/i18n",
+    ],
     extends: [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended-type-checked",
-        "plugin:@typescript-eslint/stylistic",
         "plugin:react/recommended",
-        "plugin:i18next/recommended",
         "prettier"
     ],
     overrides: [
@@ -30,25 +32,43 @@ module.exports = {
         tsconfigRootDir: __dirname,
         project: true
     },
-    plugins: [
-        "react",
-        "i18next",
-        "i18n-validator",
-        "@typescript-eslint"
-    ],
     rules: {
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "react/react-in-jsx-scope": "off",
-        "i18n-validator/json-key-exists": [2, {
-            "locales": ["en", "fr"],
-            "jsonBaseURIs": [
-                { "baseURI": "./src/locales/" }
-            ]
-        }]
+
+        "@m6web/i18n/no-unknown-key": "error",
+        "@m6web/i18n/no-unknown-key-secondary-langs": "warn",
+        "@m6web/i18n/no-text-as-children": ["error", {"ignorePattern": "^\\s?[/.]\\s?$"}],
+        "@m6web/i18n/no-text-as-attribute": ["error", {"attributes": ["alt", "title"]}],
+        "@m6web/i18n/interpolation-data": ["error", { "interpolationPattern": "\\{\\.+\\}" }]
     },
     settings: {
         "react": {
             "version": "detect"
+        },
+        "i18n": {
+            // Your principal languages used in 'no-unknown-key' rule
+            "principalLangs": [
+                {
+                    "name": "enUS",
+                    "translationPath": "/locales/enUS.json"
+                }
+            ],
+            // Secondary languages used in 'no-unknown-key-secondary-langs' rule
+            "secondaryLangs": [
+                {
+                    "name": "fr",
+                    "translationPath": "/locales/fr.json"
+                }
+            ],
+            // Name of your translate function
+            "functionName": "t",
+            // If you want to ignore specific files
+            "ignoreFiles": ["**/*.spec.js", "**/*.int.js"],
+            // If you have pluralization
+            "pluralizedKeys": ["one", "other"],
+            // TTL of the translations file caching (defaults to 500ms)
+            "translationsCacheTTL": 300
         }
     },
     root: true,
