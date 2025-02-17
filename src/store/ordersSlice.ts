@@ -7,11 +7,7 @@ interface OrdersState {
     fetchError: boolean;
 }
 
-const initialState: OrdersState = {
-    activeOrders: [],
-    archivedOrders: [],
-    fetchError: false,
-};
+const initialState: OrdersState = { activeOrders: [], archivedOrders: [], fetchError: false };
 
 export interface ProductRecipe {
     id: string;
@@ -39,7 +35,7 @@ export interface OrderRecipe {
     unitWeight: number;
 }
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL || '';
 
 export const fetchOrders = createAsyncThunk(
     'orders/fetchOrders',
@@ -72,9 +68,7 @@ export const createOrder = createAsyncThunk('orders/createOrder', async (order: 
     }); // Remove ids from productDetails
     const response = await fetch(`${BACKEND_URL}/api/orders`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...orderWithoutId, productDetails: productDetailsWithoutIds }),
         credentials: 'include', // Include credentials in the request
     });
@@ -91,9 +85,7 @@ export const finalizeOrder = createAsyncThunk('orders/finalizeOrder', async (ord
     }); // Remove ids from productDetails
     const response = await fetch(`${BACKEND_URL}/api/orders/${order.id}/finalize`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...orderWithoutId, productDetails: productDetailsWithoutIds }),
         credentials: 'include', // Include credentials in the request
     });
@@ -105,9 +97,7 @@ export const changeOrderStatus = createAsyncThunk(
     async ({ id, status }: { id: string; status: string }, { dispatch }) => {
         const response = await fetch(`${BACKEND_URL}/api/orders/${id}/status`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status }),
             credentials: 'include', // Include credentials in the request
         });
@@ -126,13 +116,7 @@ export const updateOrderTKW = createAsyncThunk(
             tkwRep2,
             tkwRep3,
             tkwProbesPhoto,
-        }: {
-            id: string;
-            tkwRep1: number;
-            tkwRep2: number;
-            tkwRep3: number;
-            tkwProbesPhoto: Blob;
-        },
+        }: { id: string; tkwRep1: number; tkwRep2: number; tkwRep3: number; tkwProbesPhoto: Blob },
         { rejectWithValue },
     ) => {
         try {

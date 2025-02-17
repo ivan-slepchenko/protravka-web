@@ -426,7 +426,7 @@ export const NewReceipe = () => {
                                                             >
                                                                 {products.map((product) => (
                                                                     <option key={product.id} value={product.id}>
-                                                                        {product.name} <span style={{ float: 'right', color: 'gray' }}>({product.density} g/ml)</span>
+                                                                        {product.name} <span style={{ float: 'right', color: 'gray' }}>({product.density} {t('units.g_ml')}))</span>
                                                                     </option>
                                                                 ))}
                                                             </Field>
@@ -531,7 +531,7 @@ export const NewReceipe = () => {
                                                 </Thead>
                                                 <Tbody>
                                                     <Tr>
-                                                        <Td>{formData.totalCompoundsDensity.toFixed(3)} g/ml</Td>
+                                                        <Td>{formData.totalCompoundsDensity.toFixed(3)} {t('units.g_ml')})</Td>
                                                         <Td>{formData.seedsToTreatKg ? (100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2) : 'N/A'}</Td>
                                                         <Td>{formData.seedsToTreatKg ? (100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2) : 'N/A'}</Td>
                                                         <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)}</Td>

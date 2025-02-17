@@ -25,7 +25,7 @@ const OrderExecution6TreatingConfirmation = () => {
 
     return (
         <VStack w="full" h="full" gap={6} overflow={'auto'}>
-            <Center w="full" h="full">
+            <Center w='full' h="full">
                 <VStack>
                     <Text textAlign="center">
                         <span>{t('order_execution.currently_treating_lot')} <b>{lotNumber}</b></span>

@@ -5,8 +5,10 @@ import { Order, OrderStatus } from '../store/newOrderSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrderExecutionStartDate, fetchOrderExecutionFinishDate, fetchLatestTkwMeasurementDate, fetchOrderPreparationStartDate } from '../store/executionSlice';
 import { AppDispatch, RootState } from '../store/store';
+import { useTranslation } from 'react-i18next';
 
 const Card: React.FC<{ order: Order }> = ({ order }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const user = useSelector((state: RootState) => state.user);
@@ -51,10 +53,10 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
     let statusLabel = null;
     if (order.status === OrderStatus.Completed) {
         cardColor = "green.50";
-        statusLabel = <Badge colorScheme="green" gridColumn="span 3" ml="auto">Success</Badge>;
+        statusLabel = <Badge colorScheme="green" gridColumn="span 3" ml="auto">{t('card.success')}</Badge>;
     } else if (order.status === OrderStatus.Failed) {
         cardColor = "red.50";
-        statusLabel = <Badge colorScheme="red" gridColumn="span 3"ml="auto">Failed</Badge>;
+        statusLabel = <Badge colorScheme="red" gridColumn="span 3" ml="auto">{t('card.failed')}</Badge>;
     }
 
     return (
@@ -76,62 +78,62 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                 </Badge>
                 {statusLabel}
                 {order.status !== OrderStatus.LabAssignmentCreated && <Text px={1} gridColumn="span 3">
-                    {'for '}{order.operator?.name} {order.operator?.surname}
+                    {t('card.for')} {order.operator?.name} {order.operator?.surname}
                 </Text>}
-                <Text px={1} gridColumn="span 2" color="gray.600">Lot:</Text>
+                <Text px={1} gridColumn="span 2" color="gray.600">{t('card.lot')}:</Text>
                 <Text px={1} isTruncated>{order.lotNumber}</Text>
-                <Text px={1} gridColumn="span 2" color="gray.600">To Treat:</Text>
-                <Text px={1} isTruncated>{order.seedsToTreatKg}{' kg'}</Text>
+                <Text px={1} gridColumn="span 2" color="gray.600">{t('card.to_treat')}:</Text>
+                <Text px={1} isTruncated>{order.seedsToTreatKg}{t('units.kg')}</Text>
                 {order.status === OrderStatus.LabAssignmentCreated && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{useLab ? 'Assigned At:' : 'Created At:'}</Text>
-                        <Text px={1} isTruncated>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleString()}</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{useLab ? t('card.assigned_at') : t('card.created_at')}</Text>
+                        <Text px={1} isTruncated>{order.creationDate === null ? t('n_a') : new Date(order.creationDate).toLocaleString()}</Text>
                     </Box>
                 )}
                 {order.status === OrderStatus.RecipeCreated && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Created At:</Text>
-                        <Text px={1} isTruncated>{order.finalizationDate === null ? 'N/A' : new Date(order.finalizationDate).toLocaleString()}</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.created_at')}</Text>
+                        <Text px={1} isTruncated>{order.finalizationDate === null ? t('n_a') : new Date(order.finalizationDate).toLocaleString()}</Text>
                     </Box>
                 )}
                 {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TkwConfirmed && <Box gridColumn="span 3">
-                    <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Expected Start At:</Text>
-                    <Text px={1} isTruncated >{order.applicationDate === null ? 'N/A' : new Date(order.applicationDate).toLocaleString()}</Text>
+                    <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.expected_start_at')}</Text>
+                    <Text px={1} isTruncated>{order.applicationDate === null ? t('n_a') : new Date(order.applicationDate).toLocaleString()}</Text>
                 </Box>}
                 {order.status === OrderStatus.TkwConfirmed && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Raw TKW Measured At:</Text>
-                        <Text px={1} isTruncated>{order.tkwMeasurementDate === null ? 'N/A' : new Date(order.tkwMeasurementDate).toLocaleString()}</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.raw_tkw_measured_at')}</Text>
+                        <Text px={1} isTruncated>{order.tkwMeasurementDate === null ? t('n_a') : new Date(order.tkwMeasurementDate).toLocaleString()}</Text>
                     </Box>
                 )}
                 {order.status === OrderStatus.TreatmentInProgress && preparationStartDate && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Preparation Started At:</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.preparation_started_at')}</Text>
                         <Text px={1} isTruncated>{new Date(preparationStartDate).toLocaleString()}</Text>
                     </Box>
                 )}
                 {order.status === OrderStatus.TreatmentInProgress && treatmentStartDate && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Treatment Started At:</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.treatment_started_at')}</Text>
                         <Text px={1} isTruncated>{new Date(treatmentStartDate).toLocaleString()}</Text>
                     </Box>
                 )}
                 {order.status === OrderStatus.LabControl && treatmentFinishDate && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Treatment Finished At:</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.treatment_finished_at')}</Text>
                         <Text px={1} isTruncated>{new Date(treatmentFinishDate).toLocaleString()}</Text>
                     </Box>
                 )}
                 {order.status === OrderStatus.ToAcknowledge && latestTkwDate && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Latest TKW Measured At:</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.latest_tkw_measured_at')}</Text>
                         <Text px={1} isTruncated>{new Date(latestTkwDate).toLocaleString()}</Text>
                     </Box>
                 )}
                 {(order.status === OrderStatus.Completed || order.status === OrderStatus.Failed) && (
                     <Box gridColumn="span 3">
-                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>Completed At:</Text>
-                        <Text px={1} isTruncated>{order.completionDate === null ? 'N/A' : new Date(order.completionDate).toLocaleString()}</Text>
+                        <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.completed_at')}</Text>
+                        <Text px={1} isTruncated>{order.completionDate === null ? t('n_a') : new Date(order.completionDate).toLocaleString()}</Text>
                     </Box>
                 )}
             </Box>

@@ -4,6 +4,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FiLogOut, FiMenu } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
 import useRoleLinks from '../hooks/useRoleLinks';
+import { useTranslation } from 'react-i18next';
 
 interface MenuProps {
     user: {
@@ -21,6 +22,7 @@ interface MenuProps {
 const MobileMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
     const location = useLocation();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { t } = useTranslation();
     const { managerLinks, adminLinks, operatorLinks, laboratoryLinks } = useRoleLinks(user.roles);
     const useLab = user.company?.featureFlags.useLab;
 
@@ -39,7 +41,7 @@ const MobileMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
                 <DrawerOverlay />
                 <DrawerContent>
                     <DrawerCloseButton />
-                    <DrawerHeader>Menu</DrawerHeader>
+                    <DrawerHeader>{t('mobile_menu.menu')}</DrawerHeader>
                     <DrawerBody>
                         <VStack spacing={4} h="full">
                             <Box w="full" mb={4} p={4} bg="white" borderRadius="md" boxShadow="md">
@@ -127,7 +129,7 @@ const MobileMenu: React.FC<MenuProps> = ({ user, handleLogout }) => {
                                 color={location.pathname === "/info" ? "blue.500" : "black"}
                                 onClick={onClose}
                             >
-                                Info
+                                {t('mobile_menu.info')}
                             </Button>
                         </VStack>
                     </DrawerBody>

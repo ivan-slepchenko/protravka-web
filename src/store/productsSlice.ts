@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 export interface Product {
-  id: string;
-  name: string;
-  activeIngredient?: string;
-  density: number;
+    id: string;
+    name: string;
+    activeIngredient?: string;
+    density: number;
 }
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL || '';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
     const response = await fetch(`${BACKEND_URL}/api/products`, {
@@ -19,22 +19,23 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async ()
     return response.json();
 });
 
-export const createProduct = createAsyncThunk('products/createProduct', async (product: Product) => {
-    const { id, ...productWithoutId } = product;
-    id.toString();
-    const response = await fetch(`${BACKEND_URL}/api/products`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productWithoutId),
-        credentials: 'include', // Include credentials in the request
-    });
-    if (!response.ok) {
-        throw new Error('Failed to create product');
-    }
-    return response.json();
-});
+export const createProduct = createAsyncThunk(
+    'products/createProduct',
+    async (product: Product) => {
+        const { id, ...productWithoutId } = product;
+        id.toString();
+        const response = await fetch(`${BACKEND_URL}/api/products`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productWithoutId),
+            credentials: 'include', // Include credentials in the request
+        });
+        if (!response.ok) {
+            throw new Error('Failed to create product');
+        }
+        return response.json();
+    },
+);
 
 export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id: string) => {
     const response = await fetch(`${BACKEND_URL}/api/products/${id}`, {
@@ -49,11 +50,7 @@ export const deleteProduct = createAsyncThunk('products/deleteProduct', async (i
 
 const productsSlice = createSlice({
     name: 'products',
-    initialState: {
-        products: [] as Product[],
-        loading: false,
-        error: null as string | null,
-    },
+    initialState: { products: [] as Product[], loading: false, error: null as string | null },
     reducers: {},
     extraReducers: (builder) => {
         builder
@@ -72,7 +69,7 @@ const productsSlice = createSlice({
                 state.products.push(action.payload);
             })
             .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<string>) => {
-                state.products = state.products.filter(product => product.id !== action.payload);
+                state.products = state.products.filter((product) => product.id !== action.payload);
             });
     },
 });

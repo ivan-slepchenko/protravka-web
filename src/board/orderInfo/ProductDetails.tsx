@@ -29,7 +29,7 @@ const ProductDetails: React.FC<{ order: Order }> = ({ order }) => {
                             <Th colSpan={2} whiteSpace="nowrap">{t('product_details.rate')}</Th>
                         </Tr>
                         <Tr>
-                            <Th whiteSpace="nowrap">{t('product_details.g_ml')}</Th>
+                            <Th whiteSpace="nowrap">{t('units.g_ml')}</Th>
                             <Th whiteSpace="nowrap">{t('product_details.l')}</Th>
                             <Th whiteSpace="nowrap">{t('product_details.kg')}</Th>
                             <Th whiteSpace="nowrap">{t('product_details.ml_u_ks')}</Th>

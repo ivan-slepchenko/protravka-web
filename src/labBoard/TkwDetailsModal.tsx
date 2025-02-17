@@ -42,7 +42,7 @@ const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measu
                             <Text>{order.lotNumber}</Text>
 
                             <Text fontWeight="bold">{t('tkw_details_modal.seeds_to_treat')}:</Text>
-                            <Text>{order.seedsToTreatKg} kg.</Text>
+                            <Text>{order.seedsToTreatKg} {t('units.kg')}.</Text>
 
                             <Text fontWeight="bold">{t('tkw_details_modal.operator')}:</Text>
                             <Text>{order.operator?.name} {order.operator?.surname}</Text>
@@ -63,7 +63,7 @@ const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measu
                                             w='full'
                                             h='full'
                                         >
-                                            <Text color="gray.500">N/A</Text>
+                                            <Text color="gray.500">{t('n_a')}</Text>
                                         </Box>
                                     </AspectRatio>
                                 )}
@@ -129,7 +129,7 @@ const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measu
                                                             alignItems="center"
                                                             bg="gray.100"
                                                         >
-                                                            <Text color="gray.500">N/A</Text>
+                                                            <Text color="gray.500">{t('n_a')}</Text>
                                                         </Box>
                                                     </AspectRatio>
                                                 )}

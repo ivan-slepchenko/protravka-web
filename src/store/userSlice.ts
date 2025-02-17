@@ -30,7 +30,7 @@ const initialState: UserState = {
     company: null,
 };
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL || '';
 
 export const registerUser = createAsyncThunk(
     'user/registerUser',
@@ -51,9 +51,7 @@ export const registerUser = createAsyncThunk(
     }) => {
         const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password, name, surname, birthday, phone }),
             credentials: 'include', // Include credentials in the request
         });
@@ -69,9 +67,7 @@ export const loginUser = createAsyncThunk(
     async ({ email, password }: { email: string; password: string }) => {
         const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
             credentials: 'include', // Include credentials in the request
         });
@@ -90,9 +86,7 @@ export const loginUser = createAsyncThunk(
 );
 
 export const fetchUserByToken = createAsyncThunk('user/fetchUserByToken', async () => {
-    const res = await fetch(`${BACKEND_URL}/api/auth/user`, {
-        credentials: 'include',
-    });
+    const res = await fetch(`${BACKEND_URL}/api/auth/user`, { credentials: 'include' });
     if (!res.ok) {
         throw new Error('Failed to fetch user');
     }

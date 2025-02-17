@@ -58,7 +58,7 @@ const initialState: ExecutionState = {
     tkwMeasurements: [],
 };
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL || '';
 
 export const saveOrderExecution = createAsyncThunk(
     'execution/saveOrderExecution',
@@ -228,13 +228,7 @@ export const updateTkwMeasurement = createAsyncThunk(
             tkwRep2,
             tkwRep3,
             tkwProbesPhoto,
-        }: {
-            id: string;
-            tkwRep1: number;
-            tkwRep2: number;
-            tkwRep3: number;
-            tkwProbesPhoto: Blob;
-        },
+        }: { id: string; tkwRep1: number; tkwRep2: number; tkwRep3: number; tkwProbesPhoto: Blob },
         { dispatch, rejectWithValue },
     ) => {
         try {
@@ -285,9 +279,7 @@ export const fetchOrderPreparationStartDate = createAsyncThunk(
         try {
             const response = await fetch(
                 `${BACKEND_URL}/api/executions/${orderId}/preparation-start-date`,
-                {
-                    credentials: 'include',
-                },
+                { credentials: 'include' },
             );
             if (!response.ok) {
                 throw new Error('Failed to fetch order execution start date');

@@ -105,7 +105,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                 <Text fontSize={{ base: "sm", md: "md" }}><strong>{t('recipe_raw_tkw_details_input_modal.seeds_to_treat')}:</strong></Text>
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
-                                <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.seedsToTreatKg} kg.</Text>
+                                <Text fontSize={{ base: "sm", md: "md" }}>{selectedOrder.seedsToTreatKg} {t('units.kg')}.</Text>
                             </GridItem>
 
                             <GridItem px={1} h={10} alignContent={'center'}>
@@ -133,7 +133,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         type="number"
                                         step="0.01"
                                     />
-                                    <Text fontSize={{ base: "sm", md: "md" }}>gr.</Text>
+                                    <Text fontSize={{ base: "sm", md: "md" }}>{t('units.gr')}.</Text>
                                 </HStack>
                             </GridItem>
 
@@ -150,7 +150,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         type="number"
                                         step="0.01"
                                     />
-                                    <Text fontSize={{ base: "sm", md: "md" }}>gr.</Text>
+                                    <Text fontSize={{ base: "sm", md: "md" }}>{t('units.gr')}.</Text>
                                 </HStack>
                             </GridItem>
 
@@ -167,7 +167,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         type="number"
                                         step="0.01"
                                     />
-                                    <Text fontSize={{ base: "sm", md: "md" }}>gr.</Text>
+                                    <Text fontSize={{ base: "sm", md: "md" }}>{t('units.gr')}.</Text>
                                 </HStack>
                             </GridItem>
 

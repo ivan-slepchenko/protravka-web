@@ -8,7 +8,7 @@ if (workbox) {
 
     const { precacheAndRoute } = workbox.precaching;
     const { registerRoute } = workbox.routing;
-    const { CacheFirst, NetworkFirst, StaleWhileRevalidate, NetworkOnly } = workbox.strategies;
+    const { CacheFirst, NetworkFirst, StaleWhileRevalidate } = workbox.strategies;
     const { ExpirationPlugin } = workbox.expiration;
 
     // Ensure self.__WB_MANIFEST is defined and is an array

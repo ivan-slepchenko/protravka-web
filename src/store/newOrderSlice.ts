@@ -4,7 +4,7 @@ import { OrderRecipe } from './ordersSlice';
 import { Crop, Variety } from './cropsSlice';
 import { Product } from './productsSlice';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL || '';
 
 export enum RateUnit {
     ML = 'ml',
@@ -126,9 +126,7 @@ export const fetchCalculatedValues = createAsyncThunk(
         try {
             const response = await fetch(`${BACKEND_URL}/api/orders/calculate-order`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(order),
                 credentials: 'include',
             });
@@ -210,10 +208,7 @@ const newOrderSlice = createSlice({
             return action.payload;
         },
         loadOrderData: (state, action: PayloadAction<Partial<NewOrderState>>) => {
-            return {
-                ...state,
-                ...action.payload,
-            };
+            return { ...state, ...action.payload };
         },
         resetStateToDefaultFinalize: (state) => {
             console.log('Resetting state to default');

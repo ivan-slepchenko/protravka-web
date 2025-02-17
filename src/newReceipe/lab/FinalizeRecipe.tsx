@@ -460,7 +460,7 @@ export const FinalizeRecipe = () => {
                                                             >
                                                                 {products.map((product) => (
                                                                     <option key={product.id} value={product.id}>
-                                                                        {product.name} <span style={{ float: 'right', color: 'gray' }}>({product.density} g/ml)</span>
+                                                                        {product.name} <span style={{ float: 'right', color: 'gray' }}>({product.density} {t('units.g_ml')})</span>
                                                                     </option>
                                                                 ))}
                                                             </Field>
@@ -575,7 +575,7 @@ export const FinalizeRecipe = () => {
                                                 </Thead>
                                                 <Tbody>
                                                     <Tr>
-                                                        <Td>{formData.totalCompoundsDensity.toFixed(3)} g/ml</Td>
+                                                        <Td>{formData.totalCompoundsDensity.toFixed(3)} {t('units.g_ml')}</Td>
                                                         <Td>{formData.seedsToTreatKg ? (100 * formData.slurryTotalMlRecipeToMix / (formData.seedsToTreatKg)).toFixed(2) : 'N/A'}</Td>
                                                         <Td>{formData.seedsToTreatKg ? (100 * formData.slurryTotalGrRecipeToMix / (formData.seedsToTreatKg)).toFixed(2) : 'N/A'}</Td>
                                                         <Td>{(formData.slurryTotalMlRecipeToMix / 1000).toFixed(3)}</Td>
@@ -584,12 +584,10 @@ export const FinalizeRecipe = () => {
                                                 </Tbody>
                                             </Table>
                                         )}
-                                        
                                         <Button ml="auto" colorScheme="yellow" size="md" onClick={() => handleClearAll(props.resetForm)} disabled={isSaving}>{t('finalize_recipe.clear_all')}</Button>
                                         <Button colorScheme="green" size="md" type="submit" isLoading={isSaving} spinner={<CircularProgress isIndeterminate size="24px" color="green.500" />}>{t('finalize_recipe.save')}</Button>
                                     </HStack>
                                 </Box>
-
                                 {/* Error Modal */}
                                 <Modal isOpen={isOpen} onClose={onClose}>
                                     <ModalOverlay />

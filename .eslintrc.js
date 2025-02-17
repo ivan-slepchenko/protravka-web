@@ -1,43 +1,55 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es2021": true
+    env: {
+        browser: true,
+        es2021: true
     },
-    "extends": [
+    extends: [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-type-checked",
+        "plugin:@typescript-eslint/stylistic",
         "plugin:react/recommended",
         "plugin:i18next/recommended",
-        "prettier",
+        "prettier"
     ],
-    "overrides": [
+    overrides: [
         {
-            "env": {
-                "node": true
-            },
-            "files": [
-                ".eslintrc.{js,cjs}"
-            ],
+            "files": ["src/**/*.{js,jsx,ts,tsx}"],
+            "excludedFiles": ["build/**", "node_modules/**"],
             "parserOptions": {
                 "sourceType": "script"
             }
-        },
+        }
     ],
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
+    parser: "@typescript-eslint/parser",
+    parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        jsx: true,
+        useJSXTextNode: true,
+        projectService: true,
+        tsconfigRootDir: __dirname,
+        project: true
     },
-    "plugins": [
+    plugins: [
         "react",
         "i18next",
+        "i18n-validator",
+        "@typescript-eslint"
     ],
-    "rules": {
+    rules: {
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "react/react-in-jsx-scope": "off",
+        "i18n-validator/json-key-exists": [2, {
+            "locales": ["en", "fr"],
+            "jsonBaseURIs": [
+                { "baseURI": "./src/locales/" }
+            ]
+        }]
     },
-    "settings": {
+    settings: {
         "react": {
             "version": "detect"
         }
-    }
+    },
+    root: true,
 }

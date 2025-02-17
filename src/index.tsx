@@ -20,23 +20,23 @@ import { fetchCrops } from './store/cropsSlice';
 import { fetchOperators } from './store/operatorsSlice';
 import LogRocket from 'logrocket';
 import { useTranslation, initReactI18next } from 'react-i18next';
-import i18n from 'i18next';
-import enTranslations from './locales/en.json';
-import esTranslations from './locales/es.json';
+import i18next from 'i18next';
+import fr from './locales/fr';
+import enUS from './locales/enUS';
 
 LogRocket.init('protravka/client');
 
 // Initialize i18n
-i18n.use(initReactI18next).init({
+i18next.use(initReactI18next).init({
+    lng: 'enUS', // default language
+    debug: true,
     resources: {
-        en: { translation: enTranslations },
-        es: { translation: esTranslations },
+        enUS: { translation: enUS },
+        fr: { translation: fr },
     },
-    lng: 'en', // default language
-    fallbackLng: 'en',
-    interpolation: {
-        escapeValue: false,
-    },
+    // interpolation: {
+    //     escapeValue: false,
+    // },
 });
 
 const App = () => {

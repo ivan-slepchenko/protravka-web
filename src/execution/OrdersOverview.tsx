@@ -39,6 +39,7 @@ const OrdersOverview: React.FC = () => {
                 dispatch(saveOrderExecutionPreparationStartTime(selectedOrder.id));
                 onClose();
             } catch (error) {
+                console.log('Internet is not available: ', error);
                 dispatch(deactivateActiveExecution()); //if no internet, because we started execution, we should complete it immediatelly.
                 onAlertOpen();
             }

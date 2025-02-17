@@ -4,6 +4,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FiLogOut, FiInfo } from 'react-icons/fi';
 import { Role } from '../operators/Operators';
 import useRoleLinks from '../hooks/useRoleLinks';
+import { useTranslation } from 'react-i18next';
 
 interface MenuProps {
     user: {
@@ -20,6 +21,7 @@ interface MenuProps {
 
 const DesktopMenu: FC<MenuProps> = ({ user, handleLogout }) => {
     const location = useLocation();
+    const { t } = useTranslation();
     const useLab = user.company?.featureFlags.useLab;
     const { managerLinks, adminLinks, operatorLinks, laboratoryLinks } = useRoleLinks(user.roles);
 
@@ -113,7 +115,7 @@ const DesktopMenu: FC<MenuProps> = ({ user, handleLogout }) => {
                     color={location.pathname === "/info" ? "blue.500" : "black"}
                     leftIcon={<FiInfo />}
                 >
-                    Info
+                    {t('desktop_menu.info')}
                 </Button>
             </VStack>
         </Box>

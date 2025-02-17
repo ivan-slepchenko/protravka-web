@@ -39,6 +39,7 @@ const OrderExecution11Completion = () => {
                 dispatch(fetchTkwMeasurements());
             }
         } catch (error) {
+            console.log('Internet is not available: ', error);
             onOpen();
         } finally {
             setIsSaving(false);

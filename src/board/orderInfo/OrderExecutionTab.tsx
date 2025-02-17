@@ -32,7 +32,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                     <Tbody>
                         <Tr>
                             <Td>
-                                <Text fontSize="xs" fontWeight="bold">{orderExecution.packedseedsToTreatKg} kg</Text>
+                                <Text fontSize="xs" fontWeight="bold">{orderExecution.packedseedsToTreatKg} {t('units.kg')}.</Text>
                             </Td>
                             <Td>
                                 {orderExecution?.packingPhoto ? (
@@ -44,7 +44,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                             {applicationMethod === 'Surry' && (
                                 <>
                                     <Td>
-                                        <Text fontSize="xs" fontWeight="bold">{orderExecution?.slurryConsumptionPerLotKg} kg</Text>
+                                        <Text fontSize="xs" fontWeight="bold">{orderExecution?.slurryConsumptionPerLotKg} {t('units.kg')}.</Text>
                                     </Td>
                                     <Td>
                                         {orderExecution?.consumptionPhoto ? (
@@ -84,7 +84,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                     <Tr key={index}>
                                         <Td>{productDetail.product ? productDetail.product.name : t('order_execution.undefined')}</Td>
                                         <Td>
-                                            <Text>{productExecution?.appliedRateKg !== undefined ? productExecution?.appliedRateKg.toFixed(2) : 0} kg</Text>
+                                            <Text>{productExecution?.appliedRateKg !== undefined ? productExecution?.appliedRateKg.toFixed(2) : 0} {t('units.kg')}.</Text>
                                         </Td>
                                         <Td>
                                             {productExecution?.applicationPhoto ? (
@@ -96,14 +96,14 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                         {applicationMethod !== 'Surry' && productExecution && productExecution.productConsumptionPerLotKg !== undefined && (
                                             <>
                                                 <Td>
-                                                    <Text>{productExecution.productConsumptionPerLotKg.toFixed(2)} kg</Text>
+                                                    <Text>{productExecution.productConsumptionPerLotKg.toFixed(2)} {t('units.kg')}.</Text>
                                                 </Td>
                                                 <Td>
                                                     {productExecution.consumptionPhoto ? (
                                                         <ImageWithModal
                                                             src={productExecution.consumptionPhoto}
                                                         />
-                                                    ) : t('order_execution.no_photo')}
+                                                    ) : t('sorder_execution.no_photo')}
                                                 </Td>
                                             </>
                                         )}
