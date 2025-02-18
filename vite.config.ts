@@ -1,15 +1,18 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import viteTsconfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-export default defineConfig({
-    // depending on your application, base can also be "/"
-    base: '',
-    plugins: [react(), viteTsconfigPaths()],
-    server: {    
-        // this ensures that the browser opens upon server start
-        open: true,
-        // this sets a default port to 3000  
-        port: 3000, 
-    },
-})
+// Use dynamic import for vite-tsconfig-paths
+export default defineConfig(async () => {
+    const viteTsconfigPaths = await import('vite-tsconfig-paths');
+    return {
+        base: '',
+        plugins: [react(), viteTsconfigPaths.default()],
+        server: {
+            open: true,
+            port: 3000,
+        },
+        build: {
+            outDir: 'build', // Specify the output directory
+        },
+    };
+});
