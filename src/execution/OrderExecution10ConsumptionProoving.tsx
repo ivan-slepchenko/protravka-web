@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Button, VStack, Text, IconButton, AspectRatio } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { nextPage, incrementProductIndex, setProductConsumptionPhoto, setConsumptionPhoto, saveOrderExecution } from '../store/executionSlice';

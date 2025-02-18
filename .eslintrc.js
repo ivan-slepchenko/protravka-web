@@ -35,12 +35,13 @@ module.exports = {
     rules: {
         "indent": ["error", 4, { "SwitchCase": 1 }],
         "react/react-in-jsx-scope": "off",
-
+        "no-redeclare": "off",
         "@m6web/i18n/no-unknown-key": "error",
         "@m6web/i18n/no-unknown-key-secondary-langs": "warn",
         "@m6web/i18n/no-text-as-children": ["error", {"ignorePattern": "^\\s?[/.]\\s?$"}],
         "@m6web/i18n/no-text-as-attribute": ["error", {"attributes": ["alt", "title"]}],
-        "@m6web/i18n/interpolation-data": ["error", { "interpolationPattern": "\\{\\.+\\}" }]
+        "@m6web/i18n/interpolation-data": ["error", { "interpolationPattern": "\\{\\.+\\}" }],
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^key$" }]
     },
     settings: {
         "react": {
@@ -72,4 +73,8 @@ module.exports = {
         }
     },
     root: true,
+    globals: {
+        React: true,
+        JSX: true,
+    },
 }

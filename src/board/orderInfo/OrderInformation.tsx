@@ -1,9 +1,9 @@
-import React from "react";
 import { Box, Text, Grid } from "@chakra-ui/react";
 import { Order, Packaging } from "../../store/newOrderSlice";
 import { useTranslation } from 'react-i18next';
+import { FC } from "react";
 
-const OrderInformation: React.FC<{ order: Order }> = ({ order }) => {
+const OrderInformation: FC<{ order: Order }> = ({ order }) => {
     const { t } = useTranslation();
 
     return (

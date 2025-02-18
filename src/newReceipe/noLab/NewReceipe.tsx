@@ -358,7 +358,7 @@ export const NewReceipe = () => {
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md">{t('new_receipe.bag_size', { unit: props.values.packaging === Packaging.InSeeds ? t('new_receipe.units') : t('new_receipe.kg') })}:</Text>
+                                            <Text fontSize="md">{t('new_receipe.bag_size', { unit: props.values.packaging === Packaging.InSeeds ? t('new_receipe.units') : t('units.kg') })}:</Text>
                                             <InputGroup size="md">
                                                 <Field
                                                     as={Input}
@@ -523,10 +523,10 @@ export const NewReceipe = () => {
                                                         <Th colSpan={2}>{t('new_receipe.slurry_per_lot')}</Th>
                                                     </Tr>
                                                     <Tr>
-                                                        <Th>{t('new_receipe.ml')}</Th>
-                                                        <Th>{t('new_receipe.gr')}</Th>
-                                                        <Th>{t('new_receipe.l')}</Th>
-                                                        <Th>{t('new_receipe.kg')}</Th>
+                                                        <Th>{t('units.ml')}</Th>
+                                                        <Th>{t('units.gr')}</Th>
+                                                        <Th>{t('units.l')}</Th>
+                                                        <Th>{t('units.kg')}</Th>
                                                     </Tr>
                                                 </Thead>
                                                 <Tbody>

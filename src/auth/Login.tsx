@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Input, Button, VStack, Heading, Alert, AlertIcon, Center, Image } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/userSlice';
@@ -21,7 +21,7 @@ const Login = () => {
     return (
         <Center w="full" h="full" p={8}>
             <VStack spacing={4} maxW="400px" w="full">
-                <Image src="/protravka_logo.png" alt="Logo" width="200px" objectFit='contain'/>
+                <Image src="/protravka_logo.png" alt={t('login.logo')} width="200px" objectFit='contain'/>
                 <Heading>{t('login.login')}</Heading>
                 {error && (
                     <Alert status="error">

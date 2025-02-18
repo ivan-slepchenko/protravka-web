@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Badge, HStack, Select, Input, CloseButton } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -333,8 +333,8 @@ const Report: React.FC = () => {
                             <Thead bg="orange.100">
                                 <Tr>
                                     <Th>{t('report.crop')}</Th>
-                                    <Th>{t('report.su')}</Th>
-                                    <Th>{t('report.kg')}</Th>
+                                    <Th>{t('units.su')}</Th>
+                                    <Th>{t('units.kg')}</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -358,9 +358,9 @@ const Report: React.FC = () => {
                                     <Tr>
                                         <Th>{t('report.category')}</Th>
                                         <Th>{t('report.number_of_lots')}</Th>
-                                        <Th>{t('report.su')}</Th>
-                                        <Th>{t('report.kg')}</Th>
-                                        <Th>{t('report.percentage')}</Th>
+                                        <Th>{t('units.su')}</Th>
+                                        <Th>{t('units.kg')}</Th>
+                                        <Th>{t('units.percentage')}</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>

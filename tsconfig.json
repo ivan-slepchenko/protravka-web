@@ -19,7 +19,8 @@
     "types": ["vite/client"],
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   },
   "include": [
     "src",

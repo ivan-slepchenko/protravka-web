@@ -1,12 +1,12 @@
-import React from "react";
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 
 import { Order } from "../../store/newOrderSlice";
 import { OrderExecution } from "../../store/executionSlice";
 import useImageModal from '../../hooks/useImageModal';
 import { useTranslation } from 'react-i18next';
+import { FC } from "react";
 
-const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution }> = ({ order, orderExecution }) => {
+const OrderExecutionTab: FC<{ order: Order, orderExecution: OrderExecution }> = ({ order, orderExecution }) => {
     const { t } = useTranslation();
     const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
 
@@ -103,7 +103,7 @@ const OrderExecutionTab: React.FC<{ order: Order, orderExecution: OrderExecution
                                                         <ImageWithModal
                                                             src={productExecution.consumptionPhoto}
                                                         />
-                                                    ) : t('sorder_execution.no_photo')}
+                                                    ) : t('order_execution.no_photo')}
                                                 </Td>
                                             </>
                                         )}

@@ -277,7 +277,6 @@ export const FinalizeRecipe = () => {
                                                 borderColor={props.errors.operatorId && props.touched.operatorId ? "red.500" : "gray.300"}
                                                 disabled={isSaving}
                                             >
-                                                <option value="">{t('finalize_recipe.any_operator')}</option>
                                                 {filteredOperators.map((operator) => (
                                                     <option key={operator.id} value={operator.id}>
                                                         {operator.name} {operator.surname}
@@ -373,7 +372,7 @@ export const FinalizeRecipe = () => {
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md" mb="2">{t('finalize_recipe.bag_size', { unit: formData.packaging === Packaging.InSeeds ? t('finalize_recipe.units') : t('finalize_recipe.kg') })}:</Text>
+                                            <Text fontSize="md" mb="2">{t('finalize_recipe.bag_size', { unit: formData.packaging === Packaging.InSeeds ? t('finalize_recipe.units') : t('units.kg') })}:</Text>
                                             <InputGroup size="md">
                                                 <Field
                                                     as={Input}
@@ -427,7 +426,7 @@ export const FinalizeRecipe = () => {
                                             >
                                                 {tkwMeasurementIntervals.map((interval) => (
                                                     <option key={interval} value={interval}>
-                                                        {interval} {t('finalize_recipe.minutes')}
+                                                        {interval} {t('units.minutes')}
                                                     </option>
                                                 ))}
                                             </Field>
@@ -567,10 +566,10 @@ export const FinalizeRecipe = () => {
                                                         <Th colSpan={2}>{t('finalize_recipe.slurry_per_lot')}</Th>
                                                     </Tr>
                                                     <Tr>
-                                                        <Th>{t('finalize_recipe.ml')}</Th>
-                                                        <Th>{t('finalize_recipe.gr')}</Th>
-                                                        <Th>{t('finalize_recipe.l')}</Th>
-                                                        <Th>{t('finalize_recipe.kg')}</Th>
+                                                        <Th>{t('units.ml')}</Th>
+                                                        <Th>{t('units.gr')}</Th>
+                                                        <Th>{t('units.l')}</Th>
+                                                        <Th>{t('units.kg')}</Th>
                                                     </Tr>
                                                 </Thead>
                                                 <Tbody>

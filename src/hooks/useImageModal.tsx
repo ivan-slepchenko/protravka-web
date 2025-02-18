@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Image } from "@chakra-ui/react";
 import { useTranslation } from 'react-i18next';
@@ -24,7 +24,7 @@ const useImageModal = () => {
                     {selectedPhoto && (
                         <Image
                             src={selectedPhoto}
-                            alt="Full Size"
+                            alt={t('use_image_modal.full_size')}
                             width="full"
                             height="full"
                             objectFit="cover"
@@ -45,7 +45,7 @@ const useImageModal = () => {
         return (
             <Image
                 src={imageUrl}
-                alt="Thumbnail"
+                alt={t('use_image_modal.thumbnail')}
                 width={fullSize ? "100%" : "150px"}
                 height={fullSize ? "100%" : "100px"}
                 objectFit={"cover"}

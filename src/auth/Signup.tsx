@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input, Button, VStack, Heading, Alert, AlertIcon, Grid, GridItem, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, useDisclosure, Center, Image } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../store/userSlice';
@@ -27,7 +27,7 @@ const Signup = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
     const { error, message } = useSelector((state: RootState) => state.user);
-    const [formErrors, setFormErrors] = React.useState<Yup.ValidationError[]>([]);
+    const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handleSubmit = async (values: { email: string; password: string; repeatPassword: string; name: string; surname: string; birthday: string; phone: string }, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
@@ -53,7 +53,7 @@ const Signup = () => {
     return (
         <Center w="full" h="full" p={8}>
             <VStack spacing={4}>
-                <Image src="/protravka_logo.png" alt="Logo" width="200px" objectFit='contain'/>
+                <Image src="/protravka_logo.png" alt={t('signup.logo')} width="200px" objectFit='contain'/>
                 <Heading>{t('signup.signup')}</Heading>
                 {error && (
                     <Alert status="error">

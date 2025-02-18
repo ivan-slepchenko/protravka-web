@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Box, Button, Tabs, TabList, TabPanels, Tab, TabPanel, HStack, Heading, Textarea, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, useDisclosure, ModalHeader } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +10,7 @@ import { changeOrderStatus } from "../../store/ordersSlice";
 import { fetchOrderExecution, OrderExecution } from "../../store/executionSlice";
 import { useTranslation } from 'react-i18next';
 
-const OrderInfo: React.FC = () => {
+const OrderInfo: FC = () => {
     const { t } = useTranslation();
     const { orderId } = useParams<{ orderId: string }>();
     const navigate = useNavigate();
@@ -22,7 +22,7 @@ const OrderInfo: React.FC = () => {
     const [status, setStatus] = useState<OrderStatus | null>(null);
     const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (orderId !== undefined) {
             fetchOrderExecution(orderId).then((order) => {
                 setOrderExecution(order);

@@ -28,7 +28,7 @@ const OrderExecution7PackingDetails = () => {
     return (
         
         <VStack h='full' overflow={'auto'}>
-            <Text fontSize="xl" fontWeight="bold" textAlign="center"><span>{t('order_execution.how_many_seeds_kg')}</span><br/><span>{t('order_execution.did_you_pack_out_of')}</span></Text>
+            <Text fontSize="xl" fontWeight="bold" textAlign="center">{t('order_execution.how_many_seeds_kg')}</Text>
             <Box
                 mt={4}
                 p={8}
@@ -57,7 +57,7 @@ const OrderExecution7PackingDetails = () => {
             <Text p={2} mt={4}>{t('order_execution.obliged_to_make_photo_treater_display')}</Text>
             <Box p={2} mt={4} w="full">
                 {currentOrder.seedsToTreatKg > packedseedsToTreatKg ? (
-                    <Text><b><span style={{ color: "red" }}>{(currentOrder.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)} {t('order_execution.kg_is_missing')}</span></b> {t('order_execution.inform_line_manager')}</Text>
+                    <Text><b><span style={{ color: "red" }}>{t('order_execution.kg_is_missing', { kg: (currentOrder.seedsToTreatKg - packedseedsToTreatKg).toFixed(2)})}</span></b> {t('order_execution.inform_line_manager')}</Text>
                 ) : (
                     <Text>{t('order_execution.corresponds_to_weight')}</Text>
                 )}
