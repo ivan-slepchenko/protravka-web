@@ -296,7 +296,8 @@
         "assignment_date": "Assignment Date"
     },
     "info": {
-        "app_version": "App Version"
+        "app_version": "App Version",
+        "language": "Language"
     },
     "index": {
         "measurements_check": "You have measurements to check",

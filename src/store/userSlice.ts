@@ -6,6 +6,7 @@ interface Company {
     name: string;
     contactEmail: string;
     featureFlags: { useLab: boolean };
+    availableLanguages: string[]; // Add availableLanguages property
 }
 
 interface UserState {

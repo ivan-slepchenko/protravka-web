@@ -296,7 +296,8 @@
         "assignment_date": "Date d'affectation"
     },
     "info": {
-        "app_version": "Version de l'application"
+        "app_version": "Version de l'application",
+        "language": "Langue"
     },
     "index": {
         "measurements_check": "Vous avez des mesures à vérifier",

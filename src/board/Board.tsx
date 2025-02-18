@@ -26,7 +26,7 @@ const Board: React.FC = () => {
                     const bgColor = "gray.50";
                     return (
                         <Box key={column} w="full" border="gray.100" borderRadius="md" p={2} bg={bgColor}>
-                            <Heading size="sm" m={1} mb={2}>{t(`board.${column.toLowerCase()}`)}</Heading>
+                            <Heading size="sm" m={1} mb={2}>{t(`board.${column.toLowerCase().replace(/\s+/g, '_')}`)}</Heading>
                             <VStack spacing={3} w="full">
                                 {orders.filter(order => {
                                     if (column === COMPLETED_COLUMN) {
