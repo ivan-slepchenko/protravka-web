@@ -15,10 +15,12 @@ import {
     Title,
     Tooltip,
     Legend,
+    PointElement,
+    LineElement,
 } from "chart.js";
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
 
 type StatusColorMap = {
     [key in OrderStatus]: string;

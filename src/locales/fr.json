@@ -484,6 +484,9 @@
         "laboratory": "Laboratoire"
     },
     "lot_report": {
+        "tkw_measurements": "Mesures du TKW",
+        "date": "Date",
+        "tkw_value": "Valeur TKW",
         "90_105": "😊 90-105%",
         "80_90_105_115": "😐 80-90% ; 105-115%",
         "lt_80_gt_115": "😞 <80% ; >115%",

@@ -484,6 +484,9 @@
         "laboratory": "Laboratory"
     },
     "lot_report": {
+        "tkw_measurements": "TKW Measurements",
+        "date": "Date",
+        "tkw_value": "TKW Value",
         "90_105": "😊 90-105%",
         "80_90_105_115": "😐 80-90%; 105-115%",
         "lt_80_gt_115": "😞 <80%; >115%",

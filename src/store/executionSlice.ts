@@ -219,6 +219,16 @@ export const fetchTkwMeasurements = createAsyncThunk('execution/fetchTkwMeasurem
     return await response.json();
 });
 
+export const fetchTkwMeasurementsByExecutionId = async (executionId: string) => {
+    const response = await fetch(`${BACKEND_URL}/api/executions/${executionId}/tkw-measurements`, {
+        credentials: 'include',
+    });
+    if (!response.ok) {
+        throw new Error('Failed to fetch TKW measurements');
+    }
+    return await response.json();
+};
+
 export const updateTkwMeasurement = createAsyncThunk(
     'execution/updateTkwMeasurement',
     async (
