@@ -48,7 +48,7 @@
         "yup": "^1.4.0"
     },
     "scripts": {
-        "start": "vite",
+        "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
         "get-version": "node -p \"require('./package.json').version\"",
