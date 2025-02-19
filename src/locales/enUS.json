@@ -166,7 +166,7 @@
         "tkw_confirmed": "TKW Confirmed",
         "recipe_created": "Recipe Created",
         "treatment_in_progress": "Treatment In Progress",
-        "lab_control": "Lab Control",
+        "lab_to_control": "Lab Control",
         "to_acknowledge": "To Acknowledge",
         "completed": "Completed"
     },

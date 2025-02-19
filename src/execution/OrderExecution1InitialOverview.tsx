@@ -61,7 +61,7 @@ const OrderExecution1InitialOverview = () => {
                         <Text><strong>{t('order_execution.tkw')}:</strong></Text>
                     </GridItem>
                     <GridItem borderBottom="1px dotted">
-                        <Text>{currentOrder.tkw} {t('units.gr')}.</Text>
+                        <Text>{currentOrder.tkw?.toFixed(2)} {t('units.gr')}.</Text>
                     </GridItem>
 
                     <GridItem borderBottom="1px dotted">
