@@ -106,15 +106,23 @@ const LotLabReport: React.FC = () => {
                             hour: '2-digit',
                             minute: '2-digit',
                         });
-                    }
+                    },
+                    display: true,
+                    stepSize: 1,
                 },
-                min: tkwData.length > 0 ? undefined : new Date().getTime() - 86400000, // 1 day before now
-                max: tkwData.length > 0 ? undefined : new Date().getTime() + 86400000, // 1 day after now
+                grid: {
+                    display: true,
+                },
+                min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 2 * 60 * 60 * 1000 : new Date().getTime() - 86400000, // 2 hours before first data point or 1 day before now
+                max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 2 * 60 * 60 * 1000 : new Date().getTime() + 86400000, // 2 hours after last data point or 1 day after now
             },
             y: {
                 title: {
                     display: true,   
                     text: t('lot_report.tkw_value'),
+                },
+                grid: {
+                    display: true,
                 },
             },
         },
