@@ -1,6 +1,6 @@
 {
     "name": "protravka-web",
-    "version": "0.2.99",
+    "version": "0.2.100",
     "private": true,
     "dependencies": {
         "@chakra-ui/icons": "^2.2.4",
