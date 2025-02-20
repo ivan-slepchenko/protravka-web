@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Center, Text, Progress } from "@chakra-ui/react";
+import { Box, Center, Text, Progress, Table, Thead, Tbody, Tr, Th, Td, HStack, VStack } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { fetchOrderExecution, fetchTkwMeasurementsByExecutionId, TkwMeasurement } from "../store/executionSlice";
 import { Scatter } from 'react-chartjs-2';
@@ -134,18 +134,79 @@ const LotLabReport: React.FC = () => {
     };
 
     return (
-        <Box w="full" height="400px" p={8} position="relative">
+        <VStack w="full" height="auto" p={8} position="relative">
             {tkwMeasurements.length > 0 ? (
-                <Scatter width="full" height="300px"
-                    plugins={[deviationLinesPlugin]}
-                    data={chartData}
-                    options={options} />
+                <>
+                    <HStack w="full" spacing={4} mb={8} justifyContent="space-between" alignItems={"flex-start"}>
+                        <Table variant="simple" size="sm" w="48%">
+                            <Thead bg="orange.100">
+                                <Tr>
+                                    <Th bg="yellow.300" color="black" textAlign="center">Category</Th>
+                                    <Th bg="yellow.300" color="black" textAlign="center">Upper Limit</Th>
+                                    <Th bg="yellow.300" color="black" textAlign="center">Lower Limit</Th>
+                                    <Th bg="yellow.300" color="black" textAlign="center">Samples</Th>
+                                    <Th bg="yellow.300" color="black" textAlign="center">%</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                <Tr>
+                                    <Td bg="green.300" color="black" textAlign="center">OK</Td>
+                                    <Td bg="green.300" color="black" textAlign="center">105</Td>
+                                    <Td bg="green.300" color="black" textAlign="center">90</Td>
+                                    <Td bg="green.300" color="black" textAlign="center">8</Td>
+                                    <Td bg="green.300" color="black" textAlign="center">36%</Td>
+                                </Tr>
+                                <Tr>
+                                    <Td bg="yellow.300" color="black" textAlign="center">Monitoring</Td>
+                                    <Td bg="yellow.300" color="black" textAlign="center">115</Td>
+                                    <Td bg="yellow.300" color="black" textAlign="center">80</Td>
+                                    <Td bg="yellow.300" color="black" textAlign="center">11</Td>
+                                    <Td bg="yellow.300" color="black" textAlign="center">50%</Td>
+                                </Tr>
+                                <Tr>
+                                    <Td bg="red.500" color="white" textAlign="center">Quick Improvement Needed</Td>
+                                    <Td bg="red.500" color="white" textAlign="center">&gt; 115</Td>
+                                    <Td bg="red.500" color="white" textAlign="center">&lt; 80</Td>
+                                    <Td bg="red.500" color="white" textAlign="center">3</Td>
+                                    <Td bg="red.500" color="white" textAlign="center">14%</Td>
+                                </Tr>
+                            </Tbody>
+                        </Table>
+
+                        <Table variant="simple" size="sm" w="48%" h="200px">
+                            <Tbody>
+                                <Tr>
+                                    <Td color="black" textAlign="left">Min</Td>
+                                    <Td textAlign="right">56.00</Td>
+                                </Tr>
+                                <Tr>
+                                    <Td color="black" textAlign="left">Max</Td>
+                                    <Td textAlign="right">116.00</Td>
+                                </Tr>
+                                <Tr>
+                                    <Td color="black" textAlign="left">Average</Td>
+                                    <Td textAlign="right">92.55</Td>
+                                </Tr>
+                                <Tr>
+                                    <Td color="black" textAlign="left">Standard Deviation</Td>
+                                    <Td textAlign="right">14.68</Td>
+                                </Tr>
+                            </Tbody>
+                        </Table>
+                    </HStack>
+                    <Box width="full" height="300px" position='relative'>
+                        <Scatter width="full" height="300px"
+                            plugins={[deviationLinesPlugin]}
+                            data={chartData}
+                            options={options} />
+                    </Box>
+                </>
             ) : (
                 <Center w="full" h="full" flexDirection="column">
                     <Progress size="xs" isIndeterminate w="80%" />
                 </Center>
             )}
-        </Box>
+        </VStack>
     );
 };
 
