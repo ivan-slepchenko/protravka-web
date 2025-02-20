@@ -28,9 +28,9 @@ const LotLabReport: React.FC = () => {
     }, [orderId]);
 
     const tkwData = tkwMeasurements.filter((measurement) => measurement.probeDate !== undefined).flatMap((measurement) => [
-        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe1 },
-        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe2 },
-        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe3 },
+        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe1! },
+        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe2! },
+        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe3! },
     ].filter(point => point.y !== undefined)) || [];
 
     console.log('tkwData:', tkwData);
@@ -241,7 +241,7 @@ const LotLabReport: React.FC = () => {
                                         <Td color="black" textAlign="left">Min</Td>
                                     </Tooltip>
                                     <Tooltip label="Value of the minimum TKW" aria-label="Min Value">
-                                        <Td textAlign="right">{Math.min(...tkwData.map(d => d.y ?? 0)).toFixed(2)}</Td>
+                                        <Td textAlign="right">{Math.min(...tkwData.map(d => d.y)).toFixed(2)}</Td>
                                     </Tooltip>
                                 </Tr>
                                 <Tr>
@@ -249,7 +249,7 @@ const LotLabReport: React.FC = () => {
                                         <Td color="black" textAlign="left">Max</Td>
                                     </Tooltip>
                                     <Tooltip label="Value of the maximum TKW" aria-label="Max Value">
-                                        <Td textAlign="right">{Math.max(...tkwData.map(d => d.y ?? 0)).toFixed(2)}</Td>
+                                        <Td textAlign="right">{Math.max(...tkwData.map(d => d.y)).toFixed(2)}</Td>
                                     </Tooltip>
                                 </Tr>
                                 <Tr>
