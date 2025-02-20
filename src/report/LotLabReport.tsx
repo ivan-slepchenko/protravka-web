@@ -60,8 +60,8 @@ const LotLabReport: React.FC = () => {
             const { ctx, scales: { x, y } } = chart;
             ctx.save();
             
-            const xStartCoord = x.getPixelForTick(0);
-            const xEndCoord = x.getPixelForTick(x.ticks.length - 1);
+            const xStartCoord = x.left;
+            const xEndCoord = x.right;
 
             const drawLine = (yValue: number, color: string, dash: number[]) => {
                 const yCoord = y.getPixelForValue(yValue);
@@ -107,7 +107,9 @@ const LotLabReport: React.FC = () => {
                             minute: '2-digit',
                         });
                     }
-                }
+                },
+                min: tkwData.length > 0 ? undefined : new Date().getTime() - 86400000, // 1 day before now
+                max: tkwData.length > 0 ? undefined : new Date().getTime() + 86400000, // 1 day after now
             },
             y: {
                 title: {
