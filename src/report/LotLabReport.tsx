@@ -108,58 +108,6 @@ const LotLabReport: React.FC = () => {
             drawLine(averageTkw * 0.90, 'red', []);
         }
     }; 
-    
-    const options: ChartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: t('lot_report.date'),
-                },
-                grid: {
-                    display: true,
-                    drawOnChartArea: true,
-                    drawTicks: true,
-                    lineWidth: 1,
-                    color: 'rgba(0, 0, 0, 0.1)',
-                    
-                },
-                ticks: {
-                    callback: function(value: any) {
-                        return new Date(value).toLocaleString('en-US', {
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                        });
-                    },
-                    stepSize: 60 * 60 * 1000,
-                    autoSkip: false
-                },
-                min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 2 * 60 * 60 * 1000 : new Date().getTime() - 86400000, // 2 hours before first data point or 1 day before now
-                max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 2 * 60 * 60 * 1000 : new Date().getTime() + 86400000, // 2 hours after last data point or 1 day after now
-            },
-            y: {
-                title: {
-                    display: true,   
-                    text: t('lot_report.tkw_value'),
-                },
-            },
-        },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: (context: any) => {
-                        const value = context.raw.y;
-                        const date = new Date(context.raw.x).toLocaleString();
-                        return `${value} gr.\n${date}`;
-                    }
-                }
-            }
-        }
-    };
 
     return (
         <VStack w="full" height="auto" position="relative" alignItems={"start"} py={8}>
@@ -275,7 +223,57 @@ const LotLabReport: React.FC = () => {
                         <Scatter width="full" height="300px"
                             plugins={[deviationLinesPlugin]}
                             data={chartData}
-                            options={options} />
+                            options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: t('lot_report.date'),
+                                        },
+                                        grid: {
+                                            display: true,
+                                            drawOnChartArea: true,
+                                            drawTicks: true,
+                                            lineWidth: 1,
+                                            color: 'rgba(0, 0, 0, 0.1)',
+                    
+                                        },
+                                        ticks: {
+                                            callback: function(value: any) {
+                                                return new Date(value).toLocaleString('en-US', {
+                                                    month: '2-digit',
+                                                    day: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                });
+                                            },
+                                            stepSize: 60 * 60 * 1000,
+                                            autoSkip: false
+                                        },
+                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 2 * 60 * 60 * 1000 : new Date().getTime() - 86400000, // 2 hours before first data point or 1 day before now
+                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 2 * 60 * 60 * 1000 : new Date().getTime() + 86400000, // 2 hours after last data point or 1 day after now
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,   
+                                            text: t('lot_report.tkw_value'),
+                                        },
+                                    },
+                                },
+                                plugins: {
+                                    tooltip: {
+                                        callbacks: {
+                                            label: (context: any) => {
+                                                const value = context.raw.y;
+                                                const date = new Date(context.raw.x).toLocaleString();
+                                                return `${value} gr.\n${date}`;
+                                            }
+                                        }
+                                    }
+                                }
+                            }} />
                     </Box>
                 </>
             ) : (
