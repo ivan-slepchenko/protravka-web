@@ -241,7 +241,7 @@ const LotLabReport: React.FC = () => {
                                         <Td color="black" textAlign="left">Min</Td>
                                     </Tooltip>
                                     <Tooltip label="Value of the minimum TKW" aria-label="Min Value">
-                                        <Td textAlign="right">{Math.min(...tkwData.map(d => d.y)).toFixed(2)}</Td>
+                                        <Td textAlign="right">{Math.min(...tkwData.map(d => d.y ?? 0)).toFixed(2)}</Td>
                                     </Tooltip>
                                 </Tr>
                                 <Tr>
@@ -249,7 +249,7 @@ const LotLabReport: React.FC = () => {
                                         <Td color="black" textAlign="left">Max</Td>
                                     </Tooltip>
                                     <Tooltip label="Value of the maximum TKW" aria-label="Max Value">
-                                        <Td textAlign="right">{Math.max(...tkwData.map(d => d.y)).toFixed(2)}</Td>
+                                        <Td textAlign="right">{Math.max(...tkwData.map(d => d.y ?? 0)).toFixed(2)}</Td>
                                     </Tooltip>
                                 </Tr>
                                 <Tr>
