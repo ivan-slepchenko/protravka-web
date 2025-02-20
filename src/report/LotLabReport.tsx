@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, Center, Text, Progress } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { fetchOrderExecution, fetchTkwMeasurementsByExecutionId, TkwMeasurement } from "../store/executionSlice";
 import { Scatter } from 'react-chartjs-2';
@@ -86,17 +86,17 @@ const LotLabReport: React.FC = () => {
         maintainAspectRatio: false,
         scales: {
             x: {
-                type: 'time',
-                time: {
-                    unit: 'day',
-                    tooltipFormat: 'MM/DD HH:mm',
-                    displayFormats: {
-                        day: 'MM/DD HH:mm',
-                    },
-                },
                 title: {
                     display: true,
                     text: t('lot_report.date'),
+                },
+                grid: {
+                    display: true,
+                    drawOnChartArea: true,
+                    drawTicks: true,
+                    lineWidth: 1,
+                    color: 'rgba(0, 0, 0, 0.1)',
+                    
                 },
                 ticks: {
                     callback: function(value: any) {
@@ -107,11 +107,8 @@ const LotLabReport: React.FC = () => {
                             minute: '2-digit',
                         });
                     },
-                    display: true,
-                    stepSize: 1,
-                },
-                grid: {
-                    display: true,
+                    stepSize: 60 * 60 * 1000,
+                    autoSkip: false
                 },
                 min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 2 * 60 * 60 * 1000 : new Date().getTime() - 86400000, // 2 hours before first data point or 1 day before now
                 max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 2 * 60 * 60 * 1000 : new Date().getTime() + 86400000, // 2 hours after last data point or 1 day after now
@@ -120,9 +117,6 @@ const LotLabReport: React.FC = () => {
                 title: {
                     display: true,   
                     text: t('lot_report.tkw_value'),
-                },
-                grid: {
-                    display: true,
                 },
             },
         },
@@ -140,14 +134,16 @@ const LotLabReport: React.FC = () => {
     };
 
     return (
-        <Box w="full" height="400px" p={8}>
+        <Box w="full" height="400px" p={8} position="relative">
             {tkwMeasurements.length > 0 ? (
                 <Scatter width="full" height="300px"
                     plugins={[deviationLinesPlugin]}
                     data={chartData}
                     options={options} />
             ) : (
-                <p>{t('lot_report.loading')}</p>
+                <Center w="full" h="full" flexDirection="column">
+                    <Progress size="xs" isIndeterminate w="80%" />
+                </Center>
             )}
         </Box>
     );
