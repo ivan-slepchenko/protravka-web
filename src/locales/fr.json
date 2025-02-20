@@ -485,6 +485,10 @@
     },
     "lot_report": {
         "tkw_measurements": "Mesures du TKW",
+        "plus_5_percent": "+5%",
+        "minus_5_percent": "-5%",
+        "plus_10_percent": "+10%",
+        "minus_10_percent": "-10%",
         "date": "Date",
         "tkw_value": "Valeur TKW",
         "90_105": "😊 90-105%",

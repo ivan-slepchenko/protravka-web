@@ -6,13 +6,10 @@ import { AppDispatch, RootState } from "../store/store";
 import { changeOrderStatus } from "../store/ordersSlice";
 import { Order, OrderStatus, Packaging } from "../store/newOrderSlice";
 import { useReactToPrint } from "react-to-print";
-import { fetchOrderExecution, OrderExecution, fetchTkwMeasurementsByExecutionId, TkwMeasurement } from "../store/executionSlice";
+import { fetchOrderExecution, OrderExecution } from "../store/executionSlice";
 import useImageModal from "../hooks/useImageModal";
 import { useTranslation } from 'react-i18next';
-import { Scatter } from 'react-chartjs-2';
-import { Chart, registerables } from 'chart.js';
-
-Chart.register(...registerables);
+import LotLabReport from "./LotLabReport";
 
 const statusColorMap = {
     green: "#48BB78", // Green color (Chakra UI green.400)
@@ -44,7 +41,8 @@ const LotReport: React.FC = () => {
     const [status, setStatus] = useState<OrderStatus | null>(null);
     const [orderExecution, setOrderExecution] = useState<OrderExecution | null>(null);
     const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
-    const [tkwMeasurements, setTkwMeasurements] = useState<TkwMeasurement[]>([]);
+    const user = useSelector((state: RootState) => state.user);
+    const useLab = user.company?.featureFlags.useLab;
 
     useEffect(() => {
         if (orderId && order !== null && [OrderStatus.LabAssignmentCreated, OrderStatus.TkwConfirmed, OrderStatus.RecipeCreated].indexOf(order.status) === -1) {        
@@ -60,14 +58,6 @@ const LotReport: React.FC = () => {
             setOrder(foundOrder || null);
         }
     }, [orders, orderId, dispatch]);
-
-    useEffect(() => {
-        if (orderExecution?.id) {
-            fetchTkwMeasurementsByExecutionId(orderExecution.id)
-                .then(data => setTkwMeasurements(data))
-                .catch(error => console.error('Failed to fetch TKW measurements:', error));
-        }
-    }, [orderExecution]);
 
     const getDeviationColor = (deviation: number) => {
         if (deviation >= 90 && deviation <= 105) return statusColorMap.green;
@@ -121,27 +111,9 @@ const LotReport: React.FC = () => {
 
     const unitNumberOfSeeds = (order.bagSize !== null && order.tkw !== null) ? (order.packaging === Packaging.InKg ? order.bagSize / order.tkw : order.bagSize).toFixed(2) : 'N/A';
 
-    const tkwData = tkwMeasurements.flatMap((measurement) => [
-        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe1 },
-        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe2 },
-        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe3 },
-    ].filter(point => point.y !== undefined)) || [];
-
-    const chartData = {
-        datasets: [
-            {
-                label: t('lot_report.tkw_measurements'),
-                data: tkwData,
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                pointRadius: 5,
-            },
-        ],
-    };
-
     return (     
-        <VStack w="full" h="full" overflowY="auto" p={4} ref={componentRef}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4} w="full">
+        <VStack w="full" h="full" overflowY="auto" p={2} ref={componentRef}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4} w="full" p={2}>
                 <HStack spacing={2}>
                     <Heading size="lg">{order.crop.name}, {order.variety.name}</Heading>
                     <Text size="md">{'['}{order.lotNumber}{']'}</Text>
@@ -158,7 +130,7 @@ const LotReport: React.FC = () => {
                     <CloseButton onClick={() => navigate(-1)}/>
                 </HStack>
             </Box>
-            <VStack w="full" h="full" overflowY="auto" justifyContent={"center"}>
+            <VStack w="full" h="full" overflowY="auto" justifyContent={"center"} p={2}>
                 <HStack w="full" spacing={4} mb={4}>
                     <Table variant="simple" size="sm">
                         <Thead bg="orange.100">
@@ -300,28 +272,7 @@ const LotReport: React.FC = () => {
                         </Table>
                     </Box>
                 </VStack>
-                <Box w="full" h="200px">
-                    {/* <Scatter data={chartData} options={{
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'day',
-                                },
-                                title: {
-                                    display: true,
-                                    text: t('lot_report.date'),
-                                },
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: t('lot_report.tkw_value'),
-                                },
-                            },
-                        }
-                    }} /> */}
-                </Box>
+                {useLab && <LotLabReport />}
             </VStack>
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
