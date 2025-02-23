@@ -337,7 +337,7 @@ export const FinalizeRecipe = () => {
                                                 fontSize='md'
                                                 height="40px"
                                             >
-                                                {formData.tkw}
+                                                {formData.tkw?.toFixed(2)}
                                             </Box>
                                         </Box>
                                         <Box>
@@ -372,7 +372,7 @@ export const FinalizeRecipe = () => {
                                             </Field>
                                         </Box>
                                         <Box>
-                                            <Text fontSize="md" mb="2">{t('finalize_recipe.bag_size', { unit: formData.packaging === Packaging.InSeeds ? t('finalize_recipe.units') : t('units.kg') })}:</Text>
+                                            <Text fontSize="md">{t('finalize_recipe.bag_size', { unit: formData.packaging === Packaging.InSeeds ? t('finalize_recipe.units') : t('units.kg') })}:</Text>
                                             <InputGroup size="md">
                                                 <Field
                                                     as={Input}

@@ -3,7 +3,7 @@ import { Box, Center, Text, Progress, Table, Thead, Tbody, Tr, Th, Td, HStack, V
 import { useParams } from "react-router-dom";
 import { fetchOrderExecution, fetchTkwMeasurementsByExecutionId, TkwMeasurement } from "../store/executionSlice";
 import { Scatter } from 'react-chartjs-2';
-import type { ChartOptions, Plugin } from 'chart.js';
+import type { Plugin } from 'chart.js';
 import { Chart, registerables } from 'chart.js/auto';
 import { useTranslation } from 'react-i18next';
 import 'chartjs-adapter-moment';

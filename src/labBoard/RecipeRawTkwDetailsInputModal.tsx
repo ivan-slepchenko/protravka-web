@@ -128,7 +128,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     <Input
                                         placeholder="0"
                                         value={tkwRep1 ?? ''}
-                                        onChange={(e) => setTkwRep1(e.target.value === '' ? null : Number(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
+                                        onChange={(e) => setTkwRep1(e.target.value === '' ? null : parseFloat(e.target.value.endsWith('.') ? (e.target.value.slice(0, -1)) : e.target.value))}
                                         size={{ base: "sm", md: "md" }}
                                         type="number"
                                         step="0.01"
@@ -145,7 +145,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     <Input
                                         placeholder="0"
                                         value={tkwRep2 ?? ''}
-                                        onChange={(e) => setTkwRep2(e.target.value === '' ? null : Number(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
+                                        onChange={(e) => setTkwRep2(e.target.value === '' ? null : parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
                                         size={{ base: "sm", md: "md" }}
                                         type="number"
                                         step="0.01"
@@ -162,7 +162,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     <Input
                                         placeholder="0"
                                         value={tkwRep3 ?? ''}
-                                        onChange={(e) => setTkwRep3(e.target.value === '' ? null : Number(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
+                                        onChange={(e) => setTkwRep3(e.target.value === '' ? null : parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
                                         size={{ base: "sm", md: "md" }}
                                         type="number"
                                         step="0.01"
