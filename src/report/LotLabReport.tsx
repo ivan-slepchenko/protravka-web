@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Box, Center, Text, Progress, Table, Thead, Tbody, Tr, Th, Td, HStack, VStack, Tooltip } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { fetchOrderExecution, fetchTkwMeasurementsByExecutionId, TkwMeasurement } from "../store/executionSlice";
-import { Scatter } from 'react-chartjs-2';
+import { Scatter, Chart as ChartReact } from 'react-chartjs-2';
 import type { Plugin } from 'chart.js';
 import { Chart, registerables } from 'chart.js/auto';
 import { useTranslation } from 'react-i18next';
 import 'chartjs-adapter-moment';
+import { CandlestickController, CandlestickElement } from 'chartjs-chart-financial';
 
-Chart.register(...registerables);
+
+Chart.register(...registerables, CandlestickController, CandlestickElement);
 
 const LotLabReport: React.FC = () => {
     const { t } = useTranslation();
@@ -108,6 +110,25 @@ const LotLabReport: React.FC = () => {
             drawLine(averageTkw * 0.90, 'red', []);
         }
     }; 
+
+    const generateCandlestickData = (measurements: TkwMeasurement[], yScaleRange: number) => {
+        const offset = yScaleRange * 0.02; // 2% of the y-axis range
+        return measurements.map((measurement) => {
+            const tkwValues = [measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3].filter(value => value !== undefined) as number[];
+            const minTkw = Math.min(...tkwValues);
+            const maxTkw = Math.max(...tkwValues);
+            const avgTkw = tkwValues.reduce((sum, value) => sum + value, 0) / tkwValues.length;
+            return {
+                x: new Date(measurement.creationDate).getTime(),
+                o: avgTkw - offset,
+                h: maxTkw,
+                l: minTkw,
+                c: avgTkw + offset
+            };
+        });
+    };
+
+    const yScaleRange = Math.max(...tkwData.map(d => d.y)) - Math.min(...tkwData.map(d => d.y));
 
     return (
         <VStack w="full" height="auto" position="relative" alignItems={"start"} py={8}>
@@ -274,6 +295,82 @@ const LotLabReport: React.FC = () => {
                                     }
                                 }
                             }} />
+                    </Box>
+                    <Box width="full" height="300px">
+                        <ChartReact
+                            type='candlestick'
+                            plugins={[deviationLinesPlugin]}
+                            width="100%"
+                            height="300px"
+                            options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: t('lot_report.date'),
+                                        },
+                                        grid: {
+                                            display: true,
+                                            drawOnChartArea: true,
+                                            drawTicks: true,
+                                            lineWidth: 1,
+                                            color: 'rgba(0, 0, 0, 0.1)',
+                    
+                                        },
+                                        ticks: {
+                                            callback: function(value: any) {
+                                                return new Date(value).toLocaleString('en-US', {
+                                                    month: '2-digit',
+                                                    day: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                });
+                                            },
+                                            stepSize: 60 * 60 * 1000,
+                                            autoSkip: false
+                                        },
+                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 2 * 60 * 60 * 1000 : new Date().getTime() - 86400000, // 2 hours before first data point or 1 day before now
+                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 2 * 60 * 60 * 1000 : new Date().getTime() + 86400000, // 2 hours after last data point or 1 day after now
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,   
+                                            text: t('lot_report.tkw_value'),
+                                        },
+                                    },
+                                },
+                                plugins: {
+                                    tooltip: {
+                                        callbacks: {
+                                            label: (context: any) => {
+                                                const value = context.raw.y;
+                                                const date = new Date(context.raw.x).toLocaleString();
+                                                return `${value} gr.\n${date}`;
+                                            }
+                                        }
+                                    }
+                                }
+                            }}  
+                            data={{
+                                datasets: [
+                                    {
+                                        label: 'TKW Measurements',
+                                        data: generateCandlestickData(tkwMeasurements, yScaleRange),
+                                        barThickness: 8,
+                                        backgroundColor: 'blue',
+                                        borderWidth: 3,
+                                        backgroundColors: {
+                                            up: 'blue',
+                                            down: 'blue',
+                                            unchanged: 'blue'
+                                        },
+                                        borderColor: 'blue',
+                                    }
+                                ]
+                            }}
+                        />
                     </Box>
                 </>
             ) : (
