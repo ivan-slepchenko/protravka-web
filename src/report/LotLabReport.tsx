@@ -286,9 +286,12 @@ const LotLabReport: React.FC = () => {
                                 },
                                 scales: {
                                     x: {
+                                        type: 'time',
+                                        time: {
+                                            unit: 'month'
+                                        },
                                         title: {
-                                            display: true,
-                                            text: t('lot_report.date'),
+                                            display: false,
                                         },
                                         grid: {
                                             display: true,
@@ -308,10 +311,11 @@ const LotLabReport: React.FC = () => {
                                                 });
                                             },
                                             stepSize: 60 * 60 * 1000,
-                                            autoSkip: false
+                                            maxRotation: 45,
+                                            minRotation: 45,
                                         },
-                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 2 * 60 * 60 * 1000 : new Date().getTime() - 86400000, // 2 hours before first data point or 1 day before now
-                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 2 * 60 * 60 * 1000 : new Date().getTime() + 86400000, // 2 hours after last data point or 1 day after now
+                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 1 * 60 * 60 * 1000 : new Date().getTime() - 86400000, // 2 hours before first data point or 1 day before now
+                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 1 * 60 * 60 * 1000 : new Date().getTime() + 86400000, // 2 hours after last data point or 1 day after now
                                     },
                                     y: {
                                         title: {
