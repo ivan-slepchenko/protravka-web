@@ -208,7 +208,10 @@ export const FinalizeRecipe = () => {
     const operatorRole = Role.OPERATOR;
     const filteredOperators = operators.filter(operator => operator.roles.includes(operatorRole));
 
-    const tkwMeasurementIntervals = [60, 45, 30, 20, 10]; // Define available intervals
+    const tkwMeasurementIntervals = [60, 45, 30, 20, 10];
+    if (import.meta.env.MODE === 'development') {
+        tkwMeasurementIntervals.push(1);
+    }
 
     return (
         <VStack w='full' h='full' fontSize={'xs'} p={4} >

@@ -2,30 +2,48 @@ import React, { useEffect, useState } from "react";
 import { Box, Center, Text, Progress, Table, Thead, Tbody, Tr, Th, Td, HStack, VStack, Tooltip } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { fetchOrderExecution, fetchTkwMeasurementsByExecutionId, TkwMeasurement } from "../store/executionSlice";
-import { Scatter, Chart as ChartReact } from 'react-chartjs-2';
+import { Chart as ChartReact } from 'react-chartjs-2';
 import type { Plugin } from 'chart.js';
 import { Chart, registerables } from 'chart.js/auto';
 import { useTranslation } from 'react-i18next';
 import 'chartjs-adapter-moment';
 import { CandlestickController, CandlestickElement } from 'chartjs-chart-financial';
+import { fetchOrderById } from "../store/ordersSlice";
+import { Order } from "../store/newOrderSlice";
+import { AppDispatch } from "../store/store";
+import { useDispatch } from "react-redux";
 
 
 Chart.register(...registerables, CandlestickController, CandlestickElement);
 
 const LotLabReport: React.FC = () => {
     const { t } = useTranslation();
+    const dispatch: AppDispatch = useDispatch();
     const { orderId } = useParams<{ orderId: string }>();
     const [tkwMeasurements, setTkwMeasurements] = useState<TkwMeasurement[]>([]);
+    const [order, setOrder] = useState<Order | undefined>();
+
 
     useEffect(() => {
         if (orderId) {
             fetchOrderExecution(orderId).then((orderExecution) => {
+                console.log('Fetched orderExecution:', orderExecution);
                 if (orderExecution?.id) {
                     fetchTkwMeasurementsByExecutionId(orderExecution.id)
-                        .then(data => setTkwMeasurements(data))
+                        .then((data: TkwMeasurement[]) => {
+                            console.log('Fetched TKW measurements:', data);
+                            setTkwMeasurements(data.filter(measurement=>measurement.probeDate !== null))
+                        })
                         .catch(error => console.error('Failed to fetch TKW measurements:', error));
                 }
             });
+            dispatch(fetchOrderById(orderId))
+                .unwrap()
+                .then(order => {
+                    console.log('Fetched order:', order);
+                    setOrder(order);
+                })
+                .catch(error => console.error('Failed to fetch order:', error));
         }
     }, [orderId]);
 
@@ -34,8 +52,6 @@ const LotLabReport: React.FC = () => {
         { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe2! },
         { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe3! },
     ].filter(point => point.y !== undefined)) || [];
-
-    console.log('tkwData:', tkwData);
 
     const averageTkw = tkwMeasurements.length > 0 ? tkwMeasurements.reduce((sum, measurement) => {
         const total = (measurement.tkwProbe1 || 0) + (measurement.tkwProbe2 || 0) + (measurement.tkwProbe3 || 0);
@@ -72,18 +88,6 @@ const LotLabReport: React.FC = () => {
 
     const averageDeviation = tkwData.length > 0 ? tkwData.reduce((acc, d) => acc + Math.abs(d.y - averageTkw), 0) / tkwData.length : 0;
 
-    const chartData = {
-        datasets: [
-            {
-                label: t('lot_report.tkw_measurements'),
-                data: tkwData,
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                pointRadius: 5,
-            },
-        ],
-    };
-
     const deviationLinesPlugin: Plugin = {
         id: "deviationLines",
         beforeDatasetsDraw: (chart) => {
@@ -93,7 +97,7 @@ const LotLabReport: React.FC = () => {
             const xStartCoord = x.left;
             const xEndCoord = x.right;
 
-            const drawLine = (yValue: number, color: string, dash: number[]) => {
+            const drawLine = (yValue: number, color: string, dash: number[], label: string) => {
                 const yCoord = y.getPixelForValue(yValue);
                 ctx.beginPath();
                 ctx.strokeStyle = color;
@@ -102,12 +106,16 @@ const LotLabReport: React.FC = () => {
                 ctx.moveTo(xStartCoord, yCoord);
                 ctx.lineTo(xEndCoord, yCoord);
                 ctx.stroke();
+                ctx.fillStyle = color;
+                ctx.fillText(label, xEndCoord + 5, yCoord);
             };
 
-            drawLine(averageTkw * 1.05, 'orange', [5, 5]);
-            drawLine(averageTkw * 0.95, 'orange', [5, 5]);
-            drawLine(averageTkw * 1.10, 'red', []);
-            drawLine(averageTkw * 0.90, 'red', []);
+            drawLine(averageTkw * 1.05, 'orange', [5, 5], 'Upper Limit 5%');
+            drawLine(averageTkw * 0.95, 'orange', [5, 5], 'Lower Limit 5%');
+            drawLine(averageTkw * 1.10, 'red', [], 'Upper Limit 10%');
+            drawLine(averageTkw * 0.90, 'red', [], 'Lower Limit 10%');
+            drawLine(averageTkw, 'blue', [], 'Average TKW');
+            if (order !== undefined && order.tkw !== null) drawLine(order.tkw, 'green', [], 'Order TKW');
         }
     }; 
 
@@ -123,16 +131,26 @@ const LotLabReport: React.FC = () => {
                 o: avgTkw - offset,
                 h: maxTkw,
                 l: minTkw,
-                c: avgTkw + offset
+                c: avgTkw + offset,
+                min: minTkw,
+                max: maxTkw,
+                avg: avgTkw
             };
         });
     };
 
     const yScaleRange = Math.max(...tkwData.map(d => d.y)) - Math.min(...tkwData.map(d => d.y));
 
+    const legendItems = [
+        { color: 'blue', label: 'Average TKW' },
+        { color: 'green', label: 'Order TKW' },
+        { color: 'orange', label: 'Soft Limit 5%' },
+        { color: 'red', label: 'Hard Limit 10%' },
+    ];
+
     return (
         <VStack w="full" height="auto" position="relative" alignItems={"start"} py={8}>
-            {tkwMeasurements.length > 0 ? (
+            {(tkwMeasurements.length > 0 && order !== undefined) ? (
                 <>
                     <Text fontSize="lg" fontWeight="bold" textAlign="center" my={4}>
                         {t('lot_report.tkw_measurements')}
@@ -240,62 +258,14 @@ const LotLabReport: React.FC = () => {
                             </Tbody>
                         </Table>
                     </HStack>
-                    <Box width="full" height="300px" position='relative'>
-                        <Scatter width="full" height="300px"
-                            plugins={[deviationLinesPlugin]}
-                            data={chartData}
-                            options={{
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    x: {
-                                        title: {
-                                            display: true,
-                                            text: t('lot_report.date'),
-                                        },
-                                        grid: {
-                                            display: true,
-                                            drawOnChartArea: true,
-                                            drawTicks: true,
-                                            lineWidth: 1,
-                                            color: 'rgba(0, 0, 0, 0.1)',
-                    
-                                        },
-                                        ticks: {
-                                            callback: function(value: any) {
-                                                return new Date(value).toLocaleString('en-US', {
-                                                    month: '2-digit',
-                                                    day: '2-digit',
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                });
-                                            },
-                                            stepSize: 60 * 60 * 1000,
-                                            autoSkip: false
-                                        },
-                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 2 * 60 * 60 * 1000 : new Date().getTime() - 86400000, // 2 hours before first data point or 1 day before now
-                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 2 * 60 * 60 * 1000 : new Date().getTime() + 86400000, // 2 hours after last data point or 1 day after now
-                                    },
-                                    y: {
-                                        title: {
-                                            display: true,   
-                                            text: t('lot_report.tkw_value'),
-                                        },
-                                    },
-                                },
-                                plugins: {
-                                    tooltip: {
-                                        callbacks: {
-                                            label: (context: any) => {
-                                                const value = context.raw.y;
-                                                const date = new Date(context.raw.x).toLocaleString();
-                                                return `${value} gr.\n${date}`;
-                                            }
-                                        }
-                                    }
-                                }
-                            }} />
-                    </Box>
+                    <HStack mt={8} justifyContent={'center'} spacing={4} w='full'>
+                        {legendItems.map((item, index) => (
+                            <HStack key={index} spacing={2} alignItems="center">
+                                <Box width="20px" height="10px" backgroundColor={item.color} />
+                                <Text>{item.label}</Text>
+                            </HStack>
+                        ))}
+                    </HStack>
                     <Box width="full" height="300px">
                         <ChartReact
                             type='candlestick'
@@ -345,18 +315,28 @@ const LotLabReport: React.FC = () => {
                                     tooltip: {
                                         callbacks: {
                                             label: (context: any) => {
-                                                const value = context.raw.y;
-                                                const date = new Date(context.raw.x).toLocaleString();
-                                                return `${value} gr.\n${date}`;
-                                            }
-                                        }
+                                                const { min, max, avg } = context.raw;
+                                                return [
+                                                    `Min: ${min.toFixed(2)} gr.`,
+                                                    `Max: ${max.toFixed(2)} gr.`,
+                                                    `Avg: ${avg.toFixed(2)} gr.`,
+                                                    `Overall Avg: ${averageTkw.toFixed(2)} gr.`
+                                                ];
+                                            },
+                                            
+                                        },
+                                        displayColors: false
+                                    },
+                                    legend: {
+                                        display: false,
+                                        
                                     }
                                 }
                             }}  
                             data={{
                                 datasets: [
                                     {
-                                        label: 'TKW Measurements',
+                                        label: t('lot_report.tkw_measurements'),
                                         data: generateCandlestickData(tkwMeasurements, yScaleRange),
                                         barThickness: 8,
                                         backgroundColor: 'blue',

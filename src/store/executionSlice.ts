@@ -69,28 +69,18 @@ export const saveOrderExecution = createAsyncThunk(
             throw new Error('No current order execution to save');
         }
         try {
-            // Save order execution
             const formData = new FormData();
-            formData.append('orderId', orderExecution.orderId);
-            if (orderExecution.applicationMethod !== null)
-                formData.append('applicationMethod', orderExecution.applicationMethod);
-            if (orderExecution.packedseedsToTreatKg !== null)
-                formData.append(
-                    'packedseedsToTreatKg',
-                    orderExecution.packedseedsToTreatKg.toString(),
-                );
-            if (orderExecution.slurryConsumptionPerLotKg !== null)
-                formData.append(
-                    'slurryConsumptionPerLotKg',
-                    orderExecution.slurryConsumptionPerLotKg.toString(),
-                );
-            if (orderExecution.currentPage !== null)
-                formData.append('currentPage', orderExecution.currentPage.toString());
-            if (orderExecution.currentProductIndex !== null)
-                formData.append(
-                    'currentProductIndex',
-                    orderExecution.currentProductIndex.toString(),
-                );
+            formData.append(
+                'orderExecutionData',
+                JSON.stringify({
+                    orderId: orderExecution.orderId,
+                    applicationMethod: orderExecution.applicationMethod,
+                    packedseedsToTreatKg: orderExecution.packedseedsToTreatKg,
+                    slurryConsumptionPerLotKg: orderExecution.slurryConsumptionPerLotKg,
+                    currentPage: orderExecution.currentPage,
+                    currentProductIndex: orderExecution.currentProductIndex,
+                }),
+            );
 
             if (orderExecution.packingPhoto !== null) {
                 formData.append('packingPhoto', orderExecution.packingPhoto);
@@ -104,15 +94,14 @@ export const saveOrderExecution = createAsyncThunk(
                     await fetch(`${BACKEND_URL}/api/executions`, {
                         method: 'POST',
                         body: formData,
-                        credentials: 'include', // Include credentials for requests
+                        credentials: 'include',
                     })
                 ).json()) as OrderExecution
             ).id;
 
-            // Save product executions one by one
             for (const productExecution of orderExecution.productExecutions) {
                 const formData = new FormData();
-                formData.append('productExecution', JSON.stringify([productExecution]));
+                formData.append('productExecution', JSON.stringify(productExecution));
 
                 if (productExecution.applicationPhoto !== undefined) {
                     formData.append('applicationPhoto', productExecution.applicationPhoto);
@@ -126,7 +115,7 @@ export const saveOrderExecution = createAsyncThunk(
                     {
                         method: 'POST',
                         body: formData,
-                        credentials: 'include', // Include credentials for requests
+                        credentials: 'include',
                     },
                 );
 
@@ -138,7 +127,7 @@ export const saveOrderExecution = createAsyncThunk(
             return await state.execution.currentOrderExecution;
         } catch (error) {
             console.error('Failed to save order execution:', error);
-            return rejectWithValue(orderExecution); // Return the payload for offline handling
+            return rejectWithValue(orderExecution);
         }
     },
 );
@@ -243,9 +232,7 @@ export const updateTkwMeasurement = createAsyncThunk(
     ) => {
         try {
             const formData = new FormData();
-            formData.append('tkwRep1', tkwRep1.toString());
-            formData.append('tkwRep2', tkwRep2.toString());
-            formData.append('tkwRep3', tkwRep3.toString());
+            formData.append('tkwData', JSON.stringify({ tkwRep1, tkwRep2, tkwRep3 }));
             formData.append('tkwProbesPhoto', tkwProbesPhoto);
 
             const response = await fetch(`${BACKEND_URL}/api/executions/tkw-measurements/${id}`, {

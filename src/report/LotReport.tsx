@@ -57,7 +57,7 @@ const LotReport: React.FC = () => {
             const foundOrder = orders.find(order => order.id === orderId);
             setOrder(foundOrder || null);
         }
-    }, [orders, orderId, dispatch]);
+    }, [orders, orderId]);
 
     const getDeviationColor = (deviation: number) => {
         if (deviation >= 90 && deviation <= 105) return statusColorMap.green;
@@ -110,6 +110,8 @@ const LotReport: React.FC = () => {
     }
 
     const unitNumberOfSeeds = (order.bagSize !== null && order.tkw !== null) ? (order.packaging === Packaging.InKg ? order.bagSize / order.tkw : order.bagSize).toFixed(2) : 'N/A';
+
+    console.log('Rendering LotReport');
 
     return (     
         <VStack w="full" h="full" overflowY="auto" p={2} ref={componentRef}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -8,21 +8,16 @@ import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor, AppDispatch, RootState } from './store/store';
 import { fetchUserByToken, logoutUser } from './store/userSlice';
 import { BrowserRouter } from "react-router-dom";
-import { AlertProvider, useAlert } from './contexts/AlertContext';
+import { AlertProvider } from './contexts/AlertContext';
 import MobileMenu from './menus/MobileMenu';
 import DesktopMenu from './menus/DesktopMenu';
 import AppRoutes from './AppRoutes';
-import { fetchOrders } from './store/ordersSlice';
-import { fetchTkwMeasurements } from './store/executionSlice';
-import { fetchProducts } from './store/productsSlice';
-import { Role } from './operators/Operators';
-import { fetchCrops } from './store/cropsSlice';
-import { fetchOperators } from './store/operatorsSlice';
 import LogRocket from 'logrocket';
-import { useTranslation, initReactI18next } from 'react-i18next';
+import { initReactI18next } from 'react-i18next';
 import i18next from 'i18next';
 import enUSTranslations from './locales/enUS.json';
 import frTranslations from './locales/fr.json';
+import DataFetcher from './DataFetcher';
 
 LogRocket.init('protravka/client');
 
@@ -40,15 +35,8 @@ i18next.use(initReactI18next).init({
 });
 
 const App = () => {
-    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
-    const {addAlert} = useAlert();
     const user = useSelector((state: RootState) => state.user);
-    const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
-    const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    const oldOrdersRef = React.useRef(orders);
-    const oldMeasurementsRef = React.useRef(tkwMeasurements);
-    const isInitialLoadRef = React.useRef(true);
     const useLab = user.company?.featureFlags.useLab;
     const isAuthenticated = user.email !== null;
 
@@ -57,103 +45,40 @@ const App = () => {
     };
 
     useEffect(() => {
-        if (isInitialLoadRef.current) {
-            isInitialLoadRef.current = false;
-        } else if (oldMeasurementsRef.current !== null && Array.isArray(oldMeasurementsRef.current)) {
-            try {
-                const oldIds = oldMeasurementsRef.current.map((m) => m.id);
-                const newIds = tkwMeasurements.map((m) => m.id);
-                const isNewMeasurementsAdded = newIds.some((id) => !oldIds.includes(id));
-            
-
-                const oldOrderIds = oldOrdersRef.current.map((o) => o.id);
-                const newOrderIds = orders.map((o) => o.id);
-                const isNewOrderAdded = newOrderIds.some((id) => !oldOrderIds.includes(id));
-                if (isNewOrderAdded || isNewMeasurementsAdded) {
-                    if (useLab && user.roles.includes(Role.LABORATORY)) {
-                        addAlert(t('index.measurements_check'));
-                    }
-                } 
-                if (isNewOrderAdded) {
-                    if (user.roles.includes(Role.OPERATOR)) {
-                        addAlert(t('index.tasks_to_do'));
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to check new measurements:', error);
-            }
-        }
-
-        oldMeasurementsRef.current = tkwMeasurements;
-        oldOrdersRef.current = orders;
-    }, [tkwMeasurements, orders]);
-
-    useEffect(() => {
         if (!isAuthenticated) {
             dispatch(fetchUserByToken());
-        } else {
-            if (!user.name || !user.email || !user.roles) {
-                throw new Error('User name or email is not set, invalid user data');
-            }
-            LogRocket.identify('THE_USER_ID_IN_YOUR_APP', {
-                name: user.name + ' ' + user.surname,
-                email: user.email,
-                roles: user.roles.join(', '),
-            });
-
-            dispatch(fetchOrders());
-            setInterval(() => {
-                dispatch(fetchOrders());
-            }, 10000);
-
-            if (user.roles.includes(Role.ADMIN) || user.roles.includes(Role.MANAGER)) {
-                dispatch(fetchCrops());
-                dispatch(fetchProducts());
-                dispatch(fetchOperators());
-            }
-
-            if (useLab && user.roles.includes(Role.LABORATORY)) {
-                dispatch(fetchTkwMeasurements());
-                setInterval(() => {
-                    dispatch(fetchTkwMeasurements());
-                }, 10000);
-            }
         }
-    }, [dispatch, user, useLab, isAuthenticated]);
+    }, [dispatch, isAuthenticated]);
 
     console.log('Rendering App');
 
-    const memoizedContent = useMemo(() => (
-        <>
-            <Box display={{ base: 'block', md: 'none' }} w="full" h="full" position="relative">
-                <VStack w="full" h="full" position="relative">
-                    {isAuthenticated && (
-                        <MobileMenu
-                            user={user}
-                            handleLogout={handleLogout} 
-                        />
-                    )}
-                    <Box w="full" h="calc(100% - 56px)" flexShrink={1} position={'relative'}>
-                        <AppRoutes useLab={useLab} />
-                    </Box>
-                </VStack>
-            </Box>
-            <HStack display={{ base: 'none', md: 'flex' }} w="full" h="full" position="relative">
+    return <>
+        <Box display={{ base: 'block', md: 'none' }} w="full" h="full" position="relative">
+            <VStack w="full" h="full" position="relative">
                 {isAuthenticated && (
-                    <DesktopMenu
+                    <MobileMenu
                         user={user}
-                        handleLogout={handleLogout}
+                        handleLogout={handleLogout} 
                     />
                 )}
-                <HStack h="full" w="full" overflowX="auto">
-                    <Box h="full" w="4px" bg="gray.100" />
-                    <AppRoutes useLab={useLab}/>
-                </HStack>
+                <Box w="full" h="calc(100% - 56px)" flexShrink={1} position={'relative'}>
+                    <AppRoutes useLab={useLab} />
+                </Box>
+            </VStack>
+        </Box>
+        <HStack display={{ base: 'none', md: 'flex' }} w="full" h="full" position="relative">
+            {isAuthenticated && (
+                <DesktopMenu
+                    user={user}
+                    handleLogout={handleLogout}
+                />
+            )}
+            <HStack h="full" w="full" overflowX="auto">
+                <Box h="full" w="4px" bg="gray.100" />
+                <AppRoutes useLab={useLab}/>
             </HStack>
-        </>
-    ), [useLab, user, isAuthenticated]);
-
-    return memoizedContent;
+        </HStack>
+    </>;
 };
 
 const root = ReactDOM.createRoot(
@@ -169,6 +94,7 @@ root.render(
                     <PersistGate loading={null} persistor={persistor}>
                         <BrowserRouter>
                             <App />
+                            <DataFetcher />
                         </BrowserRouter>
                     </PersistGate>
                 </Provider>

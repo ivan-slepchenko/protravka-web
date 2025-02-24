@@ -75,7 +75,7 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
                             {order.crop?.name}, {order.variety?.name}
                         </Text>
                         <Text>
-                            {t(`controlled_order_card.${order.status.toLowerCase()}`)}
+                            {t(`controlled_order_card.${order.status.toLowerCase().replaceAll(' ', '_')}`)}
                         </Text>
                     </HStack>
                 </Badge>

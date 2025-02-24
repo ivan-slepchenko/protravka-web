@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { OrderStatus, NewOrderState, ProductDetail, Order } from './newOrderSlice';
+import equal from 'fast-deep-equal';
 
 interface OrdersState {
     activeOrders: Order[];
@@ -121,10 +122,8 @@ export const updateOrderTKW = createAsyncThunk(
     ) => {
         try {
             const formData = new FormData();
-            formData.append('tkwRep1', tkwRep1.toString());
-            formData.append('tkwRep2', tkwRep2.toString());
-            formData.append('tkwRep3', tkwRep3.toString());
-            formData.append('tkwProbesPhoto', tkwProbesPhoto, 'tkwProbesPhoto.png'); // Provide a filename
+            formData.append('tkwData', JSON.stringify({ tkwRep1, tkwRep2, tkwRep3 }));
+            formData.append('tkwProbesPhoto', tkwProbesPhoto, 'tkwProbesPhoto.png');
 
             const response = await fetch(`${BACKEND_URL}/api/orders/${id}/tkw`, {
                 method: 'PUT',
@@ -188,7 +187,9 @@ const ordersSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchOrders.fulfilled, (state, action: PayloadAction<Order[]>) => {
-            state.activeOrders = action.payload;
+            if (!equal(state.activeOrders, action.payload)) {
+                state.activeOrders = action.payload;
+            }
             state.fetchError = false;
         });
         builder.addCase(fetchOrders.rejected, (state) => {
