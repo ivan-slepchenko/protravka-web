@@ -148,6 +148,11 @@ const LotLabReport: React.FC = () => {
         { color: 'red', label: 'Hard Limit 10%' },
     ];
 
+    const handleBarClick = (_: any, __: any, chart: any) => {
+        const clickedRawData = chart.tooltip?.$context?.tooltipItems[0]?.raw;
+        console.log('Clicked data:', clickedRawData);
+    };
+
     return (
         <VStack w="full" height="auto" position="relative" alignItems={"start"} py={8}>
             {(tkwMeasurements.length > 0 && order !== undefined) ? (
@@ -275,6 +280,10 @@ const LotLabReport: React.FC = () => {
                             options={{
                                 responsive: true,
                                 maintainAspectRatio: false,
+                                onClick: handleBarClick,
+                                interaction: {
+                                    mode: "index",
+                                },
                                 scales: {
                                     x: {
                                         title: {
@@ -330,7 +339,7 @@ const LotLabReport: React.FC = () => {
                                     legend: {
                                         display: false,
                                         
-                                    }
+                                    },
                                 }
                             }}  
                             data={{
