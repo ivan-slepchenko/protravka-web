@@ -158,6 +158,9 @@ const LotLabReport: React.FC = () => {
     ];
 
     const handleBarClick = (_: any, __: any, chart: any) => {
+        if (order === undefined) {
+            throw new Error('Order is null, invalid use of TKW chart');
+        }
         const clickedRawData = chart.tooltip?.$context?.tooltipItems[0]?.raw;
         if (clickedRawData && clickedRawData.measurementId !== undefined && orderExecution !== undefined) {
             const measurementId = clickedRawData.measurementId;
@@ -166,7 +169,7 @@ const LotLabReport: React.FC = () => {
     };
 
     return (
-        <VStack w="full" height="auto" position="relative" alignItems={"start"} py={8}>
+        <VStack w="full" position="relative" alignItems={"start"} py={8}>
             {(tkwMeasurements.length > 0 && order !== undefined) ? (
                 <>
                     <Text fontSize="lg" fontWeight="bold" textAlign="center" my={4}>
