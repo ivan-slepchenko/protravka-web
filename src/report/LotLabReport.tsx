@@ -48,9 +48,9 @@ const LotLabReport: React.FC = () => {
     }, [orderId]);
 
     const tkwData = tkwMeasurements.filter((measurement) => measurement.probeDate !== undefined).flatMap((measurement) => [
-        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe1! },
-        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe2! },
-        { x: new Date(measurement.creationDate).getTime(), y: measurement.tkwProbe3! },
+        { x: new Date(measurement.probeDate!).getTime(), y: measurement.tkwProbe1! },
+        { x: new Date(measurement.probeDate!).getTime(), y: measurement.tkwProbe2! },
+        { x: new Date(measurement.probeDate!).getTime(), y: measurement.tkwProbe3! },
     ].filter(point => point.y !== undefined)) || [];
 
     const averageTkw = tkwMeasurements.length > 0 ? tkwMeasurements.reduce((sum, measurement) => {
@@ -291,7 +291,7 @@ const LotLabReport: React.FC = () => {
                                     x: {
                                         type: 'time',
                                         time: {
-                                            unit: 'month'
+                                            unit: "millisecond"
                                         },
                                         title: {
                                             display: false,
@@ -317,8 +317,8 @@ const LotLabReport: React.FC = () => {
                                             maxRotation: 45,
                                             minRotation: 45,
                                         },
-                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 1 * 30 * 60 * 1000 : new Date().getTime() - 86400000, 
-                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 1 * 30 * 60 * 1000 : new Date().getTime() + 86400000,
+                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) : new Date().getTime() - 86400000, 
+                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) : new Date().getTime() + 86400000,
                                     },
                                     y: {
                                         title: {
