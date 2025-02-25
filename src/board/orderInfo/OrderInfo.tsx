@@ -7,7 +7,7 @@ import OrderExecutionTab from "./OrderExecutionTab";
 import OrderRecipeTab from "./OrderRecipeTab";
 import { OrderStatus } from "../../store/newOrderSlice";
 import { changeOrderStatus } from "../../store/ordersSlice";
-import { fetchOrderExecution, OrderExecution } from "../../store/executionSlice";
+import { fetchOrderExecutionForOrder, OrderExecution } from "../../store/executionSlice";
 import { useTranslation } from 'react-i18next';
 
 const OrderInfo: FC = () => {
@@ -24,7 +24,7 @@ const OrderInfo: FC = () => {
 
     useEffect(() => {
         if (orderId !== undefined) {
-            fetchOrderExecution(orderId).then((order) => {
+            fetchOrderExecutionForOrder(orderId).then((order) => {
                 setOrderExecution(order);
             });
         }

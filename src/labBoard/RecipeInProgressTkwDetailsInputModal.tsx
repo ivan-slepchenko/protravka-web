@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { fetchOrderById } from '../store/ordersSlice';
-import { fetchOrderExecution, updateTkwMeasurement, TkwMeasurement } from '../store/executionSlice';
+import { fetchOrderExecutionForOrder, updateTkwMeasurement, TkwMeasurement } from '../store/executionSlice';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, VStack, Divider, HStack, Text, Checkbox, Badge, Box, CircularProgress, IconButton } from '@chakra-ui/react';
 import { FaCamera, FaCog } from 'react-icons/fa';
 import { Order } from '../store/newOrderSlice';
@@ -33,7 +33,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
 
     useEffect(() => {
         const fetchExecution = async () => {
-            const orderExecution = await fetchOrderExecution(selectedMeasurement.orderExecution.orderId);
+            const orderExecution = await fetchOrderExecutionForOrder(selectedMeasurement.orderExecution.orderId);
             setOrderExecutionId(orderExecution.id);
         };
         fetchExecution();

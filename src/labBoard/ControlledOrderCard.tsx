@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
-import { OrderExecution, TkwMeasurement, fetchOrderExecution } from '../store/executionSlice';
+import { OrderExecution, TkwMeasurement, fetchOrderExecutionForOrder } from '../store/executionSlice';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +31,7 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
 
     useEffect(() => {
         if (order.id) {
-            fetchOrderExecution(order.id).then((execution) => {
+            fetchOrderExecutionForOrder(order.id).then((execution) => {
                 setOrderExecution(execution);
             }).catch((error) => {
                 console.error('Failed to fetch order execution:', error);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Center, Text, Progress, Table, Thead, Tbody, Tr, Th, Td, HStack, VStack, Tooltip } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchOrderExecution, fetchTkwMeasurementsByExecutionId, OrderExecution, TkwMeasurement } from "../store/executionSlice";
+import { fetchOrderExecutionForOrder, fetchTkwMeasurementsByExecutionId, OrderExecution, TkwMeasurement } from "../store/executionSlice";
 import { Chart as ChartReact } from 'react-chartjs-2';
 import type { Plugin } from 'chart.js';
 import { Chart, registerables } from 'chart.js/auto';
@@ -28,7 +28,7 @@ const LotLabReport: React.FC = () => {
 
     useEffect(() => {
         if (orderId) {
-            fetchOrderExecution(orderId).then((orderExecution) => {
+            fetchOrderExecutionForOrder(orderId).then((orderExecution) => {
                 console.log('Fetched orderExecution:', orderExecution);
                 setOrderExecution(orderExecution);
                 if (orderExecution?.id) {
@@ -161,7 +161,7 @@ const LotLabReport: React.FC = () => {
         const clickedRawData = chart.tooltip?.$context?.tooltipItems[0]?.raw;
         if (clickedRawData && clickedRawData.measurementId !== undefined && orderExecution !== undefined) {
             const measurementId = clickedRawData.measurementId;
-            navigate(`/tkw-details/${orderExecution.id}/${measurementId}`);
+            navigate(`/tkw-details/${order.id}/${measurementId}`);
         }
     };
 

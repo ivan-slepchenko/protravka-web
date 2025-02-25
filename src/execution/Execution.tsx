@@ -16,7 +16,7 @@ import OrderExecution6TreatingConfirmation from './OrderExecution6TreatingConfir
 import { OrderExecutionPage } from './OrderExecutionPage';
 import OrderExecution10ConsumptionProoving from './OrderExecution10ConsumptionProoving';
 import { OrderStatus } from '../store/newOrderSlice';
-import { deactivateActiveExecution, fetchOrderExecutionAsCurrent, setCurrentOrder } from '../store/executionSlice';
+import { deactivateActiveExecution, fetchOrderExecutionForOrderAsCurrent, setCurrentOrder } from '../store/executionSlice';
 
 
 const Execution = () => {
@@ -35,12 +35,12 @@ const Execution = () => {
             if (!ocurrentOrderByServer) {
                 dispatch(deactivateActiveExecution());
             } else if (currentOrder.id !== ocurrentOrderByServer.id) {
-                dispatch(fetchOrderExecutionAsCurrent(ocurrentOrderByServer.id));
+                dispatch(fetchOrderExecutionForOrderAsCurrent(ocurrentOrderByServer.id));
                 dispatch(setCurrentOrder(ocurrentOrderByServer));
             }
         } else {
             if (ocurrentOrderByServer) {
-                dispatch(fetchOrderExecutionAsCurrent(ocurrentOrderByServer.id));
+                dispatch(fetchOrderExecutionForOrderAsCurrent(ocurrentOrderByServer.id));
                 dispatch(setCurrentOrder(ocurrentOrderByServer));
             }
         }

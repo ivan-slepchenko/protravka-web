@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "../store/store";
 import { changeOrderStatus } from "../store/ordersSlice";
 import { Order, OrderStatus, Packaging } from "../store/newOrderSlice";
 import { useReactToPrint } from "react-to-print";
-import { fetchOrderExecution, OrderExecution } from "../store/executionSlice";
+import { fetchOrderExecutionForOrder, OrderExecution } from "../store/executionSlice";
 import useImageModal from "../hooks/useImageModal";
 import { useTranslation } from 'react-i18next';
 import LotLabReport from "./LotLabReport";
@@ -46,7 +46,7 @@ const LotReport: React.FC = () => {
 
     useEffect(() => {
         if (orderId && order !== null && [OrderStatus.LabAssignmentCreated, OrderStatus.TkwConfirmed, OrderStatus.RecipeCreated].indexOf(order.status) === -1) {        
-            fetchOrderExecution(orderId).then((orderExecution) => {
+            fetchOrderExecutionForOrder(orderId).then((orderExecution) => {
                 setOrderExecution(orderExecution);
             });
         }

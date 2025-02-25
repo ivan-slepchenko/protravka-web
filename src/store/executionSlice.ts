@@ -188,7 +188,7 @@ export const saveOrderExecutionTreatmentFinishTime = createAsyncThunk(
     },
 );
 
-export const fetchOrderExecution = async (orderId: string) => {
+export const fetchOrderExecutionForOrder = async (orderId: string) => {
     const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}`, {
         credentials: 'include', // Include credentials in the request
     });
@@ -198,9 +198,9 @@ export const fetchOrderExecution = async (orderId: string) => {
     return (await response.json()) as OrderExecution;
 };
 
-export const fetchOrderExecutionAsCurrent = createAsyncThunk(
+export const fetchOrderExecutionForOrderAsCurrent = createAsyncThunk(
     'execution/fetchOrderExecutionAsCurrent',
-    fetchOrderExecution,
+    fetchOrderExecutionForOrder,
 );
 
 export const fetchTkwMeasurements = createAsyncThunk('execution/fetchTkwMeasurements', async () => {
@@ -503,7 +503,7 @@ const executionSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(
-            fetchOrderExecutionAsCurrent.fulfilled,
+            fetchOrderExecutionForOrderAsCurrent.fulfilled,
             (state, action: PayloadAction<OrderExecution>) => {
                 state.currentOrderExecution = action.payload;
             },
