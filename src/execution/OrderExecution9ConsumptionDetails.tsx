@@ -27,7 +27,6 @@ export default function OrderExecution9ConsumptionDetails() {
         } else {
             dispatch(setExecutedProductConsumptionPerLotKg({ orderId: currentOrder.id, productId: currentProductId, productConsumptionPerLotKg: value }));
         }
-        dispatch(saveOrderExecution());
     };
 
     const handleNext = () => {

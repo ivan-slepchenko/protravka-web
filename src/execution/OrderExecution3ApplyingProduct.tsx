@@ -36,15 +36,14 @@ const OrderExecution3ApplyingProduct = () => {
     const handleValueChange = (productId: string, value: number | undefined) => {
         if (currentOrder.id) {
             dispatch(setAppliedProductRateKg({ orderId: currentOrder.id, productId, appliedRateKg: value }));
-            dispatch(saveOrderExecution());
             setInputError(false);
             setInputValue(value);
         }
     };
 
     const handleMakePhotoClick = () => {
-        dispatch(nextPage());
         dispatch(saveOrderExecution());
+        dispatch(nextPage());
     };
 
     const renderTableHeaders = () => {
@@ -110,7 +109,7 @@ const OrderExecution3ApplyingProduct = () => {
         if (applicationMethod === 'Surry' || applicationMethod === 'CDS') {
             return (
                 <>
-                    <Text fontSize="xl" fontWeight="bold" mb={4}>{applicationMethod}{t('order_execution.preparation')}</Text>
+                    <Text fontSize="xl" fontWeight="bold" mb={4}>{applicationMethod} {t('order_execution.preparation')}</Text>
                     <Text mb={4}>
                         {t('order_execution.product')} {currentProductIndex + 1} {t('order_execution.of')} {currentOrder.productDetails.length}: {currentOrder.productDetails[currentProductIndex].product?.name}
                     </Text>

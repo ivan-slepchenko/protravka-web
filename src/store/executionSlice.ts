@@ -99,6 +99,8 @@ export const saveOrderExecution = createAsyncThunk(
                 ).json()) as OrderExecution
             ).id;
 
+            //FIXME: IVAN - I think we may save product executions few times, with invalid values.
+            // decompose saving product executions to separate async thunk.
             for (const productExecution of orderExecution.productExecutions) {
                 const formData = new FormData();
                 formData.append('productExecution', JSON.stringify(productExecution));

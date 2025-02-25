@@ -77,7 +77,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                     {order.crop?.name}, {order.variety?.name}
                 </Badge>
                 {statusLabel}
-                {order.status !== OrderStatus.LabAssignmentCreated && <Text px={1} gridColumn="span 3">
+                {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TkwConfirmed && <Text px={1} gridColumn="span 3">
                     {t('card.for')} {order.operator?.name} {order.operator?.surname}
                 </Text>}
                 <Text px={1} gridColumn="span 2" color="gray.600">{t('card.lot')}:</Text>

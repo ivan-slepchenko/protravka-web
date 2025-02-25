@@ -11,8 +11,8 @@ const OrderExecution2ApplicationMethod = () => {
 
     const handleApplicationMethodSelect = (method: string) => {
         dispatch(setApplicationMethod(method));
-        dispatch(nextPage());
         dispatch(saveOrderExecution());
+        dispatch(nextPage());
     };
 
     return (

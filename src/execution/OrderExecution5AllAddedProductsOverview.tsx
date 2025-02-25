@@ -42,13 +42,16 @@ const OrderExecution5AllAddedProductsOverview = () => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {currentOrderExecution.productExecutions.map((product, index) => (
-                            <Tr key={index}>
-                                <Td>{currentOrder.productDetails[index].product?.name}</Td>
-                                <Td>{getTargetQty(currentOrder.productDetails[index].product?.id).toFixed(2)}</Td>
-                                <Td>{product.appliedRateKg}</Td>
-                            </Tr>
-                        ))}
+                        {currentOrderExecution.productExecutions.map((productExecution, index) => {
+                            console.log('Product:', productExecution, 'Index: ', index, 'currentOrder.productDetails[index]', currentOrder.productDetails[index]);
+                            return (
+                                <Tr key={index}>
+                                    <Td>{currentOrder.productDetails[index].product?.name}</Td>
+                                    <Td>{getTargetQty(currentOrder.productDetails[index].product?.id).toFixed(2)}</Td>
+                                    <Td>{productExecution.appliedRateKg}</Td>
+                                </Tr>
+                            )
+                        })}
                     </Tbody>
                     <Tfoot>
                         <Tr>

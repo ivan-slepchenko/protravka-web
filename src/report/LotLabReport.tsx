@@ -126,8 +126,11 @@ const LotLabReport: React.FC = () => {
             const minTkw = Math.min(...tkwValues);
             const maxTkw = Math.max(...tkwValues);
             const avgTkw = tkwValues.reduce((sum, value) => sum + value, 0) / tkwValues.length;
+            if (measurement.probeDate === undefined) {
+                throw new Error('Probe date is undefined');
+            };
             return {
-                x: new Date(measurement.creationDate).getTime(),
+                x: new Date(measurement.probeDate).getTime(),
                 o: avgTkw - offset,
                 h: maxTkw,
                 l: minTkw,
@@ -314,8 +317,8 @@ const LotLabReport: React.FC = () => {
                                             maxRotation: 45,
                                             minRotation: 45,
                                         },
-                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 1 * 60 * 60 * 1000 : new Date().getTime() - 86400000, // 2 hours before first data point or 1 day before now
-                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 1 * 60 * 60 * 1000 : new Date().getTime() + 86400000, // 2 hours after last data point or 1 day after now
+                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) - 1 * 30 * 60 * 1000 : new Date().getTime() - 86400000, 
+                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) + 1 * 30 * 60 * 1000 : new Date().getTime() + 86400000,
                                     },
                                     y: {
                                         title: {
