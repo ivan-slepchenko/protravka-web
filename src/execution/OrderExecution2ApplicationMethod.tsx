@@ -11,8 +11,8 @@ const OrderExecution2ApplicationMethod = () => {
 
     const handleApplicationMethodSelect = (method: string) => {
         dispatch(setApplicationMethod(method));
+        dispatch(nextPage()); //we increase page, then save order execution, to sync page with backend.
         dispatch(saveOrderExecution());
-        dispatch(nextPage());
     };
 
     return (

@@ -42,8 +42,8 @@ const OrderExecution3ApplyingProduct = () => {
     };
 
     const handleMakePhotoClick = () => {
+        dispatch(nextPage());//we increase page, then save order execution, to sync page with backend.
         dispatch(saveOrderExecution());
-        dispatch(nextPage());
     };
 
     const renderTableHeaders = () => {

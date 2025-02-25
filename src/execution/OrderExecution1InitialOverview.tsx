@@ -31,9 +31,8 @@ const OrderExecution1InitialOverview = () => {
     const bagSizeUnit = packagingMap[currentOrder.packaging];
 
     const handleNextClick = () => {
-        dispatch(nextPage());
+        dispatch(nextPage());//we increase page, then save order execution, to sync page with backend.
         dispatch(saveOrderExecution());
-        // Navigate to the next page if needed
     };
 
     return (

@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Button, VStack, HStack } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { nextPage, saveOrderExecutionTreatmentStartTime } from '../store/executionSlice';
+import { nextPage, saveOrderExecution, saveOrderExecutionTreatmentStartTime } from '../store/executionSlice';
 import { useTranslation } from 'react-i18next';
 
 const OrderExecution5AllAddedProductsOverview = () => {
@@ -25,8 +25,9 @@ const OrderExecution5AllAddedProductsOverview = () => {
     const totalActualQty = currentOrderExecution.productExecutions.reduce((total, product) => total + (product.appliedRateKg !== undefined ? product.appliedRateKg : 0), 0) || 0;
 
     const handleNextButtonClicked = React.useCallback(() => {
+        dispatch(nextPage()); //we increase page, then save order execution, to sync page with backend.
         dispatch(saveOrderExecutionTreatmentStartTime(currentOrder.id));
-        dispatch(nextPage());
+        dispatch(saveOrderExecution());
     }, [dispatch, currentOrder.id]);
 
     return (

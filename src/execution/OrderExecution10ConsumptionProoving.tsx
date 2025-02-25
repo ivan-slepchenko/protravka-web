@@ -74,6 +74,7 @@ const OrderExecution10ConsumptionProoving = () => {
             } else {
                 dispatch(nextPage());
             }
+            //we increase page, then save order execution, to sync page with backend.
             dispatch(saveOrderExecution());
         }
     };

@@ -16,7 +16,7 @@ const OrderExecution7PackingDetails = () => {
     const handleNextButtonClick = () => {
         if (typeof packedseedsToTreatKg === 'number') {
             dispatch(setPackedseedsToTreatKg(packedseedsToTreatKg));
-            dispatch(nextPage());
+            dispatch(nextPage());//we increase page, then save order execution, to sync page with backend.
             dispatch(saveOrderExecution());
         }
     };
