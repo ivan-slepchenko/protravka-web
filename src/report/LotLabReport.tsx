@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Center, Text, Progress, Table, Thead, Tbody, Tr, Th, Td, HStack, VStack, Tooltip } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
-import { fetchOrderExecution, fetchTkwMeasurementsByExecutionId, TkwMeasurement } from "../store/executionSlice";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchOrderExecution, fetchTkwMeasurementsByExecutionId, OrderExecution, TkwMeasurement } from "../store/executionSlice";
 import { Chart as ChartReact } from 'react-chartjs-2';
 import type { Plugin } from 'chart.js';
 import { Chart, registerables } from 'chart.js/auto';
@@ -20,14 +20,17 @@ const LotLabReport: React.FC = () => {
     const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const { orderId } = useParams<{ orderId: string }>();
+    const navigate = useNavigate();
     const [tkwMeasurements, setTkwMeasurements] = useState<TkwMeasurement[]>([]);
     const [order, setOrder] = useState<Order | undefined>();
+    const [orderExecution, setOrderExecution] = useState<OrderExecution | undefined>();
 
 
     useEffect(() => {
         if (orderId) {
             fetchOrderExecution(orderId).then((orderExecution) => {
                 console.log('Fetched orderExecution:', orderExecution);
+                setOrderExecution(orderExecution);
                 if (orderExecution?.id) {
                     fetchTkwMeasurementsByExecutionId(orderExecution.id)
                         .then((data: TkwMeasurement[]) => {
@@ -130,14 +133,17 @@ const LotLabReport: React.FC = () => {
                 throw new Error('Probe date is undefined');
             };
             return {
+                //these are used by chart
                 x: new Date(measurement.probeDate).getTime(),
                 o: avgTkw - offset,
                 h: maxTkw,
                 l: minTkw,
                 c: avgTkw + offset,
+                //these are used by tooltip and external functionality
                 min: minTkw,
                 max: maxTkw,
-                avg: avgTkw
+                avg: avgTkw,
+                measurementId: measurement.id,
             };
         });
     };
@@ -153,7 +159,10 @@ const LotLabReport: React.FC = () => {
 
     const handleBarClick = (_: any, __: any, chart: any) => {
         const clickedRawData = chart.tooltip?.$context?.tooltipItems[0]?.raw;
-        console.log('Clicked data:', clickedRawData);
+        if (clickedRawData && clickedRawData.measurementId !== undefined && orderExecution !== undefined) {
+            const measurementId = clickedRawData.measurementId;
+            navigate(`/tkw-details/${orderExecution.id}/${measurementId}`);
+        }
     };
 
     return (

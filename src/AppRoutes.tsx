@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from './store/store';
 import Info from './info/Info';
 import NewAssignment from './newReceipe/lab/NewAssignment';
+import TkwDetailsPage from './labBoard/TkwDetailsPage';
 
 const AppRoutes = ({ useLab }: { useLab?: boolean }) => (
     <Routes>
@@ -34,6 +35,7 @@ const AppRoutes = ({ useLab }: { useLab?: boolean }) => (
         <Route path="/products" element={<RequireAuth roles={[Role.ADMIN]}><Products /></RequireAuth>} />
         <Route path="/execution" element={<RequireAuth roles={[Role.OPERATOR]}><Execution /></RequireAuth>} />
         <Route path="/lot-report/:orderId" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN]}><LotReport /></RequireAuth>} />
+        <Route path="/tkw-details/:orderExecutionId/:measurementId?" element={<RequireAuth roles={[Role.MANAGER, Role.LABORATORY]}><TkwDetailsPage /></RequireAuth>} />
         <Route path="/login" element={<LoginRedirect />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/info" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN, Role.OPERATOR, Role.LABORATORY]}><Info /></RequireAuth>} />

@@ -240,7 +240,8 @@
         "treatment_started_at": "Treatment Started At",
         "measurement_assigned_at": "Measurement Assigned At"
     },
-    "tkw_details_modal": {
+    "tkw_details_page": {
+        "back": "Back",
         "tkw_details": "TKW Details",
         "lot": "Lot",
         "seeds_to_treat": "Seeds To Treat",
