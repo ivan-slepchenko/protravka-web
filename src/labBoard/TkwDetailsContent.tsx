@@ -60,6 +60,10 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                         <Text fontWeight="bold">{t('tkw_details_page.operator')}:</Text>
                         <Text>{order.operator?.name} {order.operator?.surname}</Text>
                     </Grid>
+                    <GridItem colSpan={2}>
+                        <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('tkw_details_page.assignment_creation_date')}:</Text>
+                        <Text>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleString()}</Text>
+                    </GridItem>
                     <Grid templateColumns="1fr 1fr" gap={2} w="full">
                         <GridItem px={1}>
                             {order.tkwProbesPhoto ? (
@@ -94,11 +98,6 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                             </Grid>
                         </GridItem>
 
-                        <GridItem colSpan={2}>
-                            <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('tkw_details_page.creation_date')}:</Text>
-                            <Text>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleString()}</Text>
-                        </GridItem>
-
                         {order.completionDate && (
                             <GridItem colSpan={2}>
                                 <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('tkw_details_page.completion_date')}:</Text>
@@ -107,7 +106,7 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                         )}
 
                         <GridItem colSpan={2}>
-                            <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('tkw_details_page.measurement_date')}:</Text>
+                            <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('tkw_details_page.raw_measurement_date')}:</Text>
                             <Text>{order.tkwMeasurementDate === null ? 'N/A' :  new Date(order.tkwMeasurementDate).toLocaleString()}</Text>
                         </GridItem>
                     </Grid>

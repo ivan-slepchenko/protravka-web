@@ -38,12 +38,12 @@ const DataFetcher = () => {
                 const isNewOrderAdded = newOrderIds.some((id) => !oldOrderIds.includes(id));
                 if (isNewOrderAdded || isNewMeasurementsAdded) {
                     if (useLab && user.roles.includes(Role.LABORATORY)) {
-                        addAlert(t('index.measurements_check'));
+                        addAlert(t('alerts.measurements_check'));
                     }
                 } 
                 if (isNewOrderAdded) {
                     if (user.roles.includes(Role.OPERATOR)) {
-                        addAlert(t('index.tasks_to_do'));
+                        addAlert(t('alerts.tasks_to_do'));
                     }
                 }
             } catch (error) {
