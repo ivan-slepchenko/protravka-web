@@ -230,7 +230,7 @@
         "tkw_confirmed": "TKW Confirmed",
         "completed": "Completed",
         "failed": "Failed",
-        "lab_control": "Lab Control",
+        "lab_to_control": "Lab To Control",
         "to_acknowledge": "To Acknowledge"
     },
     "tkw_measurement_card": {

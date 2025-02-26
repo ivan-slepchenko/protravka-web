@@ -21,7 +21,7 @@ const stateToLabColumn: Partial<Record<OrderStatus, string>> = {
     [OrderStatus.TkwConfirmed]: LabColumn.TREATMENT,
     [OrderStatus.Completed]: LabColumn.TREATED,
     [OrderStatus.Failed]: LabColumn.TREATED,
-    [OrderStatus.LabControl]: LabColumn.TREATED,
+    [OrderStatus.LabToControl]: LabColumn.TREATED,
     [OrderStatus.ToAcknowledge]: LabColumn.TREATED,
 };
 

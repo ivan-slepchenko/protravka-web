@@ -166,7 +166,7 @@
         "tkw_confirmed": "TKW confirmé",
         "recipe_created": "Recette créée",
         "treatment_in_progress": "Traitement en cours",
-        "lab_control": "Contrôle de laboratoire",
+        "lab_to_control": "Laboratoire à contrôler",
         "to_acknowledge": "À reconnaître",
         "completed": "Terminé"
     },
@@ -230,7 +230,7 @@
         "tkw_confirmed": "TKW confirmé",
         "completed": "Terminé",
         "failed": "Échoué",
-        "lab_control": "Contrôle de laboratoire",
+        "lab_to_control": "Laboratoire à contrôler",
         "to_acknowledge": "À reconnaître"
     },
     "tkw_measurement_card": {

@@ -29,7 +29,7 @@ const OrderExecution11Completion = () => {
             await dispatch(saveOrderExecution()).unwrap();
             dispatch(nextPage(OrderExecutionPage.InitialOverview));
             if (useLab) {
-                dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.LabControl }));
+                dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.LabToControl }));
             } else {
                 dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.ToAcknowledge }));
             }

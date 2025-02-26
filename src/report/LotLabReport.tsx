@@ -337,6 +337,8 @@ const LotLabReport: React.FC = () => {
                                             display: true,   
                                             text: t('lot_report.tkw_value'),
                                         },
+                                        min: Math.min(...tkwData.map(d => d.y)) - yScaleRange * 0.05,
+                                        max: Math.max(...tkwData.map(d => d.y)) + yScaleRange * 0.05,
                                     },
                                 },
                                 plugins: {

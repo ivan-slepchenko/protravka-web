@@ -13,7 +13,7 @@ const Board: React.FC = () => {
 
     const COMPLETED_COLUMN = 'Completed';
     const columns = useLab
-        ? [OrderStatus.LabAssignmentCreated, OrderStatus.TkwConfirmed, OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.LabControl, OrderStatus.ToAcknowledge, COMPLETED_COLUMN]
+        ? [OrderStatus.LabAssignmentCreated, OrderStatus.TkwConfirmed, OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.LabToControl, OrderStatus.ToAcknowledge, COMPLETED_COLUMN]
         : [OrderStatus.RecipeCreated, OrderStatus.TreatmentInProgress, OrderStatus.ToAcknowledge, COMPLETED_COLUMN];
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
 

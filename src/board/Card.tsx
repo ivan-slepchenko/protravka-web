@@ -28,7 +28,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                 .unwrap()
                 .then((data) => setPreparationStartDate(data.preparationStartDate))
                 .catch((error) => console.error('Failed to fetch treatment start date:', error));
-        } else if (order.status === OrderStatus.LabControl) {
+        } else if (order.status === OrderStatus.LabToControl) {
             dispatch(fetchOrderExecutionFinishDate(order.id))
                 .unwrap()
                 .then((data) => setTreatmentFinishDate(data.treatmentFinishDate))
@@ -118,7 +118,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                         <Text px={1} isTruncated>{new Date(treatmentStartDate).toLocaleString()}</Text>
                     </Box>
                 )}
-                {order.status === OrderStatus.LabControl && treatmentFinishDate && (
+                {order.status === OrderStatus.LabToControl && treatmentFinishDate && (
                     <Box gridColumn="span 3">
                         <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.treatment_finished_at')}</Text>
                         <Text px={1} isTruncated>{new Date(treatmentFinishDate).toLocaleString()}</Text>

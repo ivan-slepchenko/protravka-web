@@ -181,7 +181,6 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                 <HStack>
                                     <NumberInput
                                         w="full"
-                                        value={tkwRep3 ?? ''}
                                         onChange={(_, valueAsNumber) => setTkwRep3(isNaN(valueAsNumber) ? null : valueAsNumber)}
                                         size={{ base: "sm", md: "md" }}
                                     >

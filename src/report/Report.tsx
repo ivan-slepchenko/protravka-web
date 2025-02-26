@@ -34,7 +34,7 @@ const statusColorMap: StatusColorMap = {
     [OrderStatus.Archived]: "#4299E1", // Blue color (Chakra UI blue.400)
     [OrderStatus.RecipeCreated]: "#A0AEC0", // Gray color (Chakra UI gray.400)
     [OrderStatus.LabAssignmentCreated]: "#A0AEC0", // Gray color (Chakra UI gray.400)
-    [OrderStatus.LabControl]: "#A0AEC0", // Gray color (Chakra UI gray.400)
+    [OrderStatus.LabToControl]: "#A0AEC0", // Gray color (Chakra UI gray.400)
     [OrderStatus.TkwConfirmed]: "#A0AEC0", // Gray color (Chakra UI gray.400)
 };
 

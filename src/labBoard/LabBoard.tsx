@@ -53,7 +53,7 @@ const LabBoard: React.FC = () => {
                         OrderStatus.Completed,
                         OrderStatus.TkwConfirmed,
                         OrderStatus.Failed,
-                        OrderStatus.LabControl,
+                        OrderStatus.LabToControl,
                         OrderStatus.RecipeCreated,
                         OrderStatus.ToAcknowledge
                     ].includes(order.status)
