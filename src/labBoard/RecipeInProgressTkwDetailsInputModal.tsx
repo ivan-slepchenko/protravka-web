@@ -1,9 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { fetchOrderById } from '../store/ordersSlice';
 import { fetchOrderExecutionForOrder, updateTkwMeasurement, TkwMeasurement } from '../store/executionSlice';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, VStack, Divider, HStack, Text, Checkbox, Badge, Box, CircularProgress, IconButton } from '@chakra-ui/react';
+import {
+    Modal,
+    NumberInputField,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    Button,
+    Grid,
+    GridItem,
+    VStack,
+    Divider,
+    HStack,
+    Text,
+    Checkbox,
+    Badge,
+    Box,
+    CircularProgress,
+    IconButton,
+    NumberInput
+} from '@chakra-ui/react';
 import { FaCamera, FaCog } from 'react-icons/fa';
 import { Order } from '../store/newOrderSlice';
 import useCamera from '../hooks/useCamera';
@@ -75,7 +97,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
         stopCamera();
     };
 
-    const handleSave = () => {
+    const handleSave = useCallback(() => {
         setIsSaving(true);
         if (orderExecutionId && tkwRep1 !== null && tkwRep2 !== null && tkwRep3 !== null && tkwProbesPhoto !== null) {
             dispatch(updateTkwMeasurement({
@@ -91,7 +113,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
         } else {
             setIsSaving(false);
         }
-    };
+    }, [orderExecutionId, tkwRep1, tkwRep2, tkwRep3, tkwProbesPhoto, dispatch, selectedMeasurement.id, onClose]);
 
     return (
         <Modal isOpen={!!selectedOrder} onClose={onClose} size="full">
@@ -139,14 +161,13 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                             </GridItem>
                             <GridItem h={10} alignContent={'center'}>
                                 <HStack>
-                                    <Input
-                                        placeholder="0"
-                                        value={tkwRep1 ?? ''}
-                                        onChange={(e) => setTkwRep1(e.target.value === '' ? null : parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
+                                    <NumberInput
+                                        w="full"
+                                        onChange={(_, valueAsNumber) => setTkwRep1(isNaN(valueAsNumber) ? null : valueAsNumber)}
                                         size={{ base: "sm", md: "md" }}
-                                        type="number"
-                                        step="0.01"
-                                    />
+                                    >
+                                        <NumberInputField placeholder='0'/>
+                                    </NumberInput>
                                     <Text fontSize={{ base: "sm", md: "md" }}>{t('units.gr')}.</Text>
                                 </HStack>
                             </GridItem>
@@ -156,14 +177,13 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                             </GridItem>
                             <GridItem h={10} alignContent={'center'}>
                                 <HStack>
-                                    <Input
-                                        placeholder="0"
-                                        value={tkwRep2 ?? ''}
-                                        onChange={(e) => setTkwRep2(e.target.value === '' ? null : parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
+                                    <NumberInput
+                                        w="full"
+                                        onChange={(_, valueAsNumber) => setTkwRep2(isNaN(valueAsNumber) ? null : valueAsNumber)}
                                         size={{ base: "sm", md: "md" }}
-                                        type="number"
-                                        step="0.01"
-                                    />
+                                    >
+                                        <NumberInputField placeholder='0'/>
+                                    </NumberInput>
                                     <Text fontSize={{ base: "sm", md: "md" }}>{t('units.gr')}.</Text>
                                 </HStack>
                             </GridItem>
@@ -173,14 +193,13 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                             </GridItem>
                             <GridItem h={10} alignContent={'center'}>
                                 <HStack>
-                                    <Input
-                                        placeholder="0"
-                                        value={tkwRep3 ?? ''}
-                                        onChange={(e) => setTkwRep3(e.target.value === '' ? null : parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
+                                    <NumberInput
+                                        w="full"
+                                        onChange={(_, valueAsNumber) => setTkwRep3(isNaN(valueAsNumber) ? null : valueAsNumber)}
                                         size={{ base: "sm", md: "md" }}
-                                        type="number"
-                                        step="0.01"
-                                    />
+                                    >
+                                        <NumberInputField placeholder='0'/>
+                                    </NumberInput>
                                     <Text fontSize={{ base: "sm", md: "md" }}>{t('units.gr')}.</Text>
                                 </HStack>
                             </GridItem>

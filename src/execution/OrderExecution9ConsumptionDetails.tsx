@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, Input, VStack, HStack } from "@chakra-ui/react";
+import { Button, Heading, Table, Tbody, Td, Text, Th, Thead, Tr, VStack, HStack, NumberInput, NumberInputField, NumberInputStepper, NumberDecrementStepper, NumberIncrementStepper } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { setExecutedProductConsumptionPerLotKg, nextPage, setExecutedSlurryConsumptionPerLotKg, saveOrderExecution } from '../store/executionSlice';
@@ -70,12 +70,11 @@ export default function OrderExecution9ConsumptionDetails() {
                             : (productRecipe.grSlurryRecipeToMix / 1000).toFixed(2)}
                     </Td>
                     <Td>
-                        <Input
-                            placeholder={t('order_execution.enter_value')}
-                            type="number"
-                            step="0.01"
-                            onChange={(e) => handleInputChange(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
-                        />
+                        <NumberInput
+                            onChange={(_, valueAsNumber) => handleInputChange(isNaN(valueAsNumber) ? 0 : valueAsNumber)}
+                        >
+                            <NumberInputField placeholder={t('order_execution.enter_value')} />
+                        </NumberInput>
                     </Td>
                 </Tr>
             </Tbody>

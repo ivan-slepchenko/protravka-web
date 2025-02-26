@@ -3,7 +3,29 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { Order } from '../store/newOrderSlice';
 import { fetchOrders, updateOrderTKW } from '../store/ordersSlice';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Grid, GridItem, VStack, Divider, HStack, Text, Checkbox, Badge, Box, CircularProgress, IconButton } from '@chakra-ui/react';
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    Button,
+    Grid,
+    GridItem,
+    VStack,
+    Divider,
+    HStack,
+    Text,
+    Checkbox,
+    Badge,
+    Box,
+    CircularProgress,
+    IconButton,
+    NumberInput,
+    NumberInputField,
+} from '@chakra-ui/react';
 import { FaCamera, FaCog } from 'react-icons/fa';
 import useCamera from '../hooks/useCamera';
 import useImageModal from '../hooks/useImageModal';
@@ -125,14 +147,13 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <HStack>
-                                    <Input
-                                        placeholder="0"
-                                        value={tkwRep1 ?? ''}
-                                        onChange={(e) => setTkwRep1(e.target.value === '' ? null : parseFloat(e.target.value.endsWith('.') ? (e.target.value.slice(0, -1)) : e.target.value))}
+                                    <NumberInput
+                                        w="full"
+                                        onChange={(_, valueAsNumber) => setTkwRep1(isNaN(valueAsNumber) ? null : valueAsNumber)}
                                         size={{ base: "sm", md: "md" }}
-                                        type="number"
-                                        step="0.01"
-                                    />
+                                    >
+                                        <NumberInputField placeholder='0'/>
+                                    </NumberInput>
                                     <Text fontSize={{ base: "sm", md: "md" }}>{t('units.gr')}.</Text>
                                 </HStack>
                             </GridItem>
@@ -142,14 +163,13 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <HStack>
-                                    <Input
-                                        placeholder="0"
-                                        value={tkwRep2 ?? ''}
-                                        onChange={(e) => setTkwRep2(e.target.value === '' ? null : parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
+                                    <NumberInput
+                                        w="full"
+                                        onChange={(_, valueAsNumber) => setTkwRep2(isNaN(valueAsNumber) ? null : valueAsNumber)}
                                         size={{ base: "sm", md: "md" }}
-                                        type="number"
-                                        step="0.01"
-                                    />
+                                    >
+                                        <NumberInputField placeholder='0'/>
+                                    </NumberInput>
                                     <Text fontSize={{ base: "sm", md: "md" }}>{t('units.gr')}.</Text>
                                 </HStack>
                             </GridItem>
@@ -159,14 +179,14 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </GridItem>
                             <GridItem px={1} h={10} alignContent={'center'}>
                                 <HStack>
-                                    <Input
-                                        placeholder="0"
+                                    <NumberInput
+                                        w="full"
                                         value={tkwRep3 ?? ''}
-                                        onChange={(e) => setTkwRep3(e.target.value === '' ? null : parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
+                                        onChange={(_, valueAsNumber) => setTkwRep3(isNaN(valueAsNumber) ? null : valueAsNumber)}
                                         size={{ base: "sm", md: "md" }}
-                                        type="number"
-                                        step="0.01"
-                                    />
+                                    >
+                                        <NumberInputField placeholder='0'/>
+                                    </NumberInput>
                                     <Text fontSize={{ base: "sm", md: "md" }}>{t('units.gr')}.</Text>
                                 </HStack>
                             </GridItem>

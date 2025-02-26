@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, Table, Thead, Tbody, Tr, Th, Td, Button, VStack, Input, HStack } from '@chakra-ui/react';
+import { Text, Table, Thead, Tbody, Tr, Th, Td, Button, VStack, HStack, NumberInput, NumberInputField } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { setAppliedProductRateKg, nextPage, saveOrderExecution } from '../store/executionSlice';
@@ -73,14 +73,14 @@ const OrderExecution3ApplyingProduct = () => {
             <Tr>
                 <Td>{(productRecipe?.grSlurryRecipeToMix / 1000).toFixed(2)}</Td>
                 <Td>
-                    <Input
-                        placeholder={t('order_execution.enter_value')}
-                        value={(currentProductExecution && currentProductExecution.appliedRateKg !== undefined) ? currentProductExecution.appliedRateKg : ''}
-                        onChange={(e) => handleValueChange(currentProductId, e.target.value === '' ? undefined : parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
-                        type="number"
-                        step="0.01"
-                        borderColor={inputError ? 'red.500' : 'gray.200'}
-                    />
+                    <NumberInput
+                        onChange={(_, valueAsNumber) => handleValueChange(currentProductId, isNaN(valueAsNumber) ? undefined : valueAsNumber)}
+                    >
+                        <NumberInputField
+                            placeholder={t('order_execution.enter_value')}
+                            borderColor={inputError ? 'red.500' : 'gray.200'}
+                        />
+                    </NumberInput>
                 </Td>
             </Tr>
         </Tbody>
@@ -91,14 +91,11 @@ const OrderExecution3ApplyingProduct = () => {
             <Tr>
                 <Td>{((productRecipe?.rateGrTo100Kg ?? 0)/1000).toFixed(2)}</Td>
                 <Td>
-                    <Input
-                        placeholder={t('order_execution.enter_value')}
-                        value={(currentProductExecution && currentProductExecution.appliedRateKg !== undefined) ? currentProductExecution.appliedRateKg : ''}
-                        onChange={(e) => handleValueChange(currentProductId, e.target.value === undefined ? undefined : parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value))}
-                        type="number"
-                        step="0.01"
-                        borderColor={inputError ? 'red.500' : 'gray.200'}
-                    />
+                    <NumberInput
+                        onChange={(_, valueAsNumber) => handleValueChange(currentProductId, isNaN(valueAsNumber) ? undefined : valueAsNumber)}
+                    >
+                        <NumberInputField placeholder={t('order_execution.enter_value')} borderColor={inputError ? 'red.500' : 'gray.200'} />
+                    </NumberInput>
                 </Td>
             </Tr>
         </Tbody>
