@@ -112,10 +112,10 @@ const ControlledOrderList: React.FC<{ orders: Order[], measurements: TkwMeasurem
     return (
         <>
             {inTreatmentOrders.map(order => (
-                <ControlledOrderCard key={order.id} order={order} measurements={measurements} onClick={() => onClick(order)} />
+                <ControlledOrderCard key={order.id} order={order} measurements={measurements.filter(measurement => measurement.orderExecution.orderId === order.id)} onClick={() => onClick(order)} />
             ))}
             {treatedOrders.map(order => (
-                <ControlledOrderCard key={order.id} order={order} measurements={measurements} onClick={() => onClick(order)} />
+                <ControlledOrderCard key={order.id} order={order} measurements={measurements.filter(measurement => measurement.orderExecution.orderId === order.id)} onClick={() => onClick(order)} />
             ))}
         </>
     );
