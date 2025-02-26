@@ -41,8 +41,8 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
     const averageTkw = calculateAverageTkw([order.tkwRep1, order.tkwRep2, order.tkwRep3]);
 
     return (
-        <Box w="full" h="full" overflow='auto'>
-            <VStack w="full" spacing={2} align="start" overflow='visible'>
+        <Box w="full">
+            <VStack w="full" spacing={2} align="start">
                 <Badge autoCapitalize='none' w="full" colorScheme="gray">
                     <Text fontSize={{ base: "md", md: "lg" }}>
                         {order.crop?.name} / {order.variety?.name}

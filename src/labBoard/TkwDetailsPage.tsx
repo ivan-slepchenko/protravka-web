@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Button } from '@chakra-ui/react';
+import { Text, Button, HStack, VStack, CloseButton } from '@chakra-ui/react';
 import { TkwMeasurement, fetchTkwMeasurementsByExecutionId, fetchOrderExecutionForOrder } from '../store/executionSlice';
 import { Order } from '../store/newOrderSlice';
 import { useTranslation } from 'react-i18next';
@@ -36,12 +36,18 @@ const TkwDetailsPage: React.FC = () => {
     }, [orderId, dispatch]);
 
     return (
-        <Box p={4}>
-            <Button onClick={() => navigate(-1)}>{t('tkw_details_page.back')}</Button>
+        <VStack h="full" w="full" p={4}>
+            <HStack w="full" justifyContent="space-between">
+                <Text fontSize="lg" fontWeight="bold">{t('tkw_details_page.tkw_details')}</Text>
+                <CloseButton onClick={() => navigate(-1)} />
+            </HStack>  
             {order && (
                 <TkwDetailsContent order={order} measurements={measurements} measurementId={measurementId} />
             )}
-        </Box>
+            <HStack w="full" justifyContent="flex-end">
+                <Button variant="ghost" onClick={() => navigate(-1)}>{t('tkw_details_page.back')}</Button>
+            </HStack>
+        </VStack>
     );
 };
 
