@@ -9,39 +9,48 @@ import { fetchCrops } from "./store/cropsSlice";
 import { fetchProducts } from "./store/productsSlice";
 import { fetchOperators } from "./store/operatorsSlice";
 import { fetchTkwMeasurements } from "./store/executionSlice";
+import { OrderStatus } from "./store/newOrderSlice";
 
-const DataFetcher = () => {
+const DataSynchronizer = () => {
     const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const {addAlert} = useAlert();
     const user = useSelector((state: RootState) => state.user);
     const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    const oldOrdersRef = useRef(orders);
-    const oldMeasurementsRef = useRef(tkwMeasurements);
     const isInitialLoadRef = useRef(true);
     const useLab = user.company?.featureFlags.useLab;
     const isAuthenticated = user.email !== null;
 
     useEffect(() => {
+        const storedMeasurementIds = localStorage.getItem('tkwMeasurementIds');
+        const storedOperatorOrderIds = localStorage.getItem('operatorOrderIds');
+        const labOrderIds = localStorage.getItem('labOrderIDs');
+
+        let oldMeasurementIds = storedMeasurementIds ? JSON.parse(storedMeasurementIds) : [];
+        let oldOperatorOrderIds = storedOperatorOrderIds ? JSON.parse(storedOperatorOrderIds) : [];
+        let oldLabOrderIds = labOrderIds ? JSON.parse(labOrderIds) : [];
+
+
         if (isInitialLoadRef.current) {
             isInitialLoadRef.current = false;
-        } else if (oldMeasurementsRef.current !== null && Array.isArray(oldMeasurementsRef.current)) {
+        } else {
             try {
-                const oldIds = oldMeasurementsRef.current.map((m) => m.id);
-                const newIds = tkwMeasurements.map((m) => m.id);
-                const isNewMeasurementsAdded = newIds.some((id) => !oldIds.includes(id));
-            
+                const newMeasurementIds = tkwMeasurements.map((m) => m.id);
+                const isNewMeasurementsAdded = newMeasurementIds.some((id) => !oldMeasurementIds.includes(id));
 
-                const oldOrderIds = oldOrdersRef.current.map((o) => o.id);
-                const newOrderIds = orders.map((o) => o.id);
-                const isNewOrderAdded = newOrderIds.some((id) => !oldOrderIds.includes(id));
-                if (isNewOrderAdded || isNewMeasurementsAdded) {
+                const newOperatorOrderIds = orders.filter(o => o.status === OrderStatus.RecipeCreated).map((o) => o.id);
+                const newLabOrderIds = orders.filter(o => o.status === OrderStatus.LabAssignmentCreated).map((o) => o.id);
+
+                const isNewOperatorOrderAdded = newOperatorOrderIds.some((id) => !oldOperatorOrderIds.includes(id));
+                const isNewLabOrderAdded = newLabOrderIds.some((id) => !oldLabOrderIds.includes(id));
+
+                if (isNewLabOrderAdded || isNewMeasurementsAdded) {
                     if (useLab && user.roles.includes(Role.LABORATORY)) {
                         addAlert(t('alerts.measurements_check'));
                     }
                 } 
-                if (isNewOrderAdded) {
+                if (isNewOperatorOrderAdded) {
                     if (user.roles.includes(Role.OPERATOR)) {
                         addAlert(t('alerts.tasks_to_do'));
                     }
@@ -51,8 +60,8 @@ const DataFetcher = () => {
             }
         }
 
-        oldMeasurementsRef.current = tkwMeasurements;
-        oldOrdersRef.current = orders;
+        localStorage.setItem('tkwMeasurementIds', JSON.stringify(tkwMeasurements.map((m) => m.id)));
+        localStorage.setItem('orderIds', JSON.stringify(orders.map((o) => o.id)));
     }, [tkwMeasurements, orders]);
 
     useEffect(() => {
@@ -84,4 +93,4 @@ const DataFetcher = () => {
     return <></>
 }
 
-export default DataFetcher;
+export default DataSynchronizer;

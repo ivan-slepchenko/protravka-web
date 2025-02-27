@@ -17,7 +17,7 @@ import { initReactI18next } from 'react-i18next';
 import i18next from 'i18next';
 import enUSTranslations from './locales/enUS.json';
 import frTranslations from './locales/fr.json';
-import DataFetcher from './DataFetcher';
+import DataSynchronizer from './DataSynchronizer';
 
 LogRocket.init('protravka/client');
 
@@ -94,7 +94,7 @@ root.render(
                     <PersistGate loading={null} persistor={persistor}>
                         <BrowserRouter>
                             <App />
-                            <DataFetcher />
+                            <DataSynchronizer />
                         </BrowserRouter>
                     </PersistGate>
                 </Provider>
