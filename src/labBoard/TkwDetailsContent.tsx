@@ -31,14 +31,17 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
         }
     }, [measurementId, measurements]);
 
-    const calculateAverageTkw = (tkwValues: (number | null | undefined)[]): number | undefined => {
+    const calculateAverageTkwString = (tkwValues: (number | null | undefined)[]): string => {
         const validValues = tkwValues.filter((value) => value !== undefined && value !== null) as number[];
-        if (validValues.length === 0) return undefined;
-        const total = validValues.reduce((sum, value) => sum + value, 0);
-        return total / validValues.length;
+        let value: number | undefined;
+        if (validValues.length > 0) {   
+            const total = validValues.reduce((sum, value) => sum + value, 0);
+            value = total / validValues.length;
+        } else {
+            return 'N/A';
+        }
+        return `${value.toFixed(2)} gr.`;
     };
-
-    const averageTkw = calculateAverageTkw([order.tkwRep1, order.tkwRep2, order.tkwRep3]);
 
     return (
         <Box w="full" overflow="auto">
@@ -94,7 +97,7 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                                 <Text fontWeight="bold">{t('tkw_details_page.probe_3')}:</Text>
                                 <Text>{order.tkwRep3 ? `${order.tkwRep3} gr.` : 'N/A'}</Text>
                                 <Text fontWeight="bold">{t('tkw_details_page.average')}:</Text>
-                                <Text>{averageTkw !== undefined ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
+                                <Text>{calculateAverageTkwString([order.tkwRep1, order.tkwRep2, order.tkwRep3])}</Text>
                             </Grid>
                         </GridItem>
 
@@ -162,7 +165,7 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                                                         <Text fontWeight="bold">{t('tkw_details_page.probe_3')}:</Text>
                                                         <Text>{measurement.tkwProbe3 ? `${measurement.tkwProbe3} gr.` : 'N/A'}</Text>
                                                         <Text fontWeight="bold">{t('tkw_details_page.average')}:</Text>
-                                                        <Text>{averageTkw !== undefined ? `${averageTkw.toFixed(2)} gr.` : 'N/A'}</Text>
+                                                        <Text>{calculateAverageTkwString([measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3])}</Text>
                                                     </Grid>
                                                 </GridItem>
                                                 <GridItem colSpan={2}>
