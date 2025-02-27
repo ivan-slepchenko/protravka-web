@@ -23,6 +23,11 @@ const DataSynchronizer = () => {
     const isAuthenticated = user.email !== null;
 
     useEffect(() => {
+
+        if(!isAuthenticated || !(tkwMeasurements.length > 0 || orders.length > 0)) {
+            return;
+        }
+
         const storedMeasurementIds = localStorage.getItem('tkwMeasurementIds');
         const storedOperatorOrderIds = localStorage.getItem('operatorOrderIds');
         const labOrderIds = localStorage.getItem('labOrderIDs');
@@ -62,7 +67,7 @@ const DataSynchronizer = () => {
 
         localStorage.setItem('tkwMeasurementIds', JSON.stringify(tkwMeasurements.map((m) => m.id)));
         localStorage.setItem('orderIds', JSON.stringify(orders.map((o) => o.id)));
-    }, [tkwMeasurements, orders]);
+    }, [tkwMeasurements, orders, user]);
 
     useEffect(() => {
         if (isAuthenticated) {
