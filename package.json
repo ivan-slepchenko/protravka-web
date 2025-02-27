@@ -56,7 +56,7 @@
         "build": "tsc && vite build",
         "preview": "vite preview",
         "get-version": "node -p \"require('./package.json').version\"",
-        "docker-build": "npm run increase-package-version && docker build -t protravka-web .",
+        "docker-build": "docker build -t protravka-web .",
         "docker-run": "docker run -p 80:80 protravka-web",
         "increase-package-version": "npm version patch",
         "deploy": "npm run docker-build && wsl --setdefault Ubuntu && bash deploy.sh",
