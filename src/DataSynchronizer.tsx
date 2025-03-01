@@ -2,29 +2,91 @@ import { useTranslation } from "react-i18next";
 import { AppDispatch, RootState } from "./store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "./contexts/AlertContext";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Role } from "./operators/Operators";
 import { fetchOrders } from "./store/ordersSlice";
 import { fetchCrops } from "./store/cropsSlice";
 import { fetchProducts } from "./store/productsSlice";
-import { fetchOperators } from "./store/operatorsSlice";
+import { fetchOperators, updateFirebaseToken } from "./store/operatorsSlice";
 import { fetchTkwMeasurements } from "./store/executionSlice";
 import { OrderStatus } from "./store/newOrderSlice";
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    Button,
+    useDisclosure,
+} from "@chakra-ui/react";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/messaging';
+
+const firebaseConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
 const DataSynchronizer = () => {
     const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
-    const {addAlert} = useAlert();
+    const { addAlert } = useAlert();
     const user = useSelector((state: RootState) => state.user);
     const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
     const isInitialLoadRef = useRef(true);
     const useLab = user.company?.featureFlags.useLab;
     const isAuthenticated = user.email !== null;
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [showErrorModal, setShowErrorModal] = useState(false);
 
     useEffect(() => {
+        if (user.roles.includes(Role.OPERATOR)) {
+            Notification.requestPermission().then((permission) => {
+                if (permission !== 'granted') {
+                    onOpen();
+                } else {
+                    getFirebaseToken();
+                }
+            });
+        }
+    }, [user.roles]);
 
-        if(!isAuthenticated || !(tkwMeasurements.length > 0 || orders.length > 0)) {
+    const handlePermissionRequest = () => {
+        Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+                onClose();
+                getFirebaseToken();
+            }
+        });
+    };
+
+    const getFirebaseToken = async () => {
+        const messaging = firebase.messaging();
+        try {
+            const token = await messaging.getToken();
+            if (token) {
+                dispatch(updateFirebaseToken(token));
+            } else {
+                setShowErrorModal(true);
+            }
+        } catch (error) {
+            console.error('Failed to get Firebase token:', error);
+            setShowErrorModal(true);
+        }
+    };
+
+    useEffect(() => {
+        if (!isAuthenticated || !(tkwMeasurements.length > 0 || orders.length > 0)) {
             return;
         }
 
@@ -35,7 +97,6 @@ const DataSynchronizer = () => {
         let oldMeasurementIds = storedMeasurementIds ? JSON.parse(storedMeasurementIds) : [];
         let oldOperatorOrderIds = storedOperatorOrderIds ? JSON.parse(storedOperatorOrderIds) : [];
         let oldLabOrderIds = labOrderIds ? JSON.parse(labOrderIds) : [];
-
 
         if (isInitialLoadRef.current) {
             isInitialLoadRef.current = false;
@@ -95,7 +156,38 @@ const DataSynchronizer = () => {
         }
     }, [dispatch, user, useLab, isAuthenticated]);
 
-    return <></>
+    return (
+        <>
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Push Notifications</ModalHeader>
+                    <ModalBody>
+                        <p>We need your permission to send you push notifications.</p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" onClick={handlePermissionRequest}>
+                            Grant Permission
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+            <Modal isOpen={showErrorModal} onClose={() => setShowErrorModal(false)}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Application Error</ModalHeader>
+                    <ModalBody>
+                        <p>The application is not working properly. Please contact tech support at support@teravix.tech.</p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="red" onClick={() => setShowErrorModal(false)}>
+                            Close
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        </>
+    );
 }
 
 export default DataSynchronizer;

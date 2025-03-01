@@ -14,7 +14,9 @@ interface OperatorsState {
     operators: Operator[];
 }
 
-const initialState: OperatorsState = { operators: [] };
+const initialState: OperatorsState = {
+    operators: [],
+};
 
 const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL || '';
 
@@ -34,6 +36,22 @@ export const pushOperatorChanges = createAsyncThunk(
             body: JSON.stringify(operator),
             credentials: 'include', // Include credentials in the request
         });
+        return response.json();
+    },
+);
+
+export const updateFirebaseToken = createAsyncThunk(
+    'operators/updateFirebaseToken',
+    async (firebaseToken: string) => {
+        const response = await fetch(`${BACKEND_URL}/api/operators/firebase-token`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ firebaseToken }),
+            credentials: 'include',
+        });
+        if (!response.ok) {
+            throw new Error('Failed to update Firebase token');
+        }
         return response.json();
     },
 );
