@@ -50,14 +50,39 @@ const DataSynchronizer = () => {
     const [showErrorModal, setShowErrorModal] = useState(false);
 
     useEffect(() => {
-        if (user.roles.includes(Role.OPERATOR)) {
-            Notification.requestPermission().then((permission) => {
-                if (permission !== 'granted') {
-                    onOpen();
-                } else {
-                    getFirebaseToken();
-                }
-            });
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then((registration) => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+
+                    if (user.roles.includes(Role.OPERATOR)) {
+                        Notification.requestPermission().then((permission) => {
+                            if (permission !== 'granted') {
+                                onOpen();
+                            } else {
+                                getFirebaseToken();
+                            }
+                        });
+                    }
+
+                    registration.onupdatefound = () => {
+                        const installingWorker = registration.installing;
+                        if (installingWorker) {
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === 'installed') {
+                                    if (navigator.serviceWorker.controller) {
+                                        console.log('New content is available; please refresh.');
+                                    } else {
+                                        console.log('Content is cached for offline use.');
+                                    }
+                                }
+                            };
+                        }
+                    };
+                })
+                .catch((error) => {
+                    console.error('Service Worker registration failed:', error);
+                });
         }
     }, [user.roles]);
 
@@ -121,6 +146,11 @@ const DataSynchronizer = () => {
                         addAlert(t('alerts.tasks_to_do'));
                     }
                 }
+
+                localStorage.setItem('operatorOrderIds', JSON.stringify(newOperatorOrderIds));
+                localStorage.setItem('labOrderIDs', JSON.stringify(newLabOrderIds));
+                localStorage.setItem('tkwMeasurementIds', JSON.stringify(newMeasurementIds));
+
             } catch (error) {
                 console.error('Failed to check new measurements:', error);
             }
