@@ -30,7 +30,6 @@ const Board: React.FC = () => {
                             <VStack spacing={3} w="full">
                                 {orders.filter(order => {
                                     if (column === COMPLETED_COLUMN) {
-                                        console.log('Order:', order);
                                         return order.status === OrderStatus.Completed || order.status === OrderStatus.Failed;
                                     } else {
                                         return order.status === column

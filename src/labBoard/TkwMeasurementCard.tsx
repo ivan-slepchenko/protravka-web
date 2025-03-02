@@ -27,7 +27,7 @@ const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick 
     }, [dispatch, measurement.orderExecution.orderId]);
 
     if (measurement.orderExecution.treatmentStartDate === null) {
-        console.error('Measurement has no treatment start date, invalid card is displayed:', measurement);
+        // console.error('Measurement has no treatment start date, invalid card is displayed:', measurement);
         return null;
     }
 

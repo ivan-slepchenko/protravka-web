@@ -1,14 +1,14 @@
 import { AppDispatch, RootState } from "./store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "./contexts/AlertContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Role } from "./operators/Operators";
 import { fetchOrders } from "./store/ordersSlice";
 import { fetchCrops } from "./store/cropsSlice";
 import { fetchProducts } from "./store/productsSlice";
 import { fetchOperators, updateFirebaseToken } from "./store/operatorsSlice";
 import { fetchTkwMeasurements } from "./store/executionSlice";
-// import { OrderStatus } from "./store/newOrderSlice";
+import { OrderStatus } from "./store/newOrderSlice";
 import {
     Modal,
     ModalOverlay,
@@ -22,6 +22,7 @@ import {
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/messaging';
 import { getMessaging, getToken } from "firebase/messaging";
+import { useTranslation } from "react-i18next";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -37,17 +38,18 @@ if (!firebase.apps.length) {
 }
 
 const DataSynchronizer = () => {
-    // const { t } = useTranslation();
+    const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const { addAlert } = useAlert();
     const user = useSelector((state: RootState) => state.user);
-    // const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
-    // const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    // const isInitialLoadRef = useRef(true);
+    const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
+    const orders = useSelector((state: RootState) => state.orders.activeOrders);
+    const isInitialLoadRef = useRef(true);
     const useLab = user.company?.featureFlags.useLab;
     const isAuthenticated = user.email !== null;
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const unsubscribeRef = useRef<() => void>();
 
     useEffect(() => {
         if ('serviceWorker' in navigator) {
@@ -106,7 +108,7 @@ const DataSynchronizer = () => {
             if (token) {
                 dispatch(updateFirebaseToken(token));
 
-                firebase.messaging().onMessage((payload) => {
+                unsubscribeRef.current = firebase.messaging().onMessage((payload) => {
                     console.log('Message received. ', payload);
                     addAlert(payload);
                 });
@@ -119,6 +121,14 @@ const DataSynchronizer = () => {
             setShowErrorModal(true);
         }
     };
+
+    useEffect(() => {
+        return () => {
+            if (unsubscribeRef.current) {
+                unsubscribeRef.current();
+            }
+        };
+    }, []);
 
     // useEffect(() => {
     //     if (!isAuthenticated || !(tkwMeasurements.length > 0 || orders.length > 0)) {
