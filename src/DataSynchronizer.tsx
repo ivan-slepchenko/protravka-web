@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/messaging';
+import { getMessaging, getToken } from "firebase/messaging";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -53,9 +54,13 @@ const DataSynchronizer = () => {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/service-worker.js')
                 .then((registration) => {
+                    registration.active?.postMessage({
+                        firebaseConfig: firebaseConfig
+                    });
+
                     console.log('Service Worker registered with scope:', registration.scope);
 
-                    if (user.roles.includes(Role.OPERATOR)) {
+                    if (user.roles.includes(Role.OPERATOR) || user.roles.includes(Role.LABORATORY)) {
                         Notification.requestPermission().then((permission) => {
                             if (permission !== 'granted') {
                                 onOpen();
@@ -96,9 +101,9 @@ const DataSynchronizer = () => {
     };
 
     const getFirebaseToken = async () => {
-        const messaging = firebase.messaging();
+        const messaging = getMessaging();
         try {
-            const token = await messaging.getToken();
+            const token = await getToken(messaging, {vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY});
             if (token) {
                 dispatch(updateFirebaseToken(token));
             } else {

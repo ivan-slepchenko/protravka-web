@@ -3,32 +3,28 @@
 /* global workbox */
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.1.5/workbox-sw.js');
 
-// Firebase push notifications
-importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js');
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.firebaseConfig) {
+        self.firebaseConfig = event.data.firebaseConfig;
 
-const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID,
-};
+        importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js');
+        importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js');
 
-firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(self.firebaseConfig);
 
-const messaging = firebase.messaging();
+        const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage((payload) => {
-    console.log('[service-worker.js] Received background message ', payload);
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-        body: payload.notification.body,
-        icon: '/firebase-logo.png'
-    };
+        messaging.onBackgroundMessage(function(payload) {
+            console.log('Received background message ', payload);
+            const notificationTitle = payload.notification.title;
+            const notificationOptions = {
+                body: payload.notification.body,
+                icon: '/firebase-logo.png',
+            };
 
-    self.registration.showNotification(notificationTitle, notificationOptions);
+            self.registration.showNotification(notificationTitle, notificationOptions);
+        });
+    }
 });
 
 if (workbox) {
