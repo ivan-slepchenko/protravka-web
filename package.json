@@ -60,7 +60,7 @@
         "docker-build": "docker build -t protravka-web .",
         "docker-run": "docker run -p 80:80 protravka-web",
         "increase-package-version": "npm version patch",
-        "deploy": "npm run docker-build && wsl --setdefault Ubuntu && bash deploy.sh",
+        "deploy": "npm run increase-package-version && npm run docker-build && wsl --setdefault Ubuntu && bash deploy.sh",
         "ssh-azure-container": "az containerapp exec --name protravka-web --resource-group protravka --container protravka-web --command \"/bin/sh\"",
         "lint:fix": "eslint --fix src"
     },
