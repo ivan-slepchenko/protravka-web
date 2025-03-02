@@ -130,55 +130,55 @@ const DataSynchronizer = () => {
         };
     }, []);
 
-    // useEffect(() => {
-    //     if (!isAuthenticated || !(tkwMeasurements.length > 0 || orders.length > 0)) {
-    //         return;
-    //     }
+    useEffect(() => {
+        if (!isAuthenticated || !(tkwMeasurements.length > 0 || orders.length > 0)) {
+            return;
+        }
 
-    //     const storedMeasurementIds = localStorage.getItem('tkwMeasurementIds');
-    //     const storedOperatorOrderIds = localStorage.getItem('operatorOrderIds');
-    //     const labOrderIds = localStorage.getItem('labOrderIDs');
+        const storedMeasurementIds = localStorage.getItem('tkwMeasurementIds');
+        const storedOperatorOrderIds = localStorage.getItem('operatorOrderIds');
+        const labOrderIds = localStorage.getItem('labOrderIDs');
 
-    //     let oldMeasurementIds = storedMeasurementIds ? JSON.parse(storedMeasurementIds) : [];
-    //     let oldOperatorOrderIds = storedOperatorOrderIds ? JSON.parse(storedOperatorOrderIds) : [];
-    //     let oldLabOrderIds = labOrderIds ? JSON.parse(labOrderIds) : [];
+        let oldMeasurementIds = storedMeasurementIds ? JSON.parse(storedMeasurementIds) : [];
+        let oldOperatorOrderIds = storedOperatorOrderIds ? JSON.parse(storedOperatorOrderIds) : [];
+        let oldLabOrderIds = labOrderIds ? JSON.parse(labOrderIds) : [];
 
-    //     if (isInitialLoadRef.current) {
-    //         isInitialLoadRef.current = false;
-    //     } else {
-    //         try {
-    //             const newMeasurementIds = tkwMeasurements.map((m) => m.id);
-    //             const isNewMeasurementsAdded = newMeasurementIds.some((id) => !oldMeasurementIds.includes(id));
+        if (isInitialLoadRef.current) {
+            isInitialLoadRef.current = false;
+        } else {
+            try {
+                const newMeasurementIds = tkwMeasurements.map((m) => m.id);
+                const isNewMeasurementsAdded = newMeasurementIds.some((id) => !oldMeasurementIds.includes(id));
 
-    //             const newOperatorOrderIds = orders.filter(o => o.status === OrderStatus.RecipeCreated).map((o) => o.id);
-    //             const newLabOrderIds = orders.filter(o => o.status === OrderStatus.LabAssignmentCreated).map((o) => o.id);
+                const newOperatorOrderIds = orders.filter(o => o.status === OrderStatus.RecipeCreated).map((o) => o.id);
+                const newLabOrderIds = orders.filter(o => o.status === OrderStatus.LabAssignmentCreated).map((o) => o.id);
 
-    //             const isNewOperatorOrderAdded = newOperatorOrderIds.some((id) => !oldOperatorOrderIds.includes(id));
-    //             const isNewLabOrderAdded = newLabOrderIds.some((id) => !oldLabOrderIds.includes(id));
+                const isNewOperatorOrderAdded = newOperatorOrderIds.some((id) => !oldOperatorOrderIds.includes(id));
+                const isNewLabOrderAdded = newLabOrderIds.some((id) => !oldLabOrderIds.includes(id));
 
-    //             if (isNewLabOrderAdded || isNewMeasurementsAdded) {
-    //                 if (useLab && user.roles.includes(Role.LABORATORY)) {
-    //                     addAlert(t('alerts.measurements_check'));
-    //                 }
-    //             } 
-    //             if (isNewOperatorOrderAdded) {
-    //                 if (user.roles.includes(Role.OPERATOR)) {
-    //                     addAlert(t('alerts.tasks_to_do'));
-    //                 }
-    //             }
+                if (isNewLabOrderAdded || isNewMeasurementsAdded) {
+                    if (useLab && user.roles.includes(Role.LABORATORY)) {
+                        addAlert(t('alerts.measurements_check'));
+                    }
+                } 
+                if (isNewOperatorOrderAdded) {
+                    if (user.roles.includes(Role.OPERATOR)) {
+                        addAlert(t('alerts.tasks_to_do'));
+                    }
+                }
 
-    //             localStorage.setItem('operatorOrderIds', JSON.stringify(newOperatorOrderIds));
-    //             localStorage.setItem('labOrderIDs', JSON.stringify(newLabOrderIds));
-    //             localStorage.setItem('tkwMeasurementIds', JSON.stringify(newMeasurementIds));
+                localStorage.setItem('operatorOrderIds', JSON.stringify(newOperatorOrderIds));
+                localStorage.setItem('labOrderIDs', JSON.stringify(newLabOrderIds));
+                localStorage.setItem('tkwMeasurementIds', JSON.stringify(newMeasurementIds));
 
-    //         } catch (error) {
-    //             console.error('Failed to check new measurements:', error);
-    //         }
-    //     }
+            } catch (error) {
+                console.error('Failed to check new measurements:', error);
+            }
+        }
 
-    //     localStorage.setItem('tkwMeasurementIds', JSON.stringify(tkwMeasurements.map((m) => m.id)));
-    //     localStorage.setItem('orderIds', JSON.stringify(orders.map((o) => o.id)));
-    // }, [tkwMeasurements, orders, user]);
+        localStorage.setItem('tkwMeasurementIds', JSON.stringify(tkwMeasurements.map((m) => m.id)));
+        localStorage.setItem('orderIds', JSON.stringify(orders.map((o) => o.id)));
+    }, [tkwMeasurements, orders, user]);
 
     useEffect(() => {
         if (isAuthenticated) {
