@@ -3,29 +3,7 @@
 /* global workbox */
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.1.5/workbox-sw.js');
 
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.firebaseConfig) {
-        self.firebaseConfig = event.data.firebaseConfig;
 
-        importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js');
-        importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js');
-
-        firebase.initializeApp(self.firebaseConfig);
-
-        const messaging = firebase.messaging();
-
-        messaging.onBackgroundMessage(function(payload) {
-            console.log('Received background message ', payload);
-            const notificationTitle = payload.notification.title;
-            const notificationOptions = {
-                body: payload.notification.body,
-                icon: '/firebase-logo.png',
-            };
-
-            self.registration.showNotification(notificationTitle, notificationOptions);
-        });
-    }
-});
 
 if (workbox) {
     console.log(`Yay! Workbox is loaded 🎉`);
