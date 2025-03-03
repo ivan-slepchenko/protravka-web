@@ -275,7 +275,7 @@ const LotReport: React.FC = () => {
                             </Table>
                         </Box>
                     </VStack>
-                    {useLab && <LotLabReport />}
+                    {useLab && order.status !== OrderStatus.LabAssignmentCreated && <LotLabReport />}
                 </VStack>
                 <Modal isOpen={isOpen} onClose={onClose}>
                     <ModalOverlay />
