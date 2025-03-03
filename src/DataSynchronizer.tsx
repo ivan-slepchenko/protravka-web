@@ -110,7 +110,7 @@ const DataSynchronizer = () => {
 
                 unsubscribeRef.current = firebase.messaging().onMessage((payload) => {
                     console.log('Message received. ', payload);
-                    addAlert(payload);
+                    addAlert(payload.notification.body);
                 });
 
             } else {
