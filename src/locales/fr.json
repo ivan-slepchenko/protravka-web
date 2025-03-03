@@ -302,8 +302,7 @@
         "language": "Langue"
     },
     "alerts": {
-        "measurements_check": "Nouvelle affectation ajoutée pour les mesures TKW",
-        "tasks_to_do": "Nouveau lot ajouté pour le traitement",
+        "new_tkw_measurement": "Nouvelle mesure TKW créée",
         "new_order_created": {
             "title": "Nouvelle commande créée",
             "message": "Une nouvelle commande est créée et prête à être traitée, consultez votre tableau !"

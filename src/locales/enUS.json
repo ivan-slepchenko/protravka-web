@@ -302,8 +302,7 @@
         "language": "Language"
     },
     "alerts": {
-        "measurements_check": "New assignment added for TKW measurements",
-        "tasks_to_do": "New lot added for treatment",
+        "new_tkw_measurement": "New TKW Measurement Created",
         "new_order_created": {
             "title": "New Order Created",
             "message": "New order is created and ready for treatment, check your board!"

@@ -50,6 +50,7 @@ const DataSynchronizer = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [showErrorModal, setShowErrorModal] = useState(false);
     const unsubscribeRef = useRef<() => void>();
+    const alertShownRef = useRef(false);
 
     useEffect(() => {
         if ('serviceWorker' in navigator) {
@@ -110,7 +111,7 @@ const DataSynchronizer = () => {
 
                 unsubscribeRef.current = firebase.messaging().onMessage((payload) => {
                     console.log('Message received. ', payload);
-                    addAlert(payload.notification.body);
+                    addAlert(t(payload.notification.body));
                 });
 
             } else {
@@ -156,15 +157,18 @@ const DataSynchronizer = () => {
                 const isNewOperatorOrderAdded = newOperatorOrderIds.some((id) => !oldOperatorOrderIds.includes(id));
                 const isNewLabOrderAdded = newLabOrderIds.some((id) => !oldLabOrderIds.includes(id));
 
-                if (isNewLabOrderAdded || isNewMeasurementsAdded) {
-                    if (useLab && user.roles.includes(Role.LABORATORY)) {
-                        addAlert(t('alerts.measurements_check'));
+                if (!alertShownRef.current) {
+                    if (isNewLabOrderAdded || isNewMeasurementsAdded) {
+                        if (useLab && user.roles.includes(Role.LABORATORY)) {
+                            addAlert(t('alerts.new_tkw_measurement'));
+                        }
+                    } 
+                    if (isNewOperatorOrderAdded) {
+                        if (user.roles.includes(Role.OPERATOR)) {
+                            addAlert(t('alerts.new_order_created.title'));
+                        }
                     }
-                } 
-                if (isNewOperatorOrderAdded) {
-                    if (user.roles.includes(Role.OPERATOR)) {
-                        addAlert(t('alerts.tasks_to_do'));
-                    }
+                    alertShownRef.current = true;
                 }
 
                 localStorage.setItem('operatorOrderIds', JSON.stringify(newOperatorOrderIds));
