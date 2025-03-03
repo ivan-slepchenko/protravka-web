@@ -123,12 +123,10 @@ export const FinalizeRecipe = () => {
     const handleSave = useCallback((values: NewOrderState) => {
         if (!orderId || !order) return;
 
-
         if (
             values.tkw === null ||
             values.seedsToTreatKg === null ||
             values.bagSize === null ||
-            values.extraSlurry === null ||
             values.slurryTotalMlRecipeToMix === null ||
             values.slurryTotalGrRecipeToMix === null ||
             values.totalCompoundsDensity === null
@@ -141,10 +139,9 @@ export const FinalizeRecipe = () => {
             ...order,
             ...values,
             id: orderId,
-            tkw: values.tkw,
             seedsToTreatKg: values.seedsToTreatKg,
             bagSize: values.bagSize,
-            extraSlurry: values.extraSlurry,
+            extraSlurry: values.extraSlurry === null ? 0 : values.extraSlurry,
         };
         dispatch(finalizeOrder(updatedOrder)).then(() => {
             dispatch(fetchOrders());
@@ -237,6 +234,7 @@ export const FinalizeRecipe = () => {
                                 const filteredValues = {
                                     ...props.values,
                                     productDetails: props.values.productDetails.filter(pd => pd.productId),
+                                    tkw: props.values.tkw === null ? 0 : props.values.tkw,
                                 };
                                 dispatch(fetchCalculatedValues(filteredValues));
                             }

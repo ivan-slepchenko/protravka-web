@@ -111,6 +111,7 @@ export const NewReceipe = () => {
     const handleSave = (values: NewOrderState, resetForm: () => void) => {
         setIsSaving(true);
         values.status = OrderStatus.RecipeCreated;
+        values.extraSlurry = values.extraSlurry === null ? 0 : values.extraSlurry;
         dispatch(createOrder(values)).then(() => {
             dispatch(fetchOrders());
             dispatch(setOrderState(createNewEmptyOrder()));
@@ -389,7 +390,7 @@ export const NewReceipe = () => {
                                                     step="0.01"
                                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                         props.handleChange(e);
-                                                        dispatch(updateExtraSlurry(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value) || null));
+                                                        dispatch(updateExtraSlurry(parseFloat(e.target.value.endsWith('.') ? e.target.value.slice(0, -1) : e.target.value)));
                                                     }}
                                                     value={props.values.extraSlurry !== null ? props.values.extraSlurry : ''}
                                                     borderColor={props.errors.extraSlurry && props.touched.extraSlurry ? "red.500" : "gray.300"}

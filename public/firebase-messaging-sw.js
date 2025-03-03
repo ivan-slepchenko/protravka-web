@@ -21,5 +21,5 @@ messaging.onBackgroundMessage(function(payload) {
         body: payload.notification.body
     };
 
-    self.registration.showNotification('PIZDA', notificationOptions);
+    self.registration.showNotification(payload.notification.title, notificationOptions);
 });
