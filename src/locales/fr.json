@@ -302,8 +302,20 @@
         "language": "Langue"
     },
     "alerts": {
-        "measurements_check": "New assignment added for TKW measurements",
-        "tasks_to_do": "New lot added for treatment"
+        "measurements_check": "Nouvelle affectation ajoutée pour les mesures TKW",
+        "tasks_to_do": "Nouveau lot ajouté pour le traitement",
+        "new_order_created": {
+            "title": "Nouvelle commande créée",
+            "message": "Une nouvelle commande est créée et prête à être traitée, consultez votre tableau !"
+        },
+        "new_processed_tkw_measurement": {
+            "title": "Nouvelle mesure TKW traitée créée",
+            "message": "Une nouvelle demande de mesure TKW traitée est prête pour traitement, consultez votre tableau !"
+        },
+        "new_raw_tkw_measurement": {
+            "title": "Nouvelle mesure TKW brute créée",
+            "message": "Une nouvelle demande de mesure TKW brute est prête pour traitement, consultez votre tableau !"
+        }
     },
     "index": {
         "rendering_app": "Rendu de l'application",
