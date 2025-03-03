@@ -77,8 +77,11 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                     {order.crop?.name}, {order.variety?.name}
                 </Badge>
                 {statusLabel}
-                {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TkwConfirmed && <Text px={1} gridColumn="span 3">
+                {order.status === OrderStatus.RecipeCreated && <Text px={1} gridColumn="span 3">
                     {t('card.for')} {order.operator?.name} {order.operator?.surname}
+                </Text>}
+                {[OrderStatus.TreatmentInProgress, OrderStatus.LabToControl, OrderStatus.ToAcknowledge, OrderStatus.Completed].indexOf(order.status) >= 0 && <Text px={1} gridColumn="span 3">
+                    {t('card.operator')}: {order.operator?.name} {order.operator?.surname}
                 </Text>}
                 <Text px={1} gridColumn="span 2" color="gray.600">{t('card.lot')}:</Text>
                 <Text px={1} isTruncated>{order.lotNumber}</Text>

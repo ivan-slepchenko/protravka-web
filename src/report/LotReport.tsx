@@ -150,7 +150,7 @@ const LotReport: React.FC = () => {
                             </Thead>
                             <Tbody>
                                 <Tr>
-                                    <Td>{order.tkw}</Td>
+                                    <Td>{order.tkw?.toFixed(1)}</Td>
                                     <Td>{unitNumberOfSeeds}</Td>
                                     <Td>{order.orderRecipe ? order.orderRecipe.unitWeight.toFixed(2) : 'N/A'}</Td>
                                     <Td>{order.orderRecipe ? order.orderRecipe.nbSeedsUnits.toFixed(2) : 'N/A'}</Td>
