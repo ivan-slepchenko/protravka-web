@@ -303,7 +303,19 @@
     },
     "alerts": {
         "measurements_check": "New assignment added for TKW measurements",
-        "tasks_to_do": "New lot added for treatment"
+        "tasks_to_do": "New lot added for treatment",
+        "new_order_created": {
+            "title": "New Order Created",
+            "message": "New order is created and ready for treatment, check your board!"
+        },
+        "new_processed_tkw_measurement": {
+            "title": "New Processed TKW Measurement Created",
+            "message": "New processed TKW measurement request is ready for processing, check your board!"
+        },
+        "new_raw_tkw_measurement": {
+            "title": "New Raw TKW Measurement Created",
+            "message": "New raw TKW measurement request is ready for processing, check your board!"
+        }
     },
     "index": {
         "rendering_app": "Rendering App",
