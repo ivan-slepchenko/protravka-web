@@ -12,7 +12,7 @@ const Alerts = React.memo(({ alerts }: { alerts: string[] }) => (
         {alerts.map((alert, index) => (
             <Alert key={index} status="success" variant="subtle" mb={4}>
                 <AlertIcon />
-                {alert}
+                <span dangerouslySetInnerHTML={{ __html: alert }} />
             </Alert>
         ))}
     </Box>
@@ -28,7 +28,7 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
         setAlerts((prevAlerts) => [...prevAlerts, message]);
         setTimeout(() => {
             setAlerts((prevAlerts) => prevAlerts.slice(1));
-        }, 3000);
+        }, 300000);
     }, []);
 
     // Memoize children to prevent unnecessary re-renders

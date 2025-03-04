@@ -8,7 +8,6 @@ import { fetchCrops } from "./store/cropsSlice";
 import { fetchProducts } from "./store/productsSlice";
 import { fetchOperators, updateFirebaseToken } from "./store/operatorsSlice";
 import { fetchTkwMeasurements } from "./store/executionSlice";
-// import { OrderStatus } from "./store/newOrderSlice";
 import {
     Modal,
     ModalOverlay,
@@ -22,7 +21,6 @@ import {
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/messaging';
 import { getMessaging, getToken } from "firebase/messaging";
-// import { useTranslation } from "react-i18next";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -38,19 +36,14 @@ if (!firebase.apps.length) {
 }
 
 const DataSynchronizer = () => {
-    // const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const { addAlert } = useAlert();
     const user = useSelector((state: RootState) => state.user);
-    const tkwMeasurements = useSelector((state: RootState) => state.execution.tkwMeasurements);
-    const orders = useSelector((state: RootState) => state.orders.activeOrders);
-    const isInitialLoadRef = useRef(true);
     const useLab = user.company?.featureFlags.useLab;
     const isAuthenticated = user.email !== null;
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [showErrorModal, setShowErrorModal] = useState(false);
     const unsubscribeRef = useRef<() => void>();
-    // const alertShownRef = useRef(false);
 
     useEffect(() => {
         if ('serviceWorker' in navigator) {
@@ -111,8 +104,7 @@ const DataSynchronizer = () => {
 
                 unsubscribeRef.current = firebase.messaging().onMessage((payload) => {
                     console.log('Message received. ', payload);
-                    // addAlert(t(payload.notification.body));
-                    addAlert(payload.notification.body);
+                    addAlert(`<b>${payload.notification.title}</b></br>${payload.notification.body}`);
                 });
 
             } else {
@@ -131,59 +123,6 @@ const DataSynchronizer = () => {
             }
         };
     }, []);
-
-    useEffect(() => {
-        if (!isAuthenticated || !(tkwMeasurements.length > 0 || orders.length > 0)) {
-            return;
-        }
-
-        // const storedMeasurementIds = localStorage.getItem('tkwMeasurementIds');
-        // const storedOperatorOrderIds = localStorage.getItem('operatorOrderIds');
-        // const labOrderIds = localStorage.getItem('labOrderIDs');
-
-        // let oldMeasurementIds = storedMeasurementIds ? JSON.parse(storedMeasurementIds) : [];
-        // let oldOperatorOrderIds = storedOperatorOrderIds ? JSON.parse(storedOperatorOrderIds) : [];
-        // let oldLabOrderIds = labOrderIds ? JSON.parse(labOrderIds) : [];
-
-        if (isInitialLoadRef.current) {
-            isInitialLoadRef.current = false;
-        } else {
-            // try {
-            //     const newMeasurementIds = tkwMeasurements.map((m) => m.id);
-            //     const isNewMeasurementsAdded = newMeasurementIds.some((id) => !oldMeasurementIds.includes(id));
-
-            //     const newOperatorOrderIds = orders.filter(o => o.status === OrderStatus.RecipeCreated).map((o) => o.id);
-            //     const newLabOrderIds = orders.filter(o => o.status === OrderStatus.LabAssignmentCreated).map((o) => o.id);
-
-            //     const isNewOperatorOrderAdded = newOperatorOrderIds.some((id) => !oldOperatorOrderIds.includes(id));
-            //     const isNewLabOrderAdded = newLabOrderIds.some((id) => !oldLabOrderIds.includes(id));
-
-            //     if (!alertShownRef.current) {
-            //         if (isNewLabOrderAdded || isNewMeasurementsAdded) {
-            //             if (useLab && user.roles.includes(Role.LABORATORY)) {
-            //                 addAlert(t('alerts.new_tkw_measurement'));
-            //             }
-            //         } 
-            //         if (isNewOperatorOrderAdded) {
-            //             if (user.roles.includes(Role.OPERATOR)) {
-            //                 addAlert(t('alerts.new_order_created.title'));
-            //             }
-            //         }
-            //         alertShownRef.current = true;
-            //     }
-
-            //     localStorage.setItem('operatorOrderIds', JSON.stringify(newOperatorOrderIds));
-            //     localStorage.setItem('labOrderIDs', JSON.stringify(newLabOrderIds));
-            //     localStorage.setItem('tkwMeasurementIds', JSON.stringify(newMeasurementIds));
-
-            // } catch (error) {
-            //     console.error('Failed to check new measurements:', error);
-            // }
-        }
-
-        localStorage.setItem('tkwMeasurementIds', JSON.stringify(tkwMeasurements.map((m) => m.id)));
-        localStorage.setItem('orderIds', JSON.stringify(orders.map((o) => o.id)));
-    }, [tkwMeasurements, orders, user]);
 
     useEffect(() => {
         if (isAuthenticated) {

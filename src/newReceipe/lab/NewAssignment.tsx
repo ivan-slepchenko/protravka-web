@@ -16,7 +16,6 @@ import {
 } from "../../store/newOrderSlice";
 import { createOrder, fetchOrders } from "../../store/ordersSlice";
 import { useNavigate } from "react-router-dom";
-import { useAlert } from "../../contexts/AlertContext";
 import { useTranslation } from 'react-i18next';
 
 const NewAssignment = () => {
@@ -31,7 +30,7 @@ const NewAssignment = () => {
     const [doNotShowAgain, setDoNotShowAgain] = useState(() => {
         return localStorage.getItem('doNotShowAgain') === 'true';
     });
-    const addAlert = useAlert().addAlert;
+
     const [isSaving, setIsSaving] = useState(false);
 
     const validationSchema = Yup.object().shape({
@@ -52,8 +51,6 @@ const NewAssignment = () => {
             setIsSaving(false);
             if (!doNotShowAgain) {
                 setShowPopup(true);
-            } else {
-                addAlert(t('new_assignment.assignment_created'));
             }
         });
     };
@@ -65,7 +62,7 @@ const NewAssignment = () => {
                 ...formData,
                 cropId: null,
                 varietyId: null,
-                lotNumber: '',
+                lotNumber: null,
                 bagSize: null,
                 seedsToTreatKg: null
             },
@@ -178,7 +175,7 @@ const NewAssignment = () => {
                                                 name="lotNumber"
                                                 placeholder="#123"
                                                 size="md"
-                                                value={props.values.lotNumber === "" ? undefined : props.values.lotNumber}
+                                                value={props.values.lotNumber !== null ? props.values.lotNumber : undefined}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
                                                     dispatch(updateLotNumber(e.target.value));

@@ -295,7 +295,7 @@ export const NewReceipe = () => {
                                                 name="lotNumber"
                                                 placeholder="#123"
                                                 size="md"
-                                                value={props.values.lotNumber === "" ? undefined : props.values.lotNumber}
+                                                value={props.values.lotNumber !== null ? props.values.lotNumber : undefined}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                     props.handleChange(e);
                                                     dispatch(updateLotNumber(e.target.value));

@@ -79,7 +79,7 @@ export interface NewOrderState {
     operatorId: string | null;
     cropId: string | null;
     varietyId: string | null;
-    lotNumber: string;
+    lotNumber: string | null;
     tkw: number | null;
     seedsToTreatKg: number | null;
     packaging: Packaging;
