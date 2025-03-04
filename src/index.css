@@ -5,12 +5,17 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 html,
 body {
     height: 100vh;
     overflow: hidden;
+}
+
+:root {
+    --vh: 100%;
 }
 
 code {
@@ -111,3 +116,14 @@ code {
   border: 3px solid #ff3c00; /* Gold color for highlighting */
   transition: border 0.3s ease;
 }
+```
+
+<script>
+    function setVhProperty() {
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    }
+
+    window.addEventListener('resize', setVhProperty);
+    window.addEventListener('orientationchange', setVhProperty);
+    setVhProperty();
+</script>

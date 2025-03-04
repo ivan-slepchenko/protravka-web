@@ -30,6 +30,25 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <!-- Add this script to update the --vh custom property -->
+    <script>
+        function setVhProperty() {
+            /**
+             *
+             * The 0.01 multiplier is used to convert the window.innerHeight value from pixels to vh units. Here's a detailed explanation:
+             * window.innerHeight gives the height of the viewport in pixels.
+             * By multiplying window.innerHeight by 0.01, we convert the pixel value to a vh unit. This is because 1vh is equal to 1% of the viewport height.
+             * Therefore, window.innerHeight * 0.01 gives us the value of 1vh in pixels, which we then set as the value of the --vh custom property.
+             * This approach ensures that the --vh custom property accurately reflects the viewport height, even when the address bar is present on mobile browsers.
+             */
+            
+            document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        }
+
+        window.addEventListener('resize', setVhProperty);
+        window.addEventListener('orientationchange', setVhProperty);
+        setVhProperty();
+    </script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
