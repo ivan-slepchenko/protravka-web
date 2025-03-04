@@ -28,7 +28,7 @@ export const AlertProvider = ({ children }: { children: React.ReactNode }) => {
         setAlerts((prevAlerts) => [...prevAlerts, message]);
         setTimeout(() => {
             setAlerts((prevAlerts) => prevAlerts.slice(1));
-        }, 300000);
+        }, 10000);
     }, []);
 
     // Memoize children to prevent unnecessary re-renders
