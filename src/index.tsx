@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { ChakraProvider, Box, VStack, HStack} from "@chakra-ui/react";
+import { ChakraProvider, Box, VStack, HStack, Link} from "@chakra-ui/react";
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor, AppDispatch, RootState } from './store/store';
@@ -39,6 +39,8 @@ const App = () => {
     const user = useSelector((state: RootState) => state.user);
     const useLab = user.company?.featureFlags.useLab;
     const isAuthenticated = user.email !== null;
+    const [isPWA, setIsPWA] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     const handleLogout = () => {
         dispatch(logoutUser());
@@ -49,6 +51,31 @@ const App = () => {
             dispatch(fetchUserByToken());
         }
     }, [dispatch, isAuthenticated]);
+
+    useEffect(() => {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+        setIsPWA(isStandalone);
+
+        const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+        const mobile = /android|iphone|ipad|ipod|opera mini|iemobile|wpdesktop/i.test(userAgent);
+        setIsMobile(mobile);
+    }, []);
+
+    if (isMobile && !isPWA) {
+        return (
+            <Box display="flex" alignItems="center" justifyContent="center" height="100vh" p={4}>
+                <VStack>
+                    <Box fontSize="xl" fontWeight="bold">This app works as PWA only</Box>
+                    <Box>Please open as PWA</Box>
+                    <Box>
+                        <Link href="https://en.wikipedia.org/wiki/Putin_khuylo!" isExternal color="blue.500">
+                            There should be PIZDATAYA link or the instruction on how to install/open it as PWA
+                        </Link>
+                    </Box>
+                </VStack>
+            </Box>
+        );
+    }
 
     console.log('Rendering App');
 
