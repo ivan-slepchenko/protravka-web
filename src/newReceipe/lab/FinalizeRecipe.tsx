@@ -127,6 +127,7 @@ export const FinalizeRecipe = () => {
             values.tkw === null ||
             values.seedsToTreatKg === null ||
             values.bagSize === null ||
+            values.lotNumber === null ||
             values.slurryTotalMlRecipeToMix === null ||
             values.slurryTotalGrRecipeToMix === null ||
             values.totalCompoundsDensity === null
@@ -139,6 +140,7 @@ export const FinalizeRecipe = () => {
             ...order,
             ...values,
             id: orderId,
+            lotNumber: values.lotNumber,
             seedsToTreatKg: values.seedsToTreatKg,
             bagSize: values.bagSize,
             extraSlurry: values.extraSlurry === null ? 0 : values.extraSlurry,
