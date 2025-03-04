@@ -64,9 +64,16 @@ const LabBoard: React.FC = () => {
 
     useEffect(() => {
         if (Array.isArray(tkwMeasurements)) {
-            setMeasurementsToControl(
-                tkwMeasurements.filter((measurement) => measurement.probeDate === null)
-            );
+            const latestMeasurements = tkwMeasurements
+                .filter((measurement) => measurement.probeDate === null)
+                .reduce((acc, measurement) => {
+                    const existing = acc.find((m) => m.orderExecution.orderId === measurement.orderExecution.orderId);
+                    if (!existing || new Date(measurement.creationDate) > new Date(existing.creationDate)) {
+                        return acc.filter((m) => m.orderExecution.orderId !== measurement.orderExecution.orderId).concat(measurement);
+                    }
+                    return acc;
+                }, [] as TkwMeasurement[]);
+            setMeasurementsToControl(latestMeasurements);
         } else {
             //TODO: Handle this case, should not happen!
             console.log('tkwMeasurements is not array, got:', tkwMeasurements);
