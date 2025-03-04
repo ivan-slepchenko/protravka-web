@@ -65,13 +65,13 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
             cursor="pointer"
             onClick={onClick}
         >
-            <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
+            <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm" w="full">
                 <Badge
                     colorScheme={stateToLabColumn[order.status] === LabColumn.TREATMENT ? 'orange' : 'green'}
                     gridColumn="span 3"
                 >
                     <HStack w="full" justifyContent="space-between">
-                        <Text isTruncated>
+                        <Text isTruncated w="full">
                             {order.crop?.name}, {order.variety?.name}
                         </Text>
                         <Text>

@@ -17,10 +17,10 @@ const TkwDetailsModal: React.FC<TkwDetailsModalProps> = ({ onClose, order, measu
     return (
         <Modal isOpen={!!order} onClose={onClose} size="full">
             <ModalOverlay />
-            <ModalContent borderRadius="none" h="full">
+            <ModalContent borderRadius="none" h="full" w='full'>
                 <ModalHeader>{t('tkw_details_page.tkw_details')}</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody h="full" overflow='auto'>
+                <ModalBody h="full" overflow='auto' w='full'>
                     <TkwDetailsContent order={order} measurements={measurements} />
                 </ModalBody>
                 <ModalFooter>
