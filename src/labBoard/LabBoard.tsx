@@ -64,19 +64,22 @@ const LabBoard: React.FC = () => {
 
     useEffect(() => {
         if (Array.isArray(tkwMeasurements)) {
-            const latestMeasurements = tkwMeasurements
-                .filter((measurement) => measurement.probeDate === null)
-                .reduce((acc, measurement) => {
-                    const existing = acc.find((m) => m.orderExecution.orderId === measurement.orderExecution.orderId);
-                    if (!existing || new Date(measurement.creationDate) > new Date(existing.creationDate)) {
-                        return acc.filter((m) => m.orderExecution.orderId !== measurement.orderExecution.orderId).concat(measurement);
-                    }
-                    return acc;
-                }, [] as TkwMeasurement[]);
+            // Group measurements by order and keep only the latest one
+            const latestByOrder = tkwMeasurements.reduce((acc, m) => {
+                const existing = acc[m.orderExecution.orderId];
+                if (!existing || new Date(m.creationDate) > new Date(existing.creationDate)) {
+                    acc[m.orderExecution.orderId] = m;
+                }
+                return acc;
+            }, {} as Record<string, TkwMeasurement>);
+
+            // Include only orders whose latest measurement has probeDate === null
+            const latestMeasurements = Object.values(latestByOrder)
+                .filter((m) => m.probeDate === null);
+
             setMeasurementsToControl(latestMeasurements);
         } else {
-            //TODO: Handle this case, should not happen!
-            console.log('tkwMeasurements is not array, got:', tkwMeasurements);
+            console.log('tkwMeasurements is not an array, got:', tkwMeasurements);
         }
     }, [tkwMeasurements]);
 
