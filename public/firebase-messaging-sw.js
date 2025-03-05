@@ -17,7 +17,8 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(function(payload) {
     console.log('Received background message ', payload);
     const notificationOptions = {
-        body: payload.notification.body
+        body: payload.notification.body,
+        data: payload.data // Add click_action to data
     };
 
     self.registration.showNotification(payload.notification.title, notificationOptions);
@@ -25,7 +26,7 @@ messaging.onBackgroundMessage(function(payload) {
 
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
-    const clickAction = event.notification.data.click_action;
+    const clickAction = event.notification.data.click_action; // click_action is now available in data
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
             for (var i = 0; i < clientList.length; i++) {
