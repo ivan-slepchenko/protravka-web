@@ -34,7 +34,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
             await dispatch(saveOrderExecution());
         } catch (err) {
             dispatch(nextPage(OrderExecutionPage.AllAddedProductsOverview));
-            setError(t('order_execution.internet_not_available'));
+            // setError(t('order_execution.internet_not_available'));
         }
     }, [dispatch, currentOrder.id, t]);
 
