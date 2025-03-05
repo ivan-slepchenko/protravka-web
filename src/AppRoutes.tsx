@@ -28,7 +28,7 @@ const AppRoutes = ({ useLab }: { useLab?: boolean }) => {
                 {useLab === undefined ? <div>Loading...</div> : useLab ? <NewAssignment /> : <NewReceipeNoLab />}
             </RequireAuth>} />
             <Route path="/finalize/:orderId" element={<RequireAuth roles={[Role.MANAGER]}><FinalizeRecipe /></RequireAuth>} />
-            <Route path="/lab" element={<RequireAuth roles={[Role.LABORATORY]}><LabBoard /></RequireAuth>} />
+            <Route path="/lab/:orderId?" element={<RequireAuth roles={[Role.LABORATORY]}><LabBoard /></RequireAuth>} />
             <Route path="/board" element={<RequireAuth roles={[Role.MANAGER]}><Board /></RequireAuth>} />
             <Route path="/report" element={<RequireAuth roles={[Role.MANAGER]}><Report /></RequireAuth>} />
             <Route path="/operators" element={<RequireAuth roles={[Role.ADMIN]}><Operators /></RequireAuth>} />

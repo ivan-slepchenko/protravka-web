@@ -1,4 +1,3 @@
-
 importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js');
 const firebaseConfig = {
@@ -22,4 +21,22 @@ messaging.onBackgroundMessage(function(payload) {
     };
 
     self.registration.showNotification(payload.notification.title, notificationOptions);
+});
+
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    const clickAction = event.notification.data.click_action;
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+            for (var i = 0; i < clientList.length; i++) {
+                var client = clientList[i];
+                if (client.url === '/' && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            if (clients.openWindow) {
+                return clients.openWindow(clickAction);
+            }
+        })
+    );
 });

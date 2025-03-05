@@ -11,6 +11,7 @@ import RecipeInProgressTkwDetailsInputModal from './RecipeInProgressTkwDetailsIn
 import { ControlledOrderList } from './ControlledOrderCard';
 import TkwDetailsModal from './TkwDetailsModal';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 const LabBoard: React.FC = () => {
     const { t } = useTranslation();
@@ -22,6 +23,7 @@ const LabBoard: React.FC = () => {
     const [measurementsToControl, setMeasurementsToControl] = useState<TkwMeasurement[]>([]);
     const [controlledOrders, setControlledOrders] = useState<Order[]>([]);
     const [selectedControlledOrder, setSelectedControlledOrder] = useState<Order | null>(null);
+    const { orderId } = useParams<{ orderId?: string }>();
 
     const handleRecipeClick = (order: Order) => {
         setSelectedOrder(order);
@@ -82,6 +84,20 @@ const LabBoard: React.FC = () => {
             console.log('tkwMeasurements is not an array, got:', tkwMeasurements);
         }
     }, [tkwMeasurements]);
+
+    useEffect(() => {
+        if (orderId) {
+            const measurement = tkwMeasurements.find(m => m.orderExecution.orderId === orderId);
+            if (measurement) {
+                setSelectedMeasurement(measurement);
+            } else {
+                const order = orders.find(o => o.id === orderId);
+                if (order) {
+                    setSelectedOrder(order);
+                }
+            }
+        }
+    }, [orderId, orders, tkwMeasurements]);
 
     const ToControl = t('lab_board.to_control');
     const Controlled = t('lab_board.controlled');
