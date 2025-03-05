@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Button, VStack, HStack } from '@chakra-ui/react';
+import { Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Button, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Spinner } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { nextPage, saveOrderExecution, saveOrderExecutionTreatmentStartTime } from '../store/executionSlice';
@@ -11,7 +11,9 @@ const OrderExecution5AllAddedProductsOverview = () => {
     const dispatch: AppDispatch = useDispatch();
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
-    const [error, setError] = useState<string | null>(null);
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     if (currentOrder === null || currentOrderExecution === null) {
         return null;
@@ -27,14 +29,16 @@ const OrderExecution5AllAddedProductsOverview = () => {
     const totalActualQty = currentOrderExecution.productExecutions.reduce((total, product) => total + (product.appliedRateKg !== undefined ? product.appliedRateKg : 0), 0) || 0;
 
     const handleNextButtonClicked = React.useCallback(async () => {
+        setIsSaving(true);
         try {
-            setError(null);
             dispatch(nextPage()); //we increase page, then save order execution, to sync page with backend.
             await dispatch(saveOrderExecutionTreatmentStartTime(currentOrder.id));
             await dispatch(saveOrderExecution());
         } catch (err) {
             dispatch(nextPage(OrderExecutionPage.AllAddedProductsOverview));
-            // setError(t('order_execution.internet_not_available'));
+            onOpen();
+        } finally {
+            setIsSaving(false);
         }
     }, [dispatch, currentOrder.id, t]);
 
@@ -71,13 +75,34 @@ const OrderExecution5AllAddedProductsOverview = () => {
                     </Tfoot>
                 </Table>
             </VStack>
-            {error && <Text color="red.500">{error}</Text>}
             <Text mt='auto' fontSize="lg" textAlign="center">{t('order_execution.push_to_start_treatment')}</Text>
             <HStack justifyContent={"center"}>
-                <Button width="100px" colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }} onClick={handleNextButtonClicked}>
-                    {t('order_execution.next')}
+                <Button width="100px" colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }} onClick={handleNextButtonClicked} isDisabled={isSaving}>
+                    {isSaving ? <Spinner size="sm" /> : t('order_execution.next')}
                 </Button>
             </HStack>
+            <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+                isCentered
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent margin={4}>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            {t('order_execution.internet_connection_required')}
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                            {t('order_execution.internet_connection_required_message')}
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                {t('order_execution.close')}
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
         </VStack>
     );
 };
