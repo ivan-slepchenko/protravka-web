@@ -103,8 +103,9 @@ const DataSynchronizer = () => {
                 dispatch(updateFirebaseToken(token));
 
                 unsubscribeRef.current = firebase.messaging().onMessage((payload) => {
-                    console.log('Message received. ', payload);
                     addAlert(`<b>${payload.notification.title}</b></br>${payload.notification.body}`);
+                    dispatch(fetchTkwMeasurements());
+                    dispatch(fetchOrders());
                 });
 
             } else {
@@ -131,9 +132,6 @@ const DataSynchronizer = () => {
             }
 
             dispatch(fetchOrders());
-            setInterval(() => {
-                dispatch(fetchOrders());
-            }, 10000);
 
             if (user.roles.includes(Role.ADMIN) || user.roles.includes(Role.MANAGER)) {
                 dispatch(fetchCrops());
@@ -143,9 +141,6 @@ const DataSynchronizer = () => {
 
             if (useLab && user.roles.includes(Role.LABORATORY)) {
                 dispatch(fetchTkwMeasurements());
-                setInterval(() => {
-                    dispatch(fetchTkwMeasurements());
-                }, 10000);
             }
         }
     }, [dispatch, user, useLab, isAuthenticated]);

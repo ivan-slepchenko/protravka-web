@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, Table, Thead, Tbody, Tr, Th, Td, Tfoot, Button, VStack, HStack } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { nextPage, saveOrderExecution, saveOrderExecutionTreatmentStartTime } from '../store/executionSlice';
 import { useTranslation } from 'react-i18next';
+import { OrderExecutionPage } from './OrderExecutionPage';
 
 const OrderExecution5AllAddedProductsOverview = () => {
     const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
+    const [error, setError] = useState<string | null>(null);
 
     if (currentOrder === null || currentOrderExecution === null) {
         return null;
@@ -24,11 +26,17 @@ const OrderExecution5AllAddedProductsOverview = () => {
     const totalTargetQty = currentOrder.productDetails.reduce((total, product) => total + getTargetQty(product.product?.id), 0) || 0;
     const totalActualQty = currentOrderExecution.productExecutions.reduce((total, product) => total + (product.appliedRateKg !== undefined ? product.appliedRateKg : 0), 0) || 0;
 
-    const handleNextButtonClicked = React.useCallback(() => {
-        dispatch(nextPage()); //we increase page, then save order execution, to sync page with backend.
-        dispatch(saveOrderExecutionTreatmentStartTime(currentOrder.id));
-        dispatch(saveOrderExecution());
-    }, [dispatch, currentOrder.id]);
+    const handleNextButtonClicked = React.useCallback(async () => {
+        try {
+            setError(null);
+            dispatch(nextPage()); //we increase page, then save order execution, to sync page with backend.
+            await dispatch(saveOrderExecutionTreatmentStartTime(currentOrder.id));
+            await dispatch(saveOrderExecution());
+        } catch (err) {
+            dispatch(nextPage(OrderExecutionPage.AllAddedProductsOverview));
+            setError(t('order_execution.internet_not_available'));
+        }
+    }, [dispatch, currentOrder.id, t]);
 
     return (
         <VStack justifyContent="center" w="full" h="full" position={"relative"}>
@@ -63,6 +71,7 @@ const OrderExecution5AllAddedProductsOverview = () => {
                     </Tfoot>
                 </Table>
             </VStack>
+            {error && <Text color="red.500">{error}</Text>}
             <Text mt='auto' fontSize="lg" textAlign="center">{t('order_execution.push_to_start_treatment')}</Text>
             <HStack justifyContent={"center"}>
                 <Button width="100px" colorScheme="orange" borderRadius="full" _hover={{ backgroundColor: 'orange.200' }} onClick={handleNextButtonClicked}>

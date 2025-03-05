@@ -9,7 +9,7 @@ const OrderExecution2ApplicationMethod = () => {
     const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
 
-    const handleApplicationMethodSelect = (method: string) => {
+    const handleApplicationMethodSelect = async (method: string) => {
         dispatch(setApplicationMethod(method));
         dispatch(nextPage()); //we increase page, then save order execution, to sync page with backend.
         dispatch(saveOrderExecution());

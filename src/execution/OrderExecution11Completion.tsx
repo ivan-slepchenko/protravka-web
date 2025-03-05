@@ -26,8 +26,8 @@ const OrderExecution11Completion = () => {
     const handleCompleteClick = async () => {
         setIsSaving(true);
         try {
-            await dispatch(saveOrderExecution()).unwrap();
             dispatch(nextPage(OrderExecutionPage.InitialOverview));
+            await dispatch(saveOrderExecution()).unwrap();
             if (useLab) {
                 dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.LabToControl }));
             } else {
@@ -40,6 +40,7 @@ const OrderExecution11Completion = () => {
             }
         } catch (error) {
             console.log('Internet is not available: ', error);
+            dispatch(nextPage(OrderExecutionPage.Completion));
             onOpen();
         } finally {
             setIsSaving(false);
