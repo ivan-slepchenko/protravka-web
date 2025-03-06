@@ -95,6 +95,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     const handleBack = () => {
         setIsPhotoState(false);
         stopCamera();
+        handleClose();
     };
 
     const handleSave = useCallback(() => {

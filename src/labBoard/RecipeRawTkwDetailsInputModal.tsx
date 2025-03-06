@@ -95,6 +95,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     const handleBack = () => {
         setIsPhotoState(false);
         stopCamera();
+        handleClose();
     };
 
     return (
