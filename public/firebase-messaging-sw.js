@@ -16,28 +16,49 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function(payload) {
     console.log('Received background message ', payload);
-    const notificationOptions = {
+    self.registration.showNotification(payload.data.title, {
+        body: payload.data.body,
         data: payload.data, // Add click_action to data
         requireInteraction: true,
-    };
-
-    self.registration.showNotification(payload.data.title, notificationOptions);
+        actions: [{
+            action: 'open',
+            title: 'Open'
+        }]
+    });
 });
 
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
-    const clickAction = event.notification.data.click_action; // click_action is now available in data
-    event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-            for (var i = 0; i < clientList.length; i++) {
-                var client = clientList[i];
-                if (client.url === '/' && 'focus' in client) {
-                    return client.focus();
+    const clickAction = event.notification.data.clickAction; // click_action is now available in data
+    if (event.action === 'open') {
+        // Handle the 'open' button click
+        event.waitUntil(
+            clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+                for (var i = 0; i < clientList.length; i++) {
+                    var client = clientList[i];
+                    if (client.url === '/' && 'focus' in client) {
+                        return client.focus();
+                    }
                 }
-            }
-            if (clients.openWindow) {
-                return clients.openWindow(clickAction);
-            }
-        })
-    );
+                if (clients.openWindow) {
+                    return clients.openWindow(clickAction);
+                }
+            })
+        );
+    } else {
+        // Handle the notification click
+        event.waitUntil(
+            clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+                for (var i = 0; i < clientList.length; i++) {
+                    var client = clientList[i];
+                    if (client.url === '/' && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+                if (clients.openWindow) {
+                    return clients.openWindow(clickAction);
+                }
+            })
+        );
+    }
 });
