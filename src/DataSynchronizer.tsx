@@ -103,7 +103,7 @@ const DataSynchronizer = () => {
                 dispatch(updateFirebaseToken(token));
 
                 unsubscribeRef.current = firebase.messaging().onMessage((payload) => {
-                    addAlert(`<b>${payload.notification.title}</b></br>${payload.notification.body}`);
+                    addAlert(`<b>${payload.data.title}</b></br>${payload.data.body}`);
                     dispatch(fetchTkwMeasurements());
                     dispatch(fetchOrders());
                 });

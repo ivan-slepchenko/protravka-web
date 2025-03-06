@@ -425,7 +425,7 @@
         "clear_all": "Clear All",
         "done": "Done",
         "form_errors": "Form Errors",
-        "recipe_created": "Receipe Created",
+        "recipe_created": "Receipe Successfully Created",
         "recipe_created_message": "Recipe successfully created for processing on {{date}}",
         "view_in_board": "You can view this Recipe in the Board, by clicking on your Receipe and opening Recipe Tab.",
         "do_not_show_again": "Do not show this message again.",

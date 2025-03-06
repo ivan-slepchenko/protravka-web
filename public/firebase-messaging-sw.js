@@ -17,11 +17,11 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(function(payload) {
     console.log('Received background message ', payload);
     const notificationOptions = {
-        body: payload.notification.body,
-        data: payload.data // Add click_action to data
+        data: payload.data, // Add click_action to data
+        requireInteraction: true,
     };
 
-    self.registration.showNotification(payload.notification.title, notificationOptions);
+    self.registration.showNotification(payload.data.title, notificationOptions);
 });
 
 self.addEventListener('notificationclick', function(event) {
