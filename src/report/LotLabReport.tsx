@@ -66,23 +66,26 @@ const LotLabReport: React.FC = () => {
     const upperLimit10 = averageTkw * 1.10;
     const lowerLimit10 = averageTkw * 0.90;
 
-    const okSamples = tkwMeasurements.filter(measurement => 
-        (measurement.tkwProbe1 && measurement.tkwProbe1 >= lowerLimit5 && measurement.tkwProbe1 <= upperLimit5) ||
-        (measurement.tkwProbe2 && measurement.tkwProbe2 >= lowerLimit5 && measurement.tkwProbe2 <= upperLimit5) ||
-        (measurement.tkwProbe3 && measurement.tkwProbe3 >= lowerLimit5 && measurement.tkwProbe3 <= upperLimit5)
-    ).length;
+    const okSamples = tkwMeasurements.filter(measurement => {
+        const probes = [measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3].filter(n => n !== undefined);
+        if (probes.length === 0) return false;
+        const avg = probes.reduce((sum, val) => sum + val!, 0) / probes.length;
+        return avg >= lowerLimit5 && avg <= upperLimit5;
+    }).length;
 
-    const monitoringSamples = tkwMeasurements.filter(measurement => 
-        (measurement.tkwProbe1 && ((measurement.tkwProbe1 >= lowerLimit10 && measurement.tkwProbe1 < lowerLimit5) || (measurement.tkwProbe1 > upperLimit5 && measurement.tkwProbe1 <= upperLimit10))) ||
-        (measurement.tkwProbe2 && ((measurement.tkwProbe2 >= lowerLimit10 && measurement.tkwProbe2 < lowerLimit5) || (measurement.tkwProbe2 > upperLimit5 && measurement.tkwProbe2 <= upperLimit10))) ||
-        (measurement.tkwProbe3 && ((measurement.tkwProbe3 >= lowerLimit10 && measurement.tkwProbe3 < lowerLimit5) || (measurement.tkwProbe3 > upperLimit5 && measurement.tkwProbe3 <= upperLimit10)))
-    ).length;
+    const monitoringSamples = tkwMeasurements.filter(measurement => {
+        const probes = [measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3].filter(n => n !== undefined);
+        if (probes.length === 0) return false;
+        const avg = probes.reduce((sum, val) => sum + val!, 0) / probes.length;
+        return (avg >= lowerLimit10 && avg < lowerLimit5) || (avg > upperLimit5 && avg <= upperLimit10);
+    }).length;
 
-    const quickImprovementSamples = tkwMeasurements.filter(measurement => 
-        (measurement.tkwProbe1 && (measurement.tkwProbe1 < lowerLimit10 || measurement.tkwProbe1 > upperLimit10)) ||
-        (measurement.tkwProbe2 && (measurement.tkwProbe2 < lowerLimit10 || measurement.tkwProbe2 > upperLimit10)) ||
-        (measurement.tkwProbe3 && (measurement.tkwProbe3 < lowerLimit10 || measurement.tkwProbe3 > upperLimit10))
-    ).length;
+    const quickImprovementSamples = tkwMeasurements.filter(measurement => {
+        const probes = [measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3].filter(n => n !== undefined);
+        if (probes.length === 0) return false;
+        const avg = probes.reduce((sum, val) => sum + val!, 0) / probes.length;
+        return avg < lowerLimit10 || avg > upperLimit10;
+    }).length;
 
     const totalSamples = tkwMeasurements.length * 3;
     const okPercentage = (okSamples / totalSamples) * 100;
