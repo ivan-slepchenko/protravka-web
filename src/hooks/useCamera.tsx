@@ -12,7 +12,7 @@ const useCamera = () => {
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
     const [cameraStarted, setCameraStarted] = useState<boolean>(false);
 
-    const initDevices = async () => {
+    const startCamera = async () => {
         try {
             const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
             console.info('Camera permission:', permissionStatus.state);
@@ -41,10 +41,8 @@ const useCamera = () => {
         } catch (error) {
             console.error("Error accessing camera:", error);
             setIsWarningOpen(true);
+            return;
         }
-    };
-
-    const attachStream = async () => {
         try {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 const stream = await navigator.mediaDevices.getUserMedia({
@@ -71,12 +69,8 @@ const useCamera = () => {
         } catch (error) {
             console.error("Error starting camera:", error);
             setIsWarningOpen(true);
+            return;
         }
-    };
-
-    const startCamera = async () => {
-        await initDevices();
-        await attachStream();
         setCameraStarted(true);
     };
 
@@ -133,15 +127,14 @@ const useCamera = () => {
 
     const handleWarningClose = () => {
         setIsWarningOpen(false);
-        initDevices();
+        stopCamera();
+        startCamera();
     };
 
     useEffect(() => {
         if (selectedDeviceId && cameraStarted) {
             stopCamera();
-            startCamera().then(() => {
-                attachStream();
-            });
+            startCamera();
         }
     }, [selectedDeviceId]);
 
