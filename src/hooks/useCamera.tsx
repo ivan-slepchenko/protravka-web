@@ -136,7 +136,9 @@ const useCamera = () => {
     useEffect(() => {
         if (selectedDeviceId) {
             stopCamera();
-            attachStream();
+            startCamera().then(() => {
+                attachStream();
+            });
         }
     }, [selectedDeviceId]);
 
