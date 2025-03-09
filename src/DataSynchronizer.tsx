@@ -57,6 +57,7 @@ const DataSynchronizer = () => {
 
                     if (user.roles.includes(Role.OPERATOR) || user.roles.includes(Role.LABORATORY)) {
                         Notification.requestPermission().then((permission) => {
+                            console.info('Notification permission:', permission);
                             if (permission !== 'granted') {
                                 onOpen();
                             } else {

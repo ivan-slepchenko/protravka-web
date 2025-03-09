@@ -14,6 +14,7 @@ const useCamera = () => {
     const initDevices = async () => {
         try {
             const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
+            console.info('Camera permission:', permissionStatus.state);
             if (permissionStatus.state === 'denied') {
                 setIsWarningOpen(true);
                 return;
