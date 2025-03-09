@@ -378,7 +378,7 @@
         "save": "Enregistrer",
         "form_errors": "Erreurs de formulaire",
         "recipe_created": "Recette créée",
-        "recipe_created_message": "Recette créée avec succès pour le traitement à {{date}}",
+        "recipe_created_message": "Recette créée avec succès pour le traitement.",
         "view_in_board": "Vous pouvez voir cette recette dans le tableau.",
         "do_not_show_again": "Ne plus afficher ce message.",
         "close": "Fermer",

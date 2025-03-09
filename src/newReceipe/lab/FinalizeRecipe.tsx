@@ -25,6 +25,8 @@ import {
     Order,
     updateTkwMeasurementInterval,
     removeProductDetail,
+    setOrderState,
+    createNewEmptyOrder,
 } from "../../store/newOrderSlice";
 import { finalizeOrder, fetchOrders, fetchOrderById } from "../../store/ordersSlice";
 import { useNavigate, useParams } from "react-router-dom";
@@ -78,7 +80,6 @@ export const FinalizeRecipe = () => {
     const [formErrors, setFormErrors] = useState<Yup.ValidationError[]>([]);
     const navigate = useNavigate();
     const [showPopup, setShowPopup] = useState(false);
-    const [orderDate, setOrderDate] = useState(Date.now());
     const [doNotShowAgain, setDoNotShowAgain] = useState(() => {
         return localStorage.getItem('doNotShowAgain') === 'true';
     });
@@ -147,8 +148,7 @@ export const FinalizeRecipe = () => {
         };
         dispatch(finalizeOrder(updatedOrder)).then(() => {
             dispatch(fetchOrders());
-            dispatch(resetStateToDefaultFinalize());
-            setOrderDate(values.applicationDate);
+            dispatch(setOrderState(createNewEmptyOrder()));
             setIsSaving(false);
             if (!doNotShowAgain) {
                 setShowPopup(true);
@@ -614,7 +614,7 @@ export const FinalizeRecipe = () => {
                                         <ModalCloseButton />
                                         <ModalBody>
                                             <Text>
-                                                <span>{t('finalize_recipe.recipe_created_message', { date: new Date(orderDate).toLocaleString() })}</span>
+                                                <span>{t('finalize_recipe.recipe_created_message')}</span>
                                                 <br />
                                                 <span>{t('finalize_recipe.view_in_board')}</span>
                                             </Text>
