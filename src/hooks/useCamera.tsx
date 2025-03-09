@@ -10,6 +10,7 @@ const useCamera = () => {
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(localStorage.getItem('selectedDeviceId'));
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
+    const [cameraStarted, setCameraStarted] = useState<boolean>(false);
 
     const initDevices = async () => {
         try {
@@ -76,6 +77,7 @@ const useCamera = () => {
     const startCamera = async () => {
         await initDevices();
         await attachStream();
+        setCameraStarted(true);
     };
 
     const stopCamera = () => {
@@ -88,6 +90,7 @@ const useCamera = () => {
             videoRef.current.srcObject = null;
             console.log('Camera stopped');
         }
+        setCameraStarted(true);
     };
 
     const takeSnapshot = (): Promise<Blob | null> => {
@@ -134,7 +137,7 @@ const useCamera = () => {
     };
 
     useEffect(() => {
-        if (selectedDeviceId) {
+        if (selectedDeviceId && cameraStarted) {
             stopCamera();
             startCamera().then(() => {
                 attachStream();
