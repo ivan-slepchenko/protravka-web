@@ -292,9 +292,9 @@ const Report: React.FC = () => {
                     </Box>
                 </HStack>
 
-                <Box display="grid" gridTemplateColumns="70% 30%" gridTemplateRows="auto auto" gap={4}>
+                <Box display="flex" flexWrap="wrap" w="full">
                     {/* Seed Processing Report */}
-                    <Box gridColumn="1 / 2" gridRow="1 / 2">
+                    <Box mb={4} flex="1 1 100%" minWidth="300px">
                         <Text fontSize="lg" fontWeight="bold" mb={4} textAlign="center">{t('report.seed_processing_report')}</Text>
                         <Table variant="simple" size="sm">
                             <Thead bg="orange.100">
@@ -329,7 +329,7 @@ const Report: React.FC = () => {
                     </Box>
 
                     {/* Total */}
-                    <Box gridColumn="2 / 3" gridRow="1 / 2">
+                    <Box mb={4} flex="1 1 50%" minWidth="200px" p={5}>
                         <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={4}>{t('report.total')}</Text>
                         <Table variant="simple" size="sm">
                             <Thead bg="orange.100">
@@ -351,9 +351,17 @@ const Report: React.FC = () => {
                         </Table>
                     </Box>
 
+                    {/* Treatment Overview Chart */}
+                    {filters.status === "" && (
+                        <Box height="300px" flex="1 1 50%" minWidth="200px" p={5}>
+                            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>{t('report.treatment_overview')}</Text>
+                            <Bar data={chartData} options={chartOptions} />
+                        </Box>
+                    )}
+
                     {/* Summary */}
                     {filters.status === "" && (
-                        <Box gridColumn="1 / 2" gridRow="2 / 3">
+                        <Box mb={4} flex="1 1 100%" minWidth="300px">
                             <Text fontSize="lg" fontWeight="bold" mt={8} mb={4} textAlign="center">{t('report.summary')}</Text>
                             <Table variant="simple" size="sm">
                                 <Thead bg="orange.100">
@@ -396,14 +404,6 @@ const Report: React.FC = () => {
                                     </Tr>
                                 </Tbody>
                             </Table>
-                        </Box>
-                    )}
-
-                    {/* Treatment Overview Chart */}
-                    {filters.status === "" && (
-                        <Box gridColumn="2 / 3" gridRow="2 / 3" mt={10} height="300px">
-                            <Text fontSize="lg" fontWeight="bold" textAlign="center" mb={2}>{t('report.treatment_overview')}</Text>
-                            <Bar data={chartData} options={chartOptions} />
                         </Box>
                     )}
                 </Box>
