@@ -46,13 +46,12 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
     return (
         <Box w="full" overflow="auto">
             <VStack w="full" spacing={2} align="start">
-                
                 <Badge autoCapitalize='none' w="full" colorScheme="gray">
                     <Text fontSize={{ base: "md", md: "lg" }}>
                         {order.crop?.name} / {order.variety?.name}
                     </Text>
                 </Badge>
-                <Box borderWidth={1} p={2} w={{ base: 'full', md: '30%' }}>
+                <Box borderWidth={1} p={2} minW="300px" maxW="400px">
                     <Grid templateColumns="1fr 1fr" gap={4} w="full" px={1}>
                         <Text fontWeight="bold">{t('tkw_details_page.lot')}:</Text>
                         <Text>{order.lotNumber}</Text>
@@ -119,16 +118,21 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                 {measurements.length > 0 && 
                 <>
                     <Text fontWeight="bold">{t('tkw_details_page.treated_tkw_measurements')}:</Text>
-                    <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={2} w="full">
+                    <Box w="full">
                         {measurements.map((measurement, index) => {
                             return (
-                                <GridItem
+                                <Box
                                     key={index}
                                     borderWidth={1}
                                     p={2}
                                     bg={measurement.probeDate !== null && measurement.probeDate !== undefined ? "green.50" : "red.50"}
                                     ref={el => measurementRefs.current[index] = el}
                                     className={measurement.id === measurementId ? 'highlight' : ''}
+                                    display="inline-block"
+                                    minW="300px"
+                                    maxW="400px"
+                                    mb={2}
+                                    mr={2}
                                 >
                                     <Grid templateColumns="1fr 1fr" gap={2} w="full">
                                         <GridItem colSpan={2}>
@@ -187,10 +191,10 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                                             </GridItem>
                                         )}
                                     </Grid>
-                                </GridItem>
+                                </Box>
                             );
                         })}
-                    </Grid>
+                    </Box>
                 </>
                 }  
             </VStack>

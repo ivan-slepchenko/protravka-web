@@ -118,3 +118,17 @@ code {
   border: 3px solid #ff3c00; /* Gold color for highlighting */
   transition: border 0.3s ease;
 }
+
+@media print {
+    .reportPrintElement {
+        visibility: visible;
+        overflow: visible;
+        height: fit-content;
+    }
+}
+
+@media print {
+    .reportPrintElement .nonPrintable {
+        display: none;
+    }
+}

@@ -167,12 +167,12 @@ const LotLabReport: React.FC = () => {
         const clickedRawData = chart.tooltip?.$context?.tooltipItems[0]?.raw;
         if (clickedRawData && clickedRawData.measurementId !== undefined && orderExecution !== undefined) {
             const measurementId = clickedRawData.measurementId;
-            navigate(`/tkw-details/${order.id}/${measurementId}`);
+            navigate(`/tkw-details/${order.id}/${measurementId}?from=lot-lab-report`);
         }
     };
 
     return (
-        <VStack w="full" position="relative" alignItems={"start"} py={8}>
+        <VStack w="full" position="relative" alignItems={"start"} py={8} id="lot-lab-report">
             {(tkwMeasurements.length > 0 && order !== undefined) ? (
                 <>
                     <Text fontSize="lg" fontWeight="bold" textAlign="center" my={4}>

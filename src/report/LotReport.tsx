@@ -72,8 +72,8 @@ const LotReport: React.FC = () => {
     };
 
     const print = useReactToPrint({
-        contentRef: componentRef,
         pageStyle: 'scale(0.8)',
+        bodyClass: 'reportPrintElement',
     });
 
     const handleApprove = () => {
@@ -114,8 +114,8 @@ const LotReport: React.FC = () => {
     console.log('Rendering LotReport');
 
     return (     
-        <Box w="full" h="full" overflowY="auto" p={2} ref={componentRef}>
-            <VStack w="full" >
+        <Box w="full" h="full" overflowY="auto" p={2} id='scrollable-container'>
+            <VStack w="full" ref={componentRef} overflow='visible' className='reportPrintElement'>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={4} w="full" p={2}>
                     <HStack spacing={2}>
                         <Heading size="lg">{order.crop.name}, {order.variety.name}</Heading>
@@ -125,15 +125,15 @@ const LotReport: React.FC = () => {
                     <HStack spacing={2}>
                         {order.status === OrderStatus.ToAcknowledge && (
                             <>
-                                <Button colorScheme="green" onClick={handleApprove}>{t('lot_report.mark_as_completed')}</Button>
-                                <Button colorScheme="red" onClick={handleDisapprove}>{t('lot_report.mark_as_failed')}</Button>
+                                <Button className="nonPrintable" colorScheme="green" onClick={handleApprove}>{t('lot_report.mark_as_completed')}</Button>
+                                <Button className="nonPrintable" colorScheme="red" onClick={handleDisapprove}>{t('lot_report.mark_as_failed')}</Button>
                             </>
                         )}
-                        <Button onClick={() => print()} colorScheme="blue">{t('lot_report.print_to_pdf')}</Button>
-                        <CloseButton onClick={() => navigate(-1)}/>
+                        <Button className="nonPrintable" onClick={() => print(() => componentRef.current)} colorScheme="blue">{t('lot_report.print_to_pdf')}</Button>
+                        <CloseButton className="nonPrintable" onClick={() => navigate(-1)}/>
                     </HStack>
                 </Box>
-                <VStack w="full" h="full" overflowY="auto" justifyContent={"center"} p={2}>
+                <VStack w="full" h="full" justifyContent={"center"} p={2}>
                     <HStack w="full" spacing={4} mb={4}>
                         <Table variant="simple" size="sm">
                             <Thead bg="orange.100">
