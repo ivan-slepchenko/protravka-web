@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { OrderStatus } from '../store/newOrderSlice';
-import { Box, Flex, Heading, VStack } from '@chakra-ui/react';
+import { Flex, Heading, VStack } from '@chakra-ui/react';
 import Card from './Card';
 import { useTranslation } from 'react-i18next';
 
@@ -21,11 +21,11 @@ const Board: React.FC = () => {
 
     return (
         <Flex w="full" justifyContent={'center'} h="100vh" p={2} overflow={'auto'} >
-            <Flex gap={3} w="full" p={2}>
+            <Flex gap={3} w="full" p={2}  h='min-content' overflow={'auto'}>
                 {columns.map((column) => {
                     const bgColor = "gray.50";
                     return (
-                        <Box key={column}  minW="310px" w='full' border="gray.100" borderRadius="md" p={2} bg={bgColor}>
+                        <VStack key={column}  minW="310px" w='full' minH='min-content' border="gray.100" borderRadius="md" p={2} bg={bgColor}>
                             <Heading size="sm" m={1} mb={2}>{t(`board.${column.toLowerCase().replace(/\s+/g, '_')}`)}</Heading>
                             <VStack spacing={3} w="full">
                                 {orders.filter(order => {
@@ -38,7 +38,7 @@ const Board: React.FC = () => {
                                     <Card key={index} order={order} />
                                 ))}
                             </VStack>
-                        </Box>
+                        </VStack>
                     );
                 })}
             </Flex>
