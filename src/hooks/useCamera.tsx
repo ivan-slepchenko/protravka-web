@@ -1,80 +1,73 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
 const useCamera = () => {
     const { t } = useTranslation();
+
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-    const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(localStorage.getItem('selectedDeviceId'));
+    
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
     const [cameraStarted, setCameraStarted] = useState<boolean>(false);
+    const constraints = { video: { facingMode: "environment" } };
 
-    const startCamera = async () => {
-        try {
-            const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
-            console.info('Camera permission:', permissionStatus.state);
-            if (permissionStatus.state === 'denied') {
-                setIsWarningOpen(true);
-                return;
-            }
+    const getVideoDevices = useCallback(async () => {
+        await navigator.mediaDevices.getUserMedia(constraints);
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        return devices.filter(device => device.kind === "videoinput");
+    }, []);
 
-            const constraints = { video: { facingMode: "environment" } };
-            await navigator.mediaDevices.getUserMedia(constraints);
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            const videoDevices = devices.filter((device) => device.kind === 'videoinput');
-            setDevices(videoDevices);
 
-            if (videoDevices.length > 0) {
-                const backCamera = videoDevices.find((device) =>
-                    device.label.toLowerCase().includes('back') || 
-                    device.label.toLowerCase().includes('environment') ||
-                    device.label.toLowerCase().includes('rear') ||
-                    device.label.toLowerCase().includes('facing')
-                );
-                if (!selectedDeviceId) {
-                    setSelectedDeviceId(backCamera ? backCamera.deviceId : videoDevices[0].deviceId);
+
+    const startCamera = useCallback(async () => {
+        if (videoRef.current) {
+            let selectedDeviceId = localStorage.getItem('selectedDeviceId');
+            try {
+                const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
+                console.info('Starting camera, camera permission:', permissionStatus.state);
+                if (permissionStatus.state === 'denied') {
+                    setIsWarningOpen(true);
+                    return;
                 }
-            }
-        } catch (error) {
-            console.error("Error accessing camera:", error);
-            setIsWarningOpen(true);
-            return;
-        }
-        try {
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+
+                const videoDevices = await getVideoDevices();
+                const defaultDevice = videoDevices.find(device => /rear|back|environment|facing/i.test(device.label));
+            
+                console.info('Video devices:', videoDevices);
+
+
+                if (!selectedDeviceId) {
+                    selectedDeviceId = defaultDevice ? defaultDevice.deviceId : videoDevices[0]?.deviceId;
+                }
+
                 const stream = await navigator.mediaDevices.getUserMedia({
-                    video: selectedDeviceId ? {
+                    video: {
                         deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
                         width: { ideal: 800 },
                         height: { ideal: 600 },
                         facingMode: selectedDeviceId ? undefined : "environment",
-                    } : true,
+                    }
                 });
 
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    videoRef.current.setAttribute("playsinline", "true");
-                    videoRef.current.setAttribute("muted", "true");
-                    videoRef.current.onloadedmetadata = () => {
-                        videoRef.current?.play();
-                    };
-                }
-            } else {
-                console.error("Media devices not supported");
+                videoRef.current.srcObject = stream;
+                videoRef.current.setAttribute("playsinline", "true");
+                videoRef.current.setAttribute("muted", "true");
+                videoRef.current.onloadedmetadata = () => {
+                    videoRef.current?.play();
+                };
+           
+            } catch (error) {
+                console.error("Error starting camera:", error);
                 setIsWarningOpen(true);
+                return;
             }
-        } catch (error) {
-            console.error("Error starting camera:", error);
-            setIsWarningOpen(true);
-            return;
+            setCameraStarted(true);
         }
-        setCameraStarted(true);
-    };
+    }, []);
 
-    const stopCamera = () => {
+    const stopCamera = useCallback(() => {
         if (videoRef.current && videoRef.current.srcObject) {
             const stream = videoRef.current.srcObject as MediaStream;
             stream.getTracks().forEach((track) => {
@@ -84,10 +77,10 @@ const useCamera = () => {
             videoRef.current.srcObject = null;
             console.log('Camera stopped');
         }
-        setCameraStarted(true);
-    };
+        setCameraStarted(false);
+    }, []);
 
-    const takeSnapshot = (): Promise<Blob | null> => {
+    const takeSnapshot = useCallback((): Promise<Blob | null> => {
         return new Promise((resolve) => {
             if (canvasRef.current && videoRef.current) {
                 const context = canvasRef.current.getContext('2d');
@@ -109,20 +102,10 @@ const useCamera = () => {
                 resolve(null);
             }
         });
-    };
+    }, []);
 
     const handleSettingsClick = () => {
         setIsSettingsOpen(true);
-    };
-
-    const handleSettingsClose = () => {
-        setIsSettingsOpen(false);
-    };
-
-    const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const deviceId = e.target.value;
-        setSelectedDeviceId(deviceId);
-        localStorage.setItem('selectedDeviceId', deviceId);
     };
 
     const handleWarningClose = () => {
@@ -131,36 +114,59 @@ const useCamera = () => {
         startCamera();
     };
 
-    useEffect(() => {
-        if (selectedDeviceId && cameraStarted) {
-            stopCamera();
-            startCamera();
-        }
-    }, [selectedDeviceId]);
+    const SettingsModal = useCallback(() => {
+        const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+        const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
 
-    const SettingsModal = () => (
-        <Modal isOpen={isSettingsOpen} onClose={handleSettingsClose} isCentered>
-            <ModalOverlay />
-            <ModalContent>
-                <ModalHeader>{t('use_camera.select_camera')}</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                    <Select onChange={handleDeviceChange} value={selectedDeviceId || ''}>
-                        {devices.map(device => (
-                            <option key={device.deviceId} value={device.deviceId}>
-                                {device.label}
-                            </option>
-                        ))}
-                    </Select>
-                </ModalBody>
-                <ModalFooter>
-                    <Button onClick={handleSettingsClose}>{t('use_camera.close')}</Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
-    );
+        useEffect(() => {
+            if (!isSettingsOpen) return;
+            const getDevices = async () => {
+                await navigator.mediaDevices.getUserMedia(constraints);
+                const allDevices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = allDevices.filter((device) => device.kind === 'videoinput');
+                setDevices(videoDevices);
+                const storedDeviceId = localStorage.getItem('selectedDeviceId');
+                if (storedDeviceId) {
+                    setSelectedDeviceId(storedDeviceId);
+                }
+            };
+            getDevices();
+        }, [isSettingsOpen]);
 
-    const WarningModal = () => (
+        const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+            const newDeviceId = e.target.value;
+            localStorage.setItem('selectedDeviceId', newDeviceId);
+            setSelectedDeviceId(newDeviceId);
+            if (cameraStarted) {
+                stopCamera();
+                startCamera();
+            }
+        };
+         
+        return (
+            <Modal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>{t('use_camera.select_camera')}</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Select value={selectedDeviceId} onChange={handleDeviceChange}>
+                            {devices.map(device => (
+                                <option key={device.deviceId} value={device.deviceId}>
+                                    {device.label}
+                                </option>
+                            ))}
+                        </Select>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={() => setIsSettingsOpen(false)}>{t('use_camera.close')}</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        );
+    }, [isSettingsOpen]);
+
+    const WarningModal = useCallback(() => (
         <Modal isOpen={isWarningOpen} onClose={handleWarningClose} isCentered>
             <ModalOverlay />
             <ModalContent>
@@ -178,7 +184,7 @@ const useCamera = () => {
                 </ModalFooter>
             </ModalContent>
         </Modal>
-    );
+    ), [isWarningOpen]);
 
     return {
         videoRef,
@@ -186,9 +192,6 @@ const useCamera = () => {
         startCamera,
         stopCamera,
         takeSnapshot,
-        devices,
-        selectedDeviceId,
-        setSelectedDeviceId,
         handleSettingsClick,
         SettingsModal,
         WarningModal,

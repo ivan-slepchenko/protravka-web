@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
@@ -102,6 +102,34 @@ const LabBoard: React.FC = () => {
     const ToControl = t('lab_board.to_control');
     const Controlled = t('lab_board.controlled');
 
+    const memoizedRecipeRawTkwDetailsInputModal = useMemo(() => (
+        selectedOrder && (
+            <RecipeRawTkwDetailsInputModal
+                selectedOrder={selectedOrder}
+                onClose={() => setSelectedOrder(null)}
+            />
+        )
+    ), [selectedOrder]);
+
+    const memoizedRecipeInProgressTkwDetailsInputModal = useMemo(() => (
+        selectedMeasurement && (
+            <RecipeInProgressTkwDetailsInputModal
+                selectedMeasurement={selectedMeasurement}
+                onClose={() => setSelectedMeasurement(null)}
+            />
+        )
+    ), [selectedMeasurement]);
+
+    const memoizedTkwDetailsModal = useMemo(() => (
+        selectedControlledOrder && (
+            <TkwDetailsModal
+                onClose={handleCloseTkwDetailsModal}
+                order={selectedControlledOrder}
+                measurements={tkwMeasurements.filter(measurement => measurement.orderExecution.orderId === selectedControlledOrder.id)}
+            />
+        )
+    ), [selectedControlledOrder, tkwMeasurements]);
+
     return (
         <Flex w="full" justifyContent={'center'} h="full">
             <Tabs w="full" size='sm' variant='line' isFitted display="flex" flexDirection="column" flex="1" p={1}>
@@ -131,25 +159,9 @@ const LabBoard: React.FC = () => {
                     </TabPanel>
                 </TabPanels>
             </Tabs>
-            {selectedOrder && (
-                <RecipeRawTkwDetailsInputModal
-                    selectedOrder={selectedOrder}
-                    onClose={() => setSelectedOrder(null)}
-                />
-            )}
-            {selectedMeasurement && (
-                <RecipeInProgressTkwDetailsInputModal
-                    selectedMeasurement={selectedMeasurement}
-                    onClose={() => setSelectedMeasurement(null)}
-                />
-            )}
-            {selectedControlledOrder && (
-                <TkwDetailsModal
-                    onClose={handleCloseTkwDetailsModal}
-                    order={selectedControlledOrder}
-                    measurements={tkwMeasurements.filter(measurement => measurement.orderExecution.orderId === selectedControlledOrder.id)}
-                />
-            )}
+            {memoizedRecipeRawTkwDetailsInputModal}
+            {memoizedRecipeInProgressTkwDetailsInputModal}
+            {memoizedTkwDetailsModal}
         </Flex>
     );
 };
