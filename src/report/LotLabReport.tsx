@@ -152,12 +152,14 @@ const LotLabReport: React.FC = () => {
     };
 
     const yScaleRange = Math.max(...tkwData.map(d => d.y)) - Math.min(...tkwData.map(d => d.y));
+    const minYValue = Math.min(...tkwData.map(d => d.y), lowerLimit10, order?.tkw ?? lowerLimit10) - yScaleRange * 0.1;
+    const maxYValue = Math.max(...tkwData.map(d => d.y), upperLimit10, order?.tkw ?? upperLimit10) + yScaleRange * 0.1;
 
     const legendItems = [
-        { color: 'blue', label: 'Average TKW' },
-        { color: 'green', label: 'Order TKW' },
-        { color: 'orange', label: 'Soft Limit 5%' },
-        { color: 'red', label: 'Hard Limit 10%' },
+        { color: 'blue', label: 'AVG Treated seeds TKW' },
+        { color: 'green', label: 'Untreated seeds TKW' },
+        { color: 'orange', label: 'Deviation  from AVG 5%' },
+        { color: 'red', label: 'Deviation from AVG 10%' },
     ];
 
     const handleBarClick = (_: any, __: any, chart: any) => {
@@ -192,7 +194,7 @@ const LotLabReport: React.FC = () => {
                             <Tbody>
                                 <Tr>
                                     <Tooltip label="Category of the measurement" aria-label="Category">
-                                        <Td bg="green.300" color="black" textAlign="center">OK</Td>
+                                        <Td bg="green.300" color="black" textAlign="center">{'Deviation from AVG <5%'}</Td>
                                     </Tooltip>
                                     <Tooltip label="Upper limit for OK category" aria-label="Upper Limit">
                                         <Td bg="green.300" color="black" textAlign="center">{upperLimit5.toFixed(2)}</Td>
@@ -209,7 +211,7 @@ const LotLabReport: React.FC = () => {
                                 </Tr>
                                 <Tr>
                                     <Tooltip label="Category of the measurement" aria-label="Category">
-                                        <Td bg="yellow.300" color="black" textAlign="center">Monitoring</Td>
+                                        <Td bg="yellow.300" color="black" textAlign="center">{'Deviation from AVG 5-10%'}</Td>
                                     </Tooltip>
                                     <Tooltip label="Upper limit for Monitoring category" aria-label="Upper Limit">
                                         <Td bg="yellow.300" color="black" textAlign="center">{upperLimit10.toFixed(2)}</Td>
@@ -226,7 +228,7 @@ const LotLabReport: React.FC = () => {
                                 </Tr>
                                 <Tr>
                                     <Tooltip label="Category of the measurement" aria-label="Category">
-                                        <Td bg="red.500" color="white" textAlign="center">Quick Improvement Needed</Td>
+                                        <Td bg="red.500" color="white" textAlign="center">{'Deviation from AVG >10%'}</Td>
                                     </Tooltip>
                                     <Tooltip label="Upper limit for Quick Improvement Needed category" aria-label="Upper Limit">
                                         <Td bg="red.500" color="white" textAlign="center">&gt; {upperLimit10.toFixed(2)}</Td>
@@ -340,8 +342,8 @@ const LotLabReport: React.FC = () => {
                                             display: true,   
                                             text: t('lot_report.tkw_value'),
                                         },
-                                        min: Math.min(...tkwData.map(d => d.y)) - yScaleRange * 0.05,
-                                        max: Math.max(...tkwData.map(d => d.y)) + yScaleRange * 0.05,
+                                        min: minYValue,
+                                        max: maxYValue,
                                     },
                                 },
                                 plugins: {
