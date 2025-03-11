@@ -21,7 +21,7 @@ const Board: React.FC = () => {
 
     return (
         <Flex w="full" justifyContent={'center'} h="100vh" p={2} overflow={'auto'} >
-            <Flex gap={3} w="full" p={2}  h='min-content' overflow={'auto'}>
+            <Flex gap={3} w="full" p={2} minH='full' h='min-content' overflow={'auto'}>
                 {columns.map((column) => {
                     const bgColor = "gray.50";
                     return (

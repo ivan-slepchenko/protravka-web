@@ -26,7 +26,6 @@ const OrderExecution11Completion = () => {
     const handleCompleteClick = async () => {
         setIsSaving(true);
         try {
-            dispatch(nextPage(OrderExecutionPage.InitialOverview));
             await dispatch(saveOrderExecution()).unwrap();
             if (useLab) {
                 dispatch(changeOrderStatus({ id: currentOrder.id, status: OrderStatus.LabToControl }));

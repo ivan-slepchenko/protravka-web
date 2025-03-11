@@ -89,7 +89,7 @@ export const loginUser = createAsyncThunk(
 export const fetchUserByToken = createAsyncThunk('user/fetchUserByToken', async () => {
     const res = await fetch(`${BACKEND_URL}/api/auth/user`, { credentials: 'include' });
     if (!res.ok) {
-        throw new Error('Failed to fetch user');
+        throw new Error('Session timed out, please log back.');
     }
 
     const user = (await res.json()) as UserState;
