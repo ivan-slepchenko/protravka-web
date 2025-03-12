@@ -119,7 +119,9 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                 <>
                     <Text fontWeight="bold">{t('tkw_details_page.treated_tkw_measurements')}:</Text>
                     <Box w="full">
-                        {measurements.map((measurement, index) => {
+                        {measurements.sort((a, b) => {
+                            return  new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
+                        }).map((measurement, index) => {
                             return (
                                 <Box
                                     key={index}

@@ -87,7 +87,7 @@ const LotLabReport: React.FC = () => {
         return avg < lowerLimit10 || avg > upperLimit10;
     }).length;
 
-    const totalSamples = tkwMeasurements.length * 3;
+    const totalSamples = okSamples + monitoringSamples + quickImprovementSamples;
     const okPercentage = (okSamples / totalSamples) * 100;
     const monitoringPercentage = (monitoringSamples / totalSamples) * 100;
     const quickImprovementPercentage = (quickImprovementSamples / totalSamples) * 100;
