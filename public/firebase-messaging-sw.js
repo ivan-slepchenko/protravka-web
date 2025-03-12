@@ -35,27 +35,9 @@ self.addEventListener('notificationclick', function(event) {
             clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
                 for (var i = 0; i < clientList.length; i++) {
                     var client = clientList[i];
-                    if (client.url === '/' && 'focus' in client) {
+                    if ('focus' in client) {
                         return client.focus();
                     }
-                }
-                if (clients.openWindow) {
-                    return clients.openWindow(clickAction);
-                }
-            })
-        );
-    } else {
-        // Handle the notification click
-        event.waitUntil(
-            clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-                for (var i = 0; i < clientList.length; i++) {
-                    var client = clientList[i];
-                    if (client.url === '/' && 'focus' in client) {
-                        return client.focus();
-                    }
-                }
-                if (clients.openWindow) {
-                    return clients.openWindow(clickAction);
                 }
             })
         );
