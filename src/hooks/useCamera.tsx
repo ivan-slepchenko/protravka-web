@@ -20,7 +20,6 @@ const useCamera = () => {
     }, []);
 
 
-
     const startCamera = useCallback(async () => {
         if (videoRef.current) {
             let selectedDeviceId = localStorage.getItem('selectedDeviceId');
