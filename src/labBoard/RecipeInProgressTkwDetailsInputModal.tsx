@@ -51,7 +51,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
-    const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
+    const { ImageModal, ImageWithModal, selectedPhoto, handleClose: handleImageClose } = useImageModal();
 
     useEffect(() => {
         const fetchExecution = async () => {
@@ -93,9 +93,12 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     };
 
     const handleBack = () => {
-        setIsPhotoState(false);
-        stopCamera();
-        handleClose();
+        if (isPhotoState) {
+            setIsPhotoState(false);
+            stopCamera();
+        } else {
+            onClose();
+        }
     };
 
     const handleSave = useCallback(() => {
@@ -301,7 +304,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
             </ModalContent>}
             <SettingsModal />
             <WarningModal />
-            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
+            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleImageClose} />
         </Modal>
     );
 };

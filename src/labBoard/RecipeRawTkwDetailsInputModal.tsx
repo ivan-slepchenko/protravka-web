@@ -48,7 +48,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
-    const { ImageModal, ImageWithModal, selectedPhoto, handleClose } = useImageModal();
+    const { ImageModal, ImageWithModal, selectedPhoto, handleClose: handleImageClose } = useImageModal();
 
     useEffect(() => {
         setAverageTkw(((tkwRep1 ?? 0) + (tkwRep2 ?? 0) + (tkwRep3 ?? 0)) / 3);
@@ -93,9 +93,12 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     };
 
     const handleBack = () => {
-        setIsPhotoState(false);
-        stopCamera();
-        handleClose();
+        if (isPhotoState) {
+            setIsPhotoState(false);
+            stopCamera();
+        } else {
+            onClose();
+        }
     };
 
     return (
@@ -287,7 +290,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
             </ModalContent>
             <SettingsModal />
             <WarningModal />
-            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
+            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleImageClose} />
         </Modal>
     );
 };

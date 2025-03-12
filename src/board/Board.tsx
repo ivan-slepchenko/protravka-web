@@ -20,12 +20,12 @@ const Board: React.FC = () => {
     console.log('Orders:', orders);
 
     return (
-        <Flex w="full" justifyContent={'center'} h="100vh" p={2} overflow={'auto'} >
-            <Flex gap={3} w="full" p={2} minH='full' h='min-content' overflow={'auto'}>
+        <Flex w="full" h="100%" justifyContent={'center'} p={2} overflow={'auto'} >
+            <Flex gap={3} minW="full" p={2} minH='full' h='min-content'>
                 {columns.map((column) => {
                     const bgColor = "gray.50";
                     return (
-                        <VStack key={column}  minW="310px" w='full' minH='min-content' border="gray.100" borderRadius="md" p={2} bg={bgColor}>
+                        <VStack key={column}  minW="310px" minH='min-content' border="gray.100" borderRadius="md" p={2} bg={bgColor}>
                             <Heading size="sm" m={1} mb={2}>{t(`board.${column.toLowerCase().replace(/\s+/g, '_')}`)}</Heading>
                             <VStack spacing={3} w="full">
                                 {orders.filter(order => {
