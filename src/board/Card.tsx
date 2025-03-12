@@ -101,7 +101,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                 )}
                 {order.status !== OrderStatus.LabAssignmentCreated && order.status !== OrderStatus.TkwConfirmed && <Box gridColumn="span 3">
                     <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.expected_start_at')}</Text>
-                    <Text px={1} isTruncated>{order.applicationDate === null ? t('n_a') : new Date(order.applicationDate).toLocaleString()}</Text>
+                    <Text px={1} isTruncated>{order.applicationDate === null ? t('n_a') : new Date(order.applicationDate).toLocaleDateString()}</Text>
                 </Box>}
                 {order.status === OrderStatus.TkwConfirmed && (
                     <Box gridColumn="span 3">

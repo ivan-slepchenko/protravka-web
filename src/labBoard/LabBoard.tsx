@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { Order, OrderStatus } from '../store/newOrderSlice';
@@ -24,6 +24,7 @@ const LabBoard: React.FC = () => {
     const [controlledOrders, setControlledOrders] = useState<Order[]>([]);
     const [selectedControlledOrder, setSelectedControlledOrder] = useState<Order | null>(null);
     const { orderId } = useParams<{ orderId?: string }>();
+    const [openedOrderId, setOpenedOrderId] = useState<string | null>(null);
 
     const handleRecipeClick = (order: Order) => {
         setSelectedOrder(order);
@@ -40,6 +41,22 @@ const LabBoard: React.FC = () => {
     const handleCloseTkwDetailsModal = () => {
         setSelectedControlledOrder(null);
     };
+
+    const handleCloseReceipeRawTkwDetailsInputModal = useCallback(() => {
+        if (orderId) {
+            setSelectedOrder(null);
+        } else {
+            setSelectedOrder(null);
+        }
+    }, [orderId]);
+
+    const handleCloseReceipeInProgressTkwDetailsInputModal =  useCallback(() => {
+        if (orderId) {
+            setSelectedMeasurement(null);
+        } else {
+            setSelectedMeasurement(null);
+        }
+    }, [orderId]);
 
     useEffect(() => {
         if (orders) {
@@ -87,17 +104,24 @@ const LabBoard: React.FC = () => {
 
     useEffect(() => {
         if (orderId) {
-            const measurement = tkwMeasurements.find(m => m.orderExecution.orderId === orderId);
-            if (measurement) {
-                setSelectedMeasurement(measurement);
-            } else {
-                const order = orders.find(o => o.id === orderId);
-                if (order) {
-                    setSelectedOrder(order);
-                }
+            if (orderId !== openedOrderId) {
+                const measurement = tkwMeasurements.find(m => m.orderExecution.orderId === orderId);
+                if (measurement) {
+                    setSelectedMeasurement(measurement);
+                } else {
+                    const order = orders.find(o => o.id === orderId);
+                    if (order) {
+                        setSelectedOrder(order);
+                    }
+                }   
+                setOpenedOrderId(orderId);
+            }
+        } else {
+            if (selectedOrder) {
+                setSelectedOrder(null);
             }
         }
-    }, [orderId, orders, tkwMeasurements]);
+    }, [orderId, orders, tkwMeasurements, openedOrderId]);
 
     const ToControl = t('lab_board.to_control');
     const Controlled = t('lab_board.controlled');
@@ -106,7 +130,7 @@ const LabBoard: React.FC = () => {
         selectedOrder && (
             <RecipeRawTkwDetailsInputModal
                 selectedOrder={selectedOrder}
-                onClose={() => setSelectedOrder(null)}
+                onClose={handleCloseReceipeRawTkwDetailsInputModal}
             />
         )
     ), [selectedOrder]);
@@ -115,7 +139,7 @@ const LabBoard: React.FC = () => {
         selectedMeasurement && (
             <RecipeInProgressTkwDetailsInputModal
                 selectedMeasurement={selectedMeasurement}
-                onClose={() => setSelectedMeasurement(null)}
+                onClose={handleCloseReceipeInProgressTkwDetailsInputModal}
             />
         )
     ), [selectedMeasurement]);

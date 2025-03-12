@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import RequireAuth from './components/RequireAuth';
 import Board from './board/Board';
 import Operators from './operators/Operators';
@@ -46,21 +46,27 @@ const AppRoutes = ({ useLab }: { useLab?: boolean }) => {
 
 const LoginRedirect = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
         if (user.email) {
-            if (user.roles.includes(Role.OPERATOR)) {
-                navigate('/execution');
-            } else if (user.roles.includes(Role.MANAGER)) {
-                navigate('/board');
-            } else if (user.roles.includes(Role.LABORATORY)) {
-                navigate('/lab');
+            const from = location.state?.from?.pathname || '/';
+            if (from === '/') {
+                if (user.roles.includes(Role.OPERATOR)) {
+                    navigate('/execution');
+                } else if (user.roles.includes(Role.MANAGER)) {
+                    navigate('/board');
+                } else if (user.roles.includes(Role.LABORATORY)) {
+                    navigate('/lab');
+                } else {
+                    navigate('/operators');
+                }
             } else {
-                navigate('/operators');
+                navigate(from, { replace: true });
             }
         }
-    }, [navigate, user]);
+    }, [navigate, user, location]);
 
     return <Login />;
 };

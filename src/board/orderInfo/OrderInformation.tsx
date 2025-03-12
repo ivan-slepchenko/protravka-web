@@ -16,7 +16,7 @@ const OrderInformation: FC<{ order: Order }> = ({ order }) => {
                 </Box>
                 <Box>
                     <Text fontSize="xs">{t('order_information.application_date')}:</Text>
-                    <Text>{order.applicationDate}</Text>
+                    <Text>{order.applicationDate !== null ? new Date(order.applicationDate).toLocaleDateString() : t('n_a')}</Text>
                 </Box>
                 <Box>
                     <Text fontSize="xs">{t('order_information.operator')}:</Text>
