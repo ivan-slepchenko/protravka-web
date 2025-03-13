@@ -106,4 +106,3 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
 
 
 export default ControlledOrderCard;
-export { ControlledOrderList };
