@@ -89,7 +89,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
 
     const handleNext = () => {
         setIsPhotoState(true);
-        setTimeout(()=>startCamera(), 100); //wait while attach videoRef
+        startCamera();
     };
 
     const handleBack = () => {

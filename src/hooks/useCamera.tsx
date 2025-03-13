@@ -63,6 +63,8 @@ const useCamera = () => {
                 return;
             }
             setCameraStarted(true);
+        } else {
+            setTimeout(startCamera, 100);
         }
     }, []);
 

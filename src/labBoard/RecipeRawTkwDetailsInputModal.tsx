@@ -70,7 +70,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
 
     const handleNext = () => {
         setIsPhotoState(true);
-        setTimeout(()=>startCamera(), 100); //wait while attach videoRef
+        startCamera();
     };
 
     const handleSave = () => {
