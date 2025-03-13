@@ -52,7 +52,7 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
     const treatedAverageTkw = calculateAverageTkw(measurements);
     const treatmentStartDate = orderExecution?.treatmentStartDate ? new Date(orderExecution.treatmentStartDate).toLocaleString() : 'N/A';
     const treatmentFinishDate = orderExecution?.treatmentFinishDate ? new Date(orderExecution.treatmentFinishDate).toLocaleString() : 'N/A';
-    const numberOfTkwMeasurements = measurements.length;
+    const numberOfTkwMeasurements = measurements.filter(m => m.probeDate !== null).length;
 
     return (
         <Box
@@ -104,22 +104,6 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
     );
 };
 
-const ControlledOrderList: React.FC<{ orders: Order[], measurements: TkwMeasurement[], onClick: (order: Order) => void }> = ({ orders, measurements, onClick }) => {
-   
-    const inTreatmentOrders = orders.filter(order => stateToLabColumn[order.status] === LabColumn.TREATMENT);
-    const treatedOrders = orders.filter(order => stateToLabColumn[order.status] === LabColumn.TREATED);
-
-    return (
-        <>
-            {inTreatmentOrders.map(order => (
-                <ControlledOrderCard key={order.id} order={order} measurements={measurements.filter(measurement => measurement.orderExecution.orderId === order.id)} onClick={() => onClick(order)} />
-            ))}
-            {treatedOrders.map(order => (
-                <ControlledOrderCard key={order.id} order={order} measurements={measurements.filter(measurement => measurement.orderExecution.orderId === order.id)} onClick={() => onClick(order)} />
-            ))}
-        </>
-    );
-};
 
 export default ControlledOrderCard;
 export { ControlledOrderList };
