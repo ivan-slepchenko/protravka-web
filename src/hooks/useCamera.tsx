@@ -12,6 +12,7 @@ const useCamera = () => {
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
     const [cameraStarted, setCameraStarted] = useState<boolean>(false);
     const constraints = { video: { facingMode: "environment" } };
+    const cameraTimeout = useRef<any | null>(null);
 
     const getVideoDevices = useCallback(async () => {
         await navigator.mediaDevices.getUserMedia(constraints);
@@ -64,11 +65,15 @@ const useCamera = () => {
             }
             setCameraStarted(true);
         } else {
-            setTimeout(startCamera, 100);
+            cameraTimeout.current = setTimeout(startCamera, 100);
         }
     }, []);
 
     const stopCamera = useCallback(() => {
+        if (cameraTimeout.current) {
+            clearTimeout(cameraTimeout.current);
+            cameraTimeout.current = null;
+        }
         if (videoRef.current && videoRef.current.srcObject) {
             const stream = videoRef.current.srcObject as MediaStream;
             stream.getTracks().forEach((track) => {
