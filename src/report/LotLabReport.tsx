@@ -103,7 +103,7 @@ const LotLabReport: React.FC = () => {
             const xStartCoord = x.left;
             const xEndCoord = x.right;
 
-            const drawLine = (yValue: number, color: string, dash: number[], label: string) => {
+            const drawLine = (yValue: number, color: string, dash: number[], label: string, onClick?: () => void) => {
                 const yCoord = y.getPixelForValue(yValue);
                 ctx.beginPath();
                 ctx.strokeStyle = color;
@@ -114,6 +114,16 @@ const LotLabReport: React.FC = () => {
                 ctx.stroke();
                 ctx.fillStyle = color;
                 ctx.fillText(label, xEndCoord + 5, yCoord);
+
+                if (onClick) {
+                    chart.canvas.addEventListener('click', (event) => {
+                        const rect = chart.canvas.getBoundingClientRect();
+                        const mouseY = event.clientY - rect.top;
+                        if (mouseY >= yCoord - 5 && mouseY <= yCoord + 5) {
+                            onClick();
+                        }
+                    });
+                }
             };
 
             drawLine(averageTkw * 1.05, 'orange', [5, 5], 'Upper Limit 5%');
@@ -121,7 +131,11 @@ const LotLabReport: React.FC = () => {
             drawLine(averageTkw * 1.10, 'red', [], 'Upper Limit 10%');
             drawLine(averageTkw * 0.90, 'red', [], 'Lower Limit 10%');
             drawLine(averageTkw, 'blue', [], 'Average TKW');
-            if (order !== undefined && order.tkw !== null) drawLine(order.tkw, 'green', [], 'Order TKW');
+            if (order !== undefined && order.tkw !== null) {
+                drawLine(order.tkw, 'green', [], 'Order TKW', () => {
+                    navigate(`/tkw-details/${order.id}`);
+                });
+            }
         }
     }; 
 
