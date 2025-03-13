@@ -12,6 +12,7 @@ import { ControlledOrderList } from './ControlledOrderCard';
 import TkwDetailsModal from './TkwDetailsModal';
 import { useTranslation } from 'react-i18next';
 
+
 const LabBoard: React.FC = () => {
     const { t } = useTranslation();
     const orders = useSelector((state: RootState) => state.orders.activeOrders);
