@@ -50,7 +50,7 @@ const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick 
                             <Text isTruncated>
                                 {`${order.crop?.name}, ${order.variety?.name}`}
                             </Text>
-                            <Text>{order.status === OrderStatus.LabToControl ? 'Lab To Control' : ('tkw_measurement_card.in_treatment')}</Text>
+                            <Text>{order.status === OrderStatus.LabToControl ? 'Lab To Control' : t('tkw_measurement_card.in_treatment')}</Text>
                         </> : 'Loading...'}
                     </HStack>
                 </Badge>

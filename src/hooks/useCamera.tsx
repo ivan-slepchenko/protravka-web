@@ -226,7 +226,7 @@ const useCamera = () => {
         handleSettingsClick,
         SettingsModal,
         WarningModal,
-        CameraLoader, // Export the loader component
+        CameraLoader,
     };
 };
 
