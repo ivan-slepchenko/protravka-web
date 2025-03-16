@@ -70,7 +70,8 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     }, [dispatch, selectedMeasurement]);
 
     useEffect(() => {
-        const value = ((tkwRep1 ?? 0) + (tkwRep2 ?? 0) + (tkwRep3 ?? 0)) / ((tkwRep1 ? 1 : 0) + (tkwRep2 ? 1 : 0) + (tkwRep3 ? 1 : 0));
+        let value: number | null = ((tkwRep1 ?? 0) + (tkwRep2 ?? 0) + (tkwRep3 ?? 0)) / ((tkwRep1 ? 1 : 0) + (tkwRep2 ? 1 : 0) + (tkwRep3 ? 1 : 0));
+        if(isNaN(value)) value = null;
         setAverageTkw(value);
     }, [tkwRep1, tkwRep2, tkwRep3]);
 
