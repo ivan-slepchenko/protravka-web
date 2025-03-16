@@ -61,7 +61,27 @@ const useImageModal = () => {
         fullSize: PropTypes.bool,
     };
 
-    return { ImageModal, ImageWithModal, selectedPhoto, handleClose };
+
+    const ImageWithoutModal: React.FC<{ src: string | Blob; fullSize?: boolean }> = ({ src, fullSize = false }) => {
+        const imageUrl = typeof src === "string" ? src : URL.createObjectURL(src);
+        return (
+            <Image
+                src={imageUrl}
+                alt={t('use_image_modal.thumbnail')}
+                width={fullSize ? "100%" : "150px"}
+                height={fullSize ? "100%" : "100px"}
+                objectFit={"cover"}
+                title={t('use_image_modal.click_to_view_full_size')}
+            />
+        );
+    };
+
+    ImageWithoutModal.propTypes = {
+        src: PropTypes.any.isRequired,
+        fullSize: PropTypes.bool,
+    };
+
+    return { ImageModal, ImageWithModal, ImageWithoutModal, selectedPhoto, handleClose };
 };
 
 export default useImageModal;

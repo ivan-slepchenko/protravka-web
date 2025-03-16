@@ -13,7 +13,7 @@ const OrderExecution8PackingProoving = () => {
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<Blob | null>(null);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
-    const { ImageWithModal, ImageModal, selectedPhoto, handleClose } = useImageModal();
+    const { ImageWithoutModal } = useImageModal();
 
     useEffect(() => {
         startCamera();
@@ -65,7 +65,7 @@ const OrderExecution8PackingProoving = () => {
                     position="relative"
                 >
                     {photo ? (
-                        <ImageWithModal src={photo} fullSize />
+                        <ImageWithoutModal src={photo} fullSize />
                     ) : (
                         <>
                             <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -107,7 +107,6 @@ const OrderExecution8PackingProoving = () => {
             </VStack>
             <SettingsModal />
             <WarningModal />
-            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
         </Box>
     );
 };

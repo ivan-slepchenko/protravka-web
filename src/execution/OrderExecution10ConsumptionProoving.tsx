@@ -14,7 +14,7 @@ const OrderExecution10ConsumptionProoving = () => {
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<Blob | null>(null);
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
-    const { ImageWithModal, ImageModal, selectedPhoto, handleClose } = useImageModal();
+    const { ImageWithoutModal } = useImageModal();
     const currentOrderExecution = useSelector((state: RootState) => state.execution.currentOrderExecution);
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const applicationMethod = currentOrderExecution?.applicationMethod;
@@ -103,7 +103,7 @@ const OrderExecution10ConsumptionProoving = () => {
                         position="relative"
                     >
                         {photo ? (
-                            <ImageWithModal src={photo} fullSize />
+                            <ImageWithoutModal src={photo} fullSize />
                         ) : (
                             <>
                                 <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -146,7 +146,6 @@ const OrderExecution10ConsumptionProoving = () => {
             </VStack>
             <SettingsModal />
             <WarningModal />
-            <ImageModal selectedPhoto={selectedPhoto} handleClose={handleClose} />
         </VStack>
     );
 };
