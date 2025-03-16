@@ -4,7 +4,7 @@ import { AppDispatch } from '../store/store';
 import { fetchOrderById } from '../store/ordersSlice';
 import { TkwMeasurement } from '../store/executionSlice';
 import { Box, Grid, Badge, Text, HStack } from '@chakra-ui/react';
-import { Order } from '../store/newOrderSlice';
+import { Order, OrderStatus } from '../store/newOrderSlice';
 import { useTranslation } from 'react-i18next';
 
 interface TkwMeasurementCardProps {
@@ -46,10 +46,12 @@ const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick 
             <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
                 <Badge colorScheme='orange' gridColumn="span 3">
                     <HStack w="full" justifyContent="space-between">
-                        <Text isTruncated>
-                            {order ? `${order.crop?.name}, ${order.variety?.name}` : 'Loading...'}
-                        </Text>
-                        <Text>{t('tkw_measurement_card.in_treatment')}</Text>
+                        {order ? <>
+                            <Text isTruncated>
+                                {`${order.crop?.name}, ${order.variety?.name}`}
+                            </Text>
+                            <Text>{order.status === OrderStatus.LabToControl ? 'Lab To Control' : ('tkw_measurement_card.in_treatment')}</Text>
+                        </> : 'Loading...'}
                     </HStack>
                 </Badge>
                 <Text px={1} gridColumn="span 3" color="gray.600">

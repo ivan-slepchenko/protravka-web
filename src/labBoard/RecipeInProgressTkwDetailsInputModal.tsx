@@ -70,7 +70,8 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     }, [dispatch, selectedMeasurement]);
 
     useEffect(() => {
-        setAverageTkw(((tkwRep1 ?? 0) + (tkwRep2 ?? 0) + (tkwRep3 ?? 0)) / 3);
+        const value = ((tkwRep1 ?? 0) + (tkwRep2 ?? 0) + (tkwRep3 ?? 0)) / ((tkwRep1 ? 1 : 0) + (tkwRep2 ? 1 : 0) + (tkwRep3 ? 1 : 0));
+        setAverageTkw(value);
     }, [tkwRep1, tkwRep2, tkwRep3]);
 
     const handleTakeSnapshot = () => {

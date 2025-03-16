@@ -333,7 +333,6 @@ const LotLabReport: React.FC = () => {
                                             drawTicks: true,
                                             lineWidth: 1,
                                             color: 'rgba(0, 0, 0, 0.1)',
-                    
                                         },
                                         ticks: {
                                             callback: function(value: any) {
@@ -344,9 +343,8 @@ const LotLabReport: React.FC = () => {
                                                     minute: '2-digit',
                                                 });
                                             },
-                                            stepSize: 60 * 60 * 1000,
-                                            maxRotation: 45,
-                                            minRotation: 45,
+                                            autoSkip: false,
+                                            stepSize: 1000,
                                         },
                                         min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) : new Date().getTime() - 86400000, 
                                         max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) : new Date().getTime() + 86400000,
