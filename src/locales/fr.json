@@ -500,7 +500,7 @@
         "laboratory": "Laboratoire"
     },
     "lot_report": {
-        "tkw_measurements": "Mesures du TKW",
+        "tkw_measurements": "Mesures de TKW des graines traitées",
         "plus_5_percent": "+5%",
         "minus_5_percent": "-5%",
         "plus_10_percent": "+10%",
@@ -516,7 +516,7 @@
         "mark_as_completed": "Marquer comme terminé",
         "mark_as_failed": "Marquer comme échoué",
         "print_to_pdf": "Imprimer en PDF",
-        "tkw": "TKW",
+        "tkw": "TKW des graines non traitées, g",
         "su_ks": "s.u., KS",
         "su_kg": "s.u., kg",
         "total_amount_su": "Quantité totale, s.u.",

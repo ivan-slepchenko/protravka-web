@@ -499,7 +499,7 @@
         "laboratory": "Laboratory"
     },
     "lot_report": {
-        "tkw_measurements": "TKW Measurements",
+        "tkw_measurements": "TKW Measurements of Treated Seeds",
         "plus_5_percent": "+5%",
         "minus_5_percent": "-5%",
         "plus_10_percent": "+10%",
@@ -515,7 +515,7 @@
         "mark_as_completed": "Mark as Completed",
         "mark_as_failed": "Mark as Failed",
         "print_to_pdf": "Print to PDF",
-        "tkw": "TKW",
+        "tkw": "Untreated Seeds TKW, g",
         "su_ks": "s.u., KS",
         "su_kg": "s.u., kg",
         "total_amount_su": "Total amount, s.u.",
