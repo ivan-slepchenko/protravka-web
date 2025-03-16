@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription, Spinner, Center } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
 const useCamera = () => {
@@ -11,6 +11,7 @@ const useCamera = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
     const [cameraStarted, setCameraStarted] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false); // State for progress bar
     const constraints = { video: { facingMode: "environment" } };
     const cameraTimeout = useRef<any | null>(null);
 
@@ -24,11 +25,14 @@ const useCamera = () => {
     const startCamera = useCallback(async () => {
         if (videoRef.current) {
             let selectedDeviceId = localStorage.getItem('selectedDeviceId');
+            setIsLoading(true); // Show progress bar
             try {
                 const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
                 console.info('Starting camera, camera permission:', permissionStatus.state);
                 if (permissionStatus.state === 'denied') {
+                    console.error('Camera permission denied');
                     setIsWarningOpen(true);
+                    setIsLoading(false); // Hide progress bar
                     return;
                 }
 
@@ -39,6 +43,7 @@ const useCamera = () => {
                 if (!selectedDeviceId) {
                     selectedDeviceId = defaultDevice ? defaultDevice.deviceId : videoDevices[0]?.deviceId;
                 }
+                console.info('Selected video device:', selectedDeviceId);
 
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
@@ -52,17 +57,31 @@ const useCamera = () => {
                 videoRef.current.srcObject = stream;
                 videoRef.current.setAttribute("playsinline", "true");
                 videoRef.current.setAttribute("muted", "true");
+
                 videoRef.current.onloadedmetadata = () => {
+                    console.info('Camera metadata loaded successfully');
                     videoRef.current?.play();
+                    setIsLoading(false); // Hide progress bar
                 };
-           
+
+                videoRef.current.onerror = (error) => {
+                    console.error('Error loading camera metadata:', error);
+                    setIsWarningOpen(true);
+                    setIsLoading(false); // Hide progress bar
+                };
+
             } catch (error) {
                 console.error("Error starting camera:", error);
                 setIsWarningOpen(true);
+                setIsLoading(false); // Hide progress bar
                 return;
             }
             setCameraStarted(true);
         } else {
+            console.warn('Video element not ready, retrying...');
+            if (cameraTimeout.current) {
+                clearTimeout(cameraTimeout.current);
+            }
             cameraTimeout.current = setTimeout(startCamera, 100);
         }
     }, []);
@@ -190,6 +209,14 @@ const useCamera = () => {
         </Modal>
     ), [isWarningOpen]);
 
+    const CameraLoader = useCallback(() => (
+        isLoading ? (
+            <Center position="absolute" top="0" left="0" width="100%" height="100%" bg="rgba(0, 0, 0, 0.5)" zIndex="10">
+                <Spinner size="xl" color="white" />
+            </Center>
+        ) : null
+    ), [isLoading]);
+
     return {
         videoRef,
         canvasRef,
@@ -199,6 +226,7 @@ const useCamera = () => {
         handleSettingsClick,
         SettingsModal,
         WarningModal,
+        CameraLoader, // Export the loader component
     };
 };
 
