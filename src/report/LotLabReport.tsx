@@ -344,7 +344,7 @@ const LotLabReport: React.FC = () => {
                                                 });
                                             },
                                             autoSkip: false,
-                                            stepSize: 1000,
+                                            stepSize: 60000,
                                         },
                                         min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) : new Date().getTime() - 86400000, 
                                         max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) : new Date().getTime() + 86400000,

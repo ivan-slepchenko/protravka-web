@@ -36,8 +36,6 @@ const useCamera = () => {
                 const defaultDevice = videoDevices.find(device => /rear|back|environment|facing/i.test(device.label));
             
                 console.info('Video devices:', videoDevices);
-
-
                 if (!selectedDeviceId) {
                     selectedDeviceId = defaultDevice ? defaultDevice.deviceId : videoDevices[0]?.deviceId;
                 }

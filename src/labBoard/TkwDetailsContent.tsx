@@ -51,6 +51,7 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                         {order.crop?.name} / {order.variety?.name}
                     </Text>
                 </Badge>
+                <Text fontWeight="bold">Untreated TKW Measurement:</Text>
                 <Box borderWidth={1} p={2} minW="300px" maxW="400px">
                     <Grid templateColumns="1fr 1fr" gap={4} w="full" px={1}>
                         <Text fontWeight="bold">{t('tkw_details_page.lot')}:</Text>
