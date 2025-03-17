@@ -34,8 +34,8 @@ const OrdersOverview: React.FC = () => {
         if (selectedOrder) {
             dispatch(setActiveExecutionToEmptyOne(selectedOrder));
             try {
-                await dispatch(saveOrderExecution()).unwrap(); //if no internet, this fails first. 
                 dispatch(changeOrderStatus({ id: selectedOrder.id, status: OrderStatus.TreatmentInProgress }));
+                await dispatch(saveOrderExecution()).unwrap(); //if no internet, this fails first. 
                 dispatch(saveOrderExecutionPreparationStartTime(selectedOrder.id));
                 onClose();
             } catch (error) {

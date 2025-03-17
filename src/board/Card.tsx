@@ -78,7 +78,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                 </Badge>
                 {statusLabel}
                 {order.status === OrderStatus.RecipeCreated && <Text px={1} gridColumn="span 3">
-                    {t('card.for')} {order.operator?.name} {order.operator?.surname}
+                    {order.operator ? `${t('card.for')} ${order.operator.name} ${order.operator.surname}` : 'Operator Is Not Assigned'}
                 </Text>}
                 {[OrderStatus.TreatmentInProgress, OrderStatus.LabToControl, OrderStatus.ToAcknowledge, OrderStatus.Completed].indexOf(order.status) >= 0 && <Text px={1} gridColumn="span 3">
                     {t('card.operator')}: {order.operator?.name} {order.operator?.surname}
