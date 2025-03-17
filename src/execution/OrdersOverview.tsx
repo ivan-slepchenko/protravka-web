@@ -18,10 +18,15 @@ const OrdersOverview: React.FC = () => {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const user = useSelector((state: RootState) => state.user);
     const orders = useSelector((state: RootState) => 
-        state.orders.activeOrders.filter(order => 
-            (order.operator === null || order.operator.email === user.email) && 
-            order.status === OrderStatus.RecipeCreated
-        )
+        state.orders.activeOrders.filter(order => {
+            const now = Date.now();
+            const applicationDate = order.applicationDate || 0;
+            return (
+                (order.operator === null || order.operator.email === user.email) &&
+                order.status === OrderStatus.RecipeCreated &&
+                applicationDate <= now
+            );
+        })
     );
     const fetchError = useSelector((state: RootState) => state.orders.fetchError);
 
