@@ -16,6 +16,8 @@ const OrdersOverview: React.FC = () => {
     const { isOpen: isAlertOpen, onOpen: onAlertOpen, onClose: onAlertClose } = useDisclosure();
     const cancelRef = React.useRef(null);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [isAlreadyInProgress, setIsAlreadyInProgress] = useState<boolean>(false);
+    const [warningOperator, setWarningOperator] = useState<{ name: string; surname: string } | null>(null);
     const user = useSelector((state: RootState) => state.user);
     const orders = useSelector((state: RootState) => 
         state.orders.activeOrders.filter(order => {
@@ -39,13 +41,25 @@ const OrdersOverview: React.FC = () => {
         if (selectedOrder) {
             dispatch(setActiveExecutionToEmptyOne(selectedOrder));
             try {
-                dispatch(changeOrderStatus({ id: selectedOrder.id, status: OrderStatus.TreatmentInProgress }));
-                await dispatch(saveOrderExecution()).unwrap(); //if no internet, this fails first. 
+                const result = await dispatch(
+                    changeOrderStatus({ id: selectedOrder.id, status: OrderStatus.TreatmentInProgress })
+                ).unwrap();
+
+                if (result.alreadyInProgress) {
+                    setIsAlreadyInProgress(true);
+                    setWarningOperator(result.operator);
+                    fetchOrders();
+                    onClose();
+                    onAlertOpen();
+                    return;
+                }
+
+                await dispatch(saveOrderExecution()).unwrap(); // If no internet, this fails first.
                 dispatch(saveOrderExecutionPreparationStartTime(selectedOrder.id));
                 onClose();
             } catch (error) {
                 console.log('Internet is not available: ', error);
-                dispatch(deactivateActiveExecution()); //if no internet, because we started execution, we should complete it immediatelly.
+                dispatch(deactivateActiveExecution()); // If no internet, complete it immediately.
                 onAlertOpen();
             }
         }
@@ -130,16 +144,28 @@ const OrdersOverview: React.FC = () => {
             <AlertDialog
                 isOpen={isAlertOpen}
                 leastDestructiveRef={cancelRef}
-                onClose={onAlertClose}
+                onClose={() => {
+                    if (isAlreadyInProgress) {
+                        setIsAlreadyInProgress(false);
+                        setWarningOperator(null);
+                        window.location.href = '/board'; // Redirect to /board
+                    } else {
+                        onAlertClose();
+                    }
+                }}
                 isCentered
             >
                 <AlertDialogOverlay>
                     <AlertDialogContent margin={4}>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            {t('orders_overview.internet_connection_required')}
+                            {isAlreadyInProgress
+                                ? 'Order Is Already In Progress'
+                                : t('orders_overview.internet_connection_required')}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            {t('orders_overview.internet_connection_required_message')}
+                            {isAlreadyInProgress
+                                ? `Operator is already in progress by ${warningOperator?.name} ${warningOperator?.surname}`
+                                : t('orders_overview.internet_connection_required_message')}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onAlertClose}>
