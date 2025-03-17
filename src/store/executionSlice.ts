@@ -7,6 +7,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { OrderExecutionPage } from '../execution/OrderExecutionPage';
 import { Order } from './newOrderSlice';
 import { fetchOrders } from './ordersSlice';
+import { handle403Redirect } from './handle403Redirect';
 
 export interface ProductExecution {
     productId: string;
@@ -142,6 +143,9 @@ export const saveOrderExecutionTreatmentStartTime = createAsyncThunk(
                 method: 'POST',
                 credentials: 'include', // Include credentials for requests
             });
+
+            await handle403Redirect(response); // Apply middleware
+
             return await response.json();
         } catch (error) {
             console.error('Failed to save order execution treatment start time:', error);
@@ -161,6 +165,9 @@ export const saveOrderExecutionPreparationStartTime = createAsyncThunk(
                     credentials: 'include', // Include credentials for requests
                 },
             );
+
+            await handle403Redirect(response); // Apply middleware
+
             return await response.json();
         } catch (error) {
             console.error(
@@ -180,6 +187,9 @@ export const saveOrderExecutionTreatmentFinishTime = createAsyncThunk(
                 method: 'POST',
                 credentials: 'include', // Include credentials for requests
             });
+
+            await handle403Redirect(response); // Apply middleware
+
             return await response.json();
         } catch (error) {
             console.error('Failed to save order execution treatment finish time:', error);
@@ -192,9 +202,9 @@ export const fetchOrderExecutionForOrder = async (orderId: string) => {
     const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}`, {
         credentials: 'include', // Include credentials in the request
     });
-    if (!response.ok) {
-        throw new Error(`Failed to fetch order execution: ${response.statusText}`);
-    }
+
+    await handle403Redirect(response); // Apply middleware
+
     return (await response.json()) as OrderExecution;
 };
 
@@ -207,6 +217,9 @@ export const fetchTkwMeasurements = createAsyncThunk('execution/fetchTkwMeasurem
     const response = await fetch(`${BACKEND_URL}/api/executions/tkw-measurements`, {
         credentials: 'include',
     });
+
+    await handle403Redirect(response); // Apply middleware
+
     return await response.json();
 });
 
@@ -214,6 +227,9 @@ export const fetchTkwMeasurementsByExecutionId = async (executionId: string) => 
     const response = await fetch(`${BACKEND_URL}/api/executions/${executionId}/tkw-measurements`, {
         credentials: 'include',
     });
+
+    await handle403Redirect(response); // Apply middleware
+
     if (!response.ok) {
         throw new Error('Failed to fetch TKW measurements');
     }
@@ -242,6 +258,9 @@ export const updateTkwMeasurement = createAsyncThunk(
                 body: formData,
                 credentials: 'include',
             });
+
+            await handle403Redirect(response); // Apply middleware
+
             if (!response.ok) {
                 throw new Error('Failed to update TKW measurement');
             } else {
@@ -262,6 +281,9 @@ export const fetchOrderExecutionStartDate = createAsyncThunk(
             const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}/start-date`, {
                 credentials: 'include',
             });
+
+            await handle403Redirect(response); // Apply middleware
+
             if (!response.ok) {
                 throw new Error('Failed to fetch order execution start date');
             }
@@ -280,6 +302,9 @@ export const fetchOrderPreparationStartDate = createAsyncThunk(
                 `${BACKEND_URL}/api/executions/${orderId}/preparation-start-date`,
                 { credentials: 'include' },
             );
+
+            await handle403Redirect(response); // Apply middleware
+
             if (!response.ok) {
                 throw new Error('Failed to fetch order execution start date');
             }
@@ -297,6 +322,9 @@ export const fetchOrderExecutionFinishDate = createAsyncThunk(
             const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}/finish-date`, {
                 credentials: 'include',
             });
+
+            await handle403Redirect(response); // Apply middleware
+
             if (!response.ok) {
                 throw new Error('Failed to fetch order execution finish date');
             }
@@ -314,6 +342,9 @@ export const fetchLatestTkwMeasurementDate = createAsyncThunk(
             const response = await fetch(`${BACKEND_URL}/api/executions/${orderId}/latest-tkw`, {
                 credentials: 'include',
             });
+
+            await handle403Redirect(response); // Apply middleware
+
             if (!response.ok) {
                 throw new Error('Failed to fetch latest TKW measurement date');
             }

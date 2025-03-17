@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { OrderStatus, NewOrderState, ProductDetail, Order } from './newOrderSlice';
 import equal from 'fast-deep-equal';
+import { handle403Redirect } from './handle403Redirect';
 
 interface OrdersState {
     activeOrders: Order[];
@@ -45,6 +46,9 @@ export const fetchOrders = createAsyncThunk(
             const response = await fetch(`${BACKEND_URL}/api/orders`, {
                 credentials: 'include', // Include credentials in the request
             });
+
+            await handle403Redirect(response);
+
             if (!response.ok) {
                 throw new Error('Failed to fetch orders');
             }
@@ -73,6 +77,9 @@ export const createOrder = createAsyncThunk('orders/createOrder', async (order: 
         body: JSON.stringify({ ...orderWithoutId, productDetails: productDetailsWithoutIds }),
         credentials: 'include', // Include credentials in the request
     });
+
+    await handle403Redirect(response);
+
     const jsonResponse = await response.json();
     console.log('Receipe created', jsonResponse);
     return jsonResponse;
@@ -90,6 +97,9 @@ export const finalizeOrder = createAsyncThunk('orders/finalizeOrder', async (ord
         body: JSON.stringify({ ...orderWithoutId, productDetails: productDetailsWithoutIds }),
         credentials: 'include', // Include credentials in the request
     });
+
+    await handle403Redirect(response);
+
     return response.json();
 });
 
@@ -102,6 +112,9 @@ export const changeOrderStatus = createAsyncThunk(
             body: JSON.stringify({ status }),
             credentials: 'include', // Include credentials in the request
         });
+
+        await handle403Redirect(response);
+
         const result = await response.json();
         dispatch(fetchOrders()); // We need to refetch orders, to have them in ServiceWorker cache for offline use cases. Probably this should become a pattern.
         return result;
@@ -130,6 +143,9 @@ export const updateOrderTKW = createAsyncThunk(
                 body: formData,
                 credentials: 'include',
             });
+
+            await handle403Redirect(response);
+
             if (!response.ok) {
                 throw new Error('Failed to update TKW values');
             }
@@ -152,6 +168,9 @@ export const fetchOrderById = createAsyncThunk(
             const response = await fetch(`${BACKEND_URL}/api/orders/${id}`, {
                 credentials: 'include',
             });
+
+            await handle403Redirect(response);
+
             if (!response.ok) {
                 throw new Error('Failed to fetch order');
             }

@@ -6,6 +6,7 @@ import { Operator } from './operatorsSlice';
 import { OrderRecipe } from './ordersSlice';
 import { Crop, Variety } from './cropsSlice';
 import { Product } from './productsSlice';
+import { handle403Redirect } from './handle403Redirect';
 
 const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL || '';
 
@@ -133,6 +134,9 @@ export const fetchCalculatedValues = createAsyncThunk(
                 body: JSON.stringify(order),
                 credentials: 'include',
             });
+
+            await handle403Redirect(response);
+
             if (!response.ok) {
                 throw new Error('Failed to fetch calculated values');
             }

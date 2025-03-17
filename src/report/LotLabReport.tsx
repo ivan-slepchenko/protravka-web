@@ -324,6 +324,7 @@ const LotLabReport: React.FC = () => {
                                         time: {
                                             unit: "millisecond"
                                         },
+                                        bounds: 'ticks',
                                         title: {
                                             display: false,
                                         },
@@ -346,8 +347,8 @@ const LotLabReport: React.FC = () => {
                                             autoSkip: false,
                                             stepSize: 60000,
                                         },
-                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) : new Date().getTime() - 86400000, 
-                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) : new Date().getTime() + 86400000,
+                                        min: tkwData.length > 0 ? Math.min(...tkwData.map(d => d.x)) : new Date().getTime(), 
+                                        max: tkwData.length > 0 ? Math.max(...tkwData.map(d => d.x)) : new Date().getTime(),
                                     },
                                     y: {
                                         title: {

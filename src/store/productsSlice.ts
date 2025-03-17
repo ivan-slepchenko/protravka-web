@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { handle403Redirect } from './handle403Redirect';
 
 export interface Product {
     id: string;
@@ -13,6 +14,9 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async ()
     const response = await fetch(`${BACKEND_URL}/api/products`, {
         credentials: 'include', // Include credentials in the request
     });
+
+    await handle403Redirect(response);
+
     if (!response.ok) {
         throw new Error('Failed to fetch products');
     }
@@ -30,6 +34,9 @@ export const createProduct = createAsyncThunk(
             body: JSON.stringify(productWithoutId),
             credentials: 'include', // Include credentials in the request
         });
+
+        await handle403Redirect(response);
+
         if (!response.ok) {
             throw new Error('Failed to create product');
         }
@@ -42,6 +49,9 @@ export const deleteProduct = createAsyncThunk('products/deleteProduct', async (i
         method: 'DELETE',
         credentials: 'include', // Include credentials in the request
     });
+
+    await handle403Redirect(response);
+
     if (!response.ok) {
         throw new Error('Failed to delete product');
     }

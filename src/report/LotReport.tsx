@@ -275,7 +275,7 @@ const LotReport: React.FC = () => {
                             </Table>
                         </Box>
                     </VStack>
-                    {useLab && order.status !== OrderStatus.LabAssignmentCreated && <LotLabReport />}
+                    {useLab && [OrderStatus.Failed, OrderStatus.Completed, OrderStatus.ToAcknowledge].includes(order.status) && <LotLabReport />}
                 </VStack>
                 <Modal isOpen={isOpen} onClose={onClose}>
                     <ModalOverlay />
