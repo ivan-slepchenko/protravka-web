@@ -52,21 +52,22 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                     </Text>
                 </Badge>
                 <Text fontWeight="bold">Untreated TKW Measurement:</Text>
+                <Grid templateColumns="1fr 1fr" gap={4} px={1} minW="300px" maxW="400px">
+                    <Text fontWeight="bold">{t('tkw_details_page.lot')}:</Text>
+                    <Text>{order.lotNumber}</Text>
+
+                    <Text fontWeight="bold">{t('tkw_details_page.seeds_to_treat')}:</Text>
+                    <Text>{order.seedsToTreatKg} {t('units.kg')}.</Text>
+
+                    <Text fontWeight="bold">{t('tkw_details_page.operator')}:</Text>
+                    <Text>{order.operator?.name} {order.operator?.surname}</Text>
+
+                    <Text fontWeight="bold">{t('tkw_details_page.assignment_creation_date')}:</Text>
+                    <Text>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleDateString()}</Text>
+                </Grid>
+                
                 <Box borderWidth={1} p={2} minW="300px" maxW="400px">
-                    <Grid templateColumns="1fr 1fr" gap={4} w="full" px={1}>
-                        <Text fontWeight="bold">{t('tkw_details_page.lot')}:</Text>
-                        <Text>{order.lotNumber}</Text>
-
-                        <Text fontWeight="bold">{t('tkw_details_page.seeds_to_treat')}:</Text>
-                        <Text>{order.seedsToTreatKg} {t('units.kg')}.</Text>
-
-                        <Text fontWeight="bold">{t('tkw_details_page.operator')}:</Text>
-                        <Text>{order.operator?.name} {order.operator?.surname}</Text>
-                    </Grid>
-                    <GridItem colSpan={2}>
-                        <Text color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('tkw_details_page.assignment_creation_date')}:</Text>
-                        <Text>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleString()}</Text>
-                    </GridItem>
+                    
                     <Grid templateColumns="1fr 1fr" gap={2} w="full">
                         <GridItem px={1}>
                             {order.tkwProbesPhoto ? (
