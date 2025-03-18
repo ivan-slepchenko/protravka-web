@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Box } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
-import { deactivateActiveExecution, saveOrderExecution, saveOrderExecutionPreparationStartTime, setActiveExecutionToEmptyOne } from '../store/executionSlice';
+import { deactivateActiveExecution, startExecution } from '../store/executionSlice';
 import { changeOrderStatus, fetchOrders } from '../store/ordersSlice';
 import { Order, OrderStatus } from '../store/newOrderSlice';
 import { useTranslation } from 'react-i18next';
@@ -39,25 +39,24 @@ const OrdersOverview: React.FC = () => {
 
     const handleConfirm = async () => {
         if (selectedOrder) {
-            dispatch(setActiveExecutionToEmptyOne(selectedOrder));
             try {
+                //TODO: IVAN - this should be refactored, we need to run this whole thing on backend
                 const result = await dispatch(
                     changeOrderStatus({ id: selectedOrder.id, status: OrderStatus.TreatmentInProgress })
                 ).unwrap();
-
                 if (result.alreadyInProgress) {
                     setIsAlreadyInProgress(true);
                     setWarningOperator(result.operator);
                     fetchOrders();
                     onClose();
                     onAlertOpen();
-                    return;
+                } else {
+                    await dispatch(startExecution(selectedOrder)).unwrap();
                 }
-
-                await dispatch(saveOrderExecution()).unwrap(); // If no internet, this fails first.
-                dispatch(saveOrderExecutionPreparationStartTime(selectedOrder.id));
                 onClose();
             } catch (error) {
+                // TODO: Potentially status may be updated, but right after that internet connection may be lost, so execution will not be started.
+                // TODO: This should be somehow handled on backend.
                 console.log('Internet is not available: ', error);
                 dispatch(deactivateActiveExecution()); // If no internet, complete it immediately.
                 onAlertOpen();

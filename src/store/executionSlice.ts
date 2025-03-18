@@ -294,6 +294,27 @@ export const fetchOrderExecutionStartDate = createAsyncThunk(
     },
 );
 
+export const startExecution = createAsyncThunk(
+    'execution/startExecution',
+    async (order: Order, { dispatch, rejectWithValue }) => {
+        try {
+            // Dispatch a synchronous action to update the state
+            dispatch(setCurrentOrder(order));
+            dispatch(setActiveExecutionToEmptyOne(order));
+
+            //TODO: IVAN - these next two calls should be a single call to backend, and logic should be there.
+            // Call the saveOrderExecution thunk
+            await dispatch(saveOrderExecution()).unwrap();
+
+            // Optionally, save preparation start time
+            await dispatch(saveOrderExecutionPreparationStartTime(order.id)).unwrap();
+        } catch (error) {
+            console.error('Failed to start execution:', error);
+            return rejectWithValue(error);
+        }
+    },
+);
+
 export const fetchOrderPreparationStartDate = createAsyncThunk(
     'execution/fetchOrderPreparationStartDate',
     async (orderId: string, { rejectWithValue }) => {
