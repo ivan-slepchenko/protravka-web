@@ -66,9 +66,13 @@ export const saveOrderExecution = createAsyncThunk(
     async (_, { getState, rejectWithValue }) => {
         const state = getState() as { execution: ExecutionState };
         const orderExecution = state.execution.currentOrderExecution;
+        console.log('Current order execution:', orderExecution);
+
         if (!orderExecution) {
+            console.error('No current order execution to save');
             throw new Error('No current order execution to save');
         }
+
         try {
             const formData = new FormData();
             formData.append(
@@ -82,38 +86,53 @@ export const saveOrderExecution = createAsyncThunk(
                     currentProductIndex: orderExecution.currentProductIndex,
                 }),
             );
+            console.log('Order execution data appended to formData:', formData);
 
             if (orderExecution.packingPhoto !== null) {
+                console.log('Packing photo exists, appending to formData');
                 formData.append('packingPhoto', orderExecution.packingPhoto);
+            } else {
+                console.log('No packing photo to append');
             }
+
             if (orderExecution.consumptionPhoto !== null) {
+                console.log('Consumption photo exists, appending to formData');
                 formData.append('consumptionPhoto', orderExecution.consumptionPhoto);
+            } else {
+                console.log('No consumption photo to append');
             }
 
-            const orderExecutionId = (
-                (await (
-                    await fetch(`${BACKEND_URL}/api/executions`, {
-                        method: 'POST',
-                        body: formData,
-                        credentials: 'include',
-                    })
-                ).json()) as OrderExecution
-            ).id;
+            const response = await fetch(`${BACKEND_URL}/api/executions`, {
+                method: 'POST',
+                body: formData,
+                credentials: 'include',
+            });
+            console.log('Order execution save response status:', response.status);
 
-            //FIXME: IVAN - I think we may save product executions few times, with invalid values.
-            // decompose saving product executions to separate async thunk.
+            const orderExecutionId = ((await response.json()) as OrderExecution).id;
+            console.log('Order execution ID received:', orderExecutionId);
+
             for (const productExecution of orderExecution.productExecutions) {
+                console.log('Processing product execution:', productExecution);
+
                 const formData = new FormData();
                 formData.append('productExecution', JSON.stringify(productExecution));
 
                 if (productExecution.applicationPhoto !== undefined) {
+                    console.log('Application photo exists, appending to formData');
                     formData.append('applicationPhoto', productExecution.applicationPhoto);
-                }
-                if (productExecution.consumptionPhoto !== undefined) {
-                    formData.append('consumptionPhoto', productExecution.consumptionPhoto);
+                } else {
+                    console.log('No application photo to append');
                 }
 
-                const response = await fetch(
+                if (productExecution.consumptionPhoto !== undefined) {
+                    console.log('Consumption photo exists, appending to formData');
+                    formData.append('consumptionPhoto', productExecution.consumptionPhoto);
+                } else {
+                    console.log('No consumption photo to append');
+                }
+
+                const productResponse = await fetch(
                     `${BACKEND_URL}/api/executions/${orderExecutionId}/product-execution`,
                     {
                         method: 'POST',
@@ -121,12 +140,15 @@ export const saveOrderExecution = createAsyncThunk(
                         credentials: 'include',
                     },
                 );
+                console.log('Product execution save response status:', productResponse.status);
 
-                if (!response.ok) {
+                if (!productResponse.ok) {
+                    console.error('Failed to save product execution:', productExecution);
                     throw new Error('Failed to save product execution');
                 }
             }
 
+            console.log('Order execution saved successfully');
             return await state.execution.currentOrderExecution;
         } catch (error) {
             console.error('Failed to save order execution:', error);
@@ -296,17 +318,19 @@ export const fetchOrderExecutionStartDate = createAsyncThunk(
 
 export const startExecution = createAsyncThunk(
     'execution/startExecution',
-    async (order: Order, { dispatch, rejectWithValue }) => {
+    async (order: Order, { getState, dispatch, rejectWithValue }) => {
         try {
-            // Dispatch a synchronous action to update the state
+            const state = getState() as { execution: ExecutionState };
+            console.log('Saving order execution for order:', order);
             dispatch(setCurrentOrder(order));
+            console.log('Setting active execution to empty one:', order);
             dispatch(setActiveExecutionToEmptyOne(order));
 
             //TODO: IVAN - these next two calls should be a single call to backend, and logic should be there.
-            // Call the saveOrderExecution thunk
+            console.log('Saving order execution:', state.execution.currentOrderExecution);
             await dispatch(saveOrderExecution()).unwrap();
 
-            // Optionally, save preparation start time
+            console.log('Saving order execution preparation start time:', order);
             await dispatch(saveOrderExecutionPreparationStartTime(order.id)).unwrap();
         } catch (error) {
             console.error('Failed to start execution:', error);
