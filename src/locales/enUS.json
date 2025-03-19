@@ -498,6 +498,9 @@
         "manager": "Manager",
         "laboratory": "Laboratory"
     },
+    "pwa_install_guide": {
+        "how_to_install_pwa": "How to install PWA"
+    },
     "lot_report": {
         "tkw_measurements": "TKW Measurements of Treated Seeds",
         "plus_5_percent": "+5%",

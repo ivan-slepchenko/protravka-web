@@ -499,6 +499,9 @@
         "manager": "Manager",
         "laboratory": "Laboratoire"
     },
+    "pwa_install_guide": {
+        "how_to_install_pwa": "Comment installer la PWA"
+    },
     "lot_report": {
         "tkw_measurements": "Mesures de TKW des graines traitées",
         "plus_5_percent": "+5%",

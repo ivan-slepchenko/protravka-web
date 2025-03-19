@@ -70,15 +70,15 @@ const App = () => {
         setIsMobile(mobile);
     }, []);
 
-    if (isMobile && !isPWA) {
+    if (isMobile && !isPWA && !window.location.pathname.startsWith('/pages')) {
         return (
             <Box display="flex" alignItems="center" justifyContent="center" height="100vh" p={4}>
                 <VStack>
                     <Box fontSize="xl" fontWeight="bold">This app works as PWA only</Box>
                     <Box>Please open as PWA</Box>
                     <Box>
-                        <Link href="https://en.wikipedia.org/wiki/Putin_khuylo!" isExternal color="blue.500">
-                            There should be PIZDATAYA link or the instruction on how to install/open it as PWA
+                        <Link href="/pages/pwa-install-guide" color="blue.500">
+                            Learn how to install and open this app as a PWA
                         </Link>
                     </Box>
                 </VStack>
