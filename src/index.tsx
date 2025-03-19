@@ -47,6 +47,15 @@ const App = () => {
     };
 
     useEffect(() => {
+        if (user.email) {
+            LogRocket.identify(user.email, {
+                name: `${user.name} ${user.surname}`,
+                email: user.email,
+            });    
+        }
+    }, [user.email]);
+
+    useEffect(() => {
         if (!isAuthenticated) {
             dispatch(fetchUserByToken());
         }
