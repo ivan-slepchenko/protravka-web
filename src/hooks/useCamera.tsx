@@ -55,16 +55,26 @@ const useCamera = () => {
                     }
                 });
 
-                console.info('Camera stream retreived successfully');
+                console.info('Camera stream retrieved successfully');
 
                 videoRef.current.srcObject = stream;
                 videoRef.current.setAttribute("playsinline", "true");
                 videoRef.current.setAttribute("muted", "true");
 
+                // Attempt to play immediately
+                try {
+                    await videoRef.current.play();
+                    console.info('Camera playback started successfully');
+                    setIsLoading(false); // Hide progress bar
+                } catch (playError) {
+                    console.error('Error starting camera playback immediately:', playError);
+                    setIsWarningOpen(true);
+                    setIsLoading(false); // Hide progress bar
+                }
+
+                // Fallback: Handle metadata loading errors
                 videoRef.current.onloadedmetadata = () => {
                     console.info('Camera metadata loaded successfully');
-                    videoRef.current?.play();
-                    setIsLoading(false); // Hide progress bar
                 };
 
                 videoRef.current.onerror = (error) => {
@@ -113,6 +123,10 @@ const useCamera = () => {
                 if (context) {
                     const video = videoRef.current;
                     const canvas = canvasRef.current;
+
+                    // Update canvas dimensions to match video dimensions
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
 
                     // Calculate visible area dimensions
                     const videoAspectRatio = video.videoWidth / video.videoHeight;
