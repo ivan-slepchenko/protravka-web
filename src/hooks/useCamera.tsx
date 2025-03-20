@@ -119,40 +119,29 @@ const useCamera = () => {
 
     const takeSnapshot = useCallback((): Promise<Blob | null> => {
         return new Promise((resolve) => {
-            if (canvasRef.current && videoRef.current) {
-                const context = canvasRef.current.getContext('2d');
+            if (videoRef.current) {
+                const video = videoRef.current;
+
+                // Create a new canvas element dynamically
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                const context = canvas.getContext('2d');
                 if (context) {
-                    const video = videoRef.current;
-                    const canvas = canvasRef.current;
+                    // Draw the video frame onto the canvas
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                    canvas.width = 800;
-                    canvas.height = 600;
-                    context.clearRect(0, 0, 0, 0);
-
-                    // Calculate visible area dimensions
-                    const videoAspectRatio = video.videoWidth / video.videoHeight;
-                    const canvasAspectRatio = canvas.width / canvas.height;
-
-                    let sx = 0, sy = 0, sWidth = video.videoWidth, sHeight = video.videoHeight;
-
-                    if (videoAspectRatio > canvasAspectRatio) {
-                        // Video is wider than canvas, crop horizontally
-                        sWidth = video.videoHeight * canvasAspectRatio;
-                        sx = (video.videoWidth - sWidth) / 2;
-                    } else {
-                        // Video is taller than canvas, crop vertically
-                        sHeight = video.videoWidth / canvasAspectRatio;
-                        sy = (video.videoHeight - sHeight) / 2;
-                    }
-
-                    // Draw the cropped area onto the canvas
-                    context.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
-
+                    // Convert the canvas content to a Blob
                     canvas.toBlob((blob) => {
                         resolve(blob);
+
+                        // Remove the canvas from the document
+                        canvas.remove();
                     }, 'image/png');
                 } else {
                     resolve(null);
+                    canvas.remove();
                 }
             } else {
                 resolve(null);
