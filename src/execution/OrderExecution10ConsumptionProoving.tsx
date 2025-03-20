@@ -106,7 +106,7 @@ const OrderExecution10ConsumptionProoving = () => {
                             <ImageWithoutModal src={photo} fullSize />
                         ) : (
                             <>
-                                <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted={true} />
                                 <IconButton
                                     icon={<FaCog />}
                                     isRound
