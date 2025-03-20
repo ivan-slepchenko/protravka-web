@@ -64,14 +64,12 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
         takeSnapshot().then((photoData) => {
             if (photoData) {
                 setTkwProbesPhoto(photoData);
-                stopCamera();
             }
         });
     };
 
     const handleRetakeClick = () => {
         setTkwProbesPhoto(null);
-        startCamera();
     };
 
     const handleNext = () => {
