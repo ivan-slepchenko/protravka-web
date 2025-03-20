@@ -26,20 +26,21 @@ messaging.onBackgroundMessage(function(payload) {
     });
 });
 
+function focusOrOpenWindow(clickAction) {
+    return clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+        for (var i = 0; i < clientList.length; i++) {
+            var client = clientList[i];
+            if ('focus' in client) {
+                return client.focus();
+            }
+        }
+        if (clients.openWindow) {
+            return clients.openWindow(clickAction || '/'); // Fallback to '/' if clickAction is not defined
+        }
+    });
+}
+
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
-    const clickAction = event.notification.data.clickAction; // click_action is now available in data
-    if (event.action === 'open') {
-        // Handle the 'open' button click
-        event.waitUntil(
-            clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-                for (var i = 0; i < clientList.length; i++) {
-                    var client = clientList[i];
-                    if ('focus' in client) {
-                        return client.focus();
-                    }
-                }
-            })
-        );
-    }
+    event.waitUntil(focusOrOpenWindow(clickAction));
 });

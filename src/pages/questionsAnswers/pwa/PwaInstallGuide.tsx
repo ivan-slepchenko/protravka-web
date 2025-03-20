@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Flex, Heading, Image, Text, Button, useBreakpointValue, HStack, Circle } from '@chakra-ui/react';
+import { Box, Flex, Heading, Image, Text, Button, useBreakpointValue, HStack, Circle, Switch, FormControl, FormLabel } from '@chakra-ui/react';
 import andoid_1 from './images/android/1.jpeg';
 import andoid_2 from './images/android/2.jpeg';
 import andoid_3 from './images/android/3.jpeg';
@@ -16,8 +16,10 @@ export const PwaInstallGuide = () => {
     const androidPhotos = [andoid_1, andoid_2, andoid_3, andoid_4];
     const iosPhotos = [ios_1, ios_2, ios_3, ios_4];
 
-    const photos = isAndroid ? androidPhotos : isIOS ? iosPhotos : [];
+    const [selectedPlatform, setSelectedPlatform] = useState(isAndroid ? 'android' : isIOS ? 'ios' : 'android');
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    const photos = selectedPlatform === 'android' ? androidPhotos : iosPhotos;
 
     const handleNext = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % photos.length);
@@ -38,9 +40,23 @@ export const PwaInstallGuide = () => {
                 <Heading fontSize={{ base: '2xl', md: '3xl' }} mb={2}>
                     How to Install Teravix App
                 </Heading>
-                <Text fontSize={{ base: 'md', md: 'lg' }}>
+                <Text fontSize={{ base: 'md', md: 'lg' }} mb={2}>
                     Install this app on your device for a better experience and easy access.
                 </Text>
+                <FormControl display="flex" alignItems="center" justifyContent="center">
+                    <FormLabel htmlFor="platform-switch" mb="0" fontSize="sm" mr={2}>
+                        Android
+                    </FormLabel>
+                    <Switch
+                        id="platform-switch"
+                        isChecked={selectedPlatform === 'ios'}
+                        onChange={() => setSelectedPlatform(selectedPlatform === 'android' ? 'ios' : 'android')}
+                        colorScheme="teal"
+                    />
+                    <FormLabel htmlFor="platform-switch" mb="0" fontSize="sm" ml={2}>
+                        iOS
+                    </FormLabel>
+                </FormControl>
             </Box>
 
             {/* Image Section */}
