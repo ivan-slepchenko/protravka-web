@@ -125,14 +125,11 @@ const useCamera = () => {
                     const video = videoRef.current;
                     const canvas = canvasRef.current;
 
-                    // Calculate visible area dimensions
-                    // "videoWidth" and "videoHeight" are the actual video data dimensions.
-                    // If you want the displayed (visible) size, you can use, for example:
-                    // const visibleWidth = video.clientWidth;
-                    // const visibleHeight = video.clientHeight;
-                    // Then your aspect ratio would be: visibleWidth / visibleHeight.
-                    const videoAspectRatio = video.clientWidth / video.clientHeight;
+                    const videoAspectRatio = video.videoWidth / video.videoHeight;
                     const canvasAspectRatio = canvas.width / canvas.height;
+
+                    alert(`Video: ${video.videoWidth}x${video.videoHeight} (ratio: ${videoAspectRatio}) | Canvas: ${canvas.width}x${canvas.height} (ratio: ${canvasAspectRatio})`);
+
 
                     let sx = 0, sy = 0, sWidth = video.videoWidth, sHeight = video.videoHeight;
 
