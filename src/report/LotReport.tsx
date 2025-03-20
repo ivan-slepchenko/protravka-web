@@ -256,7 +256,7 @@ const LotReport: React.FC = () => {
                                 </Thead>
                                 <Tbody>
                                     <Tr>
-                                        <Td>{order.orderRecipe ? (order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
+                                        <Td>{order.orderRecipe ? (order.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed(2) : "N/A"}</Td>
                                         <Td>{orderExecution ? orderExecution.slurryConsumptionPerLotKg : 'N/A'}</Td>
                                         <Td>
                                             {orderExecution && orderExecution.consumptionPhoto ? (
