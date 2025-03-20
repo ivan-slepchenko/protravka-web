@@ -51,6 +51,12 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     const { ImageWithoutModal } = useImageModal();
 
     useEffect(() => {
+        return () => {
+            stopCamera();
+        };
+    }, []);
+
+    useEffect(() => {
         setAverageTkw(((tkwRep1 ?? 0) + (tkwRep2 ?? 0) + (tkwRep3 ?? 0)) / 3);
     }, [tkwRep1, tkwRep2, tkwRep3]);
 

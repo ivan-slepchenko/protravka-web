@@ -54,6 +54,12 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     const { ImageWithoutModal } = useImageModal();
 
     useEffect(() => {
+        return () => {
+            stopCamera();
+        };
+    }, []);
+
+    useEffect(() => {
         const fetchExecution = async () => {
             const orderExecution = await fetchOrderExecutionForOrder(selectedMeasurement.orderExecution.orderId);
             setOrderExecutionId(orderExecution.id);
