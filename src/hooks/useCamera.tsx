@@ -142,6 +142,7 @@ const useCamera = () => {
 
                     // Draw the cropped area
                     context.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
+                    window.alert(`sx: ${sx}, sy: ${sy}, sWidth: ${sWidth}, sHeight: ${sHeight}, videoAspectRatio: ${videoAspectRatio}, canvasAspectRatio: ${canvasAspectRatio}, canvasWidth: ${canvas.width}, canvasHeight: ${canvas.height}, videoWidth: ${video.videoWidth}, videoHeight: ${video.videoHeight}, videoClientWidth: ${video.clientWidth}, videoClientHeight: ${video.clientHeight}`);
 
                     canvas.toBlob((blob) => {
                         resolve(blob);
