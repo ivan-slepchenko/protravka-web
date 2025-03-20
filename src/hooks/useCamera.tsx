@@ -122,28 +122,25 @@ const useCamera = () => {
             if (canvasRef.current && videoRef.current) {
                 const context = canvasRef.current.getContext('2d');
                 if (context) {
+                    // Reset or clear any transforms before drawing
+                    context.setTransform(1, 0, 0, 1, 0, 0);
+                    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
                     const video = videoRef.current;
                     const canvas = canvasRef.current;
-
                     const videoAspectRatio = video.videoWidth / video.videoHeight;
                     const canvasAspectRatio = canvas.width / canvas.height;
-
-                    alert(`Video: ${video.videoWidth}x${video.videoHeight} (ratio: ${videoAspectRatio}) | Canvas: ${canvas.width}x${canvas.height} (ratio: ${canvasAspectRatio})`);
-
-
                     let sx = 0, sy = 0, sWidth = video.videoWidth, sHeight = video.videoHeight;
 
                     if (videoAspectRatio > canvasAspectRatio) {
-                        // Video is wider than canvas, crop horizontally
                         sWidth = video.videoHeight * canvasAspectRatio;
                         sx = (video.videoWidth - sWidth) / 2;
                     } else {
-                        // Video is taller than canvas, crop vertically
                         sHeight = video.videoWidth / canvasAspectRatio;
                         sy = (video.videoHeight - sHeight) / 2;
                     }
 
-                    // Draw the cropped area onto the canvas
+                    // Draw the cropped area
                     context.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
 
                     canvas.toBlob((blob) => {
