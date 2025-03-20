@@ -125,8 +125,8 @@ const useCamera = () => {
                     const video = videoRef.current;
                     const canvas = canvasRef.current;
 
-                    canvas.width = 600;
-                    canvas.height = 800;
+                    canvas.width = 800;
+                    canvas.height = 600;
                     context.clearRect(0, 0, 0, 0);
 
                     // Calculate visible area dimensions
