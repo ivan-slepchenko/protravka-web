@@ -41,7 +41,7 @@ const AppRoutes = ({ useLab }: { useLab?: boolean }) => {
             <Route path="/login" element={<LoginRedirect />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/info" element={<RequireAuth roles={[Role.MANAGER, Role.ADMIN, Role.OPERATOR, Role.LABORATORY]}><Info /></RequireAuth>} />
-            <Route path="/pages/pwa-install-guide" element={<PwaInstallGuide />} />
+            <Route path="/pages-pwa-install-guide" element={<PwaInstallGuide />} />
         </Routes>
     );
 };

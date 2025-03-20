@@ -77,7 +77,7 @@ const App = () => {
                     <Box fontSize="xl" fontWeight="bold">This app works as PWA only</Box>
                     <Box>Please open as PWA</Box>
                     <Box>
-                        <Link href="/pages/pwa-install-guide" color="blue.500">
+                        <Link href="/pages-pwa-install-guide" color="blue.500">
                             Learn how to install and open this app as a PWA
                         </Link>
                     </Box>
