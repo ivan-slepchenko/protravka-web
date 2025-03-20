@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Flex, Heading, Image, Text, Button, useBreakpointValue, HStack, Circle, Switch, FormControl, FormLabel } from '@chakra-ui/react';
+import { Box, Flex, Heading, Image, Text, Button, HStack, Circle, Switch, FormControl, FormLabel } from '@chakra-ui/react';
 import andoid_1 from './images/android/1.jpeg';
 import andoid_2 from './images/android/2.jpeg';
 import andoid_3 from './images/android/3.jpeg';
@@ -8,6 +8,7 @@ import ios_1 from './images/ios/1.jpeg';
 import ios_2 from './images/ios/2.jpeg';
 import ios_3 from './images/ios/3.jpeg';
 import ios_4 from './images/ios/4.jpeg';
+import { useSwipeable } from 'react-swipeable';
 
 export const PwaInstallGuide = () => {
     const isAndroid = /android/i.test(navigator.userAgent);
@@ -29,10 +30,15 @@ export const PwaInstallGuide = () => {
         setCurrentIndex((prevIndex) => (prevIndex - 1 + photos.length) % photos.length);
     };
 
+    const swipeHandlers = useSwipeable({
+        onSwipedLeft: handleNext,
+        onSwipedRight: handlePrev,
+    });
+
     return (
         <Flex
             direction="column"
-            height="100vh"
+            h="full"
             p={{ base: 4, md: 10 }}
         >
             {/* Header */}
@@ -60,7 +66,15 @@ export const PwaInstallGuide = () => {
             </Box>
 
             {/* Image Section */}
-            <Box flex="1" display="flex" alignItems="center" justifyContent="center" position={'relative'} overflow={'hidden'}>
+            <Box
+                {...swipeHandlers}
+                flex="1"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                position={'relative'}
+                overflow={'hidden'}
+            >
                 {photos.length > 0 && (
                     <Image
                         src={photos[currentIndex]}
