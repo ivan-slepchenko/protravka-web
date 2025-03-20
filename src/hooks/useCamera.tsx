@@ -24,6 +24,7 @@ const useCamera = () => {
 
     const startCamera = useCallback(async () => {
         if (videoRef.current) {
+            console.log('Video element ready, starting camera...');
             let selectedDeviceId = localStorage.getItem('selectedDeviceId');
             setIsLoading(true); // Show progress bar
             try {
@@ -53,6 +54,8 @@ const useCamera = () => {
                         facingMode: selectedDeviceId ? undefined : "environment",
                     }
                 });
+
+                console.info('Camera stream retreived successfully');
 
                 videoRef.current.srcObject = stream;
                 videoRef.current.setAttribute("playsinline", "true");
