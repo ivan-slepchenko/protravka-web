@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription, Spinner, Center } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { px } from 'framer-motion';
 
 const useCamera = () => {
     const { t } = useTranslation();
@@ -62,19 +61,24 @@ const useCamera = () => {
                 videoRef.current.setAttribute("playsinline", "true");
                 videoRef.current.setAttribute("muted", "true");
 
-                // Attempt to play immediately
-                try {
-                    await videoRef.current.play();
-                    console.info('Camera playback started successfully');
-                    setIsLoading(false); // Hide progress bar
-                } catch (playError) {
-                    console.error('Error starting camera playback immediately:', playError);
-                    setIsWarningOpen(true);
-                    setIsLoading(false); // Hide progress bar
-                }
-
                 // Fallback: Handle metadata loading errors
-                videoRef.current.onloadedmetadata = () => {
+                videoRef.current.onloadedmetadata = async () => {
+                    // Attempt to play immediately
+                    try {
+                        if (videoRef.current) {
+                            videoRef.current.play();
+                            console.info('Camera playback started successfully');
+                        } else {
+                            console.error('Video element not ready');
+                            setIsWarningOpen(true);
+                            setIsLoading(false); // Hide progress bar
+                        }
+                        setIsLoading(false); // Hide progress bar
+                    } catch (playError) {
+                        console.error('Error starting camera playback immediately:', playError);
+                        setIsWarningOpen(true);
+                        setIsLoading(false); // Hide progress bar
+                    }
                     console.info('Camera metadata loaded successfully');
                 };
 
