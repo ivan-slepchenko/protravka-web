@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription, Spinner, Center } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
+import { px } from 'framer-motion';
 
 const useCamera = () => {
     const { t } = useTranslation();
@@ -124,9 +125,9 @@ const useCamera = () => {
                     const video = videoRef.current;
                     const canvas = canvasRef.current;
 
-                    // Update canvas dimensions to match video dimensions
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
+                    canvas.width = 600;
+                    canvas.height = 800;
+                    context.clearRect(0, 0, 0, 0);
 
                     // Calculate visible area dimensions
                     const videoAspectRatio = video.videoWidth / video.videoHeight;

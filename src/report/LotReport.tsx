@@ -267,8 +267,8 @@ const LotReport: React.FC = () => {
                                                 </Box>
                                             )}
                                         </Td>
-                                        <Td fontWeight={(order.orderRecipe && orderExecution)  ? "bold" : "normal"} color={(order.orderRecipe && orderExecution) ? getDeviationColor(calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000)) : "black"}>
-                                            {(order.orderRecipe && orderExecution) ? calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalMlRecipeToMix / 1000).toFixed() + '%' : 'N/A'}
+                                        <Td fontWeight={(order.orderRecipe && orderExecution)  ? "bold" : "normal"} color={(order.orderRecipe && orderExecution) ? getDeviationColor(calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalGrRecipeToMix / 1000)) : "black"}>
+                                            {(order.orderRecipe && orderExecution) ? calculateDeviation(orderExecution.slurryConsumptionPerLotKg, order.orderRecipe.slurryTotalGrRecipeToMix / 1000).toFixed() + '%' : 'N/A'}
                                         </Td>
                                     </Tr>
                                 </Tbody>

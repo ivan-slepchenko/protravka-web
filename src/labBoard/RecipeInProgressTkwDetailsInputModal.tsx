@@ -264,7 +264,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                                     </>
                                 )}
                             </Box>
-                            <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
+                            <canvas ref={canvasRef} width="800px" height="600px" style={{ display: 'none' }} />
                             <VStack spacing={4} width="100%">
                                 <Button
                                     w="200px"
