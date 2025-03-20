@@ -230,23 +230,36 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                 style={{ aspectRatio: '4 / 3' }}
                                 position="relative"
                             >
-                                {tkwProbesPhoto ? (
-                                    <ImageWithoutModal src={tkwProbesPhoto} fullSize/>
-                                ) : (
-                                    <>
-                                        <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted={true} />
-                                        <IconButton
-                                            icon={<FaCog />}
-                                            isRound
-                                            aria-label="Settings"
-                                            position="absolute"
-                                            bottom="10px"
-                                            right="10px"
-                                            size='sm'
-                                            onClick={handleSettingsClick}
-                                        />
-                                    </>
-                                )}
+                                <video
+                                    ref={videoRef}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        display: tkwProbesPhoto ? 'none' : 'block',
+                                    }}
+                                    muted
+                                />
+                                <IconButton
+                                    icon={<FaCog />}
+                                    isRound
+                                    aria-label="Settings"
+                                    position="absolute"
+                                    bottom="10px"
+                                    right="10px"
+                                    size="sm"
+                                    onClick={handleSettingsClick}
+                                    style={{ display: tkwProbesPhoto ? 'none' : 'inline-flex' }}
+                                />
+                                <Box
+                                    style={{
+                                        display: tkwProbesPhoto ? 'block' : 'none',
+                                        width: '100%',
+                                        height: '100%',
+                                    }}
+                                >
+                                    {tkwProbesPhoto && <ImageWithoutModal src={tkwProbesPhoto} fullSize />}
+                                </Box>
                             </Box>
                             <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
                             <VStack spacing={4} width="100%">
