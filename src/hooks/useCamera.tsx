@@ -20,6 +20,12 @@ const useCamera = () => {
         return devices.filter(device => device.kind === "videoinput");
     }, []);
 
+    useEffect(() => {
+        return () => {
+            stopCamera();
+        };
+    }, []);
+
     const startCamera = useCallback(async (attempt = 1) => {
         if (videoRef.current) {
             console.log('Video element ready, starting camera...');
@@ -138,11 +144,30 @@ const useCamera = () => {
                 // Get video track settings for width and height
                 const videoTrack = stream.getVideoTracks()[0];
                 const { width, height } = videoTrack.getSettings();
+                const widthToRemember = width || video.videoWidth;
+                const heightToRemember = height || video.videoHeight;
+
+                // Retrieve the selected device ID
+                const selectedDeviceId = localStorage.getItem('selectedDeviceId');
+
+                // Check if dimensions are already remembered for the selected device
+                const rememberedWidth = selectedDeviceId ? localStorage.getItem(`${selectedDeviceId}_width`) : null;
+                const rememberedHeight = selectedDeviceId ? localStorage.getItem(`${selectedDeviceId}_height`) : null;
+
+                // If not remembered, store the current dimensions
+                if (selectedDeviceId && !rememberedWidth && !rememberedHeight) {
+                    if (widthToRemember) localStorage.setItem(`${selectedDeviceId}_width`, widthToRemember.toString());
+                    if (heightToRemember) localStorage.setItem(`${selectedDeviceId}_height`, heightToRemember.toString());
+                }
+
+                // Use remembered dimensions if available, otherwise fallback to current dimensions
+                const canvasWidth = rememberedWidth ? parseInt(rememberedWidth, 10) : widthToRemember;
+                const canvasHeight = rememberedHeight ? parseInt(rememberedHeight, 10) : heightToRemember;
 
                 // Create a new canvas element dynamically
                 const canvas = document.createElement('canvas');
-                canvas.width = width || video.videoWidth; // Use stream width or fallback to video width
-                canvas.height = height || video.videoHeight; // Use stream height or fallback to video height
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
 
                 const context = canvas.getContext('2d');
                 if (context) {
