@@ -158,14 +158,6 @@ const useCamera = () => {
                     setIsWarningOpen(true);
                 };
 
-                try {
-                    await newVideo.play();
-                    console.log('Video playing');
-                } catch (error) {
-                    console.error('Error playing video:', error);
-                    setIsWarningOpen(true);
-                }
-
             } catch (error) {
                 console.error('Error starting camera:', error);
                 if (attempt < 3) {
