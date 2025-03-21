@@ -142,7 +142,7 @@ const useCamera = () => {
                 const context = canvas.getContext('2d');
                 if (context) {
                     // Draw the entire video frame onto the canvas
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    context.drawImage(video, 0, 0);
 
                     // Convert the canvas content to a Blob
                     canvas.toBlob((blob) => {
