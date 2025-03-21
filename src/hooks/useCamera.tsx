@@ -12,14 +12,8 @@ const useCamera = () => {
     const [cameraStarted, setCameraStarted] = useState<boolean>(false);
     const [isCameraStarting, setIsCameraStarting] = useState<boolean>(false); // New state
     const [stream, setStream] = useState<MediaStream | null>(null); // State to store the MediaStream
-    const constraints = { video: { facingMode: "environment" } };
+    const [devices, setDevices] = useState<MediaDeviceInfo[]>([]); // State to store the video devices
     const cameraTimeout = useRef<any | null>(null);
-
-    const getVideoDevices = useCallback(async () => {
-        await navigator.mediaDevices.getUserMedia(constraints);
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        return devices.filter(device => device.kind === "videoinput");
-    }, []);
 
     useEffect(() => {
         return () => {
@@ -46,13 +40,22 @@ const useCamera = () => {
                     setIsCameraStarting(false); // Reset the flag
                     return;
                 }
-
-                const videoDevices = await getVideoDevices();
-                const defaultDevice = videoDevices.find(device => /rear|back|environment|facing/i.test(device.label));
-
-                console.info('Video devices:', videoDevices);
+                
                 if (!selectedDeviceId) {
+                    console.log('No selected device found is set, getting video devices...');
+
+                    // await navigator.mediaDevices.getUserMedia(constraints);
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    
+                    const videoDevices = devices.filter(device => device.kind === "videoinput");
+                    setDevices(videoDevices);
+
+                    const defaultDevice = videoDevices.find(device => /rear|back|environment/i.test(device.label));
+                    console.info('Video devices:', videoDevices);
                     selectedDeviceId = defaultDevice ? defaultDevice.deviceId : videoDevices[0]?.deviceId;
+
+                    localStorage.setItem('selectedDeviceId', selectedDeviceId || '');
+                    
                 }
                 console.info('Selected video device:', selectedDeviceId);
 
@@ -129,7 +132,7 @@ const useCamera = () => {
             cameraTimeout.current = setTimeout(startCamera, 100);
         }
         setIsCameraStarting(false); // Reset the flag
-    }, [getVideoDevices, isCameraStarting]);
+    }, [isCameraStarting]);
 
     const stopCamera = useCallback(() => {
         console.log('Stop camera called');
@@ -154,15 +157,18 @@ const useCamera = () => {
             console.log('Stopping camera tracks...');
             stream.getTracks().forEach((track) => {
                 track.stop();
-                console.log(`Track ${track.kind} stopped`);
+                track.enabled = false;
+                stream.removeTrack(track);
+                console.log(`Track ${track.kind} stopped and removed`);
             });
+            
             setStream(null); // Cleanup the stream from state
             console.log('Camera stream removed');
         }
 
         setCameraStarted(false);
 
-        navigator.mediaDevices.getUserMedia({ video: false });
+        navigator.mediaDevices.getUserMedia({  video: { facingMode: { ideal: "user" } } });
         
         console.log('Camera stopped, cameraStarted set to false');
     }, [stream]);
@@ -220,23 +226,7 @@ const useCamera = () => {
     };
 
     const SettingsModal = useCallback(() => {
-        const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
         const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
-
-        useEffect(() => {
-            if (!isSettingsOpen) return;
-            const getDevices = async () => {
-                await navigator.mediaDevices.getUserMedia(constraints);
-                const allDevices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = allDevices.filter((device) => device.kind === 'videoinput');
-                setDevices(videoDevices);
-                const storedDeviceId = localStorage.getItem('selectedDeviceId');
-                if (storedDeviceId) {
-                    setSelectedDeviceId(storedDeviceId);
-                }
-            };
-            getDevices();
-        }, [isSettingsOpen]);
 
         const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
             const newDeviceId = e.target.value;
@@ -247,6 +237,34 @@ const useCamera = () => {
                 startCamera();
             }
         };
+
+        useEffect(() => {
+            const handleVisibilityChange = async () => {
+                console.log('Visibility change:', document.hidden);
+                if (document.hidden) {
+                    stopCamera();
+                    console.log('Camera stopped due to visibility change');
+                }
+            };
+
+            const handleBeforeUnload = () => {
+                console.log('Before unload event');
+                stopCamera();
+            };
+
+            document.addEventListener("visibilitychange", handleVisibilityChange);
+
+            window.addEventListener("beforeunload", handleBeforeUnload);
+
+            return () => {
+                document.removeEventListener("visibilitychange", handleVisibilityChange);
+                window.removeEventListener("beforeunload", () => {
+                    console.log('Before unload event');
+                    stopCamera();
+                });
+            };
+
+        }, [stopCamera]);
          
         return (
             <Modal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} isCentered>
@@ -290,21 +308,6 @@ const useCamera = () => {
             </ModalContent>
         </Modal>
     ), [isWarningOpen]);
-
-    useEffect(() => {
-        const handleVisibilityChange = async () => {
-            if (document.hidden) {
-                stopCamera();
-                console.log('Camera stopped due to visibility change');
-            }
-        };
-
-        document.addEventListener("visibilitychange", handleVisibilityChange);
-
-        return () => {
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
-        };
-    }, [stopCamera]);
 
     return {
         videoPlaceholderRef,
