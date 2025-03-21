@@ -21,7 +21,7 @@ const useCamera = () => {
     }, []);
 
 
-    const startCamera = useCallback(async () => {
+    const startCamera = useCallback(async (attempt = 1) => {
         if (videoRef.current) {
             console.log('Video element ready, starting camera...');
             let selectedDeviceId = localStorage.getItem('selectedDeviceId');
@@ -62,6 +62,11 @@ const useCamera = () => {
                 };
 
             } catch (error) {
+                if (attempt < 3) {
+                    console.log(`Retrying camera start (Attempt ${attempt})...`);
+                    setTimeout(() => startCamera(attempt + 1), 1000);
+                    return;
+                }
                 console.error("Error starting camera:", error);
                 setIsWarningOpen(true);
                 return;
@@ -74,7 +79,7 @@ const useCamera = () => {
             }
             cameraTimeout.current = setTimeout(startCamera, 100);
         }
-    }, [videoRef, getVideoDevices]);
+    }, [getVideoDevices]);
 
     const stopCamera = useCallback(() => {
         if (cameraTimeout.current) {
@@ -90,22 +95,28 @@ const useCamera = () => {
             videoRef.current.srcObject = null;
             console.log('Camera stopped');
         }
+
+        // 🛑 Force release of camera to prevent iOS lock issue
+        navigator.mediaDevices.getUserMedia({ video: false });
+        
         setCameraStarted(false);
-    }, [videoRef]);
+    }, []);
 
     const takeSnapshot = useCallback((): Promise<Blob | null> => {
         return new Promise((resolve) => {
             if (canvasRef.current && videoRef.current) {
                 const context = canvasRef.current.getContext('2d');
                 if (context) {
-                    // Reset or clear any transforms before drawing
                     context.setTransform(1, 0, 0, 1, 0, 0);
                     context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
                     const video = videoRef.current;
                     const canvas = canvasRef.current;
-                    const videoAspectRatio = video.videoWidth / video.videoHeight;
+
+                    // ⬇️ Use clientWidth for better iOS support
+                    const videoAspectRatio = video.clientWidth / video.clientHeight;
                     const canvasAspectRatio = canvas.width / canvas.height;
+
                     let sx = 0, sy = 0, sWidth = video.videoWidth, sHeight = video.videoHeight;
 
                     if (videoAspectRatio > canvasAspectRatio) {
@@ -116,13 +127,8 @@ const useCamera = () => {
                         sy = (video.videoHeight - sHeight) / 2;
                     }
 
-                    // Draw the cropped area
                     context.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
-                    window.alert(`sx: ${sx}, sy: ${sy}, sWidth: ${sWidth}, sHeight: ${sHeight}, videoAspectRatio: ${videoAspectRatio}, canvasAspectRatio: ${canvasAspectRatio}, canvasWidth: ${canvas.width}, canvasHeight: ${canvas.height}, videoWidth: ${video.videoWidth}, videoHeight: ${video.videoHeight}, videoClientWidth: ${video.clientWidth}, videoClientHeight: ${video.clientHeight}`);
-
-                    canvas.toBlob((blob) => {
-                        resolve(blob);
-                    }, 'image/png');
+                    canvas.toBlob(resolve, 'image/png');
                 } else {
                     resolve(null);
                 }
@@ -244,7 +250,7 @@ const useCamera = () => {
 
             window.removeEventListener("beforeunload", handleUnload);
         };
-    }, [videoRef]);
+    }, []);
 
     return {
         videoRef,
