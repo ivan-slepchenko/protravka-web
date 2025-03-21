@@ -237,6 +237,8 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         display: tkwProbesPhoto ? 'none' : 'block',
                                     }}
                                     muted
+                                    playsInline
+                                    autoPlay
                                 />
                                 <IconButton
                                     icon={<FaCog />}

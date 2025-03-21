@@ -58,7 +58,7 @@ const useCamera = () => {
                 console.info('Camera stream retrieved successfully');
 
                 videoRef.current.srcObject = stream;
-                videoRef.current.setAttribute("playsinline", "true");
+                videoRef.current.setAttribute("playsInline", "true");
                 videoRef.current.setAttribute("muted", "true");
 
                 // Fallback: Handle metadata loading errors
@@ -66,7 +66,7 @@ const useCamera = () => {
                     // Attempt to play immediately
                     try {
                         if (videoRef.current) {
-                            videoRef.current.play();
+                            // videoRef.current.play();
                             console.info('Camera playback started successfully');
                         } else {
                             console.error('Video element not ready');
