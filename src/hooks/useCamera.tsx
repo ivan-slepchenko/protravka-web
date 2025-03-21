@@ -51,13 +51,20 @@ const useCamera = () => {
                     setDevices(videoDevices);
 
                     const defaultDevice = videoDevices.find(device => /rear|back|environment/i.test(device.label));
-                    console.info('Video devices:', videoDevices);
+                    console.info('Video devices:', JSON.stringify(videoDevices));
                     selectedDeviceId = defaultDevice ? defaultDevice.deviceId : videoDevices[0]?.deviceId;
 
                     localStorage.setItem('selectedDeviceId', selectedDeviceId || '');
                     
                 }
                 console.info('Selected video device:', selectedDeviceId);
+
+                if (!selectedDeviceId) {
+                    console.error('No video devices found');
+                    setIsWarningOpen(true);
+                    setIsCameraStarting(false); // Reset the flag
+                    return;
+                }
 
                 const newStream = await navigator.mediaDevices.getUserMedia({
                     video: {
@@ -66,6 +73,31 @@ const useCamera = () => {
                         height: { ideal: 600 },
                         facingMode: selectedDeviceId ? undefined : "environment",
                     }
+                });     
+                
+
+                const streamEvents = ['addtrack', 'removetrack'];
+                streamEvents.forEach((eventName) => {
+                    newStream.addEventListener(eventName, (event) => {
+                        console.log(`[Stream] Event: ${eventName}`, event);
+                    });
+                });
+
+                // 🔍 Events on individual tracks
+                newStream.getTracks().forEach((track) => {
+                    const trackEvents = ['ended', 'mute', 'unmute', 'overconstrained'];
+
+                    console.log(`[Track] Kind: ${track.kind}, ID: ${track.id}`);
+
+                    trackEvents.forEach((eventName) => {
+                        track.addEventListener(eventName, (event) => {
+                            console.log(`[Track: ${track.kind}] Event: ${eventName}`, event);
+                        });
+                    });
+
+                    // Optional: log track settings and constraints
+                    console.log(`[Track: ${track.kind}] Settings:`, track.getSettings());
+                    console.log(`[Track: ${track.kind}] Constraints:`, track.getConstraints());
                 });
 
                 console.info('Camera stream retrieved successfully');
@@ -78,9 +110,6 @@ const useCamera = () => {
                 newVideo.style.height = '100%';
                 newVideo.style.objectFit = 'cover';
                 newVideo.style.display = 'block';
-                newVideo.setAttribute('autoplay', 'true');
-                newVideo.setAttribute('muted', 'true');
-                newVideo.setAttribute('playsinline', 'true');
                 newVideo.autoplay = true;
                 newVideo.muted = true;
                 newVideo.playsInline = true;
@@ -100,15 +129,34 @@ const useCamera = () => {
                 console.log('video.srcObject', newVideo.srcObject);
                 console.log('video.readyState', newVideo.readyState);
 
-                
+                newVideo.onloadeddata = (e) => {
+                    console.log('Camera loaded data:', e);
+                };
 
-                console.log('video.srcObject', newVideo.srcObject);
-                console.log('video.readyState', newVideo.readyState);
+                newVideo.onplaying = (e) => {
+                    console.log('Camera playing:', e);
+                };  
+
+                newVideo.oncanplay = (e) => {
+                    console.log('Camera can play:', e);
+                };
+
+                newVideo.oncanplaythrough = (e) => {
+                    console.log('Camera can play through:', e);
+                }
 
                 newVideo.onerror = (error) => {
                     console.error('Error loading camera metadata:', error);
                     setIsWarningOpen(true);
                 };
+
+                try {
+                    await newVideo.play();
+                    console.log('Video playing');
+                } catch (error) {
+                    console.error('Error playing video:', error);
+                    setIsWarningOpen(true);
+                }
 
             } catch (error) {
                 console.error('Error starting camera:', error);
