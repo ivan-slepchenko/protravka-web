@@ -44,7 +44,15 @@ const useCamera = () => {
                 if (!selectedDeviceId) {
                     console.log('No selected device found is set, getting video devices...');
 
-                    // await navigator.mediaDevices.getUserMedia(constraints);
+                    const stream = await navigator.mediaDevices.getUserMedia(
+                        { video: true }
+                    );
+                    stream.getTracks().forEach(track => {
+                        track.enabled = false;
+                        track.stop();
+                        stream.removeTrack(track);
+                    });
+                    
                     const devices = await navigator.mediaDevices.enumerateDevices();
                     
                     const videoDevices = devices.filter(device => device.kind === "videoinput");
