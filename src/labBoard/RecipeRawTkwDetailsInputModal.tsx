@@ -271,6 +271,16 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     {tkwProbesPhoto ? t('recipe_raw_tkw_details_input_modal.retake_picture') : t('recipe_raw_tkw_details_input_modal.take_picture')}
                                 </Button>
                             </VStack>
+                            <HStack spacing={4}>
+                                <Button colorScheme="green" onClick={() => {
+                                    startCamera();
+                                }}>
+                                    Start Camera
+                                </Button>
+                                <Button colorScheme="red" onClick={stopCamera}>
+                                    Stop Camera
+                                </Button>
+                            </HStack>
                         </VStack>
                     )}
                 </ModalBody>
