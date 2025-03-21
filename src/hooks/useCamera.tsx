@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription, Spinner, Center } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
 const useCamera = () => {
@@ -11,7 +11,6 @@ const useCamera = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
     const [cameraStarted, setCameraStarted] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false); // State for progress bar
     const constraints = { video: { facingMode: "environment" } };
     const cameraTimeout = useRef<any | null>(null);
 
@@ -26,14 +25,12 @@ const useCamera = () => {
         if (videoRef.current) {
             console.log('Video element ready, starting camera...');
             let selectedDeviceId = localStorage.getItem('selectedDeviceId');
-            setIsLoading(true); // Show progress bar
             try {
                 const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
                 console.info('Starting camera, camera permission:', permissionStatus.state);
                 if (permissionStatus.state === 'denied') {
                     console.error('Camera permission denied');
                     setIsWarningOpen(true);
-                    setIsLoading(false); // Hide progress bar
                     return;
                 }
 
@@ -58,40 +55,15 @@ const useCamera = () => {
                 console.info('Camera stream retrieved successfully');
 
                 videoRef.current.srcObject = stream;
-                videoRef.current.setAttribute("playsInline", "true");
-                videoRef.current.setAttribute("muted", "true");
-
-                // Fallback: Handle metadata loading errors
-                videoRef.current.onloadedmetadata = async () => {
-                    // Attempt to play immediately
-                    try {
-                        if (videoRef.current) {
-                            // videoRef.current.play();
-                            console.info('Camera playback started successfully');
-                        } else {
-                            console.error('Video element not ready');
-                            setIsWarningOpen(true);
-                            setIsLoading(false); // Hide progress bar
-                        }
-                        setIsLoading(false); // Hide progress bar
-                    } catch (playError) {
-                        console.error('Error starting camera playback immediately:', playError);
-                        setIsWarningOpen(true);
-                        setIsLoading(false); // Hide progress bar
-                    }
-                    console.info('Camera metadata loaded successfully');
-                };
 
                 videoRef.current.onerror = (error) => {
                     console.error('Error loading camera metadata:', error);
                     setIsWarningOpen(true);
-                    setIsLoading(false); // Hide progress bar
                 };
 
             } catch (error) {
                 console.error("Error starting camera:", error);
                 setIsWarningOpen(true);
-                setIsLoading(false); // Hide progress bar
                 return;
             }
             setCameraStarted(true);
@@ -242,14 +214,6 @@ const useCamera = () => {
         </Modal>
     ), [isWarningOpen]);
 
-    const CameraLoader = useCallback(() => (
-        isLoading ? (
-            <Center position="absolute" top="0" left="0" width="100%" height="100%" bg="rgba(0, 0, 0, 0.5)" zIndex="10">
-                <Spinner size="xl" color="white" />
-            </Center>
-        ) : null
-    ), [isLoading]);
-
     useEffect(() => {
         const handleVisibilityChange = async () => {
             if (document.hidden && videoRef.current?.srcObject) {
@@ -291,7 +255,6 @@ const useCamera = () => {
         handleSettingsClick,
         SettingsModal,
         WarningModal,
-        CameraLoader,
     };
 };
 
