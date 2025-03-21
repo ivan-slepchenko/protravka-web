@@ -121,7 +121,6 @@ const OrderExecution4ProovingProduct = () => {
                         )}
                     </Box>
                 </AspectRatio>
-                <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
                 <VStack spacing={4} width="100%" mt='auto'>
                     <Button
                         w="200px" 

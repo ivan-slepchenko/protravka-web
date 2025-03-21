@@ -47,7 +47,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     const [tkwProbesPhoto, setTkwProbesPhoto] = useState<Blob | null>(null);
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState<boolean>(false);
-    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { videoRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
     const { ImageWithoutModal } = useImageModal();
 
     useEffect(() => {
@@ -235,7 +235,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         width: '100%',
                                         height: '100%',
                                         objectFit: 'cover',
-                                        visibility: tkwProbesPhoto ? 'hidden' : 'visible',
+                                        display: tkwProbesPhoto ? 'none' : 'block',
                                     }}
                                 />
                                 <IconButton
@@ -259,7 +259,6 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     {tkwProbesPhoto && <ImageWithoutModal src={tkwProbesPhoto} fullSize />}
                                 </Box>
                             </Box>
-                            <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
                             <VStack spacing={4} width="100%">
                                 <Button
                                     w="200px"

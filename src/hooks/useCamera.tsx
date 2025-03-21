@@ -6,7 +6,6 @@ const useCamera = () => {
     const { t } = useTranslation();
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
@@ -131,18 +130,22 @@ const useCamera = () => {
 
     const takeSnapshot = useCallback((): Promise<Blob | null> => {
         return new Promise((resolve) => {
-            if (videoRef.current) {
+            if (videoRef.current && stream) {
                 const video = videoRef.current;
+
+                // Get video track settings for width and height
+                const videoTrack = stream.getVideoTracks()[0];
+                const { width, height } = videoTrack.getSettings();
 
                 // Create a new canvas element dynamically
                 const canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth; // Match canvas width to video width
-                canvas.height = video.videoHeight; // Match canvas height to video height
+                canvas.width = width || video.videoWidth; // Use stream width or fallback to video width
+                canvas.height = height || video.videoHeight; // Use stream height or fallback to video height
 
                 const context = canvas.getContext('2d');
                 if (context) {
                     // Draw the entire video frame onto the canvas
-                    context.drawImage(video, 0, 0);
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
                     // Convert the canvas content to a Blob
                     canvas.toBlob((blob) => {
@@ -158,7 +161,7 @@ const useCamera = () => {
                 resolve(null);
             }
         });
-    }, []);
+    }, [stream]);
 
     const handleSettingsClick = () => {
         setIsSettingsOpen(true);
@@ -259,7 +262,6 @@ const useCamera = () => {
 
     return {
         videoRef,
-        canvasRef,
         startCamera,
         stopCamera,
         takeSnapshot,

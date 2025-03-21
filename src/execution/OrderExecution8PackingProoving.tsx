@@ -82,7 +82,6 @@ const OrderExecution8PackingProoving = () => {
                         </>
                     )}
                 </Box>
-                <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
                 <VStack spacing={4} width="100%">
                     <Button
                         w="200px" 
