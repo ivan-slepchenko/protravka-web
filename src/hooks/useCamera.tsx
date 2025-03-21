@@ -10,6 +10,7 @@ const useCamera = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
     const [cameraStarted, setCameraStarted] = useState<boolean>(false);
+    const [isCameraStarting, setIsCameraStarting] = useState<boolean>(false); // New state
     const [stream, setStream] = useState<MediaStream | null>(null); // State to store the MediaStream
     const constraints = { video: { facingMode: "environment" } };
     const cameraTimeout = useRef<any | null>(null);
@@ -27,6 +28,12 @@ const useCamera = () => {
     }, []);
 
     const startCamera = useCallback(async (attempt = 1) => {
+        if (isCameraStarting) {
+            alert('Camera is already starting. Please wait.');
+            return;
+        }
+
+        setIsCameraStarting(true); // Set the flag to true
         if (videoPlaceholderRef.current) {
             console.log('Video placeholder ready, starting camera...');
             let selectedDeviceId = localStorage.getItem('selectedDeviceId');
@@ -36,6 +43,7 @@ const useCamera = () => {
                 if (permissionStatus.state === 'denied') {
                     console.error('Camera permission denied');
                     setIsWarningOpen(true);
+                    setIsCameraStarting(false); // Reset the flag
                     return;
                 }
 
@@ -94,10 +102,12 @@ const useCamera = () => {
                 if (attempt < 3) {
                     console.log(`Retrying camera start (Attempt ${attempt})...`);
                     setTimeout(() => startCamera(attempt + 1), 1000);
+                    setIsCameraStarting(false); // Reset the flag
                     return;
                 }
                 console.error("Error starting camera:", error);
                 setIsWarningOpen(true);
+                setIsCameraStarting(false); // Reset the flag
                 return;
             }
             setCameraStarted(true);
@@ -108,7 +118,8 @@ const useCamera = () => {
             }
             cameraTimeout.current = setTimeout(startCamera, 100);
         }
-    }, [getVideoDevices]);
+        setIsCameraStarting(false); // Reset the flag
+    }, [getVideoDevices, isCameraStarting]);
 
     const stopCamera = useCallback(() => {
         console.log('Stop camera called');
