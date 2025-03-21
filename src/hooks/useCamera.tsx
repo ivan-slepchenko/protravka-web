@@ -7,10 +7,11 @@ const useCamera = () => {
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    
+
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
     const [cameraStarted, setCameraStarted] = useState<boolean>(false);
+    const [stream, setStream] = useState<MediaStream | null>(null); // State to store the MediaStream
     const constraints = { video: { facingMode: "environment" } };
     const cameraTimeout = useRef<any | null>(null);
 
@@ -19,7 +20,6 @@ const useCamera = () => {
         const devices = await navigator.mediaDevices.enumerateDevices();
         return devices.filter(device => device.kind === "videoinput");
     }, []);
-
 
     const startCamera = useCallback(async (attempt = 1) => {
         if (videoRef.current) {
@@ -36,14 +36,14 @@ const useCamera = () => {
 
                 const videoDevices = await getVideoDevices();
                 const defaultDevice = videoDevices.find(device => /rear|back|environment|facing/i.test(device.label));
-            
+
                 console.info('Video devices:', videoDevices);
                 if (!selectedDeviceId) {
                     selectedDeviceId = defaultDevice ? defaultDevice.deviceId : videoDevices[0]?.deviceId;
                 }
                 console.info('Selected video device:', selectedDeviceId);
 
-                const stream = await navigator.mediaDevices.getUserMedia({
+                const newStream = await navigator.mediaDevices.getUserMedia({
                     video: {
                         deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
                         width: { ideal: 800 },
@@ -53,8 +53,10 @@ const useCamera = () => {
                 });
 
                 console.info('Camera stream retrieved successfully');
-
-                videoRef.current.srcObject = stream;
+                setStream(newStream); // Store the stream in state
+                if (videoRef.current) {
+                    videoRef.current.srcObject = newStream;
+                }
 
                 videoRef.current.onerror = (error) => {
                     console.error('Error loading camera metadata:', error);
@@ -82,53 +84,51 @@ const useCamera = () => {
     }, [getVideoDevices]);
 
     const stopCamera = useCallback(() => {
+        console.log('Stop camera called');
         if (cameraTimeout.current) {
+            console.log('Clearing camera timeout...');
             clearTimeout(cameraTimeout.current);
             cameraTimeout.current = null;
         }
-        if (videoRef.current && videoRef.current.srcObject) {
-            const stream = videoRef.current.srcObject as MediaStream;
+        if (stream) {
+            console.log('Stopping camera tracks...');
             stream.getTracks().forEach((track) => {
                 track.stop();
                 console.log(`Track ${track.kind} stopped`);
             });
-            videoRef.current.srcObject = null;
-            console.log('Camera stopped');
+            setStream(null); // Cleanup the stream from state
+            console.log('Camera stream removed');
         }
 
-        // 🛑 Force release of camera to prevent iOS lock issue
+        console.log('Forcing camera release to prevent iOS lock issue...');
         navigator.mediaDevices.getUserMedia({ video: false });
-        
+
         setCameraStarted(false);
-    }, []);
+        console.log('Camera stopped, cameraStarted set to false');
+    }, [stream]);
 
     const takeSnapshot = useCallback((): Promise<Blob | null> => {
         return new Promise((resolve) => {
-            if (canvasRef.current && videoRef.current) {
-                const context = canvasRef.current.getContext('2d');
+            if (videoRef.current) {
+                const video = videoRef.current;
+
+                // Create a new canvas element dynamically
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth; // Match canvas width to video width
+                canvas.height = video.videoHeight; // Match canvas height to video height
+
+                const context = canvas.getContext('2d');
                 if (context) {
-                    context.setTransform(1, 0, 0, 1, 0, 0);
-                    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+                    // Draw the entire video frame onto the canvas
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                    const video = videoRef.current;
-                    const canvas = canvasRef.current;
+                    // Convert the canvas content to a Blob
+                    canvas.toBlob((blob) => {
+                        resolve(blob);
 
-                    // ⬇️ Use clientWidth for better iOS support
-                    const videoAspectRatio = video.clientWidth / video.clientHeight;
-                    const canvasAspectRatio = canvas.width / canvas.height;
-
-                    let sx = 0, sy = 0, sWidth = video.videoWidth, sHeight = video.videoHeight;
-
-                    if (videoAspectRatio > canvasAspectRatio) {
-                        sWidth = video.videoHeight * canvasAspectRatio;
-                        sx = (video.videoWidth - sWidth) / 2;
-                    } else {
-                        sHeight = video.videoWidth / canvasAspectRatio;
-                        sy = (video.videoHeight - sHeight) / 2;
-                    }
-
-                    context.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
-                    canvas.toBlob(resolve, 'image/png');
+                        // Cleanup: Remove the canvas from memory
+                        canvas.remove();
+                    }, 'image/png');
                 } else {
                     resolve(null);
                 }
@@ -222,35 +222,18 @@ const useCamera = () => {
 
     useEffect(() => {
         const handleVisibilityChange = async () => {
-            if (document.hidden && videoRef.current?.srcObject) {
+            if (document.hidden) {
                 stopCamera();
                 console.log('Camera stopped due to visibility change');
             }
-            if (!document.hidden && videoRef.current) {
-                try {
-                    startCamera();
-                } catch (err) {
-                    console.error("Camera failed on resume:", err);
-                    alert("Please reload the app to use the camera again.");
-                }
-            }
-        };
-
-        const handleUnload = () => {
-            stopCamera();
-            console.log('Camera stopped due to page unload');
         };
 
         document.addEventListener("visibilitychange", handleVisibilityChange);
 
-        window.addEventListener("beforeunload", handleUnload);
-
         return () => {
             document.removeEventListener("visibilitychange", handleVisibilityChange);
-
-            window.removeEventListener("beforeunload", handleUnload);
         };
-    }, []);
+    }, [stopCamera]);
 
     return {
         videoRef,
