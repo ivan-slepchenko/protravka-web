@@ -54,9 +54,15 @@ const useCamera = () => {
 
                 console.info('Camera stream retrieved successfully');
                 setStream(newStream); // Store the stream in state
-                if (videoRef.current) {
-                    videoRef.current.srcObject = newStream;
-                }
+                
+                videoRef.current.srcObject = newStream;
+
+                console.log('video.srcObject', videoRef.current.srcObject);
+                console.log('video.readyState', videoRef.current.readyState);
+                await videoRef.current.play();
+                
+                console.log('video.srcObject', videoRef.current.srcObject);
+                console.log('video.readyState', videoRef.current.readyState);
 
                 videoRef.current.onerror = (error) => {
                     console.error('Error loading camera metadata:', error);
