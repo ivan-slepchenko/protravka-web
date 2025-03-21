@@ -250,6 +250,38 @@ const useCamera = () => {
         ) : null
     ), [isLoading]);
 
+    useEffect(() => {
+        const handleVisibilityChange = async () => {
+            if (document.hidden && videoRef.current?.srcObject) {
+                stopCamera();
+                console.log('Camera stopped due to visibility change');
+            }
+            if (!document.hidden && videoRef.current) {
+                try {
+                    startCamera();
+                } catch (err) {
+                    console.error("Camera failed on resume:", err);
+                    alert("Please reload the app to use the camera again.");
+                }
+            }
+        };
+
+        const handleUnload = () => {
+            stopCamera();
+            console.log('Camera stopped due to page unload');
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        window.addEventListener("beforeunload", handleUnload);
+
+        return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+
+            window.removeEventListener("beforeunload", handleUnload);
+        };
+    }, [videoRef]);
+
     return {
         videoRef,
         canvasRef,
