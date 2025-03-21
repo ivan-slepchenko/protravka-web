@@ -96,8 +96,13 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
 
     const handleNext = () => {
         setIsPhotoState(true);
-        startCamera();
     };
+
+    useEffect(() => {
+        if (isPhotoState) {
+            startCamera();
+        }
+    }, [isPhotoState]);
 
     const handleBack = () => {
         if (isPhotoState) {

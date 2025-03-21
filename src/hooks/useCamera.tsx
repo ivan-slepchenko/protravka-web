@@ -81,14 +81,20 @@ const useCamera = () => {
                 videoPlaceholderRef.current.appendChild(newVideo);
 
                 newVideo.srcObject = newStream;
-                newVideo.onloadedmetadata = (e) => {
+                newVideo.onloadedmetadata = async (e) => {
                     console.log('Camera metadata loaded:', e);
+                    try {
+                        // await newVideo.play();
+                    } catch (error) {
+                        console.error('Error playing camera:', error);
+                        setIsWarningOpen(true);
+                    }
                 };
 
                 console.log('video.srcObject', newVideo.srcObject);
                 console.log('video.readyState', newVideo.readyState);
 
-                await newVideo.play();
+                
 
                 console.log('video.srcObject', newVideo.srcObject);
                 console.log('video.readyState', newVideo.readyState);
@@ -99,6 +105,7 @@ const useCamera = () => {
                 };
 
             } catch (error) {
+                console.error('Error starting camera:', error);
                 if (attempt < 3) {
                     console.log(`Retrying camera start (Attempt ${attempt})...`);
                     setTimeout(() => startCamera(attempt + 1), 1000);
