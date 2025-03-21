@@ -121,7 +121,7 @@ const useCamera = () => {
                 newVideo.autoplay = true;
                 newVideo.muted = true;
                 newVideo.playsInline = true;
-                newVideo.setAttribute('playsinline', 'true');
+                newVideo.setAttribute('playsinline', '');
                 newVideo.setAttribute('autoplay', '');
                 newVideo.setAttribute('muted', '');
 
