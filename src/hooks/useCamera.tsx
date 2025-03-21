@@ -112,6 +112,15 @@ const useCamera = () => {
             console.log('Camera stream removed');
         }
 
+        if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.srcObject = null;
+            console.log('video.srcObject set to null');
+            videoRef.current.removeAttribute('src');
+            videoRef.current.load();
+            console.log('Video element cleaned up');
+        }
+
         setCameraStarted(false);
         console.log('Camera stopped, cameraStarted set to false');
     }, [stream]);
