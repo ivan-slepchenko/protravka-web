@@ -102,7 +102,7 @@ const useCamera = () => {
             }
             cameraTimeout.current = setTimeout(startCamera, 100);
         }
-    }, []);
+    }, [videoRef, getVideoDevices]);
 
     const stopCamera = useCallback(() => {
         if (cameraTimeout.current) {
@@ -119,7 +119,7 @@ const useCamera = () => {
             console.log('Camera stopped');
         }
         setCameraStarted(false);
-    }, []);
+    }, [videoRef]);
 
     const takeSnapshot = useCallback((): Promise<Blob | null> => {
         return new Promise((resolve) => {
