@@ -61,6 +61,10 @@ const useCamera = () => {
                 
                 videoRef.current.srcObject = newStream;
 
+                videoRef.current.onloadedmetadata = (e) => {
+                    console.log('Camera metadata loaded:', e);
+                };
+
                 console.log('video.srcObject', videoRef.current.srcObject);
                 console.log('video.readyState', videoRef.current.readyState);
 
