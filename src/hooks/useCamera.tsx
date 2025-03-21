@@ -120,12 +120,12 @@ const useCamera = () => {
                 newVideo.style.display = 'block';
                 newVideo.autoplay = true;
                 newVideo.muted = true;
-                newVideo.playsInline = true;
+                newVideo.playsInline = false;
                 newVideo.controls = false;
-                newVideo.setAttribute('playsinline', '');
+                newVideo.setAttribute('playsinline', 'false');
                 newVideo.setAttribute('autoplay', '');
                 newVideo.setAttribute('muted', '');
-                newVideo.setAttribute('controls', '');
+                newVideo.setAttribute('controls', 'false');
 
                 videoPlaceholderRef.current.appendChild(newVideo);
 
