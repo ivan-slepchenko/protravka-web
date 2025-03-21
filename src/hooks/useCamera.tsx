@@ -75,16 +75,16 @@ const useCamera = () => {
                 newVideo.style.height = '100%';
                 newVideo.style.objectFit = 'cover';
                 newVideo.style.display = 'block';
-                newVideo.setAttribute('autoplay', '');
-                newVideo.setAttribute('muted', '');
-                newVideo.setAttribute('playsinline', '');
+                newVideo.setAttribute('autoplay', 'true');
+                newVideo.setAttribute('muted', 'true');
+                newVideo.setAttribute('playsinline', 'true');
                 videoPlaceholderRef.current.appendChild(newVideo);
 
                 newVideo.srcObject = newStream;
                 newVideo.onloadedmetadata = async (e) => {
                     console.log('Camera metadata loaded:', e);
                     try {
-                        // await newVideo.play();
+                        await newVideo.play();
                     } catch (error) {
                         console.error('Error playing camera:', error);
                         setIsWarningOpen(true);
