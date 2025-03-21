@@ -56,6 +56,8 @@ const useCamera = () => {
                 
                 videoRef.current.srcObject = newStream;
                 videoRef.current.muted = true;
+                videoRef.current.autoplay = true;
+                videoRef.current.load();
                 // videoRef.current.playsInline = true;
                 
                 videoRef.current.srcObject = newStream;
