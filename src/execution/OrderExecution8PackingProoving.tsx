@@ -12,7 +12,7 @@ const OrderExecution8PackingProoving = () => {
     const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<Blob | null>(null);
-    const { videoRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { videoPlaceholderRef: videoRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
     const { ImageWithoutModal } = useImageModal();
 
     useEffect(() => {
@@ -68,7 +68,7 @@ const OrderExecution8PackingProoving = () => {
                         <ImageWithoutModal src={photo} fullSize />
                     ) : (
                         <>
-                            <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted={true} />
+                            <Box ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             <IconButton
                                 icon={<FaCog />}
                                 isRound

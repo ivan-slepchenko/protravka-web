@@ -16,7 +16,7 @@ const OrderExecution4ProovingProduct = () => {
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const currentProductIndex = currentOrderExecution?.currentProductIndex;
     const [photo, setPhotoState] = useState<Blob | null>(null);
-    const { videoRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { videoPlaceholderRef: videoRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
     const { ImageWithoutModal } = useImageModal();
 
     if (currentOrder === null || currentProductIndex === undefined || currentProductIndex === null) {
@@ -106,7 +106,7 @@ const OrderExecution4ProovingProduct = () => {
                             <ImageWithoutModal src={photo} fullSize />
                         ) : (
                             <>
-                                <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted={true} />
+                                <Box ref={videoRef} style={{ width: '100%', height: '100%' }} />
                                 <IconButton
                                     icon={<FaCog />}
                                     isRound

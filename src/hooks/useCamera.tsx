@@ -1,11 +1,11 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, MutableRefObject } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Select, Button, Alert, AlertIcon, AlertTitle, AlertDescription } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
 const useCamera = () => {
     const { t } = useTranslation();
 
-    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const videoPlaceholderRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
 
     const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
     const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
@@ -27,8 +27,8 @@ const useCamera = () => {
     }, []);
 
     const startCamera = useCallback(async (attempt = 1) => {
-        if (videoRef.current) {
-            console.log('Video element ready, starting camera...');
+        if (videoPlaceholderRef.current) {
+            console.log('Video placeholder ready, starting camera...');
             let selectedDeviceId = localStorage.getItem('selectedDeviceId');
             try {
                 const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
@@ -59,29 +59,33 @@ const useCamera = () => {
 
                 console.info('Camera stream retrieved successfully');
                 setStream(newStream); // Store the stream in state
-                
-                videoRef.current.srcObject = newStream;
-                videoRef.current.muted = true;
-                videoRef.current.autoplay = true;
-                videoRef.current.load();
-                // videoRef.current.playsInline = true;
-                
-                videoRef.current.srcObject = newStream;
 
-                videoRef.current.onloadedmetadata = (e) => {
+                // Clear all children of the placeholder and create a new video element
+                videoPlaceholderRef.current.innerHTML = '';
+                const newVideo = document.createElement('video');
+                newVideo.style.width = '100%';
+                newVideo.style.height = '100%';
+                newVideo.style.objectFit = 'cover';
+                newVideo.style.display = 'block';
+                newVideo.setAttribute('autoplay', '');
+                newVideo.setAttribute('muted', '');
+                newVideo.setAttribute('playsinline', '');
+                videoPlaceholderRef.current.appendChild(newVideo);
+
+                newVideo.srcObject = newStream;
+                newVideo.onloadedmetadata = (e) => {
                     console.log('Camera metadata loaded:', e);
                 };
 
-                console.log('video.srcObject', videoRef.current.srcObject);
-                console.log('video.readyState', videoRef.current.readyState);
+                console.log('video.srcObject', newVideo.srcObject);
+                console.log('video.readyState', newVideo.readyState);
 
-                
-                await videoRef.current.play();
-                
-                console.log('video.srcObject', videoRef.current.srcObject);
-                console.log('video.readyState', videoRef.current.readyState);
+                await newVideo.play();
 
-                videoRef.current.onerror = (error) => {
+                console.log('video.srcObject', newVideo.srcObject);
+                console.log('video.readyState', newVideo.readyState);
+
+                newVideo.onerror = (error) => {
                     console.error('Error loading camera metadata:', error);
                     setIsWarningOpen(true);
                 };
@@ -98,7 +102,7 @@ const useCamera = () => {
             }
             setCameraStarted(true);
         } else {
-            console.warn('Video element not ready, retrying...');
+            console.warn('Video placeholder not ready, retrying...');
             if (cameraTimeout.current) {
                 clearTimeout(cameraTimeout.current);
             }
@@ -106,11 +110,7 @@ const useCamera = () => {
         }
     }, [getVideoDevices]);
 
-    const stopCamera = useCallback(async () => {
-        navigator.mediaDevices.getUserMedia({ video: false });
-        await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "user" }
-        });
+    const stopCamera = useCallback(() => {
         console.log('Stop camera called');
         if (cameraTimeout.current) {
             console.log('Clearing camera timeout...');
@@ -127,27 +127,10 @@ const useCamera = () => {
             console.log('Camera stream removed');
         }
 
-        if (videoRef.current) {
-            videoRef.current.pause();
-            videoRef.current.srcObject = null;
-            console.log('video.srcObject set to null');
-            videoRef.current.removeAttribute('src');
-            videoRef.current.load();
-            console.log('Video element cleaned up');
-            const oldVideo = videoRef.current;
-            const parent = oldVideo.parentNode;
-            if (parent) {
-                const newVideo = document.createElement('video');
-                newVideo.setAttribute('autoplay', '');
-                newVideo.setAttribute('muted', '');
-                newVideo.setAttribute('playsinline', '');
-                newVideo.style.width = oldVideo.style.width;
-                newVideo.style.height = oldVideo.style.height;
-
-                parent.replaceChild(newVideo, oldVideo);
-                videoRef.current = newVideo;
-                console.log('Video element recreated');
-            }
+        if (videoPlaceholderRef.current) {
+            // Clear all children of the placeholder
+            videoPlaceholderRef.current.innerHTML = '';
+            console.log('Video element removed from placeholder');
         }
 
         setCameraStarted(false);
@@ -156,8 +139,14 @@ const useCamera = () => {
 
     const takeSnapshot = useCallback((): Promise<Blob | null> => {
         return new Promise((resolve) => {
-            if (videoRef.current && stream) {
-                const video = videoRef.current;
+            if (videoPlaceholderRef.current && stream) {
+                const video = videoPlaceholderRef.current.firstChild as HTMLVideoElement;
+
+                if (!video) {
+                    console.error('No video element found in videoPlaceholderRef');
+                    resolve(null);
+                    return;
+                }
 
                 // Get video track settings for width and height
                 const videoTrack = stream.getVideoTracks()[0];
@@ -179,6 +168,7 @@ const useCamera = () => {
 
                         // Cleanup: Remove the canvas from memory
                         canvas.remove();
+                        stopCamera();
                     }, 'image/png');
                 } else {
                     resolve(null);
@@ -287,7 +277,7 @@ const useCamera = () => {
     }, [stopCamera]);
 
     return {
-        videoRef,
+        videoPlaceholderRef,
         startCamera,
         stopCamera,
         takeSnapshot,

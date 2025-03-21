@@ -50,7 +50,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
     const [tkwProbesPhoto, setTkwProbesPhoto] = useState<Blob | null>(null);
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState<boolean>(false);
-    const { videoRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { videoPlaceholderRef: videoRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
     const { ImageWithoutModal } = useImageModal();
 
     useEffect(() => {
@@ -85,7 +85,6 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
         takeSnapshot().then((photoData) => {
             if (photoData) {
                 setTkwProbesPhoto(photoData);
-                stopCamera();
             }
         });
     };
@@ -250,7 +249,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                                     <ImageWithoutModal src={tkwProbesPhoto} fullSize/>
                                 ) : (
                                     <>
-                                        <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
+                                        <Box ref={videoRef} style={{ width: '100%', height: '100%' }}/>
                                         <IconButton
                                             icon={<FaCog />}
                                             isRound
