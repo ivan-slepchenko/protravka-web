@@ -112,11 +112,23 @@ const useCamera = () => {
 
     const stopCamera = useCallback(() => {
         console.log('Stop camera called');
+        
         if (cameraTimeout.current) {
             console.log('Clearing camera timeout...');
             clearTimeout(cameraTimeout.current);
             cameraTimeout.current = null;
         }
+
+        if (videoPlaceholderRef.current) {
+            const video = videoPlaceholderRef.current.firstChild as HTMLVideoElement;
+
+            // Clear all children of the placeholder
+            videoPlaceholderRef.current.innerHTML = '';
+            console.log('Video element removed from placeholder');
+
+            video.srcObject = null;
+        }
+
         if (stream) {
             console.log('Stopping camera tracks...');
             stream.getTracks().forEach((track) => {
@@ -127,13 +139,10 @@ const useCamera = () => {
             console.log('Camera stream removed');
         }
 
-        if (videoPlaceholderRef.current) {
-            // Clear all children of the placeholder
-            videoPlaceholderRef.current.innerHTML = '';
-            console.log('Video element removed from placeholder');
-        }
-
         setCameraStarted(false);
+
+        navigator.mediaDevices.getUserMedia({ video: false });
+        
         console.log('Camera stopped, cameraStarted set to false');
     }, [stream]);
 
