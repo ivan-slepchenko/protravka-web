@@ -78,6 +78,9 @@ const useCamera = () => {
                 newVideo.setAttribute('autoplay', 'true');
                 newVideo.setAttribute('muted', 'true');
                 newVideo.setAttribute('playsinline', 'true');
+                newVideo.autoplay = true;
+                newVideo.muted = true;
+                newVideo.playsInline = true;
                 videoPlaceholderRef.current.appendChild(newVideo);
 
                 newVideo.srcObject = newStream;
