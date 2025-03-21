@@ -107,6 +107,7 @@ const useCamera = () => {
     }, [getVideoDevices]);
 
     const stopCamera = useCallback(async () => {
+        navigator.mediaDevices.getUserMedia({ video: false });
         await navigator.mediaDevices.getUserMedia({
             video: { facingMode: "user" }
         });
@@ -133,6 +134,20 @@ const useCamera = () => {
             videoRef.current.removeAttribute('src');
             videoRef.current.load();
             console.log('Video element cleaned up');
+            const oldVideo = videoRef.current;
+            const parent = oldVideo.parentNode;
+            if (parent) {
+                const newVideo = document.createElement('video');
+                newVideo.setAttribute('autoplay', '');
+                newVideo.setAttribute('muted', '');
+                newVideo.setAttribute('playsinline', '');
+                newVideo.style.width = oldVideo.style.width;
+                newVideo.style.height = oldVideo.style.height;
+
+                parent.replaceChild(newVideo, oldVideo);
+                videoRef.current = newVideo;
+                console.log('Video element recreated');
+            }
         }
 
         setCameraStarted(false);
