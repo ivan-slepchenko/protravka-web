@@ -12,7 +12,7 @@ const OrderExecution8PackingProoving = () => {
     const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
     const [photo, setPhotoState] = useState<Blob | null>(null);
-    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { videoRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
     const { ImageWithoutModal } = useImageModal();
 
     useEffect(() => {

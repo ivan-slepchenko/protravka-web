@@ -16,7 +16,7 @@ const OrderExecution4ProovingProduct = () => {
     const currentOrder = useSelector((state: RootState) => state.execution.currentOrder);
     const currentProductIndex = currentOrderExecution?.currentProductIndex;
     const [photo, setPhotoState] = useState<Blob | null>(null);
-    const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
+    const { videoRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
     const { ImageWithoutModal } = useImageModal();
 
     if (currentOrder === null || currentProductIndex === undefined || currentProductIndex === null) {
