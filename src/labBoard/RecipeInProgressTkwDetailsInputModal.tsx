@@ -250,7 +250,7 @@ const RecipeInProgressTkwDetailsInputModal: React.FC<RecipeInProgressTkwDetailsI
                                     <ImageWithoutModal src={tkwProbesPhoto} fullSize/>
                                 ) : (
                                     <>
-                                        <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted autoPlay playsInline/>
+                                        <video ref={videoRef} style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
                                         <IconButton
                                             icon={<FaCog />}
                                             isRound

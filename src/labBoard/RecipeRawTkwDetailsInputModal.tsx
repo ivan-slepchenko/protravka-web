@@ -242,9 +242,6 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         objectFit: 'cover',
                                         visibility: tkwProbesPhoto || !isCameraReady ? 'hidden' : 'visible',
                                     }}
-                                    muted
-                                    playsInline
-                                    autoPlay
                                 />
                                 <IconButton
                                     icon={<FaCog />}
