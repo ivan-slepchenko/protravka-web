@@ -47,6 +47,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     const [tkwProbesPhoto, setTkwProbesPhoto] = useState<Blob | null>(null);
     const [isPhotoState, setIsPhotoState] = useState<boolean>(false);
     const [isSaving, setIsSaving] = useState<boolean>(false);
+    const [isCameraReady, setIsCameraReady] = useState<boolean>(false); // New state for starting the camera manually
     const { videoRef, canvasRef, startCamera, stopCamera, takeSnapshot, handleSettingsClick, SettingsModal, WarningModal } = useCamera();
     const { ImageWithoutModal } = useImageModal();
 
@@ -72,9 +73,14 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
         setTkwProbesPhoto(null);
     };
 
+    const handleStartCamera = () => {
+        startCamera();
+        setIsCameraReady(true);
+    };
+
     const handleNext = () => {
         setIsPhotoState(true);
-        startCamera();
+        setIsCameraReady(false); // Reset camera ready state
     };
 
     const handleSave = () => {
@@ -234,7 +240,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         width: '100%',
                                         height: '100%',
                                         objectFit: 'cover',
-                                        display: tkwProbesPhoto ? 'none' : 'block',
+                                        display: tkwProbesPhoto || !isCameraReady ? 'none' : 'block',
                                     }}
                                     muted
                                     playsInline
@@ -249,7 +255,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     right="10px"
                                     size="sm"
                                     onClick={handleSettingsClick}
-                                    style={{ display: tkwProbesPhoto ? 'none' : 'inline-flex' }}
+                                    style={{ display: tkwProbesPhoto || !isCameraReady ? 'none' : 'inline-flex' }}
                                 />
                                 <Box
                                     style={{
@@ -263,6 +269,18 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                             </Box>
                             <canvas ref={canvasRef} width="800" height="600" style={{ display: 'none' }} />
                             <VStack spacing={4} width="100%">
+                                {!isCameraReady && !tkwProbesPhoto && (
+                                    <Button
+                                        w="200px"
+                                        borderRadius="full"
+                                        border="1px solid"
+                                        borderColor="orange.300"
+                                        onClick={handleStartCamera}
+                                        disabled={isSaving}
+                                    >
+                                        Start Camera
+                                    </Button>
+                                )}
                                 <Button
                                     w="200px"
                                     borderRadius="full"
@@ -270,7 +288,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                     borderColor="orange.300"
                                     onClick={tkwProbesPhoto ? handleRetakeClick : handleTakeSnapshot}
                                     leftIcon={tkwProbesPhoto ? undefined : <FaCamera />}
-                                    disabled={isSaving}
+                                    disabled={!isCameraReady || isSaving}
                                 >
                                     {tkwProbesPhoto ? t('recipe_raw_tkw_details_input_modal.retake_picture') : t('recipe_raw_tkw_details_input_modal.take_picture')}
                                 </Button>
