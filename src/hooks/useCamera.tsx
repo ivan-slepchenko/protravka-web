@@ -40,23 +40,23 @@ const useCamera = () => {
                     setIsCameraStarting(false); // Reset the flag
                     return;
                 }
+
+                const stream = await navigator.mediaDevices.getUserMedia(
+                    { video: true }
+                );
+                stream.getTracks().forEach(track => {
+                    track.enabled = false;
+                    track.stop();
+                    stream.removeTrack(track);
+                });
                 
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                
+                const videoDevices = devices.filter(device => device.kind === "videoinput");
+                setDevices(videoDevices);
+
                 if (!selectedDeviceId) {
                     console.log('No selected device found is set, getting video devices...');
-
-                    const stream = await navigator.mediaDevices.getUserMedia(
-                        { video: true }
-                    );
-                    stream.getTracks().forEach(track => {
-                        track.enabled = false;
-                        track.stop();
-                        stream.removeTrack(track);
-                    });
-                    
-                    const devices = await navigator.mediaDevices.enumerateDevices();
-                    
-                    const videoDevices = devices.filter(device => device.kind === "videoinput");
-                    setDevices(videoDevices);
 
                     const defaultDevice = videoDevices.find(device => /rear|back|environment/i.test(device.label));
                     console.info('Video devices:', JSON.stringify(videoDevices));
