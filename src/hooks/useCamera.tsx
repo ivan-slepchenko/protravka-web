@@ -56,9 +56,15 @@ const useCamera = () => {
                 setStream(newStream); // Store the stream in state
                 
                 videoRef.current.srcObject = newStream;
+                videoRef.current.muted = true;
+                videoRef.current.playsInline = true;
+                
+                videoRef.current.srcObject = newStream;
 
                 console.log('video.srcObject', videoRef.current.srcObject);
                 console.log('video.readyState', videoRef.current.readyState);
+
+                
                 await videoRef.current.play();
                 
                 console.log('video.srcObject', videoRef.current.srcObject);
@@ -105,9 +111,6 @@ const useCamera = () => {
             setStream(null); // Cleanup the stream from state
             console.log('Camera stream removed');
         }
-
-        console.log('Forcing camera release to prevent iOS lock issue...');
-        navigator.mediaDevices.getUserMedia({ video: false });
 
         setCameraStarted(false);
         console.log('Camera stopped, cameraStarted set to false');

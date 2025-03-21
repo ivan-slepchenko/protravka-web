@@ -74,8 +74,8 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
     };
 
     const handleStartCamera = () => {
-        startCamera();
         setIsCameraReady(true);
+        startCamera();
     };
 
     const handleNext = () => {
@@ -240,7 +240,7 @@ const RecipeRawTkwDetailsInputModal: FC<RecipeRawTkwDetailsInputModalProps> = ({
                                         width: '100%',
                                         height: '100%',
                                         objectFit: 'cover',
-                                        display: tkwProbesPhoto || !isCameraReady ? 'none' : 'block',
+                                        visibility: tkwProbesPhoto || !isCameraReady ? 'hidden' : 'visible',
                                     }}
                                     muted
                                     playsInline
