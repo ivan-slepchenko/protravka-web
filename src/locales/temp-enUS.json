@@ -1,0 +1,9 @@
+{
+    "authentication": {
+        "register_failed": "Failed to register user",
+        "login_failed": "Login failed",
+        "no_company": "User has no company",
+        "session_timed_out": "Session timed out, please log in again.",
+        "logout_failed": "Logout failed"
+    }
+}

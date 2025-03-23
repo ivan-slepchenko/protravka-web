@@ -602,5 +602,12 @@
         "treatment_finished_at": "Traitement terminé à",
         "latest_tkw_measured_at": "Dernier TKW mesuré à",
         "completed_at": "Terminé à"
+    },
+    "authentication": {
+        "register_failed": "Échec de l'enregistrement de l'utilisateur",
+        "login_failed": "Échec de la connexion",
+        "no_company": "L'utilisateur n'a pas d'entreprise",
+        "session_timed_out": "Session expirée, veuillez vous reconnecter.",
+        "logout_failed": "Échec de la déconnexion"
     }
 }

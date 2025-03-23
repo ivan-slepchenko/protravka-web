@@ -26,7 +26,7 @@ const Login = () => {
                 {error && (
                     <Alert status="error">
                         <AlertIcon />
-                        {error}
+                        {t(error)}
                     </Alert>
                 )}
                 <Input

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Role } from '../operators/Operators';
-import { handle403Redirect } from './handle403Redirect';
 
 interface Company {
     id: string;
@@ -36,81 +35,103 @@ const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL || '';
 
 export const registerUser = createAsyncThunk(
     'user/registerUser',
-    async ({
-        email,
-        password,
-        name,
-        surname,
-        birthday,
-        phone,
-    }: {
-        email: string;
-        password: string;
-        name: string;
-        surname: string;
-        birthday: string;
-        phone: string;
-    }) => {
-        const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, name, surname, birthday, phone }),
-            credentials: 'include', // Include credentials in the request
-        });
-        if (!response.ok) {
-            throw new Error('Failed to register user');
+    async (
+        {
+            email,
+            password,
+            name,
+            surname,
+            birthday,
+            phone,
+        }: {
+            email: string;
+            password: string;
+            name: string;
+            surname: string;
+            birthday: string;
+            phone: string;
+        },
+        { rejectWithValue },
+    ) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, name, surname, birthday, phone }),
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error('authentication.register_failed'); // Localized error message
+            }
+            return response.json();
+        } catch (error) {
+            return rejectWithValue('authentication.register_failed'); // Localized error message
         }
-        return response.json();
     },
 );
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
-    async ({ email, password }: { email: string; password: string }) => {
-        const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-            credentials: 'include', // Include credentials in the request
-        });
-        if (!response.ok) {
-            throw new Error('Failed to login');
+    async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+                credentials: 'include', // Include credentials in the request
+            });
+            if (!response.ok) {
+                throw new Error('authentication.login_failed'); // Localized error message
+            }
+
+            const { user } = (await response.json()) as { user: UserState };
+
+            if (!user.company) {
+                throw new Error('authentication.no_company'); // Localized error message
+            }
+
+            return user;
+        } catch (error) {
+            return rejectWithValue('authentication.login_failed'); // Localized error message
         }
-
-        const { user } = (await response.json()) as { user: UserState };
-
-        if (!user.company) {
-            throw new Error('User has no company');
-        }
-
-        return user;
     },
 );
 
-export const fetchUserByToken = createAsyncThunk('user/fetchUserByToken', async () => {
-    const res = await fetch(`${BACKEND_URL}/api/auth/user`, { credentials: 'include' });
-    if (!res.ok) {
-        throw new Error('Session timed out, please log back.');
+export const fetchUserByToken = createAsyncThunk(
+    'user/fetchUserByToken',
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/auth/user`, { credentials: 'include' });
+            if (!res.ok) {
+                throw new Error('authentication.session_timed_out'); // Localized error message
+            }
+
+            const user = (await res.json()) as UserState;
+
+            if (!user.company) {
+                throw new Error('authentication.no_company'); // Localized error message
+            }
+
+            return user;
+        } catch (error) {
+            return rejectWithValue('authentication.session_timed_out'); // Localized error message
+        }
+    },
+);
+
+export const logoutUser = createAsyncThunk('user/logoutUser', async (_, { rejectWithValue }) => {
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+        if (!response.ok) {
+            throw new Error('authentication.logout_failed'); // Localized error message
+        }
+        return response.json();
+    } catch (error) {
+        return rejectWithValue('authentication.logout_failed'); // Localized error message
     }
-
-    const user = (await res.json()) as UserState;
-
-    if (!user.company) {
-        throw new Error('User has no company');
-    }
-
-    return user;
-});
-
-export const logoutUser = createAsyncThunk('user/logoutUser', async () => {
-    const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-    });
-    if (!response.ok) {
-        throw new Error('Failed to logout');
-    }
-    return response.json();
 });
 
 const userSlice = createSlice({

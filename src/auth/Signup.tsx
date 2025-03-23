@@ -50,15 +50,23 @@ const Signup = () => {
         return error ? "red.500" : "gray.300";
     };
 
+    const isSessionError = (error: string) => {
+        return ![
+            'authentication.session_timed_out',
+            'authentication.no_company',
+            'authentication.session_timed_out'
+        ].includes(error);
+    }
+
     return (
         <Center w="full" h="full" p={8}>
             <VStack spacing={4}>
                 <Image src="/protravka_logo.png" alt={t('signup.logo')} width="200px" objectFit='contain'/>
                 <Heading>{t('signup.signup')}</Heading>
-                {error && (
+                {error && !isSessionError(error) &&(
                     <Alert status="error">
                         <AlertIcon />
-                        {error}
+                        {t(error)}
                     </Alert>
                 )}
                 {message && (

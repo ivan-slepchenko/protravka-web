@@ -53,7 +53,7 @@ module.exports = {
                 {
                     "name": "enUS",
                     "translationPath": "/locales/enUS.json"
-                }
+                },
             ],
             // Secondary languages used in 'no-unknown-key-secondary-langs' rule
             "secondaryLangs": [
