@@ -185,7 +185,8 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(registerUser.rejected, (state, action) => {
-                state.error = action.error.message || 'Failed to register user';
+                state.error =
+                    action.error.message || (action.payload as string) || 'Failed to register user';
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 const { email, name, surname, phone, roles, company } = action.payload;
@@ -211,7 +212,8 @@ const userSlice = createSlice({
                 state.company = company;
             })
             .addCase(fetchUserByToken.rejected, (state, action) => {
-                state.error = action.error.message || 'Failed to fetch user';
+                state.error =
+                    (action.payload as string) || action.error.message || 'Failed to fetch user';
             })
             .addCase(logoutUser.fulfilled, (state) => {
                 state.email = null;

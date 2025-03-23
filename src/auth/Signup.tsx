@@ -33,7 +33,11 @@ const Signup = () => {
     const handleSubmit = async (values: { email: string; password: string; repeatPassword: string; name: string; surname: string; birthday: string; phone: string }, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
         try {
             await SignupSchema.validate(values, { abortEarly: false });
-            dispatch(registerUser(values));
+            const response = await dispatch(registerUser(values)).unwrap();
+            if(response.ok) {
+                navigate('/login');
+            }
+            
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: Yup.ValidationError | any) {
             if (error.name !== "ValidationError") {
