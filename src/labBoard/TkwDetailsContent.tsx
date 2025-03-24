@@ -52,7 +52,7 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                     </Text>
                 </Badge>
                 <Text fontWeight="bold">Untreated TKW Measurement:</Text>
-                <Grid templateColumns="1fr 1fr" gap={4} px={1} minW="300px" maxW="400px">
+                <Grid templateColumns="1fr 1fr" gap={4} px={1} minW="300px" maxW="400px" w='full'>
                     <Text fontWeight="bold">{t('tkw_details_page.lot')}:</Text>
                     <Text>{order.lotNumber}</Text>
 
@@ -62,8 +62,10 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                     <Text fontWeight="bold">{t('tkw_details_page.operator')}:</Text>
                     <Text>{order.operator?.name} {order.operator?.surname}</Text>
 
-                    <Text fontWeight="bold">{t('tkw_details_page.assignment_creation_date')}:</Text>
-                    <Text>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleDateString()}</Text>
+                    <GridItem colSpan={2}>
+                        <Text color="gray.600" fontSize="xs"  borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('tkw_details_page.assignment_creation_date')}:</Text>
+                        <Text>{order.creationDate === null ? 'N/A' : new Date(order.creationDate).toLocaleDateString()}</Text>
+                    </GridItem>
                 </Grid>
                 
                 <Box borderWidth={1} p={2} minW="300px" maxW="400px">
@@ -92,11 +94,11 @@ const TkwDetailsContent: React.FC<TkwDetailsContentProps> = ({ order, measuremen
                         <GridItem>
                             <Grid templateColumns="1fr 1fr" gap={1}>
                                 <Text fontWeight="bold">{t('tkw_details_page.probe_1')}:</Text>
-                                <Text>{order.tkwRep1 ? `${order.tkwRep1} gr.` : 'N/A'}</Text>
+                                <Text>{order.tkwRep1 ? `${order.tkwRep1} g` : 'N/A'}</Text>
                                 <Text fontWeight="bold">{t('tkw_details_page.probe_2')}:</Text>
-                                <Text>{order.tkwRep2 ? `${order.tkwRep2} gr.` : 'N/A'}</Text>
+                                <Text>{order.tkwRep2 ? `${order.tkwRep2} g` : 'N/A'}</Text>
                                 <Text fontWeight="bold">{t('tkw_details_page.probe_3')}:</Text>
-                                <Text>{order.tkwRep3 ? `${order.tkwRep3} gr.` : 'N/A'}</Text>
+                                <Text>{order.tkwRep3 ? `${order.tkwRep3} g` : 'N/A'}</Text>
                                 <Text fontWeight="bold">{t('tkw_details_page.average')}:</Text>
                                 <Text>{calculateAverageTkwString([order.tkwRep1, order.tkwRep2, order.tkwRep3])}</Text>
                             </Grid>
