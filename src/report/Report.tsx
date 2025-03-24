@@ -162,7 +162,6 @@ const Report: React.FC = () => {
         approved: 0,
         to_acknowledge: 0,
         disapproved: 0,
-        inProgress: 0, // Add inProgress category
     };
 
     filteredOrders.forEach((order) => {
@@ -175,9 +174,6 @@ const Report: React.FC = () => {
                 break;
             case OrderStatus.Failed:
                 categoryStats.disapproved++;
-                break;
-            case OrderStatus.TreatmentInProgress: // Add case for In Progress
-                categoryStats.inProgress++;
                 break;
             default:
                 break;
@@ -202,11 +198,6 @@ const Report: React.FC = () => {
                 label: t('report.disapproved'),
                 data: [categoryStats.disapproved],
                 backgroundColor: statusColorMap[OrderStatus.Failed],
-            },
-            {
-                label: t('report.in_progress'),
-                data: [categoryStats.inProgress],
-                backgroundColor: statusColorMap[OrderStatus.TreatmentInProgress],
             },
         ],
     };
