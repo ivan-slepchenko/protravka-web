@@ -40,13 +40,12 @@ const ControlledOrderCard: React.FC<ControlledOrderCardProps> = ({ order, measur
     }, [order.id]);
 
     const calculateAverageTkw = (measurements: TkwMeasurement[]) => {
-        if (measurements.length === 0) return 'N/A';
-        const totalTkw = measurements.reduce((sum, measurement) => {
-            const tkwValues = [measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3].filter((probe) => probe !== undefined) as number[];
-            const tkwAllValues = tkwValues.reduce((a, b) => a + b, 0);
-            return sum + tkwAllValues / tkwValues.length;
-        }, 0);
-        return totalTkw.toFixed(2);
+        const tkwProbes = measurements.flatMap(measurement => 
+            [measurement.tkwProbe1, measurement.tkwProbe2, measurement.tkwProbe3].filter((probe) => probe !== undefined) as number[]
+        );
+        if (tkwProbes.length === 0) return 'N/A';
+        const totalTkw = tkwProbes.reduce((sum, tkw) => sum + tkw, 0);
+        return (totalTkw / tkwProbes.length).toFixed(2);
     };
 
     const treatedAverageTkw = calculateAverageTkw(measurements);

@@ -35,6 +35,7 @@ const OrderExecution2ApplicationMethod = () => {
                 border="1px solid"
                 borderColor="gray.300"
                 _hover={{ backgroundColor: 'gray.100' }}
+                disabled
             >
                 {t('order_execution.cds')}
             </Button>
