@@ -21,6 +21,7 @@ import {
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/messaging';
 import { getMessaging, getToken } from "firebase/messaging";
+import { getDatabase, ref, get } from "firebase/database";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -43,6 +44,7 @@ const DataSynchronizer = () => {
     const isAuthenticated = user.email !== null;
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
     const unsubscribeRef = useRef<() => void>();
 
     useEffect(() => {
@@ -158,6 +160,35 @@ const DataSynchronizer = () => {
         }
     }, [dispatch, user, useLab, isAuthenticated]);
 
+    useEffect(() => {
+        const checkAppVersion = async () => {
+            try {
+                const db = getDatabase();
+                const versionRef = ref(db, '/appVersion');
+                const snapshot = await get(versionRef);
+                if (snapshot.exists()) {
+                    const firebaseVersion = snapshot.val();
+                    const embeddedVersion = import.meta.env.VITE_APP_VERSION;
+
+                    if (firebaseVersion !== embeddedVersion) {
+                        setShowUpdateModal(true);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch app version from Firebase:', error);
+            }
+        };
+
+        checkAppVersion();
+    }, []);
+
+    const handleUpdateApp = () => {
+        if (navigator.serviceWorker?.controller) {
+            navigator.serviceWorker.controller.postMessage({ action: 'skipWaiting' });
+        }
+        window.location.reload();
+    };
+
     return (
         <>
             <Modal isOpen={isOpen} onClose={onClose}>
@@ -184,6 +215,20 @@ const DataSynchronizer = () => {
                     <ModalFooter>
                         <Button colorScheme="red" onClick={() => setShowErrorModal(false)}>
                             Close
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+            <Modal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>App Update Available</ModalHeader>
+                    <ModalBody>
+                        <p>A new version of the app is available. Please update to continue.</p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" onClick={handleUpdateApp}>
+                            Update
                         </Button>
                     </ModalFooter>
                 </ModalContent>

@@ -139,5 +139,13 @@ root.render(
     </React.StrictMode>
 );
 
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data?.action === 'skipWaiting') {
+            navigator.serviceWorker.controller?.postMessage({ type: 'SKIP_WAITING' });
+        }
+    });
+}
+
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
