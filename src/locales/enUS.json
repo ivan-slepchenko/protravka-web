@@ -108,7 +108,7 @@
         "obliged_to_make_photo": "You are obliged to make a photo of scales display on the next page!",
         "of": "of",
         "consumption_info": "Consumption Info",
-        "total_slurry_consumption": "Total Slurry Consumption {{kg}} kg",
+        "total_slurry_consumption": "Total Slurry Consumption per {{kg}} kg",
         "consumption_photo": "Consumption Photo",
         "no_photo": "No Photo",
         "product_execution_details": "Product Execution Details",
@@ -181,7 +181,7 @@
         "add_crop": "Add Crop",
         "delete_crop": "Delete Crop",
         "delete_variety": "Delete Variety",
-        "confirm_delete": "Are you sure you want to delete this {{type}}? This action cannot be undone.",
+        "confirm_delete": "Are you certain you want to delete this item? This action is irreversible.",
         "cancel": "Cancel"
     },
     "orders_overview": {
@@ -525,7 +525,7 @@
         "total_amount_kg": "Total amount, kg",
         "packed_seeds_kg": "Packed Seeds, kg",
         "packing_photo": "Packing Photo",
-        "deviation": "Deviation",
+        "deviation": "Actual vs Target Rate, %",
         "no_photo": "No Photo",
         "slurry_preparation_per_lot": "Slurry Preparation per Lot",
         "component": "Component",
@@ -594,13 +594,13 @@
         "to_treat": "To Treat",
         "assigned_at": "Lab Assigned At",
         "created_at": "Recipe Created At",
-        "expected_start_at": "Expected To Be Started At",
-        "raw_tkw_measured_at": "Raw TKW Measured At",
+        "expected_start_at": "Expected To Be Treated On",
+        "raw_tkw_measured_at": "Untreated Seeds TKW Measured At",
         "preparation_started_at": "Preparation Started At",
         "treatment_started_at": "Treatment Started At",
         "treatment_finished_at": "Treatment Finished At",
         "latest_tkw_measured_at": "Latest TKW Measured At",
-        "completed_at": "Completed At"
+        "completed_at": "Acknowledged At"
     },
     "authentication": {
         "register_failed": "Failed to register user",

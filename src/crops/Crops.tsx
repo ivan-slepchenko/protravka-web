@@ -102,7 +102,7 @@ const Crops: React.FC = () => {
                             {selectedItem.type === 'crop' ? t('crop.delete_crop') : t('crop.delete_variety')}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                            {t('crop.confirm_delete', { type: t(`crop.${selectedItem.type}`) })}
+                            {t('crop.confirm_delete')}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                             <Button ref={cancelRef} onClick={onClose}>

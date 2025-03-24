@@ -54,9 +54,10 @@ const TkwMeasurementCard: FC<TkwMeasurementCardProps> = ({ measurement, onClick 
                         </> : 'Loading...'}
                     </HStack>
                 </Badge>
-                <Text px={1} gridColumn="span 3" color="gray.600">
-                    {t('tkw_measurement_card.lot')}: {order ? order.lotNumber : 'Loading...'}
+                <Text px={1} gridColumn="span 2" color="gray.600">
+                    {t('tkw_measurement_card.lot')}:
                 </Text>                
+                <Text px={1} textAlign='right'>{order ? order.lotNumber : 'Loading...'}</Text>
                 <Text px={1} gridColumn="span 2">{t('tkw_measurement_card.seeds_to_treat')}:</Text>
                 <Text px={1} textAlign='right'>{order ? `${order.seedsToTreatKg} kg` : 'Loading...'}</Text>
                 <Box gridColumn="span 3">

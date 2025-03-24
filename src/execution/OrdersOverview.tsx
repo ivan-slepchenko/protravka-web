@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Text, VStack, HStack, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Box } from '@chakra-ui/react';
+import { Box, VStack, Text, Button, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, HStack, Badge, Grid } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { deactivateActiveExecution, startExecution } from '../store/executionSlice';
@@ -68,9 +68,49 @@ const OrdersOverview: React.FC = () => {
         dispatch(fetchOrders());
     };
 
+    const renderOrderCard = (order: Order) => (
+        <Box
+            key={order.id}
+            borderColor="gray.200"
+            borderWidth={1}
+            borderStyle="solid"
+            borderRadius="md"
+            p={2}
+            w="full"
+            cursor="pointer"
+            onClick={() => handleOrderClick(order)}
+            _hover={{ bg: "gray.100" }}
+            maxW={'400px'}
+        >
+            <Grid templateColumns="1fr 3fr" gap={2} fontSize="sm">
+                <Badge colorScheme='blue' gridColumn="span 3">
+                    <HStack w="full" justifyContent='space-between'>
+                        <Text isTruncated>
+                            {order.crop?.name}, {order.variety?.name}
+                        </Text>
+                    </HStack>
+                </Badge>
+                <Text px={1} gridColumn="span 2">{t('orders_overview.lot')}:</Text>
+                <Text isTruncated>{order.lotNumber}</Text>
+                <Text px={1} gridColumn="span 2">Untreated Average TKW:</Text>
+                <Text isTruncated>{order.tkw} kg</Text>
+                <Text px={1} gridColumn="span 2">{t('orders_overview.products')}:</Text>
+                <HStack>
+                    <Box display='flow'>
+                        {order.productDetails.map(productDetail => (
+                            <Text key={productDetail.id} fontSize="sm">{productDetail.product?.name}</Text>
+                        ))}
+                    </Box>
+                </HStack>
+                <Text px={1} gridColumn="span 2">Seeds To Treat:</Text>
+                <Text isTruncated>{order.seedsToTreatKg}</Text>
+            </Grid>
+        </Box>
+    );
+
     return (
-        <Box w='full' h='full'>
-            <VStack w='full' h='full' p={4} overflow='auto'>
+        <Box w="full" h="full">
+            <VStack w="full" h="full" p={4} overflow="auto">
                 {fetchError ? (
                     <>
                         <Text py={2} px={2} fontSize="lg" color="red.600">{t('orders_overview.no_internet_access')}</Text>
@@ -80,38 +120,9 @@ const OrdersOverview: React.FC = () => {
                     <>
                         <Text py={2} px={2} fontSize="lg">{t('orders_overview.lots_to_treat_today', { date: currentDate })}</Text>
                         <Text py={2} px={2} fontSize="md" color="gray.600">{t('orders_overview.choose_lot_to_start')}</Text>
-                
-                        <TableContainer mt={4} w="full" overflowY='visible'>
-                            <Table variant="simple" size="sm" w="full">
-                                <Thead bg="orange.100">
-                                    <Tr>
-                                        <Th>{t('orders_overview.crop')}</Th>
-                                        <Th>{t('orders_overview.lot')}</Th>
-                                        <Th>{t('orders_overview.products')}</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {orders.map(order => (
-                                        <Tr key={order.id} onClick={() => handleOrderClick(order)} cursor="pointer" _hover={{ bg: "gray.100" }} height={"50px"}>
-                                            <Td>
-                                                <HStack>
-                                                    <Text>{order.crop.name}</Text>
-                                                    <Text fontSize="sm" color="gray.600">{order.variety.name}</Text>
-                                                </HStack>
-                                            </Td>
-                                            <Td>{order.lotNumber}</Td>
-                                            <Td>
-                                                <VStack gap={2} alignItems={"left"}>
-                                                    {order.productDetails.map(productDetail => (
-                                                        <Text key={productDetail.id} fontSize="sm">{productDetail.product?.name}</Text>
-                                                    ))}
-                                                </VStack>
-                                            </Td>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
-                        </TableContainer>
+                        <VStack mt={4} w="full" spacing={4}>
+                            {orders.map(order => renderOrderCard(order))}
+                        </VStack>
                     </>
                 )}
             </VStack>

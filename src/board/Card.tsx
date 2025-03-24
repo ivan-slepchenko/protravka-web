@@ -121,7 +121,7 @@ const Card: React.FC<{ order: Order }> = ({ order }) => {
                         <Text px={1} isTruncated>{new Date(treatmentStartDate).toLocaleString()}</Text>
                     </Box>
                 )}
-                {order.status === OrderStatus.LabToControl && treatmentFinishDate && (
+                {(order.status === OrderStatus.LabToControl || order.status === OrderStatus.ToAcknowledge || order.status === OrderStatus.Completed || order.status === OrderStatus.Failed) && treatmentFinishDate && (
                     <Box gridColumn="span 3">
                         <Text px={1} color="gray.600" fontSize="xs" borderTop={1} borderStyle={'solid'} borderColor={'gray.400'}>{t('card.treatment_finished_at')}</Text>
                         <Text px={1} isTruncated>{new Date(treatmentFinishDate).toLocaleString()}</Text>
