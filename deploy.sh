@@ -21,8 +21,5 @@ docker tag protravka-web protravka.azurecr.io/protravka-web:$version
 # Push the Docker image to the registry
 docker push protravka.azurecr.io/protravka-web:$version
 
-# Update version in Firebase using Node.js script
-node ./scripts/updateFirebaseVersion.js "$version"
-
 # Redeploy the application
 az containerapp update --name protravka-web --resource-group protravka --image protravka.azurecr.io/protravka-web:$version
